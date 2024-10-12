@@ -1,0 +1,36 @@
+const ERROR_MESSAGE = {
+  PROVIDE_REGISTER_EMAIL: "Please Enter Registerd Email",
+  EMAIL_NOT_FOUND: "Email not found",
+  PROVIDE_EMAIL: "Please provide email",
+  INTERNAL_SERVER_ERROR: "Internal server error",
+  USER_NOT_FOUND: "User not found",
+  USER_ALREADY_EXISTS: "User already exists",
+  FETCHING_USER_ERROR: "Error fetching user data",
+  SERVER_ERROR: "Server error",
+
+  INVALID_EMAIL_OR_PASSWORD: "Invalid email or password",
+
+  PASSWAORD_NOT_MATCHED: "Password not matched Enter Correct Password",
+  PASSWORD_MISSING: "Password is missing",
+  OTP_SENDING_ERROR: "Failed to Send OTP. Please try again.",
+  INVALID_EMAIL: "Invalid email format",
+  INVALID_PASSWORD: "Invalid password format",
+  INVALID_NAME: "Invalid name format",
+  INVALID_PHONE: "Invalid phone number format",
+  INVALID_OTP: "Invalid OTP",
+  OTP_TIMEOUT: "OTP timeout. Please request a new OTP.",
+  OTP_NOT_PROVIDED: "OTP not Provided",
+  OTP_VERIFICATION_FAILED: "OTP verification failed or expired",
+  OTP_EXPIRED: "OTP has expired Please request a new OTP",
+
+  NAME_VALIDATION_FAILED: "Name must be at least 5 characters long",
+  EMAIL_VALIDATION_FAILED: "Email is Not Valid",
+  PASSWORD_VALIDATION_FAILED: "Password must be at least 8 characters long",
+  INVALID_INPUT: "Please Fill the Form Correctly",
+  INVALID_CREDENTIALS: "InValid Credentials",
+};
+
+
+module.exports = {
+  ERROR_MESSAGE,
+};
