@@ -86,15 +86,22 @@ const login = async (req, res) => {
   try {
     const { your_email, your_pass } = req.body;
     const user = await Users.findOne({ email: your_email });
-    if (user && (await bcrypt.compare(your_pass, user.password))) {
-      await GenerateToken(user, req, res);
-      res.status(STATUS.SUCCESS).json({
-        message: RESPONCE_MESSAGE.LOGIN_SUCCESS,
-        user: { id: user._id, role: user.role },
-      });
-    } else {
-      res.status(STATUS.UNAUTHORIZED).json({ message: ERROR_MESSAGE.INVALID_CREDENTIALS });
+
+
+    if (!user) {
+      return res.status(STATUS.UNAUTHORIZED).json({ message: ERROR_MESSAGE.EMAIL_NOT_FOUND });
     }
+    const isPasswordValid = await bcrypt.compare(your_pass, user.password);
+    if (!isPasswordValid) {
+     
+      res.status(STATUS.UNAUTHORIZED).json({ message: ERROR_MESSAGE.INVALID_PASSWORD });
+    }
+    await GenerateToken(user, req, res);
+    return res.status(200).json({
+      message: "Login successful",
+      user: { id: user._id, role: user.role },
+    }); 
+    
   } catch (error) {
     console.log("Error during login:", error);
     res.status(STATUS.INTERNAL_SERVER_ERROR).json({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });

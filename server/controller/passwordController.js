@@ -266,3 +266,4 @@ module.exports = {
   ConfirmOtp,
   CreateNewPassword,
 };
+
