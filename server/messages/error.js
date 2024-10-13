@@ -8,13 +8,12 @@ const ERROR_MESSAGE = {
   FETCHING_USER_ERROR: "Error fetching user data",
   SERVER_ERROR: "Server error",
 
-  INVALID_EMAIL_OR_PASSWORD: "Invalid email or password",
-
+INVALID_EMAIL_OR_PASSWORD: "Invalid email or password",
+INVALID_PASSWORD:"Password Incorrect",
   PASSWAORD_NOT_MATCHED: "Password not matched Enter Correct Password",
   PASSWORD_MISSING: "Password is missing",
   OTP_SENDING_ERROR: "Failed to Send OTP. Please try again.",
   INVALID_EMAIL: "Invalid email format",
-  INVALID_PASSWORD: "Invalid password format",
   INVALID_NAME: "Invalid name format",
   INVALID_PHONE: "Invalid phone number format",
   INVALID_OTP: "Invalid OTP",

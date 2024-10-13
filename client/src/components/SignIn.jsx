@@ -8,6 +8,7 @@ import { response } from "../utils/ResponceMessages";
 function SignIn() {
   const [your_email, setEmail] = useState("");
   const [your_pass, setPassword] = useState("");
+  const [error,setError] = useState("");
 
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -61,10 +62,14 @@ function SignIn() {
           navigate("/", { state: { successMessage: response.login.success || apiResponse.message } });
         }
       }
-    } catch (err) {
-      console.log(err);
-      toast.error(response.credentials.invalid);
-    }
+    } catch (error) {
+      if(error.response)
+      {
+       console.error('Login error:', error.response.data.message);
+ 
+      }
+       toast.error(error.response.data.message);
+     }
   };
 
   return (
