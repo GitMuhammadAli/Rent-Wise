@@ -14,8 +14,21 @@ LOGOUT_SUCCESS: "Logout successful",
   
 }
 
-
+const listings = {
+    LISTING_CREATED: "Listing created successfully",
+    LISTING_FETCHED: "Listing fetched successfully",
+    LISTING_UPDATED: "Listing updated successfully",
+    LISTING_DELETED: "Listing deleted successfully",
+    LISTING_NOT_FOUND: "Listing not found",
+    LISTING_ALREADY_EXISTS: "Listing already exists",
+    LISTING_NOT_AVAILABLE: "Listing not available",
+    LISTING_NOT_AVAILABLE_FOR_RENT: "Listing not available for rent",
+    LISTING_NOT_AVAILABLE_FOR_SALE: "Listing not available for sale",
+    LISTING_NOT_AVAILABLE_FOR_RENT_OR_SALE: "Listing not available for rent or sale",
+    LISTING_NOT_AVAILABLE_FOR_RENT_OR_SALE_OR_RENT_AND_SALE: "Listing not available for rent or sale or rent and sale",
+}
 
 module.exports = {
- RESPONCE_MESSAGE
+ RESPONCE_MESSAGE,
+ listings
   };

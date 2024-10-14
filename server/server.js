@@ -3,12 +3,13 @@ const express = require("express");
 const session = require("express-session");
 const passport = require("passport");
 const cookieParser = require("cookie-parser");
-const userRoutes = require("./routes/userRoutes");
+const userRoutes = require("./routes/users/userRoutes");
 const home = require("./routes/home");
 const connectDB = require("./config/db");
 const cors = require("cors");
 const { corsOptions } = require("./utils/cors");
 const { initializeAdmin } = require("./controller/userController");
+const listingRoutes = require("./routes/listings/listingRoutes");
 
 connectDB();
 
@@ -60,6 +61,7 @@ app.use(passport.session());
 // Routes
 app.use("/", home);
 app.use("/auth", userRoutes);
+app.use("/listings", listingRoutes);
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
