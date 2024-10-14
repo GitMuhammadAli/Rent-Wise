@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const rentalController = require("../../controller/listings/listingController");
+const upload = require("../../utils/media");
 
 // Route to create a new listing
 router.post("/create", rentalController.CreateListings);

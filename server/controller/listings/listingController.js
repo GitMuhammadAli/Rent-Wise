@@ -116,15 +116,38 @@ exports.UpdateListings = async (req, res) => {
 
 
 exports.DeleteListings = async (req, res) => {
-    const { id } = req.params;
+    const { id } = req.params; 
+
     try {
-        const deletedListing = await RentalItem.findByIdAndDelete(id);
-        if (!deletedListing) {
-            return res.status(404).json({ error: "Listing not found" });
+      // Find the rental item by ID
+      const rentalItem = await RentalItem.findById(id);
+  
+      if (!rentalItem) {
+        return res.status(404).json({ message: 'Rental item not found' });
+      }
+  
+      rentalItem.images.forEach((image) => {
+        const filePath = path.join(__dirname, image.url); // Adjust if your URL structure differs
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath); // Deletes the file from the filesystem
         }
-        res.json(deletedListing);
+      });
+  
+      // Optionally delete videos as well
+      rentalItem.videos.forEach((video) => {
+        const filePath = path.join(__dirname, video.url);
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+        }
+      });
+  
+      // Delete the rental item from the database
+      await RentalItem.findByIdAndDelete(id);
+  
+      res.status(200).json({ message: 'Rental item deleted successfully' });
     } catch (error) {
-        res.status(500).json({ error: "Failed to delete listing" });
+      console.error(error);
+      res.status(500).json({ message: 'Internal server error' });
     }
 }
 
