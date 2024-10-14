@@ -7,31 +7,40 @@ const userSchema = new UserSchema({
   name: {
     type: String,
     required: true,
-    minlength: 5,
-    maxlength: 50,
+    trim: true,
+    maxlength: 100,
   },
   email: {
     type: String,
     required: true,
     unique: true,
+    lowercase: true,
+    match: [/\S+@\S+\.\S+/, "is invalid"],
   },
   password: {
     type: String,
     minlength: 8,
     maxlength: 80,
     validate: {
-      validator: function(v) {
+      validator: function (v) {
         if (!this.googleId && !this.facebookId) {
           return v && v.length >= 8;
         }
         return true;
       },
-      message: 'Password must be at least 8 characters long.',
+      message: "Password must be at least 8 characters long.",
     },
   },
   role: {
     type: String,
-    default: "user",
+    enum: ["owner", "renter"],
+    default: "renter",
+    required: true,
+  },
+  phoneNumber: {
+    type: String,
+    trim: true,
+    default: "",
   },
   createdAt: {
     type: Date,
@@ -43,7 +52,8 @@ const userSchema = new UserSchema({
   },
   imageUrl: {
     type: String,
-    default: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+    default:
+      "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
   },
   googleId: {
     type: String,
@@ -55,9 +65,13 @@ const userSchema = new UserSchema({
   },
 });
 
-userSchema.pre('save', function(next) {
+userSchema.pre("save", function (next) {
   if (!this.googleId && !this.facebookId && !this.password) {
-    return next(new Error('Password is required if not authenticating via Google or Facebook'));
+    return next(
+      new Error(
+        "Password is required if not authenticating via Google or Facebook"
+      )
+    );
   }
   next();
 });
