@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Outlet, Link, useLocation , useNavigate } from "react-router-dom";
+import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/AuthContext";
-import { toast, ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
+import { Box, Flex, Text, Button, Container } from "@chakra-ui/react";
 import "react-toastify/dist/ReactToastify.css";
 
 function MainLayout() {
@@ -20,80 +21,99 @@ function MainLayout() {
   useEffect(() => {
     if (successMessage) {
       toast.success(successMessage);
-      setSuccessMessage(""); 
+      setSuccessMessage("");
     }
   }, [successMessage]);
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <Flex direction="column" minH="100vh">
       <ToastContainer />
+      
+      <Box bg="gray.800" color="white">
+        <Container maxW="container.xl" py={2}>
+          <Flex justify="space-between" align="center">
+            <Text as={Link} to="/" _hover={{ color: "gray.300" }}>
+              Home
+            </Text>
 
-      <header className="bg-gray-800 text-white">
-        <nav className="container mx-auto px-4 py-2">
-          <ul className="flex space-x-4 justify-center items-center ">
-            <li>
-              <Link  to="/" className="hover:text-gray-300">
-                Home
-              </Link>
-            </li>
-            
-            <li></li>
-            <li className="container mx-auto px-4 py-2 flex justify-end">
+            <Flex align="center">
               {user ? (
                 <>
-                  <Link
+                  <Button
+                    as={Link}
                     to="/account-settings"
-                    className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded mr-2 flex items-center"
+                    bg="green.500"
+                    _hover={{ bg: "green.600" }}
+                    color="white"
+                    fontWeight="bold"
+                    px={4}
+                    mr={2}
+                    leftIcon={
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    }
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5 mr-2"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
                     User
-                  </Link>
-                  
-              <Link  to="/getAll" className="hover:text-gray-300">
-                get listing
-              </Link>
-           
-                  <button
+                  </Button>
+
+                  <Text as={Link} to="/getAll" _hover={{ color: "gray.300" }} mr={4}>
+                    Get Listings
+                  </Text>
+
+                  <Button
                     onClick={handleLogout}
-                    className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
+                    bg="red.500"
+                    _hover={{ bg: "red.600" }}
+                    color="white"
+                    fontWeight="bold"
+                    px={4}
                   >
                     Logout
-                  </button>
+                  </Button>
                 </>
               ) : (
-                <a
+                <Button
+                  as="a"
                   href="/login"
-                  className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+                  bg="blue.500"
+                  _hover={{ bg: "blue.600" }}
+                  color="white"
+                  fontWeight="bold"
+                  px={4}
                 >
                   Login
-                </a>
+                </Button>
               )}
-            </li>
-          </ul>
-        </nav>
-      </header>
-      <main className="flex-grow container mx-auto px-4 py-8">
-        <Outlet />
-      </main>
-      <footer className="bg-gray-800 text-white">
-        <div className="container mx-auto px-4 py-4">
-          <p className="text-center">
+            </Flex>
+          </Flex>
+        </Container>
+      </Box>
+
+      <Flex as="main" flexGrow={1} p={8}>
+        <Container maxW="container.xl">
+          <Outlet />
+        </Container>
+      </Flex>
+
+      <Box bg="gray.800" color="white" py={4}>
+        <Container maxW="container.xl">
+          <Text textAlign="center">
             © 2023 Your Company Name. All rights reserved.
-          </p>
-        </div>
-      </footer>
-    </div>
+          </Text>
+        </Container>
+      </Box>
+    </Flex>
   );
 }
+
 export default MainLayout;

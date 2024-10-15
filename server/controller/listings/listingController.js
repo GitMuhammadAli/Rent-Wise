@@ -6,57 +6,57 @@ const { STATUS } = require("../../messages/status");
 
 
 exports.CreateListings = async (req, res) => {
-
-    const {
-        owner,
-        
-        title,
-        description,
-        price,
-        category,
-        location,
-        amenities,
-        rules,
-        availability,
-        images,
-        videos,
-        ratings,
-        averageRating,
-        status,
-        priceUnit,
-        createdAt,
-        updatedAt,
-    } = req.body;
-
-    const newListing = new RentalItem({
-        owner,
-        title,
-        description,
-        price,
-        category,
-        location,
-        amenities,
-        rules,
-        availability,
-        images,
-        videos,
-        ratings,
-        priceUnit,
-        averageRating,
-        status,
-        createdAt,
-        updatedAt,
-    });
-
     try {
-        await newListing.save();
-        res.status(201).json(newListing);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: "Failed to create listing" });
-    }
+        const {
+            owner,
+            title,
+            description,
+            price,
+            category,
+            location,
+            amenities = [], // Default to an empty array if not provided
+            rules = [], // Default to an empty array if not provided
+            availability = [], // Default to an empty array if not provided
+            images = [], // Default to an empty array if not provided
+            videos = [], // Default to an empty array if not provided
+            ratings = [], // Default to an empty array if not provided
+            averageRating = 0, // Default rating to 0 if not provided
+            status = "pending", // Default to 'pending' if not provided
+            priceUnit,
+            createdAt = Date.now(), // Default to current timestamp if not provided
+            updatedAt = Date.now(), // Default to current timestamp if not provided
+        } = req.body;
 
-}
+        // Create a new listing with the provided data
+        const newListing = new RentalItem({
+            owner,
+            title,
+            description,
+            price,
+            category,
+            location,
+            amenities,
+            rules,
+            availability,
+            images,
+            videos,
+            ratings,
+            priceUnit,
+            averageRating,
+            status,
+            createdAt,
+            updatedAt,
+        });
+
+        // Save to the database
+        await newListing.save();
+        return res.status(201).json(newListing);
+    } catch (error) {
+        console.error("Error creating listing:", error);
+        return res.status(500).json({ error: "Failed to create listing" });
+    }
+};
+
 
 
 

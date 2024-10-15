@@ -19,6 +19,7 @@ import decodeToken from "./utils/jwt";
 import { AuthProvider } from "./hooks/AuthContext";
 import Otp from "./components/Otp";
 import GetAllListings from "../Pages/Listings/GetAllListings";
+import MakeListing from "../Pages/Listings/MakeListing";
 
 function YourComponent() {
   const token = Cookies.get("jwt");
@@ -47,8 +48,13 @@ const router = createBrowserRouter(
         <Route path="/you" element={<YourComponent />} />
         <Route path="*" element={<div>404 Not Found</div>} />
         <Route path="/auth/otp" element={<Otp/>} />
+        
 
       </Route>
+      
+      {/* home */}
+      <Route path="/getAll" element={<GetAllListings />} />
+      <Route path="/createListings" element={<MakeListing />} />
 
       {/* Main Application Routes */}
       <Route element={<MainLayout />}>
@@ -56,12 +62,16 @@ const router = createBrowserRouter(
           <Route path="/" element={<Home />} />
         </Route>
 
-        <Route element={<ProtectedRoute requiredRole="user" />}>
+        {/* <Route element={<ProtectedRoute requiredRole="user" />}>
           <Route path="/getAll" element={<GetAllListings />} />
-        </Route>
+        </Route> */}
 
         <Route element={<ProtectedRoute requiredRole="admin" />}>
           <Route path="/admin" element={<Home />} />
+        </Route>
+
+        <Route element={<ProtectedRoute requiredRole="admin" />}>
+          <Route path="/category/*" element={<Home />} />
         </Route>
       </Route>
     </>

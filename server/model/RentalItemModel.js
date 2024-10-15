@@ -21,12 +21,12 @@ const RentalSchema = new RentalItemSchema({
   location: {
     address: { type: String, required: true },
     city: { type: String, required: true },
-    state: { type: String, required: true },
-    country: { type: String, required: true },
-    zipCode: { type: String, required: true },
+    state: { type: String,  }, // required true removed 
+    country: { type: String,  }, // required true removed 
+    zipCode: { type: String,  }, // required true removed 
     coordinates: {
-      latitude: { type: Number, required: true },
-      longitude: { type: Number, required: true },
+      latitude: { type: Number,  }, // required true removed 
+      longitude: { type: Number,  }, // required true removed 
     },
   },
   amenities: [{ type: String }],
@@ -39,13 +39,13 @@ const RentalSchema = new RentalItemSchema({
   ],
   images: [
     {
-      url: { type: String, required: true },
+      url: { type: String,  },   // required true removed 
       caption: { type: String },
     },
   ],
   videos: [
     {
-      url: { type: String, required: true },
+      url: { type: String }, // required true removed 
       caption: { type: String },
     },
   ],
