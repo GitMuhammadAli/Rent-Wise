@@ -68,14 +68,14 @@ export default function CreateListingForm() {
   return (
     <Flex  flexDir={'column'} justifyContent={'center'} alignItems={'center'} py={'50px'} >
         {/* <Heading fontWeight="extrabold" >Make Your Listings</Heading> */}
-        <Flex gap={4} flexDir={'row'} borderRadius={'10px'} bg={'gray.900'} color={'white'}    w={'70vw'}>
-            {/* <Image w={'60px'} h={'auto'} src="images/make_listing/bg_car.jpeg"/> */}
-            <Box py={'50px'} pl={'30px'}>
+        <Flex gap={4} flexDir={'row'} borderRadius={'10px'} bg={'gray.900'} color={'white'}    w={'90%'}>
+            <Image alignSelf={'flex-end'} w={'auto'} h={'300px'}  src="https://images.rawpixel.com/image_social_square/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3BkMjA3LTItMzMwXzEuanBn.jpg"/>
+            <Box alignSelf={'center'} py={'50px'} >
             <Heading textAlign={'left'}  fontWeight="extrabold" >Upload Your Property | Vehichle Details</Heading>
-            <Text>We're committed to providing a reliable marketplace for all your property and vehicle needs</Text>
+            <Text pt={4}>We're committed to providing a reliable marketplace for all your property and vehicle needs</Text>
             </Box>
             
-            <Image alignSelf={'flex-end'} w={'300px'} h={'300px'} src="images/make_listing/bg_apart.jpeg"/>
+            <Image alignSelf={'flex-end'} w={'auto'} h={'300px'} src="https://images.rawpixel.com/image_social_portrait/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvbnMyMDA0Ni1pbWFnZS1rd3Z5YTF1Yy5qcGc.jpg"/>
             </Flex>
     <Box bg={'white'} w={'70%'} mx="auto"  mt={8} py={10} px={20} borderWidth={1} borderRadius="md">
       <form onSubmit={handleSubmit}>
