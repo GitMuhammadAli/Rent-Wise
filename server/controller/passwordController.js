@@ -40,8 +40,11 @@ const CheckMailforForget = async (req, res) => {
     } else {
       const { SendedOtp, expirationTime } = generateOTP();
 
+      const encryptedOtp = await bcrypt.hash(SendedOtp, 10);
+
       await generatetokenForOtp(
-        SendedOtp,
+        encryptedOtp,
+        // SendedOtp,
         expirationTime,
         Findmail._id,
         Findmail.email,
@@ -108,10 +111,21 @@ const verifyOTP = async (userOTP, storedOTP, expirationTime) => {
   console.log(
     `Comparing OTPs - User OTP: ${userOTP}, Stored OTP: ${storedOTP}`
   );
-  if (userOTP !== storedOTP) {
+  // if (userOTP !== storedOTP) {
+  //   console.log("OTP mismatch");
+  //   return false;
+  // }
+  console.log("Encrted Otp " + storedOTP);
+
+  const otpdecrypeted = await bcrypt.compare(userOTP, storedOTP);
+
+  if (!otpdecrypeted) {
     console.log("OTP mismatch");
     return false;
   }
+
+
+
   const currentTime = new Date();
   console.log(
     `Current Time: ${currentTime}, Expiration Time: ${expirationTime}`
@@ -143,20 +157,31 @@ const ConfirmOtp = async (req, res) => {
     );
 
     console.log("Decoded Token:", decodedToken);
+    // const { SendedOtp, expirationTime } = decodedToken;
     const { SendedOtp, expirationTime } = decodedToken;
+    // console.log(`SendedOtp: ${SendedOtp}, Expiration Time: ${expirationTime}`);
     console.log(`SendedOtp: ${SendedOtp}, Expiration Time: ${expirationTime}`);
     if (!SendedOtp) {
       return res
         .status(STATUS.NOT_FOUND)
         .json({ success: false, message: ERROR_MESSAGE.OTP_TIMEOUT });
     }
+    // if (!SendedOtp) {
+    //   return res
+    //     .status(STATUS.NOT_FOUND)
+    //     .json({ success: false, message: ERROR_MESSAGE.OTP_TIMEOUT });
+    // }
     if (decodedToken.emailVerified === true) {
       console.log("Email is already verified");
       if (await verifyOTP(otp, SendedOtp, new Date(expirationTime))) {
         console.log("OTP verified successfully");
 
+        const encryptedOtp = await bcrypt.hash(SendedOtp, 10);
+
+
         await generatetokenForOtp(
-          SendedOtp,
+          encryptedOtp,
+          // SendedOtp,
           expirationTime,
           decodedToken._id,
           decodedToken.email,
@@ -185,10 +210,17 @@ const ConfirmOtp = async (req, res) => {
     }
   } catch (error) {
     console.log("Error:", error);
-    return res.status(ERROR_MESSAGE.INTERNAL_SERVER_ERROR).json({
+    if (error.name === 'TokenExpiredError') {
+      return res.status(STATUS.UNAUTHORIZED).json({
+        success: false,
+        message: ERROR_MESSAGE.TOKEN_EXPIRED,
+      });
+    }
+    return res.status(STATUS.INTERNAL_SERVER_ERROR).json({
       success: false,
       message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
     });
+
   }
 };
 
@@ -221,7 +253,7 @@ const CreateNewPassword = async (req, res) => {
     }
     console.log(Password);
     console.log(RepeatPassword);
-    if(!Password || !RepeatPassword) {
+    if (!Password || !RepeatPassword) {
       return res.json({ success: false, message: ERROR_MESSAGE.PASSWORD_MISSING });
     }
     if (Password !== RepeatPassword) {
