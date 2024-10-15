@@ -10,6 +10,8 @@ const cors = require("cors");
 const { corsOptions } = require("./utils/cors");
 const { initializeAdmin } = require("./controller/userController");
 const listingRoutes = require("./routes/listings/listingRoutes");
+const logger = require("./utils/logger");
+
 
 connectDB();
 
@@ -58,6 +60,12 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+
+// logger
+app.use((req, res, next) => {
+  logger.info(`${req.method} ${req.url} ${req.hostname}`);
+  next();
+})
 // Routes
 app.use("/", home);
 app.use("/auth", userRoutes);
