@@ -36,6 +36,7 @@ function MainLayout() {
                 Home
               </Link>
             </li>
+            
             <li></li>
             <li className="container mx-auto px-4 py-2 flex justify-end">
               {user ? (
@@ -58,6 +59,11 @@ function MainLayout() {
                     </svg>
                     User
                   </Link>
+                  
+              <Link  to="/getAll" className="hover:text-gray-300">
+                get listing
+              </Link>
+           
                   <button
                     onClick={handleLogout}
                     className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
