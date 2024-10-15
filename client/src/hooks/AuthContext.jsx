@@ -40,16 +40,16 @@ export const AuthProvider = ({ children }) => {
     fetchUserData();
   }, []);
 
-  const syncTokenWithLocalStorage = () => {
-    const tokenFromCookie = Cookies.get("jwt");
-    const tokenFromLocalStorage = localStorage.getItem("jwt");
+  // const syncTokenWithLocalStorage = () => {
+  //   const tokenFromCookie = Cookies.get("jwt");
+  //   const tokenFromLocalStorage = localStorage.getItem("jwt");
 
-    if (tokenFromCookie && tokenFromLocalStorage !== tokenFromCookie) {
-      localStorage.setItem("jwt", tokenFromCookie);
-    } else if (tokenFromLocalStorage && !tokenFromCookie) {
-      Cookies.set("jwt", tokenFromLocalStorage, { expires: 7 });
-    }
-  };
+  //   if (tokenFromCookie && tokenFromLocalStorage !== tokenFromCookie) {
+  //     localStorage.setItem("jwt", tokenFromCookie);
+  //   } else if (tokenFromLocalStorage && !tokenFromCookie) {
+  //     Cookies.set("jwt", tokenFromLocalStorage, { expires: 7 });
+  //   }
+  // };
 
   const login = async (credentials) => {
     try {
