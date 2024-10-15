@@ -33,8 +33,8 @@ const userSchema = new UserSchema({
   },
   role: {
     type: String,
-    enum: ["owner", "renter"],
-    default: "renter",
+    enum: ["owner", "user" , "admin"],
+    default: "user",
     required: true,
   },
   phoneNumber: {
