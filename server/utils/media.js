@@ -1,5 +1,6 @@
 const multer = require("multer");
 const fs = require("fs");
+const path = require("path");
 
 const UserDynamicfile = (directory) => {
   if (!fs.existsSync(directory)) {
@@ -9,8 +10,8 @@ const UserDynamicfile = (directory) => {
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const userNIC = req.body.nic;
-    const userDirectory = `./uploads/media/${userNIC}`;
+    const userId = req.body.owner; 
+    const userDirectory = path.join(__dirname, `../uploads/media/${userId}`);
     UserDynamicfile(userDirectory);
     cb(null, userDirectory);
   },
@@ -21,23 +22,10 @@ const storage = multer.diskStorage({
 
 const fileFilter = (req, file, cb) => {
   const allowedTypes = [
-    "image/png",
-    "image/jpg",
-    "image/jpeg",
-    "image/gif",
-    "image/webp",
-    "video/mp4",
-    "video/webm",
-    "video/ogg",
-    "video/quicktime",
-    "video/x-msvideo",
-    "video/x-ms-wmv",
-    "video/x-matroska",
-    "video/x-flv",
-    "video/x-ms-asf",
-    "application/pdf",
-    "application/msword",
-    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "image/png", "image/jpg", "image/jpeg", "image/gif", "image/webp",
+    "video/mp4", "video/webm", "video/ogg", "video/quicktime", "video/x-msvideo",
+    "video/x-ms-wmv", "video/x-matroska", "video/x-flv", "video/x-ms-asf",
+    "application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
   ];
   if (allowedTypes.includes(file.mimetype)) {
     cb(null, true);

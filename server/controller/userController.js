@@ -1,6 +1,6 @@
-const Users = require("../model/userModel");
+const Users = require("../model/user/userModel");
 const bcrypt = require("bcrypt");
-const { GenerateToken, decodingToken } = require("../utils/Tokens");
+const { GenerateToken, decodingToken } = require("../token/Tokens");
 const { ERROR_MESSAGE } = require("../messages/error");
 const { RESPONCE_MESSAGE } = require("../messages/response");
 const { STATUS } = require("../messages/status");

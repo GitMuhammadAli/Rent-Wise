@@ -4,10 +4,20 @@ const rentalController = require("../../controller/listings/listingController");
 const upload = require("../../utils/media");
 
 // Route to create a new listing
-router.post("/create", rentalController.CreateListings);
+// router.post("/create", rentalController.CreateListings);
+
+// Route to create a new listing with image/video upload
+router.post("/create", upload.fields([
+    { name: 'images', maxCount: 10 },  // Max 10 images
+    { name: 'videos', maxCount: 5 }    // Max 5 videos
+  ]), rentalController.CreateListings);
+  
 
 // Route to update a listing by ID
-router.put("/update/:id", rentalController.UpdateListings);
+router.put("/update/:id", upload.fields([
+    { name: 'images', maxCount: 10 },  // Max 10 images
+    { name: 'videos', maxCount: 5 }    // Max 5 videos
+]), rentalController.UpdateListings);
 
 // Route to delete a listing by ID
 router.delete("/delete/:id", rentalController.DeleteListings);

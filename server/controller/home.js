@@ -1,4 +1,4 @@
-const Users = require("../model/userModel");
+const Users = require("../model/user/userModel");
 const { ERROR_MESSAGE } = require("../messages/error");
 const { RESPONCE_MESSAGE } = require("../messages/response");
 

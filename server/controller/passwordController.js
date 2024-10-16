@@ -1,7 +1,7 @@
-const Users = require("../model/userModel");
+const Users = require("../model/user/userModel");
 const otpGenerator = require("otp-generator");
 const bcrypt = require("bcrypt");
-const { generatetokenForOtp, decodingToken } = require("../utils/Tokens");
+const { generatetokenForOtp, decodingToken , decodeTokenForRestPassword } = require("../token/Tokens");
 const sendMail = require("../config/sendmail");
 const { ERROR_MESSAGE } = require("../messages/error");
 const { RESPONCE_MESSAGE } = require("../messages/response");
@@ -40,11 +40,11 @@ const CheckMailforForget = async (req, res) => {
     } else {
       const { SendedOtp, expirationTime } = generateOTP();
 
-      const encryptedOtp = await bcrypt.hash(SendedOtp, 10);
+      // const encryptedOtp = await bcrypt.hash(SendedOtp, 10);
 
       await generatetokenForOtp(
-        encryptedOtp,
-        // SendedOtp,
+        // encryptedOtp,
+        SendedOtp,
         expirationTime,
         Findmail._id,
         Findmail.email,
@@ -176,12 +176,12 @@ const ConfirmOtp = async (req, res) => {
       if (await verifyOTP(otp, SendedOtp, new Date(expirationTime))) {
         console.log("OTP verified successfully");
 
-        const encryptedOtp = await bcrypt.hash(SendedOtp, 10);
+        // const encryptedOtp = await bcrypt.hash(SendedOtp, 10);
 
 
         await generatetokenForOtp(
-          encryptedOtp,
-          // SendedOtp,
+          // encryptedOtp,
+          SendedOtp,
           expirationTime,
           decodedToken._id,
           decodedToken.email,

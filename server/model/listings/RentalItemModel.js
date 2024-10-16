@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const User = require("./userModel");
+const User = require("../user/userModel");
 
 const RentalItemSchema = mongoose.Schema;
 
@@ -19,8 +19,8 @@ const RentalSchema = new RentalItemSchema({
     required: true,
   },
   location: {
-    address: { type: String, required: true },
-    city: { type: String, required: true },
+    address: { type: String, },
+    city: { type: String, },
     state: { type: String,  }, // required true removed 
     country: { type: String,  }, // required true removed 
     zipCode: { type: String,  }, // required true removed 
