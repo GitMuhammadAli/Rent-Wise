@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Box, Button, Flex, FormControl, FormLabel, Heading, Image, Input, Stack, Text, Textarea } from "@chakra-ui/react";
 
 import { createListing } from "../../src/Api/ListingApi"; 
+import { ListingsContext } from "../../src/hooks/ListingsContext";
 
 export default function CreateListingForm() {
+  const { state, dispatch } = useContext(ListingsContext);
+  const { listings } = state; 
   const [formData, setFormData] = useState({
     owner: "",
     title: "",
@@ -55,11 +58,13 @@ export default function CreateListingForm() {
     try
     {
         const response = await createListing(formData);
+        dispatch({type:'ADD_LISTING', payload: response})
         console.log("Response is: ", response);
     }
     catch(error)
     {
-  console.log(error)
+      console.error("Error creating listing:", error);
+  alert("Failed to create listing. Please try again.");
     }
    
     

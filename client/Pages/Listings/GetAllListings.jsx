@@ -1,38 +1,34 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Box, Button, Card, CardBody, CardFooter, CardHeader, Flex, Grid, Heading, Icon, Text, Image, Input } from '@chakra-ui/react';
 import { ArrowForwardIcon, StarIcon, SearchIcon } from '@chakra-ui/icons';
 import { getAllListing } from "../../src/Api/ListingApi"; 
 import { Link } from 'react-router-dom';
 import { FaCar, FaBicycle, FaBuilding, FaHotel } from 'react-icons/fa';
+import { ListingsContext } from '../../src/hooks/ListingsContext';
 
 export default function GetAllListings() {
-  const [listing, setListing] = useState([]);
+  const { state, dispatch } = useContext(ListingsContext); // access listings from state
+  const { listings } = state; // destructure listings from state
 
   useEffect(() => {
     async function fetchData() {
       try {
         const response = await getAllListing();
-        console.log("Response is: ", response);
-        setListing(response.data); 
+        console.log("Response is: ", response.data);
+        dispatch({ type: 'SET_LISTINGS', payload: response.data });
       } catch (error) {
         console.error("Error fetching listings:", error);
       }
     }
 
     fetchData();
-  }, []);
+  }, [dispatch]);
 
   const categories = [
     { name: 'Cars', icon: FaCar, description: 'Rent a wide variety of cars for any occasion' },
     { name: 'Bikes', icon: FaBicycle, description: 'Explore on two wheels with our bike rentals' },
     { name: 'Apartments', icon: FaBuilding, description: 'Find your perfect temporary home' },
     { name: 'Hotels', icon: FaHotel, description: 'Book luxurious stays for your travels' },
-  ];
-
-  const featuredRentals = [
-    { id: 1, name: 'Luxury Sedan', category: 'Cars', price: '$80/day', rating: 4.8, image: '/images/sedan.jpeg?' },
-    { id: 2, name: 'Mountain Bike', category: 'Bikes', price: '$25/day', rating: 4.6, image: '/images/mb.jpeg?' },
-    { id: 3, name: 'Beachfront Apartment', category: 'Apartments', price: '$150/night', rating: 4.9, image: '/images/apart.jpeg?' },
   ];
 
   return (
@@ -88,34 +84,55 @@ export default function GetAllListings() {
           <Heading as="h2" size="lg" fontWeight="bold" mb={6} color="gray.800">
             Featured Rentals
           </Heading>
-          <Grid templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' }} gap={6}>
-            {listing.map((rental) => (
-              <Card key={rental._id} _hover={{ boxShadow: 'lg' }} transition="box-shadow 0.3s">
-                <CardHeader p={0}>
-                  <Image src={rental.image} alt={rental.name} width="100%" height="200px" objectFit="cover" borderRadius="md" />
-                </CardHeader>
-                <CardBody>
-                  <Heading as="h3" size="md" mb={2}>{rental.title}</Heading>
-                  <Text>{rental.category}</Text>
-                  <Flex justify="space-between" align="center" mt={2}>
-                    <Text fontWeight="bold">{rental.price}  PKR</Text>
-                    <Flex align="center">
-                      <StarIcon color="yellow.400" mr={1} />
-                      <Text>{rental.averageRating}</Text>
+          
+          {/* Show a spinner or loading state if listings are not yet available */}
+          {listings && listings.length > 0 ? (
+            <Grid templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' }} gap={6}>
+              {listings.map((rental) => (
+                <Card key={rental._id} _hover={{ boxShadow: 'lg' }} transition="box-shadow 0.3s">
+                  <CardHeader p={0}>
+                    <Image
+                      src={rental.image}
+                      alt={rental.name}
+                      width="100%"
+                      height="200px"
+                      objectFit="cover"
+                      borderRadius="md"
+                    />
+                  </CardHeader>
+                  <CardBody>
+                    <Heading as="h3" size="md" mb={2}>
+                      {rental.title}
+                    </Heading>
+                    <Text>{rental.category}</Text>
+                    <Flex justify="space-between" align="center" mt={2}>
+                      <Text fontWeight="bold">{rental.price} PKR</Text>
+                      <Flex align="center">
+                        <StarIcon color="yellow.400" mr={1} />
+                        <Text>{rental.averageRating}</Text>
+                      </Flex>
                     </Flex>
-                  </Flex>
-                </CardBody>
-                <CardFooter>
-                  <Button as={Link} to={`/rental/${rental.id}`} bg={'black'} color={'white'} _hover={{ color: 'black', background: 'white', border: '1px solid black' }} w="full">
-                    View Details
-                  </Button>
-                </CardFooter>
-              </Card>
-            ))}
-          </Grid>
+                  </CardBody>
+                  <CardFooter>
+                    <Button
+                      as={Link}
+                      to={`/rental/${rental._id}`}
+                      bg={'black'}
+                      color={'white'}
+                      _hover={{ color: 'black', background: 'white', border: '1px solid black' }}
+                      w="full"
+                    >
+                      View Details
+                    </Button>
+                  </CardFooter>
+                </Card>
+              ))}
+            </Grid>
+          ) : (
+            <Text>Loading...</Text> 
+          )}
         </Box>
 
-        {/* Dynamic Listings Section */}
       </Box>
     </Box>
   );

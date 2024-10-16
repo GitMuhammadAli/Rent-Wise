@@ -69,6 +69,9 @@ function MainLayout() {
                   <Text as={Link} to="/getAll" _hover={{ color: "gray.300" }} mr={4}>
                     Get Listings
                   </Text>
+                  <Text as={Link} to="/createListings" _hover={{ color: "gray.300" }} mr={4}>
+                    Create lisitng
+                  </Text>
 
                   <Button
                     onClick={handleLogout}

@@ -20,6 +20,7 @@ import { AuthProvider } from "./hooks/AuthContext";
 import Otp from "./components/Otp";
 import GetAllListings from "../Pages/Listings/GetAllListings";
 import MakeListing from "../Pages/Listings/MakeListing";
+import { ListingsProvider } from "./hooks/ListingsContext";
 
 function YourComponent() {
   const token = Cookies.get("jwt");
@@ -81,8 +82,11 @@ const router = createBrowserRouter(
 function App() {
   return (
     <AuthProvider>
-      <RouterProvider router={router} />
+      <ListingsProvider>
+        <RouterProvider router={router} />
+      </ListingsProvider>
     </AuthProvider>
+
   );
 }
 
