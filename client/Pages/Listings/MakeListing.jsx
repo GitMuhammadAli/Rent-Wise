@@ -6,8 +6,9 @@ import { ListingsContext } from "../../src/hooks/ListingsContext";
 
 export default function CreateListingForm() {
   const { state, dispatch } = useContext(ListingsContext);
-  const { listings } = state; 
-  const [formData, setFormData] = useState({
+  // const { listings } = state; 
+  const [ error, setError] = useState('');
+  const defaultFormData = {
     owner: "",
     title: "",
     description: "",
@@ -32,15 +33,27 @@ export default function CreateListingForm() {
     priceUnit: "day",
     averageRating: 0,
     status: "pending",
-  });
+  };
+  const [formData, setFormData] = useState(defaultFormData);
+    
+  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+  
+    if (name === 'amenities' || name === 'rules') {
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: value.split(',').map(item => item.trim()), // Split by commas and remove spaces
+      }));
+    } else {
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+    }
   };
+  
 
   const handleNestedChange = (e, parent, key) => {
     const { value } = e.target;
@@ -60,11 +73,14 @@ export default function CreateListingForm() {
         const response = await createListing(formData);
         dispatch({type:'ADD_LISTING', payload: response})
         console.log("Response is: ", response);
+      setFormData(defaultFormData)
+  
+        setError('');
     }
     catch(error)
     {
       console.error("Error creating listing:", error);
-  alert("Failed to create listing. Please try again.");
+  setError("Error Creating Listings, check values again");
     }
    
     
@@ -154,6 +170,11 @@ export default function CreateListingForm() {
             <FormLabel>Rules</FormLabel>
             <Input name="rules" value={formData.rules} onChange={handleChange} placeholder="Rules (comma-separated)" />
           </FormControl>
+          {
+            error && (
+              <Box bg={'#f3d2d2'} color={'#e7195a'} p={'10px'} w={'100%'} borderRadius={'5px'} >{error}</Box>
+            )
+          }
 
           <Button colorScheme="blue" type="submit" mt={4}>
             Create Listing

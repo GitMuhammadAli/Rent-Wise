@@ -4,7 +4,7 @@ const User = require("../user/userModel");
 const RentalItemSchema = mongoose.Schema;
 
 const RentalSchema = new RentalItemSchema({
-  owner: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  owner: { type: String, required:true  },   //mongoose.Schema.Types.ObjectId, ref: "User", required: true
   category: {
     type: String,
     enum: ["car", "bike", "hotel", "apartment", "house", "other"],
@@ -16,7 +16,7 @@ const RentalSchema = new RentalItemSchema({
   priceUnit: {
     type: String,
     enum: ["hour", "day", "week", "month"],
-    required: true,
+    // required: true,
   },
   location: {
     address: { type: String, },

@@ -23,38 +23,40 @@ const { STATUS } = require("../../messages/status");
 //             averageRating = 0, // Default rating to 0 if not provided
 //             status = "pending", // Default to 'pending' if not provided
 //             priceUnit,
+//             images,
+//             videos,
 //             createdAt = Date.now(), // Default to current timestamp if not provided
 //             updatedAt = Date.now(), // Default to current timestamp if not provided
 //         } = req.body;
 
 //         // Handle image uploads
-//         let images = [];
-//         if (req.files && req.files['images']) {
-//             images = req.files['images'].map(file => ({
-//                 url: `/uploads/media/${owner}/${file.filename}`,
-//                 caption: ""
-//             }));
-//         }
-//         else{
-//             images = [];
-//         }
+//         // let images = [];
+//         // if (req.files && req.files['images']) {
+//         //     images = req.files['images'].map(file => ({
+//         //         url: `/uploads/media/${owner}/${file.filename}`,
+//         //         caption: ""
+//         //     }));
+//         // }
+//         // else{
+//         //     images = [];
+//         // }
 
 //         // Handle video uploads
-//         let videos = [];
-//         if (req.files && req.files['videos']) {
-//             videos = req.files['videos'].map(file => ({
-//                 url: `/uploads/media/${owner}/${file.filename}`,
-//                 caption: ""
-//             }));
-//         }
-//         else {
-//             videos = [];
-//         }
+//         // let videos = [];
+//         // if (req.files && req.files['videos']) {
+//         //     videos = req.files['videos'].map(file => ({
+//         //         url: `/uploads/media/${owner}/${file.filename}`,
+//         //         caption: ""
+//         //     }));
+//         // }
+//         // else {
+//         //     videos = [];
+//         // }
 
-//         console.log("body " , req.body);
-//         console.log("files " , req.files);
-//         console.log("images " , images);
-//         console.log("videos " , videos);
+//         // console.log("body " , req.body);
+//         // console.log("files " , req.files);
+//         // console.log("images " , images);
+//         // console.log("videos " , videos);
 
 //         const newListing = new RentalItem({
 //             owner,
@@ -111,8 +113,8 @@ exports.CreateListings = async (req, res) => {
         } = req.body;
 
         // Ensure availability and ratings are parsed correctly
-        const parsedAvailability = availability.length ? JSON.parse(availability) : [];
-        const parsedRatings = ratings.length ? JSON.parse(ratings) : [];
+        // const parsedAvailability = availability.length ? JSON.parse(availability) : [];
+        // const parsedRatings = ratings.length ? JSON.parse(ratings) : [];
 
         // Handle image uploads
         let images = [];
@@ -146,10 +148,12 @@ exports.CreateListings = async (req, res) => {
             location,
             amenities,
             rules,
-            availability: parsedAvailability,
+            availability,
+            //: parsedAvailability,
             images,
             videos,
-            ratings: parsedRatings,
+            ratings,
+            //: parsedRatings,
             priceUnit,
             averageRating,
             status,
