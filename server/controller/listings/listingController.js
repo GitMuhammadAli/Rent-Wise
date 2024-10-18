@@ -221,15 +221,17 @@ exports.uploadMedia = async (req, res) => {
 // Updated_One-&-Latest
 exports.CreateListings = async (req, res) => {
     try {
-        const { owner, title, description, price, category, priceUnit, location, amenities = [] } = req.body;
+        const { owner, title, description, price, category, priceUnit, amenities = [],
+          //  location
+         } = req.body;
 
         console.log("req.body", req.body);  
         // Create location
-        const parsedLocation = JSON.parse(location); // This will convert the string to an object
+        // const parsedLocation = JSON.parse(location); // This will convert the string to an object
 
-        // Create location
-        const newLocation = new Location(parsedLocation); // Use the parsed object here
-        await newLocation.save();
+        // // Create location
+        // const newLocation = new Location(parsedLocation); // Use the parsed object here
+        // await newLocation.save();
 
         // Handle image uploads
         let imageIds = [];
@@ -270,7 +272,7 @@ exports.CreateListings = async (req, res) => {
             price,
             category,
             priceUnit,
-            location: newLocation._id, // Reference the location's _id
+           // location: newLocation._id, // Reference the location's _id
             amenities,
             images: imageIds, // Reference image _ids
             videos: videoIds, // Reference video _ids

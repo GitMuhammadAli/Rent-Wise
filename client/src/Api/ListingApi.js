@@ -2,9 +2,15 @@ import axios from "axios";
 
 const API_BASE_URL = "http://localhost:3600/listings";
 
-export const createListingAPI = (data) =>
-  axios.post(`${API_BASE_URL}/create`, data, { withCredentials: true });
+// export const createListingAPI = (data) =>
+//   axios.post(`${API_BASE_URL}/create`, data, { withCredentials: true });
 
 export const getAllListingAPI = () =>
   axios.get(`${API_BASE_URL}/all`, { withCredentials: true });
 
+export const uploadMediaAPI = (formData) =>
+  axios.post(`${API_BASE_URL}/create`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });

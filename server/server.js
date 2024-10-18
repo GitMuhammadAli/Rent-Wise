@@ -11,6 +11,7 @@ const { corsOptions } = require("./utils/cors");
 const { initializeAdmin } = require("./controller/userController");
 const listingRoutes = require("./routes/listings/listingRoutes");
 const logger = require("./utils/logger");
+const path = require('path');
 
 
 connectDB();
@@ -26,6 +27,7 @@ const app = express();
 const port = 3600;
 
 app.use(cors(corsOptions));
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 
 app.use(express.json());

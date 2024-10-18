@@ -86,7 +86,9 @@ const RentalSchema = new mongoose.Schema({
     enum: ["hour", "day", "week", "month"],
     required: true,
   },
-  location: { type: mongoose.Schema.Types.ObjectId, ref: "Location", required: true }, // Referencing Location// Embedding the Location schema
+  // location: { type: mongoose.Schema.Types.ObjectId, ref: "Location", 
+  //   //required: true 
+  // }, // Referencing Location// Embedding the Location schema
   amenities: [{ type: String }], // Embedding Amenities as an array
   rules: [{ type: String }], // Embedding Rules as an array
 
