@@ -20,6 +20,7 @@ import { AuthProvider } from "./hooks/AuthContext";
 import Otp from "./components/Otp";
 import GetAllListings from "../Pages/Listings/GetAllListings";
 import MakeListing from "../Pages/Listings/MakeListing";
+import NewListings from "../Pages/Listings/NewListings";
 import { ListingsProvider } from "./hooks/ListingsContext";
 
 function YourComponent() {
@@ -56,6 +57,7 @@ const router = createBrowserRouter(
       {/* home */}
       <Route path="/getAll" element={<GetAllListings />} />
       <Route path="/createListings" element={<MakeListing />} />
+      <Route path="/createNewListings" element={<NewListings />} />
 
       {/* Main Application Routes */}
       <Route element={<MainLayout />}>

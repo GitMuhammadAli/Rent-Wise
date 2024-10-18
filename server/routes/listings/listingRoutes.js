@@ -13,6 +13,13 @@ router.post("/create", upload.fields([
   ]), rentalController.CreateListings);
   
 
+  
+router.post("/uploadMedia", upload.fields([
+    { name: 'images', maxCount: 10 },  // Max 10 images
+    { name: 'videos', maxCount: 5 }    // Max 5 videos
+]), rentalController.uploadMedia);
+
+
 // Route to update a listing by ID
 router.put("/update/:id", upload.fields([
     { name: 'images', maxCount: 10 },  // Max 10 images
