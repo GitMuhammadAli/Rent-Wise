@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { Box, Button, Flex, FormControl, FormLabel, Heading, Image, Input, Stack, Text, Textarea } from "@chakra-ui/react";
 
-import { createListing } from "../../src/Api/ListingApi"; 
+import { createListingAPI } from "../../src/Api/ListingApi"; 
 import { ListingsContext } from "../../src/hooks/ListingsContext";
 
 export default function CreateListingForm() {
@@ -57,7 +57,7 @@ export default function CreateListingForm() {
     e.preventDefault();
     try
     {
-        const response = await createListing(formData);
+        const response = await createListingAPI(formData);
         dispatch({type:'ADD_LISTING', payload: response})
         console.log("Response is: ", response);
     }

@@ -2,9 +2,9 @@ import axios from "axios";
 
 const API_BASE_URL = "http://localhost:3600/listings";
 
-export const createListing = (data) =>
+export const createListingAPI = (data) =>
   axios.post(`${API_BASE_URL}/create`, data, { withCredentials: true });
 
-export const getAllListing = () =>
+export const getAllListingAPI = () =>
   axios.get(`${API_BASE_URL}/all`, { withCredentials: true });
 

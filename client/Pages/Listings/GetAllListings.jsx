@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Box, Button, Card, CardBody, CardFooter, CardHeader, Flex, Grid, Heading, Icon, Text, Image, Input } from '@chakra-ui/react';
 import { ArrowForwardIcon, StarIcon, SearchIcon } from '@chakra-ui/icons';
-import { getAllListing } from "../../src/Api/ListingApi"; 
+import { getAllListingAPI } from "../../src/Api/ListingApi"; 
 import { Link } from 'react-router-dom';
 import { FaCar, FaBicycle, FaBuilding, FaHotel } from 'react-icons/fa';
 import { ListingsContext } from '../../src/hooks/ListingsContext';
@@ -13,7 +13,7 @@ export default function GetAllListings() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await getAllListing();
+        const response = await getAllListingAPI();
         console.log("Response is: ", response.data);
         dispatch({ type: 'SET_LISTINGS', payload: response.data });
       } catch (error) {
