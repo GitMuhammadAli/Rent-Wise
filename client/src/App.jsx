@@ -20,7 +20,7 @@ import { AuthProvider } from "./hooks/AuthContext";
 import Otp from "./components/Otp";
 import GetAllListings from "../Pages/Listings/GetAllListings";
 // import MakeListing from "../Pages/Listings/MakeListing";
-// import NewListings from "../Pages/Listings/NewListings";
+import NewListings from "../Pages/Listings/NewListings";
 import { ListingsProvider } from "./hooks/ListingsContext";
 import Media from "../Pages/Listings/Media";
 
@@ -58,7 +58,7 @@ const router = createBrowserRouter(
       {/* home */}
       <Route path="/getAll" element={<GetAllListings />} />
       {/* <Route path="/createListings" element={<MakeListing />} /> */}
-      {/* <Route path="/createNewListings" element={<NewListings />} /> */}
+      <Route path="/createNewListings" element={<NewListings />} />
       <Route path="/media" element={<Media />} />
 
       {/* Main Application Routes */}
