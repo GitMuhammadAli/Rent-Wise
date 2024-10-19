@@ -2,7 +2,7 @@ const RentalItem = require("../../model/listings/RentalItemModel");
 const path = require("path");
 const fs = require("fs");
 const { ERROR_MESSAGE } = require("../../messages/error");
-const { RESPONCE_MESSAGE } = require("../../messages/response");
+const { RESPONCE_MESSAGE, LISTINGS } = require("../../messages/response");
 const { STATUS } = require("../../messages/status");
 const Video = require("../../model/listings/VediosModel");
 const Image = require("../../model/listings/ImagesModel");
@@ -222,48 +222,62 @@ exports.uploadMedia = async (req, res) => {
 exports.CreateListings = async (req, res) => {
     try {
         const { owner, title, description, price, category, priceUnit, amenities = [],
-          //  location
-         } = req.body;
+            location
+        } = req.body;
 
-        console.log("req.body", req.body);  
-        // Create location
-        // const parsedLocation = JSON.parse(location); // This will convert the string to an object
+        // Required field checks
+        const missingFields = [];
+        if (!owner) missingFields.push("owner");
+        if (!title) missingFields.push("title");
+        if (!description) missingFields.push("description");
+        if (!price) missingFields.push("price");
+        if (!category) missingFields.push("category");
+        if (!priceUnit) missingFields.push("priceUnit");
+        if (!location) missingFields.push("location");
 
-        // // Create location
-        // const newLocation = new Location(parsedLocation); // Use the parsed object here
-        // await newLocation.save();
 
-        // Handle image uploads
-        let imageIds = [];
+        if (missingFields.length) {
+            return res.status(STATUS.BAD_REQUEST).json({
+                error: `${LISTINGS.ERROR_MISSING_REQUIRED_FIELDS} ${missingFields.join(", ")}. ${LISTINGS.PLEASE_PROVIDE_ALL_REQUIRED_FIELDS}`.trim()
+            });
+        }
+        let images = [];
         if (req.files && req.files['images']) {
-            const imagePromises = req.files['images'].map(file => {
-                const image = new Image({
-                    url: `/uploads/media/${owner}/${file.filename}`,
-                    caption: ""
+            try {
+                const imagePromises = req.files['images'].map(file => {
+                    const image = new Image({
+                        url: `/uploads/media/${req.body.owner}/${file.filename}`,
+                        caption: ""
+                    });
+                    return image.save();
                 });
-                return image.save();
-            });
-            const savedImages = await Promise.all(imagePromises);
-            imageIds = savedImages.map(img => img._id); // Store image ObjectIDs
+                const savedImages = await Promise.all(imagePromises);
+                images = savedImages.map(img => img._id); // Store image ObjectIDs
+            } catch (error) {
+                console.error("Error uploading images:", error);
+                return res.status(500).json({ error: "Error uploading images." });
+            }
         }
 
-        // Handle video uploads
-        let videoIds = [];
+        // Handle video uploads (store as objects with url, caption, and _id)
+        let videos = [];
         if (req.files && req.files['videos']) {
-            const videoPromises = req.files['videos'].map(file => {
-                const video = new Video({
-                    url: `/uploads/media/${owner}/${file.filename}`,
-                    caption: ""
+            try {
+                const videoPromises = req.files['videos'].map(file => {
+                    const video = new Video({
+                        url: `/uploads/media/${req.body.owner}/${file.filename}`,
+                        caption: ""
+                    });
+                    return video.save();
                 });
-                return video.save();
-            });
-            const savedVideos = await Promise.all(videoPromises);
-            videoIds = savedVideos.map(vid => vid._id); // Store video ObjectIDs
+                const savedVideos = await Promise.all(videoPromises);
+                videos = savedVideos.map(vid => vid._id); // Store video ObjectIDs
+            } catch (error) {
+                console.error("Error uploading videos:", error);
+                return res.status(500).json({ error: "Error uploading videos." });
+            }
         }
 
-                console.log("files " , req.files);
-                console.log("images " , imageIds);
-                console.log("videos " , videoIds);
         // Create the rental item
         const newRentalItem = new RentalItem({
             owner,
@@ -272,19 +286,24 @@ exports.CreateListings = async (req, res) => {
             price,
             category,
             priceUnit,
-           // location: newLocation._id, // Reference the location's _id
             amenities,
-            images: imageIds, // Reference image _ids
-            videos: videoIds, // Reference video _ids
+            images, // Store images as array of objects with url, caption, and _id
+            videos, // Store videos as array of objects with url, caption, and _id
+            // location: newLocation._id, // Reference the location's _id if needed
         });
 
-
-        console.log("New Rental Item:", newRentalItem);
+        // Save the rental item
         await newRentalItem.save();
-        return res.status(201).json(newRentalItem);
+
+        // Return the created rental item along with a success message
+        return res.status(201).json({
+            rentalItem: newRentalItem,
+            message: "Listing created successfully."
+        });
+
     } catch (error) {
         console.error("Error creating rental listing:", error);
-        return res.status(500).json({ error: "Failed to create rental listing" });
+        return res.status(500).json({ error: "Error creating listing." });
     }
 };
 
@@ -436,7 +455,7 @@ exports.GetListingsById = async (req, res) => {
         }
         res.json(listing);
     } catch (error) {
-        res.status(500).json({ error: "Failed to fetch listing" });
+        res.status(500).json({ error: "Fjadaddsad" });
     }
 }
 
@@ -491,3 +510,37 @@ exports.GetALLListingByOwnersId = async (req, res) => {
     }
 
 }
+exports.AllDetailWithMedia = async (req, res) => {
+    try {
+        const listing = await RentalItem.find().populate("owner", "name email").populate("images", "url caption ").populate("videos", "url caption");
+        if (!listing) {
+            return res.status(404).json({ error: "Listing not found" });
+        }
+        res.json(listing);
+
+
+    } catch (error) {
+        res.status(500).json({ error: "Failed to fetch listing" });
+
+    }
+
+}
+exports.AllDetailWithMediaWithOwnerID = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const listing = await RentalItem.find({ owner: id })
+            .populate("owner", "name email")
+            .populate("images", "url caption")
+            .populate("videos", "url caption");
+
+        if (!listing) {
+            return res.status(404).json({ error: "Listing not found" });
+        }
+
+        console.log("Fetched Listing:", listing); // Log the fetched listing
+        res.json(listing);
+    } catch (error) {
+        console.error("Error fetching listing:", error); // Log the full error object
+        res.status(500).json({ error: "Failed to fetch listing", details: error }); // Include full error object in the response
+    }
+};

@@ -3,17 +3,14 @@ const router = express.Router();
 const rentalController = require("../../controller/listings/listingController");
 const upload = require("../../utils/media");
 
-// Route to create a new listing
-// router.post("/create", rentalController.CreateListings);
-
 // Route to create a new listing with image/video upload
 router.post("/create", upload.fields([
     { name: 'images', maxCount: 10 },  // Max 10 images
     { name: 'videos', maxCount: 5 }    // Max 5 videos
-  ]), rentalController.CreateListings);
-  
+]), rentalController.CreateListings);
 
-  
+
+
 router.post("/uploadMedia", upload.fields([
     { name: 'images', maxCount: 10 },  // Max 10 images
     { name: 'videos', maxCount: 5 }    // Max 5 videos
@@ -33,7 +30,7 @@ router.delete("/delete/:id", rentalController.DeleteListings);
 router.get("/all", rentalController.GetListings);
 
 // Route to get a single listing by listing ID
-router.get("/:id", rentalController.GetListingsById);
+router.get("/GetListingsById/:id", rentalController.GetListingsById);
 
 // Route to get all listings by a specific user (by user ID)
 router.get("/user/:id", rentalController.GetListingByUserId);
@@ -43,5 +40,9 @@ router.get("/all/owners", rentalController.GetALLListingByOwners);
 
 // Route to get all listings by a specific owner with populated owner details (name and email)
 router.get("/owner/:id", rentalController.GetALLListingByOwnersId);
+// Route to get all listings  with populated owner details (name and email) with media
+router.get("/AllDetailWithMedia", rentalController.AllDetailWithMedia);
+// Route to get all listings by a specific owner with populated owner details (name and email) with media
+router.get("/AllDetailWithMedia/:id", rentalController.AllDetailWithMediaWithOwnerID);
 
 module.exports = router;
