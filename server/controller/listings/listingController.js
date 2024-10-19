@@ -440,7 +440,7 @@ exports.DeleteListings = async (req, res) => {
 
 exports.GetListings = async (req, res) => {
     try {
-        const listings = await RentalItem.find();
+        const listings = await RentalItem.find().populate("owner", "name email").populate("images", "url caption ").populate("videos", "url caption");
         res.json(listings);
     } catch (error) {
         res.status(500).json({ error: "Failed to fetch listings" });

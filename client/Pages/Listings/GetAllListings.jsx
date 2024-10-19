@@ -93,8 +93,8 @@ export default function GetAllListings() {
                 <Card key={rental._id} _hover={{ boxShadow: 'lg' }} transition="box-shadow 0.3s">
                   <CardHeader p={0}>
                     <Image
-                      src={rental.image}
-                      alt={rental.name}
+                      src={rental.images && rental.images.length > 0 ? rental.images[0].url : 'fallback-image-url'} // Update this line
+                      alt={rental.title}
                       width="100%"
                       height="200px"
                       objectFit="cover"
@@ -110,7 +110,7 @@ export default function GetAllListings() {
                       <Text fontWeight="bold">{rental.price} PKR</Text>
                       <Flex align="center">
                         <StarIcon color="yellow.400" mr={1} />
-                        <Text>{rental.averageRating}</Text>
+                        <Text>{rental.averageRating || 'N/A'}</Text>
                       </Flex>
                     </Flex>
                   </CardBody>

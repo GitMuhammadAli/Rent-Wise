@@ -54,14 +54,14 @@
       if (data.images && data.images.length > 0) {
         data.images.forEach(image => {
           const img = document.createElement('img');
-          img.src = image; // Ensure this URL is correct
+          img.src = `http://localhost:3600${image.url}`; // Construct full URL
           img.alt = 'Existing Image';
           img.style.maxWidth = '200px';
           img.style.marginRight = '10px';
           imageContainer.appendChild(img);
 
           const imageId = document.createElement('p');
-          imageId.textContent = `Image ID: ${image}`;
+          imageId.textContent = `Image ID: ${image._id}`;
           imageContainer.appendChild(imageId);
         });
         const imageCount = document.createElement('p');
@@ -75,14 +75,14 @@
       if (data.videos && data.videos.length > 0) {
         data.videos.forEach(video => {
           const videoElement = document.createElement('video');
-          videoElement.src = video; // Ensure this URL is correct
+          videoElement.src = `http://localhost:3600${video.url}`; // Construct full URL
           videoElement.controls = true;
           videoElement.style.maxWidth = '200px';
           videoElement.style.marginRight = '10px';
           videoContainer.appendChild(videoElement);
 
           const videoId = document.createElement('p');
-          videoId.textContent = `Video ID: ${video}`;
+          videoId.textContent = `Video ID: ${video._id}`;
           videoContainer.appendChild(videoId);
         });
         const videoCount = document.createElement('p');
