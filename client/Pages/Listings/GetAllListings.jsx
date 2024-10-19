@@ -7,8 +7,8 @@ import { FaCar, FaBicycle, FaBuilding, FaHotel } from 'react-icons/fa';
 import { ListingsContext } from '../../src/hooks/ListingsContext';
 
 export default function GetAllListings() {
-  const { state, dispatch } = useContext(ListingsContext); // access listings from state
-  const { listings } = state; // destructure listings from state
+  const { state, dispatch } = useContext(ListingsContext); 
+  const { listings } = state; 
 
   useEffect(() => {
     async function fetchData() {
@@ -35,7 +35,6 @@ export default function GetAllListings() {
   return (
     <Box minH="100vh" bg="rgb(231, 231, 231)" py={6} w={'100%'}>
       <Box maxW="7xl" mx="auto" px={{ base: 4, sm: 6, lg: 8 }}>
-
         {/* Heading */}
         <Box textAlign="center" mb={12}>
           <Heading as="h1" size="2xl" fontWeight="extrabold" color="gray.800">
@@ -86,20 +85,34 @@ export default function GetAllListings() {
             Featured Rentals
           </Heading>
           
-          {/* Show a spinner or loading state if listings are not yet available */}
           {listings && listings.length > 0 ? (
             <Grid templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' }} gap={6}>
               {listings.map((rental) => (
                 <Card key={rental._id} _hover={{ boxShadow: 'lg' }} transition="box-shadow 0.3s">
                   <CardHeader p={0}>
-                    <Image
-                      src={rental.image}
-                      alt={rental.name}
-                      width="100%"
-                      height="200px"
-                      objectFit="cover"
-                      borderRadius="md"
-                    />
+                    {rental.images && rental.images.length > 0 ? (
+                      <Image
+                        src={`http://localhost:3600${rental.images[0].url}`}
+                        alt={rental.title}
+                        width="100%"
+                        height="200px"
+                        objectFit="cover"
+                        borderRadius="md"
+                        onError={(e) => {
+                          e.target.onerror = null; 
+                          e.target.src = 'path/to/fallback-image.png'; 
+                        }}
+                      />
+                    ) : (
+                      <Image
+                        src='path/to/fallback-image.png' 
+                        alt='No Image Available'
+                        width="100%"
+                        height="200px"
+                        objectFit="cover"
+                        borderRadius="md"
+                      />
+                    )}
                   </CardHeader>
                   <CardBody>
                     <Heading as="h3" size="md" mb={2}>
@@ -133,7 +146,6 @@ export default function GetAllListings() {
             <Text>Loading...</Text> 
           )}
         </Box>
-
       </Box>
     </Box>
   );
