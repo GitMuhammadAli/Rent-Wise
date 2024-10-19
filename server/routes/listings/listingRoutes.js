@@ -22,6 +22,10 @@ router.put("/update/:id", upload.fields([
     { name: 'images', maxCount: 10 },  // Max 10 images
     { name: 'videos', maxCount: 5 }    // Max 5 videos
 ]), rentalController.UpdateListings);
+router.post("/updatehtml/:id", upload.fields([
+    { name: 'images', maxCount: 10 },  // Max 10 images
+    { name: 'videos', maxCount: 5 }    // Max 5 videos
+]), rentalController.UpdateListings);
 
 // Route to delete a listing by ID
 router.delete("/delete/:id", rentalController.DeleteListings);

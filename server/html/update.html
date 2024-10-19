@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Update Listing</title>
+  <script>
+    // Function to fetch existing listing data
+    async function fetchListingData() {
+      const listingId = '671408f2983781b4ae5e2f11'; // Replace with the actual listing ID
+      try {
+        const response = await fetch(`http://localhost:3600/listings/GetListingsById/${listingId}`);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        populateForm(data);
+        displayExistingMedia(data);
+      } catch (error) {
+        console.error('Error fetching listing data:', error);
+      }
+    }
+
+    // Function to populate the form with existing data
+    function populateForm(data) {
+      document.getElementById('owner').value = data.owner || '';
+      document.getElementById('title').value = data.title || '';
+      document.getElementById('description').value = data.description || '';
+      document.getElementById('price').value = data.price || '';
+      document.getElementById('priceUnit').value = data.priceUnit || 'hour';
+      document.getElementById('category').value = data.category || 'apartment';
+      document.getElementById('location').value = JSON.stringify(data.location || {});
+      document.getElementById('amenities').value = data.amenities.join(', ') || '';
+      document.getElementById('rules').value = data.rules.join(', ') || '';
+      document.getElementById('availability').value = JSON.stringify(data.availability || []);
+      document.getElementById('ratings').value = JSON.stringify(data.ratings || []);
+      document.getElementById('averageRating').value = data.averageRating || 0;
+      document.getElementById('status').value = data.status || 'active';
+      document.getElementById('bidding').checked = data.bidding?.enabled || false;
+      document.getElementById('bids').value = JSON.stringify(data.bidding?.bids || []);
+    }
+
+    // Function to display existing images and videos with IDs and counts
+    function displayExistingMedia(data) {
+      const imageContainer = document.getElementById('imageContainer');
+      const videoContainer = document.getElementById('videoContainer');
+
+      // Clear existing media
+      imageContainer.innerHTML = '';
+      videoContainer.innerHTML = '';
+
+      // Display existing images
+      if (data.images && data.images.length > 0) {
+        data.images.forEach(image => {
+          const img = document.createElement('img');
+          img.src = image; // Ensure this URL is correct
+          img.alt = 'Existing Image';
+          img.style.maxWidth = '200px';
+          img.style.marginRight = '10px';
+          imageContainer.appendChild(img);
+
+          const imageId = document.createElement('p');
+          imageId.textContent = `Image ID: ${image}`;
+          imageContainer.appendChild(imageId);
+        });
+        const imageCount = document.createElement('p');
+        imageCount.textContent = `Total Images: ${data.images.length}`;
+        imageContainer.appendChild(imageCount);
+      } else {
+        imageContainer.innerHTML = '<p>No images available.</p>';
+      }
+
+      // Display existing videos
+      if (data.videos && data.videos.length > 0) {
+        data.videos.forEach(video => {
+          const videoElement = document.createElement('video');
+          videoElement.src = video; // Ensure this URL is correct
+          videoElement.controls = true;
+          videoElement.style.maxWidth = '200px';
+          videoElement.style.marginRight = '10px';
+          videoContainer.appendChild(videoElement);
+
+          const videoId = document.createElement('p');
+          videoId.textContent = `Video ID: ${video}`;
+          videoContainer.appendChild(videoId);
+        });
+        const videoCount = document.createElement('p');
+        videoCount.textContent = `Total Videos: ${data.videos.length}`;
+        videoContainer.appendChild(videoCount);
+      } else {
+        videoContainer.innerHTML = '<p>No videos available.</p>';
+      }
+    }
+
+    // Fetch the listing data when the page loads
+    window.onload = fetchListingData;
+  </script>
+</head>
+
+<body>
+  <h1>Update Listing</h1>
+
+  <form action="http://localhost:3600/listings/updatehtml/671408f2983781b4ae5e2f11" method="POST" enctype="multipart/form-data">
+    <label for="owner">Owner ID:</label>
+    <input type="text" id="owner" name="owner" required><br><br>
+
+    <label for="title">Title:</label>
+    <input type="text" id="title" name="title" required><br><br>
+
+    <label for="description">Description:</label>
+    <textarea id="description" name="description" required></textarea><br><br>
+
+    <label for="price">Price:</label>
+    <input type="number" id="price" name="price" required><br><br>
+
+    <label for="priceUnit">Price Unit:</label>
+    <select id="priceUnit" name="priceUnit" required>
+      <option value="hour">Hour</option>
+      <option value="day">Day</option>
+      <option value="week">Week</option>
+      <option value="month">Month</option>
+    </select><br><br>
+
+    <label for="category">Category:</label>
+    <select id="category" name="category" required>
+      <option value="apartment">Apartment</option>
+      <option value="car">Car</option>
+      <option value="bike">Bike</option>
+      <option value="hotel">Hotel</option>
+      <option value="house">House</option>
+      <option value="other">Other</option>
+    </select><br><br>
+
+    <label for="location">Location (JSON):</label>
+    <input type="text" id="location" name="location"><br><br>
+
+    <label for="amenities">Amenities (comma-separated):</label>
+    <input type="text" id="amenities" name="amenities" required><br><br>
+
+    <label for="rules">Rules (comma-separated):</label>
+    <input type="text" id="rules" name="rules"><br><br>
+
+    <label for="availability">Availability (JSON):</label>
+    <input type="text" id="availability" name="availability"><br><br>
+
+    <label for="ratings">Ratings (JSON):</label>
+    <input type="text" id="ratings" name="ratings"><br><br>
+
+    <label for="averageRating">Average Rating:</label>
+    <input type="number" id="averageRating" name="averageRating" required step="0.1"><br><br>
+
+    <label for="status">Status:</label>
+    <select id="status" name="status" required>
+      <option value="active">Active</option>
+      <option value="pending">Pending</option>
+      <option value="inactive">Inactive</option>
+    </select><br><br>
+
+    <label for="bidding">Enable Bidding:</label>
+    <input type="checkbox" id="bidding" name="bidding"><br><br>
+
+    <label for="bids">Bids (JSON):</label>
+    <input type="text" id="bids" name="bids"><br><br>
+
+    <label>Existing Images:</label>
+    <div id="imageContainer"></div><br><br>
+
+    <label for="images">Upload Images:</label>
+    <input type="file" id="images" name="images" accept="image/*" multiple><br><br>
+
+    <label>Existing Videos:</label>
+    <div id="videoContainer"></div><br><br>
+
+    <label for="videos">Upload Videos:</label>
+    <input type="file" id="videos" name="videos" accept="video/*" multiple><br><br>
+
+    <label for="_id">Listing ID:</label>
+    <input type="text" id="_id" name="_id" value="671408f2983781b4ae5e2f11" readonly><br><br>
+
+    <label for="createdAt">Created At:</label>
+    <input type="text" id="createdAt" name="createdAt" value="2024-10-19T19:30:58.756Z" readonly><br><br>
+
+    <label for="updatedAt">Updated At:</label>
+    <input type="text" id="updatedAt" name="updatedAt" value="2024-10-19T19:30:58.759Z" readonly><br><br>
+
+    <label for="__v">Version:</label>
+    <input type="number" id="__v" name="__v" value="0" readonly><br><br>
+
+    <button type="submit">Update</button>
+  </form>
+</body>
+
+</html>

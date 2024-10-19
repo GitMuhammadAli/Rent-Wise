@@ -225,7 +225,6 @@ exports.CreateListings = async (req, res) => {
             location
         } = req.body;
 
-        // Required field checks
         const missingFields = [];
         if (!owner) missingFields.push("owner");
         if (!title) missingFields.push("title");
@@ -252,14 +251,13 @@ exports.CreateListings = async (req, res) => {
                     return image.save();
                 });
                 const savedImages = await Promise.all(imagePromises);
-                images = savedImages.map(img => img._id); // Store image ObjectIDs
+                images = savedImages.map(img => img._id); 
             } catch (error) {
                 console.error("Error uploading images:", error);
                 return res.status(500).json({ error: "Error uploading images." });
             }
         }
 
-        // Handle video uploads (store as objects with url, caption, and _id)
         let videos = [];
         if (req.files && req.files['videos']) {
             try {
@@ -271,7 +269,7 @@ exports.CreateListings = async (req, res) => {
                     return video.save();
                 });
                 const savedVideos = await Promise.all(videoPromises);
-                videos = savedVideos.map(vid => vid._id); // Store video ObjectIDs
+                videos = savedVideos.map(vid => vid._id);
             } catch (error) {
                 console.error("Error uploading videos:", error);
                 return res.status(500).json({ error: "Error uploading videos." });
@@ -287,15 +285,13 @@ exports.CreateListings = async (req, res) => {
             category,
             priceUnit,
             amenities,
-            images, // Store images as array of objects with url, caption, and _id
-            videos, // Store videos as array of objects with url, caption, and _id
-            // location: newLocation._id, // Reference the location's _id if needed
+            images, 
+            videos, 
+            // location: newLocation._id,
         });
 
-        // Save the rental item
         await newRentalItem.save();
 
-        // Return the created rental item along with a success message
         return res.status(201).json({
             rentalItem: newRentalItem,
             message: "Listing created successfully."
@@ -311,63 +307,66 @@ exports.CreateListings = async (req, res) => {
 
 exports.UpdateListings = async (req, res) => {
     const { id } = req.params;
+
+    const existingListing = await RentalItem.findById(id).populate("images").populate("videos");
+
+
+    console.log(existingListing);
+        if (!existingListing) {
+            return res.status(404).json({ error: "Listing not found" });
+        }
     const {
         title,
         description,
         price,
         category,
+        priceUnit,
+        amenities = [],
+        rules = [], 
         location,
-        amenities,
-        rules,
         availability,
-        averageRating,
-        status,
+        averageRating, 
+        status 
     } = req.body;
 
+    console.log("body " , req.body);
+    const missingFields = [];
+    if (!title) missingFields.push("title");
+    if (!description) missingFields.push("description");
+    if (!price) missingFields.push("price");
+    if (!category) missingFields.push("category");
+    if (!priceUnit) missingFields.push("priceUnit");
+    if (!location) missingFields.push("location");
+
+    if (missingFields.length) {
+        return res.status(STATUS.BAD_REQUEST).json({
+            error: `${LISTINGS.ERROR_MISSING_REQUIRED_FIELDS} ${missingFields.join(", ")}. ${LISTINGS.PLEASE_PROVIDE_ALL_REQUIRED_FIELDS}`.trim()
+        });
+    }
+
     try {
-        // Fetch the existing listing to retrieve old images and videos
-        const existingListing = await RentalItem.findById(id);
-        if (!existingListing) {
-            return res.status(404).json({ error: "Listing not found" });
-        }
+      
+        let newImageIds = existingListing.images.map(img => img._id);
+        let newVideoIds = existingListing.videos.map(vid => vid._id);
 
-        // If there are new images uploaded, handle image replacement
-        let newImages = existingListing.images; // Default to the existing images
         if (req.files && req.files['images']) {
-            // Delete old images from the file system
-            existingListing.images.forEach((image) => {
-                const oldImagePath = path.join(__dirname, "../../../", image.url);
-                if (fs.existsSync(oldImagePath)) {
-                    fs.unlinkSync(oldImagePath); // Delete old file
-                }
-            });
-
-            // Save the new images to the listing
-            newImages = req.files['images'].map(file => ({
+            const newImages = await Image.insertMany(req.files['images'].map(file => ({
                 url: `/uploads/media/${existingListing.owner}/${file.filename}`,
                 caption: ""
-            }));
+            })));
+
+            newImageIds = [...newImageIds, ...newImages.map(img => img._id)]; 
         }
 
-        // If there are new videos uploaded, handle video replacement
-        let newVideos = existingListing.videos; // Default to the existing videos
         if (req.files && req.files['videos']) {
-            // Delete old videos from the file system
-            existingListing.videos.forEach((video) => {
-                const oldVideoPath = path.join(__dirname, "../../..", video.url);
-                if (fs.existsSync(oldVideoPath)) {
-                    fs.unlinkSync(oldVideoPath); // Delete old file
-                }
-            });
-
-            // Save the new videos to the listing
-            newVideos = req.files['videos'].map(file => ({
+            const newVideos = await Video.insertMany(req.files['videos'].map(file => ({
                 url: `/uploads/media/${existingListing.owner}/${file.filename}`,
                 caption: ""
-            }));
+            })));
+
+            newVideoIds = [...newVideoIds, ...newVideos.map(vid => vid._id)]; 
         }
 
-        // Update the listing in the database
         const updatedListing = await RentalItem.findByIdAndUpdate(
             id,
             {
@@ -375,12 +374,13 @@ exports.UpdateListings = async (req, res) => {
                 description,
                 price,
                 category,
+                priceUnit, 
                 location,
                 amenities,
                 rules,
                 availability,
-                images: newImages, // Set the new images
-                videos: newVideos,  // Set the new videos
+                images: newImageIds, 
+                videos: newVideoIds, 
                 averageRating,
                 status,
                 updatedAt: Date.now(),
@@ -391,7 +391,7 @@ exports.UpdateListings = async (req, res) => {
         res.json(updatedListing);
     } catch (error) {
         console.error("Error updating listing:", error);
-        res.status(500).json({ error: "Failed to update listing" });
+        res.status(500).json({ error: "Failed to update listing", details: error.message });
     }
 };
 
@@ -410,32 +410,33 @@ exports.DeleteListings = async (req, res) => {
             return res.status(404).json({ message: 'Rental item not found' });
         }
 
-        rentalItem.images.forEach((image) => {
+        // Delete images
+        for (const image of rentalItem.images) {
             const filePath = path.join(__dirname, "../../..", image.url);
-
             if (fs.existsSync(filePath)) {
                 fs.unlinkSync(filePath); // Deletes the file from the filesystem
             }
-        });
+            await Image.findByIdAndDelete(image._id); // Delete image from database
+        }
 
-        // Optionally delete videos as well
-        rentalItem.videos.forEach((video) => {
-            const filePath = path.join(__dirname, video.url);
+        // Delete videos
+        for (const video of rentalItem.videos) {
+            const filePath = path.join(__dirname, "../../..", video.url);
             if (fs.existsSync(filePath)) {
-                fs.unlinkSync(filePath);
+                fs.unlinkSync(filePath); // Deletes the file from the filesystem
             }
-        });
+            await Video.findByIdAndDelete(video._id); // Delete video from database
+        }
 
         // Delete the rental item from the database
         await RentalItem.findByIdAndDelete(id);
 
-        res.status(200).json({ message: 'Rental item deleted successfully' });
+        res.status(200).json({ message: 'Rental item and associated files deleted successfully' });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal server error' });
     }
 }
-
 
 exports.GetListings = async (req, res) => {
     try {
@@ -449,7 +450,7 @@ exports.GetListings = async (req, res) => {
 exports.GetListingsById = async (req, res) => {
     const { id } = req.params;
     try {
-        const listing = await RentalItem.findById(id);
+        const listing = await RentalItem.findById(id).populate("owner", "name email").populate("images", "url caption ").populate("videos", "url caption");;
         if (!listing) {
             return res.status(404).json({ error: "Listing not found" });
         }
