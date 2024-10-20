@@ -23,6 +23,7 @@ import GetAllListings from "../Pages/Listings/GetAllListings";
 import NewListings from "../Pages/Listings/NewListings";
 import { ListingsProvider } from "./hooks/ListingsContext";
 import Media from "../Pages/Listings/Media";
+import ListingDetails from "../Pages/Listings/ListingDetails";
 
 function YourComponent() {
   const token = Cookies.get("jwt");
@@ -60,6 +61,7 @@ const router = createBrowserRouter(
       {/* <Route path="/createListings" element={<MakeListing />} /> */}
       <Route path="/createNewListings" element={<NewListings />} />
       <Route path="/media" element={<Media />} />
+      <Route path="/rental/:id" element={<ListingDetails />} />
 
       {/* Main Application Routes */}
       <Route element={<MainLayout />}>

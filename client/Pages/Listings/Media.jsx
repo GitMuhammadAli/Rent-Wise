@@ -120,7 +120,7 @@ export default function Media() {
         duration: 3000,
         isClosable: true,
       });
-
+console.log("responseIIIS",response )
       // Clear the form after submission
       setTitle('');
       setDescription('');
@@ -135,16 +135,26 @@ export default function Media() {
     } catch (error) {
       toast({
         title: "Upload failed.",
-        description: "There was an error uploading your media.",
+        description: error.response.data.error,
         status: "error",
         duration: 3000,
         isClosable: true,
       });
+      console.log("EEErrros is",error.response.data.error)
     }
   };
 
   return (
     <Flex py={'50px'} flexDir={'column'}>
+    <Flex gap={4} alignSelf={'center'} alignItems={'center'} flexDir={'row'} borderRadius={'10px'} bg={'gray.900'} color={'white'}    w={'90%'}>
+             <Image alignSelf={'flex-end'} w={'auto'} h={'300px'}  src="https://images.rawpixel.com/image_social_square/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3BkMjA3LTItMzMwXzEuanBn.jpg"/>
+             <Box alignSelf={'center'} py={'50px'} >
+            <Heading textAlign={'left'}  fontWeight="extrabold" >Upload Your Property | Vehichle Details</Heading>
+            <Text pt={4}>We're committed to providing a reliable marketplace for all your property and vehicle needs</Text>
+             </Box>
+            
+             <Image alignSelf={'flex-end'} w={'auto'} h={'300px'} src="https://images.rawpixel.com/image_social_portrait/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvbnMyMDA0Ni1pbWFnZS1rd3Z5YTF1Yy5qcGc.jpg"/>
+            </Flex>
       <form onSubmit={handleSubmit}>
         <Flex justifyContent={'center'} gap={10}>
           <Stack w="50vw" mt="8" p="6" bg="white" boxShadow="lg" borderRadius="md" spacing="4">

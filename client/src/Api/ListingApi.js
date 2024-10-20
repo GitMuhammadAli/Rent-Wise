@@ -14,3 +14,10 @@ export const uploadMediaAPI = (formData) =>
       'Content-Type': 'multipart/form-data',
     },
   });
+
+  export const getOneUserListingAPI = (id) =>
+    axios.get(`${API_BASE_URL}/GetListingsById/${id}`, { withCredentials: true });
+  
+
+
+  

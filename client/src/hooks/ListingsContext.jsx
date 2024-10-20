@@ -6,8 +6,10 @@ export const ListingsContext = createContext();
 
 const listingsReducer = (state, action) => {
   switch (action.type) {
-    case "SET_LISTINGS":
+    case "GET_LISTINGS":
       return { ...state, listings: action.payload };
+    case "GET_ONE_LISTING": // For setting a single listing
+      return { ...state, currentListing: action.payload };
     case "ADD_LISTING":
       return { ...state, listings: [...state.listings, action.payload] };
     case "UPDATE_LISTING":
@@ -30,6 +32,7 @@ const listingsReducer = (state, action) => {
 
 const initialState = {
   listings: [],
+  currentListing: null,
 };
 
 // ListingsContext provider to wrap around components

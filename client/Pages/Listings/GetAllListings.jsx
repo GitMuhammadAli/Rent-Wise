@@ -16,7 +16,7 @@ export default function GetAllListings() {
         const response = await getAllListingAPI();
         console.log("Response is: ", response.data);
         
-        dispatch({ type: 'SET_LISTINGS', payload: response.data });
+        dispatch({ type: 'GET_LISTINGS', payload: response.data });
       } catch (error) {
         console.error("Error fetching listings:", error);
       }

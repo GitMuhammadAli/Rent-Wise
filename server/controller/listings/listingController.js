@@ -232,7 +232,7 @@ exports.CreateListings = async (req, res) => {
         if (!price) missingFields.push("price");
         if (!category) missingFields.push("category");
         if (!priceUnit) missingFields.push("priceUnit");
-        if (!location) missingFields.push("location");
+        // if (!location) missingFields.push("location");
 
 
         if (missingFields.length) {
