@@ -23,7 +23,7 @@ require("./utils/third_party_Login");
 const app = express();
 
 // Changing port Should also Change in client\src\utils\api.js  
-// Changing port Should also Change in Third-Party-logins 
+// Changing port Should also Change in Third-Party-logins in Google-APi Credintials
 const port = 3600;
 
 app.use(cors(corsOptions));
