@@ -144,6 +144,7 @@ const handleSubmit = async (e) => {
 
   try {
     const response = await uploadMediaAPI(formDataToSend);
+    console.log('Response iss ', response)
     toast({
       title: "Media uploaded.",
       description: "Your media has been uploaded successfully!",
@@ -254,7 +255,11 @@ const handleSubmit = async (e) => {
             </FormControl>
 
             {/* Amenities Section */}
-            <FormControl>
+
+            {
+             category && category !== 'car' && (
+
+<FormControl>
               <FormLabel>Amenities</FormLabel>
               {formData.amenities.map((amenity, index) => (
                 <Flex key={index} mb={2}>
@@ -276,6 +281,9 @@ const handleSubmit = async (e) => {
               ))}
               <Button onClick={handleAddAmenity}>Add Amenity</Button>
             </FormControl>
+              )
+            }
+            
 
             {/* Rules Section */}
             <FormControl>

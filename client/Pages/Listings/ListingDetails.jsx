@@ -61,6 +61,10 @@ export default function ListingDetails() {
       <h1>Details page is working for now</h1>
       <h1>{currentListing.title}</h1>
       <p>{currentListing.price}</p>
+      <p>{currentListing.minimumBid}</p>
+      <p>{currentListing.bidding.bidIncrement}</p>
+      <p>{currentListing.bidEndDate}</p>
+    
 
       {currentListing.images && currentListing.images.length > 0 && (
         <Box position="relative" width="600px" height="400px" mx="auto" mt="4">
