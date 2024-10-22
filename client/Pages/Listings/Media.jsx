@@ -9,6 +9,10 @@ export default function Media() {
   const [formData, setFormData] = useState({
     amenities: [""],  // Start with one empty amenity
     rules: [""],      // Start with one empty rule
+    biddingEnabled: false,
+    minimumBid: '',
+    bidIncrement: '',
+    bidEndDate: '',
   });
   const [images, setImages] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]); // For image previews
@@ -103,6 +107,10 @@ export default function Media() {
     formDataToSend.append('priceUnit', priceUnit);
     formDataToSend.append('amenities', JSON.stringify(formData.amenities));
     formDataToSend.append('rules', JSON.stringify(formData.rules));
+    formDataToSend.append('biddingEnabled', formData.biddingEnabled);
+    formDataToSend.append('minimumBid', formData.minimumBid);
+    formDataToSend.append('bidIncrement', formData.bidIncrement);
+    formDataToSend.append('bidEndDate', formData.bidEndDate);
 
     // Append each image
     if (images.length > 0) {
@@ -127,14 +135,21 @@ export default function Media() {
         duration: 3000,
         isClosable: true,
       });
-console.log("responseIIIS",response )
+      console.log("responseIIIS",response )
       // Clear the form after submission
       setTitle('');
       setDescription('');
       setPrice('');
       setCategory('');
       setPriceUnit('');
-      setFormData({ amenities: [""], rules: [""] });
+      setFormData({
+        amenities: [""],
+        rules: [""],
+        biddingEnabled: false,
+        minimumBid: '',
+        bidIncrement: '',
+        bidEndDate: '',
+      });
       setImages([]);
       setVideos([]);
       setImagePreviews([]); // Clear image previews after submission
@@ -304,8 +319,6 @@ console.log("responseIIIS",response )
               Upload
             </Button>
 
-
-
             <Box className="mb-8" borderWidth={1} borderRadius="md" p={4}>
               <Heading size="md">Bidding</Heading>
               <Flex alignItems="center" mt={2}>
@@ -342,7 +355,7 @@ console.log("responseIIIS",response )
                     <FormLabel htmlFor="bidEndDate">Bidding End Date</FormLabel>
                     <Input 
                       id="bidEndDate" 
-                      type="date" 
+                      type="datetime-local" 
                       value={formData.bidEndDate} 
                       onChange={(e) => setFormData({ ...formData, bidEndDate: e.target.value })} 
                     />
@@ -352,8 +365,8 @@ console.log("responseIIIS",response )
             </Box>
 
             <Button colorScheme="blue" type="submit" mt={4}>
-    Create Listing
-          </Button>
+              Create Listing
+            </Button>
           </Stack>
           
         </Flex>
