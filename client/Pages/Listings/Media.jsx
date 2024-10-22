@@ -103,10 +103,6 @@ export default function Media() {
     formDataToSend.append('priceUnit', priceUnit);
     formDataToSend.append('amenities', JSON.stringify(formData.amenities));
     formDataToSend.append('rules', JSON.stringify(formData.rules));
-    formDataToSend.append('minimumBid', minimumBid);
-    formDataToSend.append('bidIncrement', bidIncrement);
-    formDataToSend.append('bidEndDate', bidEndDate);
-
 
     // Append each image
     if (images.length > 0) {
@@ -142,9 +138,6 @@ console.log("responseIIIS",response )
       setImages([]);
       setVideos([]);
       setImagePreviews([]); // Clear image previews after submission
-      setMinimumBid(0);
-      setBidIncre(0)
-      setBidEndDate('');
 
     } catch (error) {
       toast({
@@ -192,18 +185,24 @@ console.log("responseIIIS",response )
             </FormControl>
 
             <FormControl isRequired>
-              <FormLabel>Category</FormLabel>
-              <Select placeholder='Select category'
-                onChange={(e) => setCategory(e.target.value)}
-                value={category} >
-                 <option value='car'>Car</option>
-                 <option value='apartment'>Apartment</option>
-                 <option value='hostel'>Hostel</option>
-                 <option value='house'>House</option>
-                </Select>
+              <FormLabel>Price</FormLabel>
+              <Input
+                type="number"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                placeholder="Enter listing price"
+              />
             </FormControl>
 
-           
+            <FormControl isRequired>
+              <FormLabel>Category</FormLabel>
+              <Input
+                type="text"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                placeholder="Enter listing category"
+              />
+            </FormControl>
 
             <FormControl isRequired>
               <FormLabel>Price Unit</FormLabel>
@@ -216,35 +215,28 @@ console.log("responseIIIS",response )
             </FormControl>
 
             {/* Amenities Section */}
-            {
-              category && category != 'car' && ( 
-
-                <FormControl>
-                <FormLabel>Amenities</FormLabel>
-                {formData.amenities.map((amenity, index) => (
-                  <Flex key={index} mb={2}>
-                    <Input
-                      value={amenity}
-                      onChange={(e) => handleAmenityChange(index, e.target.value)}
-                      placeholder={`Amenity ${index + 1}`}
-                      mr={2}
-                    />
-                    <Button onClick={() =>
-                      setFormData({
-                        ...formData,
-                        amenities: formData.amenities.filter((_, i) => i !== index),
-                      })
-                    }>
-                      Remove
-                    </Button>
-                  </Flex>
-                ))}
-                <Button onClick={handleAddAmenity}>Add Amenity</Button>
-              </FormControl>
-
-              )
-            }
-            
+            <FormControl>
+              <FormLabel>Amenities</FormLabel>
+              {formData.amenities.map((amenity, index) => (
+                <Flex key={index} mb={2}>
+                  <Input
+                    value={amenity}
+                    onChange={(e) => handleAmenityChange(index, e.target.value)}
+                    placeholder={`Amenity ${index + 1}`}
+                    mr={2}
+                  />
+                  <Button onClick={() =>
+                    setFormData({
+                      ...formData,
+                      amenities: formData.amenities.filter((_, i) => i !== index),
+                    })
+                  }>
+                    Remove
+                  </Button>
+                </Flex>
+              ))}
+              <Button onClick={handleAddAmenity}>Add Amenity</Button>
+            </FormControl>
 
             {/* Rules Section */}
             <FormControl>
@@ -269,76 +261,6 @@ console.log("responseIIIS",response )
               ))}
               <Button onClick={handleAddRule}>Add Rule</Button>
             </FormControl>
-
-
-            <Heading size="md">Bidding</Heading>
-              <Flex alignItems="center" mt={2}>
-                <Switch 
-                  id="bidding" 
-                  isChecked={biddingEnabled}
-                  onChange={handleBiddingToggle}
-                />
-                <FormLabel htmlFor="bidding" ml={2}>Enable Bidding</FormLabel>
-              </Flex>
-
-
-{
-  biddingEnabled ? (
-    <Box className="mb-8" borderWidth={1} borderRadius="md" p={4}>
-    <Stack spacing={4} mt={4}>
-      <FormControl>
-        <FormLabel htmlFor="minimumBid">Minimum Bid Amount</FormLabel>
-        <Input 
-          id="minimumBid" 
-          type="number" 
-          value={minimumBid} 
-          onChange={(e) => setMinimumBid(e.target.value)} 
-          placeholder="Enter minimum bid amount" 
-        />
-      </FormControl>
-      <FormControl>
-        <FormLabel htmlFor="bidIncrement">Bid Increment</FormLabel>
-        <Input 
-          id="bidIncrement" 
-          type="number" 
-          value={bidIncrement} 
-          onChange={(e) => setBidIncre(e.target.value)} 
-          placeholder="Enter bid increment" 
-        />
-      </FormControl>
-      <FormControl>
-        <FormLabel htmlFor="bidEndDate">Bidding End Date</FormLabel>
-        <Input 
-          id="bidEndDate" 
-          type="date" 
-          value={bidEndDate} 
-          onChange={(e) => setBidEndDate(e.target.value)} 
-        />
-      </FormControl>
-    </Stack>
-  
-</Box>
-  ) : 
-  
-  (
-    <FormControl isRequired>
-    <FormLabel>Price</FormLabel>
-    <Input
-      type="number"
-      value={price}
-      onChange={(e) => setPrice(e.target.value)}
-      placeholder="Enter listing price"
-    />
-  </FormControl>
-  )
-}
-           
-
-
-           
-
-
-
           </Stack>
 
           <Stack w="30vw" mt="8" p="6" boxShadow="lg" borderRadius="md" bg={'white'}>
