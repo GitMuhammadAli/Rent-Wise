@@ -106,16 +106,7 @@ const RentalSchema = new mongoose.Schema({
   averageRating: { type: Number, default: 0 },
 
   // Referencing bids
-  bidding: {
-    enabled: { type: Boolean, default: false },
-    bids: [
-      {
-        user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-        bidAmount: { type: Number },
-        bidDate: { type: Date, default: Date.now },
-      },
-    ],
-  },
+  bidding: { type: mongoose.Schema.Types.ObjectId, ref: "Bidding" },
 
   status: {
     type: String,

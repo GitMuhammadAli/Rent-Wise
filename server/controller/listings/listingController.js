@@ -223,9 +223,10 @@ exports.uploadMedia = async (req, res) => {
 exports.CreateListings = async (req, res) => {
     try {
         const { owner, title, description, price, category, priceUnit, amenities = [],
-            location, biddingEnabled, minimumBid, bidIncrement, endDate
+            location, biddingEnabled, minimumBid, bidIncrement, bidEndDate
         } = req.body;
 
+        console.log("body ", req.body);
         const missingFields = [];
         if (!owner) missingFields.push("owner");
         if (!title) missingFields.push("title");
@@ -233,6 +234,7 @@ exports.CreateListings = async (req, res) => {
         if (!price) missingFields.push("price");
         if (!category) missingFields.push("category");
         if (!priceUnit) missingFields.push("priceUnit");
+        
 
         // if (!location) missingFields.push("location");
 
@@ -292,25 +294,26 @@ exports.CreateListings = async (req, res) => {
         });
 
         if (biddingEnabled) {
-            if (!minimumBid || !endDate) {
+            if (!minimumBid || !bidEndDate) {
                 return res.status(400).json({
-                    error: "Bidding enabled but missing required fields: minimumBid and endDate",
+                    error: "Bidding enabled but missing required fields: minimumBid and bidEndDate",
                 });
             }
-
+        
             const bidding = new Bidding({
                 rentalItem: newRentalItem._id,
                 enabled: biddingEnabled,
                 minimumBid,
                 bidIncrement,
-                endDate,
+                bidEndDate,
             });
-
+        
             const savedBidding = await bidding.save();
-            newRentalItem.bidding = savedBidding._id; 
+            newRentalItem.bidding = savedBidding._id;  
         }
-
         await newRentalItem.save();
+
+        console.log("Rental item created:", newRentalItem);
 
 
         return res.status(201).json({
@@ -335,7 +338,7 @@ exports.placeBid = async (req, res) => {
         }
 
         // Check if bidding is still open
-        if (new Date() > bidding.endDate) {
+        if (new Date() > bidding.bidEndDate) {
             return res.status(400).json({ error: "Bidding has ended." });
         }
 
@@ -501,7 +504,7 @@ exports.DeleteListings = async (req, res) => {
 
 exports.GetListings = async (req, res) => {
     try {
-        const listings = await RentalItem.find().populate("owner", "name email").populate("images", "url caption ").populate("videos", "url caption");
+        const listings = await RentalItem.find().populate("owner", "name email").populate("images", "url caption ").populate("videos", "url caption").populate("Bidding");
         res.json(listings);
     } catch (error) {
         res.status(500).json({ error: "Failed to fetch listings" });

@@ -85,86 +85,103 @@ export default function Media() {
   };
 
   // Handle form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!user) {
+// Handle form submission
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  
+  if (!user) {
+    toast({
+      title: "Not authenticated.",
+      description: "Please log in to upload listing.",
+      status: "warning",
+      duration: 3000,
+      isClosable: true,
+    });
+    return; // Prevent form submission if user is not logged in
+  }
+
+  // Check if bidding is enabled and required fields are missing
+  if (formData.biddingEnabled) {
+    if (!formData.minimumBid || !formData.bidEndDate) {
       toast({
-        title: "Not authenticated.",
-        description: "Please log in to upload listing.",
-        status: "warning",
-        duration: 3000,
-        isClosable: true,
-      });
-      return; // Prevent form submission if user is not logged in
-    }
-
-    const formDataToSend = new FormData();
-    formDataToSend.append('owner', user._id);
-    formDataToSend.append('title', title);
-    formDataToSend.append('description', description);
-    formDataToSend.append('price', price);
-    formDataToSend.append('category', category);
-    formDataToSend.append('priceUnit', priceUnit);
-    formDataToSend.append('amenities', JSON.stringify(formData.amenities));
-    formDataToSend.append('rules', JSON.stringify(formData.rules));
-    formDataToSend.append('biddingEnabled', formData.biddingEnabled);
-    formDataToSend.append('minimumBid', formData.minimumBid);
-    formDataToSend.append('bidIncrement', formData.bidIncrement);
-    formDataToSend.append('bidEndDate', formData.bidEndDate);
-
-    // Append each image
-    if (images.length > 0) {
-      for (let i = 0; i < images.length; i++) {
-        formDataToSend.append('images', images[i]);
-      }
-    }
-
-    // Append each video
-    if (videos.length > 0) {
-      for (let i = 0; i < videos.length; i++) {
-        formDataToSend.append('videos', videos[i]);
-      }
-    }
-
-    try {
-      const response = await uploadMediaAPI(formDataToSend);
-      toast({
-        title: "Media uploaded.",
-        description: "Your media has been uploaded successfully!",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-      });
-      console.log("responseIIIS",response )
-      // Clear the form after submission
-      setTitle('');
-      setDescription('');
-      setPrice('');
-      setCategory('');
-      setPriceUnit('');
-      setFormData({
-        amenities: [""],
-        rules: [""],
-        biddingEnabled: false,
-        minimumBid: '',
-        bidIncrement: '',
-        bidEndDate: '',
-      });
-      setImages([]);
-      setVideos([]);
-      setImagePreviews([]); // Clear image previews after submission
-
-    } catch (error) {
-      toast({
-        title: "Upload failed.",
-        description: error.response.data.error,
+        title: "Missing required fields.",
+        description: "Bidding enabled but missing required fields: Minimum Bid and Bid End Date.",
         status: "error",
         duration: 3000,
         isClosable: true,
       });
-      console.log("EEErrros is",error.response.data.error)
+      return; // Prevent form submission if fields are missing
     }
-  };
+  }
+
+  const formDataToSend = new FormData();
+  formDataToSend.append('owner', user._id);
+  formDataToSend.append('title', title);
+  formDataToSend.append('description', description);
+  formDataToSend.append('price', price);
+  formDataToSend.append('category', category);
+  formDataToSend.append('priceUnit', priceUnit);
+  formDataToSend.append('amenities', JSON.stringify(formData.amenities));
+  formDataToSend.append('rules', JSON.stringify(formData.rules));
+  formDataToSend.append('biddingEnabled', formData.biddingEnabled);
+  formDataToSend.append('minimumBid', formData.minimumBid);
+  formDataToSend.append('bidIncrement', formData.bidIncrement);
+  formDataToSend.append('bidEndDate', formData.bidEndDate);
+
+  // Append each image
+  if (images.length > 0) {
+    for (let i = 0; i < images.length; i++) {
+      formDataToSend.append('images', images[i]);
+    }
+  }
+
+  // Append each video
+  if (videos.length > 0) {
+    for (let i = 0; i < videos.length; i++) {
+      formDataToSend.append('videos', videos[i]);
+    }
+  }
+
+  try {
+    const response = await uploadMediaAPI(formDataToSend);
+    toast({
+      title: "Media uploaded.",
+      description: "Your media has been uploaded successfully!",
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+    });
+
+    // Clear the form after submission
+    setTitle('');
+    setDescription('');
+    setPrice('');
+    setCategory('');
+    setPriceUnit('');
+    setFormData({
+      amenities: [""],
+      rules: [""],
+      biddingEnabled: false,
+      minimumBid: '',
+      bidIncrement: '',
+      bidEndDate: '',
+    });
+    setImages([]);
+    setVideos([]);
+    setImagePreviews([]); // Clear image previews after submission
+
+  } catch (error) {
+    toast({
+      title: "Upload failed.",
+      description: error.response?.data?.error || "An error occurred during upload.",
+      status: "error",
+      duration: 3000,
+      isClosable: true,
+    });
+    console.error("Error uploading media:", error.response?.data?.error || error);
+  }
+};
+
 
   return (
     <Flex py={'50px'} flexDir={'column'}>
@@ -224,12 +241,16 @@ export default function Media() {
             </FormControl>
             <FormControl isRequired>
               <FormLabel>Price Unit</FormLabel>
-              <Input
-                type="text"
+              <Select
                 value={priceUnit}
                 onChange={(e) => setPriceUnit(e.target.value)}
-                placeholder="Enter price unit (e.g., per night)"
-              />
+                placeholder="Select price unit"
+              >
+                <option value="hour">Per Hour</option>
+                <option value="day">Per Day</option>
+                <option value="week">Per Week</option>
+                <option value="month">Per Month</option>
+              </Select>
             </FormControl>
 
             {/* Amenities Section */}
@@ -319,6 +340,8 @@ export default function Media() {
               Upload
             </Button>
 
+
+
             <Box className="mb-8" borderWidth={1} borderRadius="md" p={4}>
               <Heading size="md">Bidding</Heading>
               <Flex alignItems="center" mt={2}>
@@ -348,11 +371,11 @@ export default function Media() {
                       type="number" 
                       value={formData.bidIncrement} 
                       onChange={(e) => setFormData({ ...formData, bidIncrement: e.target.value })} 
-                      placeholder="Enter bid increment" 
+                      placeholder="Enter bid increment value" 
                     />
                   </FormControl>
                   <FormControl>
-                    <FormLabel htmlFor="bidEndDate">Bidding End Date</FormLabel>
+                    <FormLabel htmlFor="bidEndDate">Bid End Date</FormLabel>
                     <Input 
                       id="bidEndDate" 
                       type="datetime-local" 
@@ -365,6 +388,8 @@ export default function Media() {
             </Box>
 
             <Button colorScheme="blue" type="submit" mt={4}>
+
+
               Create Listing
             </Button>
           </Stack>
