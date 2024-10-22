@@ -21,10 +21,7 @@ export default function Media() {
   const [price, setPrice] = useState('');
   const [category, setCategory] = useState('');
   const [priceUnit, setPriceUnit] = useState('');
-  const [biddingEnabled, setBiddingEnabled] = useState(false)
- const [minimumBid, setMinimumBid] = useState(0) // Minimum bid amount
- const  [bidIncrement,setBidIncre]= useState(0) // Bid increment
- const [bidEndDate,setBidEndDate] = useState('') // Bidding end date
+
   const toast = useToast();
 
   // Handle image selection and generate previews
