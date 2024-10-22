@@ -234,7 +234,7 @@ exports.CreateListings = async (req, res) => {
         if (!price) missingFields.push("price");
         if (!category) missingFields.push("category");
         if (!priceUnit) missingFields.push("priceUnit");
-        
+
 
         // if (!location) missingFields.push("location");
 
@@ -299,7 +299,7 @@ exports.CreateListings = async (req, res) => {
                     error: "Bidding enabled but missing required fields: minimumBid and bidEndDate",
                 });
             }
-        
+
             const bidding = new Bidding({
                 rentalItem: newRentalItem._id,
                 enabled: biddingEnabled,
@@ -307,9 +307,9 @@ exports.CreateListings = async (req, res) => {
                 bidIncrement,
                 bidEndDate,
             });
-        
+
             const savedBidding = await bidding.save();
-            newRentalItem.bidding = savedBidding._id;  
+            newRentalItem.bidding = savedBidding._id;
         }
         await newRentalItem.save();
 
@@ -504,7 +504,7 @@ exports.DeleteListings = async (req, res) => {
 
 exports.GetListings = async (req, res) => {
     try {
-        const listings = await RentalItem.find().populate("owner", "name email").populate("images", "url caption ").populate("videos", "url caption").populate("Bidding");
+        const listings = await RentalItem.find().populate("owner").populate("images").populate("videos").populate("bidding");
         res.json(listings);
     } catch (error) {
         res.status(500).json({ error: "Failed to fetch listings" });
