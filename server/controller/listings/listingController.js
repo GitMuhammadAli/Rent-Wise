@@ -7,7 +7,7 @@ const { STATUS } = require("../../messages/status");
 const Video = require("../../model/listings/VediosModel");
 const Image = require("../../model/listings/ImagesModel");
 const Location = require("../../model/listings/LocationModel");
-const bidding = require("../../model/listings/biddingModel");
+const Bidding = require("../../model/listings/biddingModel");
 
 
 
@@ -298,7 +298,7 @@ exports.CreateListings = async (req, res) => {
                 });
             }
 
-            const bidding = new bidding({
+            const bidding = new Bidding({
                 rentalItem: newRentalItem._id,
                 enabled: biddingEnabled,
                 minimumBid,
@@ -307,7 +307,7 @@ exports.CreateListings = async (req, res) => {
             });
 
             const savedBidding = await bidding.save();
-            newRentalItem.bidding = savedBidding._id; // Link the Bidding document to the RentalItem
+            newRentalItem.bidding = savedBidding._id; 
         }
 
         await newRentalItem.save();

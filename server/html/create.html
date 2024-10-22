@@ -68,7 +68,27 @@
     
         <label for="videos">Upload Videos:</label>
         <input type="file" id="videos" name="videos" accept="video/*" multiple><br><br>
+
+            <!-- Bidding Section -->
+            <h2>Bidding Settings</h2>
         
+            <label for="biddingEnabled">Enable Bidding:</label>
+            <select id="biddingEnabled" name="biddingEnabled" required>
+                <option value="false" selected>No</option>
+                <option value="true">Yes</option>
+            </select><br><br>
+
+            <label for="minimumBid">Minimum Bid:</label>
+            <input type="number" id="minimumBid" name="minimumBid" step="0.01"><br><br>
+
+            <label for="bidIncrement">Bid Increment:</label>
+            <input type="number" id="bidIncrement" name="bidIncrement" step="0.01"><br><br>
+
+            <label for="endDate">Bidding End Date:</label>
+            <input type="datetime-local" id="endDate" name="endDate"><br><br>
+
+
+
         <button type="submit">Submit</button>
     </form>
 </body>

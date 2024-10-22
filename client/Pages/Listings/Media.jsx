@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import {
   Box, Button, FormControl, FormLabel, Input, Stack, Heading, useToast, Textarea, Flex, Text, Image,
-  Switch} from "@chakra-ui/react";
+  Switch, Select} from "@chakra-ui/react";
 import { uploadMediaAPI } from "../../src/Api/ListingApi";  // Adjust the path to your API utility file
 import { useAuth } from "../../src/hooks/AuthContext";
 
@@ -196,14 +196,17 @@ console.log("responseIIIS",response )
 
             <FormControl isRequired>
               <FormLabel>Category</FormLabel>
-              <Input
-                type="text"
+              <Select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                placeholder="Enter listing category"
-              />
+                placeholder="Select listing category"
+              >
+                <option value="car">Car</option>
+                <option value="hostel">Hostel</option>
+                <option value="apartment">Apartment</option>
+                <option value="house">House</option>
+              </Select>
             </FormControl>
-
             <FormControl isRequired>
               <FormLabel>Price Unit</FormLabel>
               <Input
@@ -348,6 +351,9 @@ console.log("responseIIIS",response )
               )}
             </Box>
 
+            <Button colorScheme="blue" type="submit" mt={4}>
+    Create Listing
+          </Button>
           </Stack>
           
         </Flex>
