@@ -7,6 +7,7 @@ const { STATUS } = require("../../messages/status");
 const Video = require("../../model/listings/VediosModel");
 const Image = require("../../model/listings/ImagesModel");
 const Location = require("../../model/listings/LocationModel");
+const bidding = require("../../model/listings/biddingModel");
 
 
 
@@ -222,7 +223,7 @@ exports.uploadMedia = async (req, res) => {
 exports.CreateListings = async (req, res) => {
     try {
         const { owner, title, description, price, category, priceUnit, amenities = [],
-            location
+            location, biddingEnabled, minimumBid, bidIncrement, endDate
         } = req.body;
 
         const missingFields = [];
@@ -232,8 +233,8 @@ exports.CreateListings = async (req, res) => {
         if (!price) missingFields.push("price");
         if (!category) missingFields.push("category");
         if (!priceUnit) missingFields.push("priceUnit");
-        // if (!location) missingFields.push("location");
 
+        // if (!location) missingFields.push("location");
 
         if (missingFields.length) {
             return res.status(STATUS.BAD_REQUEST).json({
@@ -251,7 +252,7 @@ exports.CreateListings = async (req, res) => {
                     return image.save();
                 });
                 const savedImages = await Promise.all(imagePromises);
-                images = savedImages.map(img => img._id); 
+                images = savedImages.map(img => img._id);
             } catch (error) {
                 console.error("Error uploading images:", error);
                 return res.status(500).json({ error: "Error uploading images." });
@@ -285,12 +286,32 @@ exports.CreateListings = async (req, res) => {
             category,
             priceUnit,
             amenities,
-            images, 
-            videos, 
+            images,
+            videos,
             // location: newLocation._id,
         });
 
+        if (biddingEnabled) {
+            if (!minimumBid || !endDate) {
+                return res.status(400).json({
+                    error: "Bidding enabled but missing required fields: minimumBid and endDate",
+                });
+            }
+
+            const bidding = new bidding({
+                rentalItem: newRentalItem._id,
+                enabled: biddingEnabled,
+                minimumBid,
+                bidIncrement,
+                endDate,
+            });
+
+            const savedBidding = await bidding.save();
+            newRentalItem.bidding = savedBidding._id; // Link the Bidding document to the RentalItem
+        }
+
         await newRentalItem.save();
+
 
         return res.status(201).json({
             rentalItem: newRentalItem,
@@ -303,6 +324,46 @@ exports.CreateListings = async (req, res) => {
     }
 };
 
+exports.placeBid = async (req, res) => {
+    try {
+        const { rentalItemId, bidAmount } = req.body;
+        const userId = req.user.id;
+
+        const bidding = await bidding.findOne({ rentalItem: rentalItemId });
+        if (!bidding || !bidding.enabled) {
+            return res.status(400).json({ error: "Bidding is not enabled for this item." });
+        }
+
+        // Check if bidding is still open
+        if (new Date() > bidding.endDate) {
+            return res.status(400).json({ error: "Bidding has ended." });
+        }
+
+        const minimumAllowedBid = bidding.highestBid ? bidding.highestBid + bidding.bidIncrement : bidding.minimumBid;
+        if (bidAmount < minimumAllowedBid) {
+            return res.status(400).json({
+                error: `Bid must be at least ${minimumAllowedBid}.`,
+            });
+        }
+
+        bidding.highestBid = bidAmount;
+        bidding.highestBidder = userId;
+
+        bidding.bids.push({
+            user: userId,
+            bidAmount,
+        });
+
+        await bidding.save();
+
+        return res.status(200).json({ message: "Bid placed successfully!" });
+    } catch (error) {
+        console.error("Error placing bid:", error);
+        return res.status(500).json({ error: "Error placing bid." });
+    }
+};
+
+
 
 
 exports.UpdateListings = async (req, res) => {
@@ -312,9 +373,9 @@ exports.UpdateListings = async (req, res) => {
 
 
     console.log(existingListing);
-        if (!existingListing) {
-            return res.status(404).json({ error: "Listing not found" });
-        }
+    if (!existingListing) {
+        return res.status(404).json({ error: "Listing not found" });
+    }
     const {
         title,
         description,
@@ -322,14 +383,14 @@ exports.UpdateListings = async (req, res) => {
         category,
         priceUnit,
         amenities = [],
-        rules = [], 
+        rules = [],
         location,
         availability,
-        averageRating, 
-        status 
+        averageRating,
+        status
     } = req.body;
 
-    console.log("body " , req.body);
+    console.log("body ", req.body);
     const missingFields = [];
     if (!title) missingFields.push("title");
     if (!description) missingFields.push("description");
@@ -345,7 +406,7 @@ exports.UpdateListings = async (req, res) => {
     }
 
     try {
-      
+
         let newImageIds = existingListing.images.map(img => img._id);
         let newVideoIds = existingListing.videos.map(vid => vid._id);
 
@@ -355,7 +416,7 @@ exports.UpdateListings = async (req, res) => {
                 caption: ""
             })));
 
-            newImageIds = [...newImageIds, ...newImages.map(img => img._id)]; 
+            newImageIds = [...newImageIds, ...newImages.map(img => img._id)];
         }
 
         if (req.files && req.files['videos']) {
@@ -364,7 +425,7 @@ exports.UpdateListings = async (req, res) => {
                 caption: ""
             })));
 
-            newVideoIds = [...newVideoIds, ...newVideos.map(vid => vid._id)]; 
+            newVideoIds = [...newVideoIds, ...newVideos.map(vid => vid._id)];
         }
 
         const updatedListing = await RentalItem.findByIdAndUpdate(
@@ -374,13 +435,13 @@ exports.UpdateListings = async (req, res) => {
                 description,
                 price,
                 category,
-                priceUnit, 
+                priceUnit,
                 location,
                 amenities,
                 rules,
                 availability,
-                images: newImageIds, 
-                videos: newVideoIds, 
+                images: newImageIds,
+                videos: newVideoIds,
                 averageRating,
                 status,
                 updatedAt: Date.now(),

@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import {
-  Box, Button, FormControl, FormLabel, Input, Stack, Heading, useToast, Textarea, Flex, Text, Image
-} from "@chakra-ui/react";
+  Box, Button, FormControl, FormLabel, Input, Stack, Heading, useToast, Textarea, Flex, Text, Image,
+  Switch} from "@chakra-ui/react";
 import { uploadMediaAPI } from "../../src/Api/ListingApi";  // Adjust the path to your API utility file
 import { useAuth } from "../../src/hooks/AuthContext";
 
@@ -71,6 +71,13 @@ export default function Media() {
     const newRules = [...formData.rules];
     newRules[index] = value;
     setFormData((prevData) => ({ ...prevData, rules: newRules }));
+  };
+
+  const handleBiddingToggle = () => {
+    setFormData((prevData) => ({
+      ...prevData,
+      biddingEnabled: !prevData.biddingEnabled,
+    }));
   };
 
   // Handle form submission
@@ -293,7 +300,56 @@ console.log("responseIIIS",response )
             <Button type="submit" colorScheme="teal" mt="4">
               Upload
             </Button>
+
+
+
+            <Box className="mb-8" borderWidth={1} borderRadius="md" p={4}>
+              <Heading size="md">Bidding</Heading>
+              <Flex alignItems="center" mt={2}>
+                <Switch 
+                  id="bidding" 
+                  isChecked={formData.biddingEnabled}
+                  onChange={handleBiddingToggle}
+                />
+                <FormLabel htmlFor="bidding" ml={2}>Enable Bidding</FormLabel>
+              </Flex>
+              {formData.biddingEnabled && (
+                <Stack spacing={4} mt={4}>
+                  <FormControl>
+                    <FormLabel htmlFor="minimumBid">Minimum Bid Amount</FormLabel>
+                    <Input 
+                      id="minimumBid" 
+                      type="number" 
+                      value={formData.minimumBid} 
+                      onChange={(e) => setFormData({ ...formData, minimumBid: e.target.value })} 
+                      placeholder="Enter minimum bid amount" 
+                    />
+                  </FormControl>
+                  <FormControl>
+                    <FormLabel htmlFor="bidIncrement">Bid Increment</FormLabel>
+                    <Input 
+                      id="bidIncrement" 
+                      type="number" 
+                      value={formData.bidIncrement} 
+                      onChange={(e) => setFormData({ ...formData, bidIncrement: e.target.value })} 
+                      placeholder="Enter bid increment" 
+                    />
+                  </FormControl>
+                  <FormControl>
+                    <FormLabel htmlFor="bidEndDate">Bidding End Date</FormLabel>
+                    <Input 
+                      id="bidEndDate" 
+                      type="date" 
+                      value={formData.bidEndDate} 
+                      onChange={(e) => setFormData({ ...formData, bidEndDate: e.target.value })} 
+                    />
+                  </FormControl>
+                </Stack>
+              )}
+            </Box>
+
           </Stack>
+          
         </Flex>
       </form>
     </Flex>
