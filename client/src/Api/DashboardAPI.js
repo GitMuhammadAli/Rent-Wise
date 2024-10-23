@@ -1,8 +1,8 @@
-import axios from "axios";
+import axios from 'axios';
+
+const API_BASE_URL = `${import.meta.env.VITE_BACK_END_URL}/dashboard`;
 
 
-// const API_BASE_URL = `${process.env.REACT_APP_BACK_END_URL}/listings`
-const API_BASE_URL = `http://localhost:3600/dashboard`
 
 // export const createListingAPI = (data) =>
 //   axios.post(`${API_BASE_URL}/create`, data, { withCredentials: true });
