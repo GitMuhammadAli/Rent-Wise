@@ -24,6 +24,8 @@ import NewListings from "../Pages/Listings/NewListings";
 import { ListingsProvider } from "./hooks/ListingsContext";
 import Media from "../Pages/Listings/Media";
 import ListingDetails from "../Pages/Listings/ListingDetails";
+import Dashboard from "../Pages/Dashboard";
+import MyAccount from "../Pages/Account/MyAccount";
 
 function YourComponent() {
   const token = Cookies.get("jwt");
@@ -62,6 +64,8 @@ const router = createBrowserRouter(
       <Route path="/createNewListings" element={<NewListings />} />
       <Route path="/media" element={<Media />} />
       <Route path="/rental/:id" element={<ListingDetails />} />
+      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/acc" element={<MyAccount />} />
 
       {/* Main Application Routes */}
       <Route element={<MainLayout />}>

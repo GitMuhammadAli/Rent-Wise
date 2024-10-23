@@ -4,6 +4,7 @@ import {
   Switch, Select} from "@chakra-ui/react";
 import { uploadMediaAPI } from "../../src/Api/ListingApi";  // Adjust the path to your API utility file
 import { useAuth } from "../../src/hooks/AuthContext";
+import { ListingsContext } from '../../src/hooks/ListingsContext';
 
 export default function Media() {
   const [formData, setFormData] = useState({
@@ -18,6 +19,8 @@ export default function Media() {
   const [imagePreviews, setImagePreviews] = useState([]); // For image previews
   const [videos, setVideos] = useState([]);
   const { user } = useAuth();
+  const { state, dispatch } = useContext(ListingsContext); 
+  const { listings } = state; 
 
   // New state variables for other rental information
   const [title, setTitle] = useState('');
@@ -144,10 +147,12 @@ const handleSubmit = async (e) => {
 
   try {
     const response = await uploadMediaAPI(formDataToSend);
-    console.log('Response iss ', response)
+    dispatch({type:'ADD_LISTING',payload:response.data.rentalItem})
+
+    console.log('Response iss ', response.data.rentalItem)
     toast({
-      title: "Media uploaded.",
-      description: "Your media has been uploaded successfully!",
+      title: "Listing uploaded.",
+      description: "Your Listing has been uploaded successfully!",
       status: "success",
       duration: 3000,
       isClosable: true,
