@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const userController = require("../../controller/user/userController");
-const passwardController = require("../../controller/passwordController");
+const passwardController = require("../../controller/password/passwordController");
 const passport = require("passport");
 
 // Functional routes

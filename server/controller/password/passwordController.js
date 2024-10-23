@@ -1,11 +1,13 @@
-const Users = require("../model/user/userModel");
+const Users = require("../../model/user/userModel");
 const otpGenerator = require("otp-generator");
 const bcrypt = require("bcrypt");
-const { generatetokenForOtp, decodingToken , decodeTokenForRestPassword } = require("../token/Tokens");
-const sendMail = require("../config/sendmail");
-const { ERROR_MESSAGE } = require("../messages/error");
-const { RESPONCE_MESSAGE } = require("../messages/response");
-const { STATUS } = require("../messages/status");
+const logger = require("../../utils/logger");
+
+const { generatetokenForOtp, decodingToken , decodeTokenForRestPassword } = require("../../token/Tokens");
+const sendMail = require("../../config/sendmail");
+const { ERROR_MESSAGE } = require("../../messages/error");
+const { RESPONCE_MESSAGE } = require("../../messages/response");
+const { STATUS } = require("../../messages/status");
 
 const generateOTP = () => {
   let SendedOtp = otpGenerator.generate(6, {
@@ -96,7 +98,7 @@ const CheckMailforForget = async (req, res) => {
       }
     }
   } catch (error) {
-    console.log(error);
+    logger.error('Error in CheckMailforForget:', error);
     return res.status(STATUS.INTERNAL_SERVER_ERROR).json({
       success: false,
       message: ERROR_MESSAGE.SERVER_ERROR,
@@ -106,37 +108,40 @@ const CheckMailforForget = async (req, res) => {
 
 // OTP confirmation
 const verifyOTP = async (userOTP, storedOTP, expirationTime) => {
-  userOTP = userOTP.trim();
-  storedOTP = storedOTP.trim();
-  console.log(
-    `Comparing OTPs - User OTP: ${userOTP}, Stored OTP: ${storedOTP}`
-  );
-  // if (userOTP !== storedOTP) {
-  //   console.log("OTP mismatch");
-  //   return false;
-  // }
-  console.log("Encrted Otp " + storedOTP);
+  try {
+    userOTP = userOTP.trim();
+    storedOTP = storedOTP.trim();
+    console.log(
+      `Comparing OTPs - User OTP: ${userOTP}, Stored OTP: ${storedOTP}`
+    );
+    // if (userOTP !== storedOTP) {
+    //   console.log("OTP mismatch");
+    //   return false;
+    // }
+    console.log("Encrted Otp " + storedOTP);
 
-  const otpdecrypeted = await bcrypt.compare(userOTP, storedOTP);
+    const otpdecrypeted = await bcrypt.compare(userOTP, storedOTP);
 
-  if (!otpdecrypeted) {
-    console.log("OTP mismatch");
+    if (!otpdecrypeted) {
+      console.log("OTP mismatch");
+      return false;
+    }
+
+    const currentTime = new Date();
+    console.log(
+      `Current Time: ${currentTime}, Expiration Time: ${expirationTime}`
+    );
+    if (currentTime > expirationTime) {
+      console.log("OTP expired");
+      return false;
+    }
+    console.log("OTP verified successfully");
+
+    return true;
+  } catch (error) {
+    logger.error('Error in verifyOTP:', error);
     return false;
   }
-
-
-
-  const currentTime = new Date();
-  console.log(
-    `Current Time: ${currentTime}, Expiration Time: ${expirationTime}`
-  );
-  if (currentTime > expirationTime) {
-    console.log("OTP expired");
-    return false;
-  }
-  console.log("OTP verified successfully");
-
-  return true;
 };
 
 const ConfirmOtp = async (req, res) => {
@@ -209,7 +214,7 @@ const ConfirmOtp = async (req, res) => {
         .json({ success: false, message: ERROR_MESSAGE.PROVIDE_REGISTER_EMAIL });
     }
   } catch (error) {
-    console.log("Error:", error);
+    logger.error('Error in ConfirmOtp:', error);
     if (error.name === 'TokenExpiredError') {
       return res.status(STATUS.UNAUTHORIZED).json({
         success: false,
@@ -220,13 +225,8 @@ const ConfirmOtp = async (req, res) => {
       success: false,
       message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
     });
-
   }
 };
-
-
-
-
 
 const ConfirmOtpForEncyption = async (req, res) => {
   const { otp } = req.body;
@@ -271,7 +271,7 @@ const ConfirmOtpForEncyption = async (req, res) => {
       });
     }
   } catch (error) {
-    console.log("Error:", error);
+    logger.error('Error in ConfirmOtpForEncyption:', error);
     if (error.name === 'TokenExpiredError') {
       return res.status(STATUS.UNAUTHORIZED).json({
         success: false,
@@ -284,7 +284,6 @@ const ConfirmOtpForEncyption = async (req, res) => {
     });
   }
 };
-
 
 // New password
 const CreateNewPassword = async (req, res) => {
@@ -350,7 +349,7 @@ const CreateNewPassword = async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error);
+    logger.error('Error in CreateNewPassword:', error);
     return res.json({ success: false, message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
   }
 };
@@ -360,4 +359,3 @@ module.exports = {
   ConfirmOtp,
   CreateNewPassword,
 };
-

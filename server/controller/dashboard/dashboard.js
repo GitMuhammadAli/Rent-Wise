@@ -4,7 +4,6 @@ const { GetAndDecodeToken } = require("../../token/Tokens");
 
 exports.GetUser = async (req, res) => {
     try {
-        // Pass `req` and `res` to `GetAndDecodeToken`
         const decodedToken = await GetAndDecodeToken(req, res);
 
         if (!decodedToken) {
@@ -14,7 +13,7 @@ exports.GetUser = async (req, res) => {
             });
         }
 
-        const user = await User.findById(decodedToken._id); // Access `_id` from the decoded token
+        const user = await User.findById(decodedToken._id); 
         if (!user) {
             return res.status(404).json({
                 success: false,
