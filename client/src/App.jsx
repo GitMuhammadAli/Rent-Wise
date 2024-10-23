@@ -26,6 +26,7 @@ import Media from "../Pages/Listings/Media";
 import ListingDetails from "../Pages/Listings/ListingDetails";
 import Dashboard from "../Pages/Dashboard";
 import MyAccount from "../Pages/Account/MyAccount";
+import DashboardUserContextProvider from "./hooks/DashboardUserContext";
 
 function YourComponent() {
   const token = Cookies.get("jwt");
@@ -92,9 +93,11 @@ const router = createBrowserRouter(
 function App() {
   return (
     <AuthProvider>
+      <DashboardUserContextProvider>
       <ListingsProvider>
         <RouterProvider router={router} />
       </ListingsProvider>
+      </DashboardUserContextProvider>
     </AuthProvider>
 
   );
