@@ -1,6 +1,6 @@
-const Users = require("../model/user/userModel");
-const { ERROR_MESSAGE } = require("../messages/error");
-const { RESPONCE_MESSAGE } = require("../messages/response");
+const Users = require("../../model/user/userModel");
+const { ERROR_MESSAGE } = require("../../messages/error");
+const { RESPONCE_MESSAGE } = require("../../messages/response");
 
 exports.userHome = async (req, res) => {
   try {

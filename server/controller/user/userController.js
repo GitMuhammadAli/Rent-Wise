@@ -1,5 +1,6 @@
 const Users = require("../../model/user/userModel");
 const bcrypt = require("bcrypt");
+const logger = require("../../utils/logger");
 const { GenerateToken, decodingToken } = require("../../token/Tokens");
 const { ERROR_MESSAGE } = require("../../messages/error");
 const { RESPONCE_MESSAGE } = require("../../messages/response");
@@ -19,6 +20,7 @@ const initializeAdmin = async () => {
       console.log("Admin user created with username: admin and password: admin");
     }
   } catch (error) {
+    logger.error("Error initializing admin user:", error);
     console.error("Error initializing admin user:", error);
   }
 };
@@ -77,6 +79,7 @@ const Register = async (req, res) => {
       return res.status(STATUS.CREATED).json({ message: RESPONCE_MESSAGE.USER_REGISTERED, token });
     }
   } catch (error) {
+    logger.error("Error during registration:", error);
     console.error(error);
     return res.status(STATUS.INTERNAL_SERVER_ERROR).json({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
   }
@@ -103,6 +106,7 @@ const login = async (req, res) => {
     }); 
     
   } catch (error) {
+    logger.error("Error during login:", error);
     console.log("Error during login:", error);
     res.status(STATUS.INTERNAL_SERVER_ERROR).json({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
   }
@@ -113,6 +117,7 @@ const handleGoogleCallback = async (req, res) => {
     await GenerateToken(req.user, req, res);
     res.redirect(process.env.CLIENT_URL || "http://localhost:4000/" );
   } catch (error) {
+    logger.error("Error during Google callback:", error);
     console.error(error);
     res.status(STATUS.INTERNAL_SERVER_ERROR).json({ message: RESPONCE_MESSAGE.INTERNAL_SERVER_ERROR });
   }
@@ -125,25 +130,27 @@ const logout = async (req, res) => {
     await req.session.destroy();
     return res.status(STATUS.SUCCESS).json({ message: RESPONCE_MESSAGE.LOGOUT_SUCCESS });
   } catch (error) {
+    logger.error("Error during logout:", error);
     console.log(error);
     res.status(STATUS.INTERNAL_SERVER_ERROR).json({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
   }
 };
 
-const userAccount = async (req, res) => {
-  try {
-    const UserCookie = req.cookies.jwt;
-    const decodedToken = await decodingToken(UserCookie, process.env.JWT_API_SECRET_KEY);
-    const user = await Users.findById(decodedToken._id);
-    if (!user) {
-      return res.status(STATUS.NOT_FOUND).json({ messag: RESPONCE_MESSAGE.USER_NOT_FOUND });
-    }
-    return res.status(STATUS.SUCCESS).json(user);
-  } catch (error) {
-    console.log(error);
-    res.status(STATUS.INTERNAL_SERVER_ERROR).json({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
-  }
-};
+// const userAccount = async (req, res) => {
+//   try {
+//     const UserCookie = req.cookies.jwt;
+//     const decodedToken = await decodingToken(UserCookie, process.env.JWT_API_SECRET_KEY);
+//     const user = await Users.findById(decodedToken._id);
+//     if (!user) {
+//       return res.status(STATUS.NOT_FOUND).json({ messag: RESPONCE_MESSAGE.USER_NOT_FOUND });
+//     }
+//     return res.status(STATUS.SUCCESS).json(user);
+//   } catch (error) {
+//     logger.error("Error fetching user account:", error);
+//     console.log(error);
+//     res.status(STATUS.INTERNAL_SERVER_ERROR).json({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
+//   }
+// };
 
 module.exports = {
   initializeAdmin,
@@ -151,5 +158,5 @@ module.exports = {
   login,
   handleGoogleCallback,
   logout,
-  userAccount,
+  // userAccount,
 };
