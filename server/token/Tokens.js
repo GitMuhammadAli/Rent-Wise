@@ -166,10 +166,32 @@ const decryptCookieForOtp = (text) => {
 };
 
 
+const GetAndDecodeToken = async (req, res) => {
+  const token = req.cookies.jwt; // Ensure req is passed
+
+  if (!token) {
+    return res.status(401).json({ message: "No token provided" });
+  }
+
+  try {
+    const decodedToken = await decodingToken(token, process.env.JWT_API_SECRET_KEY);
+    console.log("decodedToken", decodedToken);
+    return decodedToken; // Return the decoded token for further use
+  } catch (error) {
+    console.error("Error decoding token:", error);
+    return res.status(401).json({ message: "Invalid token" });
+  }
+};
+
+  
+
+
+
 module.exports = {
   GenerateToken,
   makeToken,
   CreateToken,
   generatetokenForOtp,
   decodingToken,
+  GetAndDecodeToken
 };

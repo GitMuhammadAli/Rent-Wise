@@ -8,8 +8,9 @@ const home = require("./routes/home");
 const connectDB = require("./config/db");
 const cors = require("cors");
 const { corsOptions } = require("./utils/cors");
-const { initializeAdmin } = require("./controller/userController");
+const { initializeAdmin } = require("./controller/user/userController");
 const listingRoutes = require("./routes/listings/listingRoutes");
+const dashboardRoutes = require("./routes/dashboard/dashboardRoute");
 const logger = require("./utils/logger");
 const path = require('path');
 
@@ -68,10 +69,14 @@ app.use((req, res, next) => {
   logger.info(`${req.method} ${req.url} ${req.hostname}`);
   next();
 })
+
+
+
 // Routes
 app.use("/", home);
 app.use("/auth", userRoutes);
 app.use("/listings", listingRoutes);
+app.use("/dashboard" , dashboardRoutes)
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
