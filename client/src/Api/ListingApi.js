@@ -1,6 +1,8 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:3600/listings";
+
+// const API_BASE_URL = `${process.env.REACT_APP_BACK_END_URL}/listings`
+const API_BASE_URL = `http://localhost:3600/listings`
 
 // export const createListingAPI = (data) =>
 //   axios.post(`${API_BASE_URL}/create`, data, { withCredentials: true });

@@ -344,10 +344,6 @@ const handleSubmit = async (e) => {
               />
             </FormControl>
 
-            <Button type="submit" colorScheme="teal" mt="4">
-              Upload
-            </Button>
-
 
 
             <Box className="mb-8" borderWidth={1} borderRadius="md" p={4}>

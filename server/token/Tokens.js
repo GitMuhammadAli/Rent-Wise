@@ -16,7 +16,7 @@ const GenerateToken = async (user, req, res) => {
     const token = await makeToken(user._id);
     res.cookie("jwt", token, {
       httpOnly: false,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+      maxAge: 30 * 24 * 60 * 60 * 1000,
       sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
       //   secure: process.env.NODE_ENV === 'production', // Use HTTPS in production
     });
@@ -32,6 +32,43 @@ const CreateToken = async (payload) => {
   });
   return otptoken;
 };
+
+const generatetokenForOtpForEncryption = async (
+  SendedOtp,
+  expirationTime,
+  _id,
+  email,
+  otpVerified = false,
+  emailVerified = false,
+  res
+) => {
+  const payload = {
+    SendedOtp,
+    expirationTime,
+    _id,
+    email,
+    otpVerified,
+    emailVerified,
+  };
+  
+  // Encrypting OTP before signing token
+  const encryptedOtp = encryptCookieForOtp(SendedOtp);
+
+  // Create token with encrypted OTP
+  const tok = await CreateToken({ ...payload, SendedOtp: encryptedOtp });
+
+  if (res) {
+    console.log("send encrypted OTP to cookie");
+    res.cookie("resetPasswordOTP", tok, {
+      sameSite: "strict",
+      maxAge: 24 * 60 * 60 * 1000,
+      httpOnly: true,
+    });
+  }
+
+  return tok;
+};
+
 
 const generatetokenForOtp = async (
   SendedOtp,
@@ -68,8 +105,8 @@ const decodingToken = async (token, key) => {
   return jsonwebtoken.verify(token, key);
 };
 
-const setEncryptedCookie = (res, cookieData) => {
-  const encryptedData = encryptCookie(JSON.stringify(cookieData)); // Encrypting the entire cookie data
+const setEncryptedCookieForOtp = (res, cookieData) => {
+  const encryptedData = encryptCookieForOtp(JSON.stringify(cookieData)); // Encrypting the entire cookie data
 
   res.cookie('resetPasswordToken', encryptedData, {
     httpOnly: true,
@@ -79,7 +116,7 @@ const setEncryptedCookie = (res, cookieData) => {
 };
 
 
-const verifyEncryptedCookie = (req, res) => {
+const verifyEncryptedCookieForOtp = (req, res) => {
   const encryptedCookie = req.cookies.resetPasswordToken;
 
   if (!encryptedCookie) {
@@ -87,7 +124,7 @@ const verifyEncryptedCookie = (req, res) => {
   }
 
   try {
-    const decryptedData = decryptCookie(encryptedCookie);
+    const decryptedData = decryptCookieForOtp(encryptedCookie);
     const cookieData = JSON.parse(decryptedData); // Parse the decrypted cookie data
 
     // Proceed with password reset verification logic
@@ -97,7 +134,7 @@ const verifyEncryptedCookie = (req, res) => {
   }
 };
 
-const encryptCookie = (text) => {
+const encryptCookieForOtp = (text) => {
   const algorithm = 'aes-256-cbc'; // Encryption algorithm
   const secretKey = process.env.COOKIE_ENCRYPTION_KEY; // Secret key (256-bit)
   const iv = crypto.randomBytes(16); // Initialization vector
@@ -112,7 +149,7 @@ const encryptCookie = (text) => {
 };
 
 
-const decryptCookie = (text) => {
+const decryptCookieForOtp = (text) => {
   const algorithm = 'aes-256-cbc';
   const secretKey = process.env.COOKIE_ENCRYPTION_KEY;
   const textParts = text.split(':'); // Split the IV and encrypted data

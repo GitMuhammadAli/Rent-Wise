@@ -224,6 +224,68 @@ const ConfirmOtp = async (req, res) => {
   }
 };
 
+
+
+
+
+const ConfirmOtpForEncyption = async (req, res) => {
+  const { otp } = req.body;
+  let cookieOtp = req.cookies.resetPasswordOTP;
+
+  if (!cookieOtp) {
+    return res
+      .status(STATUS.NOT_FOUND)
+      .json({ success: false, message: ERROR_MESSAGE.OTP_NOT_PROVIDED });
+  }
+
+  try {
+    // Decode the token and retrieve encrypted OTP
+    const decodedToken = await decodingToken(cookieOtp, process.env.JWT_API_SECRET_KEY);
+    const { SendedOtp: encryptedOtp, expirationTime } = decodedToken;
+
+    // Decrypt the OTP stored in the token
+    const decryptedOtp = decryptCookieForOtp(encryptedOtp);
+
+    // Now compare the user-provided OTP with the decrypted OTP
+    if (await verifyOTP(otp, decryptedOtp, new Date(expirationTime))) {
+      console.log("OTP verified successfully");
+
+      await generatetokenForOtp(
+        decryptedOtp,
+        expirationTime,
+        decodedToken._id,
+        decodedToken.email,
+        (decodedToken.otpVerified = true),
+        (decodedToken.emailVerified = true),
+        res
+      );
+
+      return res
+        .status(STATUS.SUCCESS)
+        .json({ success: true, message: RESPONCE_MESSAGE.OTP_VERIFIED });
+    } else {
+      res.clearCookie("resetPasswordOTP");
+      return res.status(400).json({
+        success: false,
+        message: ERROR_MESSAGE.OTP_VERIFICATION_FAILED,
+      });
+    }
+  } catch (error) {
+    console.log("Error:", error);
+    if (error.name === 'TokenExpiredError') {
+      return res.status(STATUS.UNAUTHORIZED).json({
+        success: false,
+        message: ERROR_MESSAGE.TOKEN_EXPIRED,
+      });
+    }
+    return res.status(STATUS.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+    });
+  }
+};
+
+
 // New password
 const CreateNewPassword = async (req, res) => {
   try {
