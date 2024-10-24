@@ -8,6 +8,8 @@ const ERROR_MESSAGE = {
   FETCHING_USER_ERROR: "Error fetching user data",
   SERVER_ERROR: "Server error",
 
+
+  CURRENT_PASSWORD_INVALID :"current password does not match",
   INVALID_EMAIL_OR_PASSWORD: "Invalid email or password",
   INVALID_PASSWORD: "Password Incorrect",
   PASSWAORD_NOT_MATCHED: "Password not matched Enter Correct Password",

@@ -191,7 +191,7 @@ const handleSubmit = async (e) => {
 
   return (
     <Flex py={'50px'} flexDir={'column'}>
-    <Flex gap={4} alignSelf={'center'} alignItems={'center'} flexDir={'row'} borderRadius={'10px'} bg={'gray.900'} color={'white'}    w={'90%'}>
+    <Flex gap={4} alignSelf={'center'} justifyContent={'space-between'} alignItems={'center'} flexDir={'row'} borderRadius={'10px'} bg={'gray.900'} color={'white'}    w={'90%'}>
              <Image alignSelf={'flex-end'} w={'auto'} h={'300px'}  src="https://images.rawpixel.com/image_social_square/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3BkMjA3LTItMzMwXzEuanBn.jpg"/>
              <Box alignSelf={'center'} py={'50px'} >
             <Heading textAlign={'left'}  fontWeight="extrabold" >Upload Your Property | Vehichle Details</Heading>

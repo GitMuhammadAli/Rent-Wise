@@ -46,7 +46,7 @@ exports.updateUserDashboard = async (req, res) => {
     console.log("biooo is", bio);
 
     
-    const { password, ...updateData } = req.body;
+    const {currentPassword, password, ...updateData } = req.body;
     if(bio==='' || bio==='\r\n')
     {
       delete updateData.bio;
@@ -72,8 +72,18 @@ exports.updateUserDashboard = async (req, res) => {
           const salt = await bcrypt.genSalt(10);
           updateData.password = await bcrypt.hash(password, salt);
         } else {
-          
 
+ const pass = await bcrypt.compare(currentPassword, user.password);
+ if(!pass)
+ {
+  console.log("current password does not match!");
+  return res.status(STATUS.INTERNAL_SERVER_ERROR).json({
+    success: false,
+    message: ERROR_MESSAGE.CURRENT_PASSWORD_INVALID,
+    
+  });
+  
+ }
 
           const salt = await bcrypt.genSalt(10);
           updateData.password = await bcrypt.hash(password, salt);
@@ -91,11 +101,12 @@ exports.updateUserDashboard = async (req, res) => {
         user: updatedUser,
       });
     } catch (error) {
-      console.error(error);
+      console.error("errrrror",error);
       logger.error(error + " in updateUserDashboard");
       return res.status(STATUS.INTERNAL_SERVER_ERROR).json({
         success: false,
         message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+        
       });
     }
   };

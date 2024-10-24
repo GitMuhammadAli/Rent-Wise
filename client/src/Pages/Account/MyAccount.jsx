@@ -5,6 +5,7 @@ import {
 
 import { useDasboardHook } from '../../hooks/DashboardUserContext';
 import { getUser, updateUserDashboard } from '../../Api/DashboardAPI';
+import { response } from '../../utils/ResponceMessages';
 
 export default function MyAccount() {
   const [avatar, setAvatar] = useState('')
@@ -15,6 +16,7 @@ export default function MyAccount() {
   const [isThirdPartyUser, setIsThirdPartyUser] = useState(false);
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
+  const [currentPassword, setCurrentPassword] = useState('');
   const toast = useToast();
 
   useEffect(() => {
@@ -60,6 +62,8 @@ export default function MyAccount() {
     formData.append('name', username);
     formData.append('email', userEmail);
     formData.append('bio', bio);
+
+    if(currentPassword) formData.append('currentPassword', currentPassword);
     if (avatar) formData.append('avatar', avatar);  
 
     if (newPassword) formData.append('password', newPassword);
@@ -80,7 +84,7 @@ export default function MyAccount() {
       console.log(err);
       console.log("error in profile updating", err)
       toast({
-        title: 'Failed to update profile.',
+        title: err.response.data.message,
         status: 'error',
         duration: 3000,
         isClosable: true,
@@ -186,7 +190,7 @@ export default function MyAccount() {
                 <>
                   <FormControl>
                     <FormLabel>Current Password</FormLabel>
-                    <Input type="password"  />
+                    <Input type="password" value={currentPassword} onChange={(e)=> setCurrentPassword(e.target.value)}  />
                   </FormControl>
                   
                 </>
