@@ -5,7 +5,7 @@ import {
 } from '@chakra-ui/react'
 
 import { useDasboardHook } from '../../hooks/DashboardUserContext';
-import { getUser } from '../../Api/DashboardAPI';
+import { getUser , updateUserDashboard } from '../../Api/DashboardAPI';
 // import { CameraIcon } from '@chakra-ui/icons'
 
 export default function MyAccount() {
@@ -13,6 +13,7 @@ export default function MyAccount() {
   const {user,dispatch} = useDasboardHook();
   const[username,setUsername] = useState('');
   const[userEmail,setUserEmail] = useState('');
+  const[isThirdPartyUser, setIsThirdPartyUser] = useState(false);
 
   useEffect(() => {
       const fetchUser = async () => {
@@ -24,6 +25,7 @@ export default function MyAccount() {
           setUsername(response.data.user.name);
           setUserEmail(response.data.user.email);
           setAvatar(response.data.user.imageUrl);
+          setIsThirdPartyUser(response.data.user.googleId || response.data.user.facebookId);
         } catch (err) {
           console.log(err);
         }
@@ -33,8 +35,6 @@ export default function MyAccount() {
 
   }, [dispatch]);
   
-
-
   const toast = useToast()
 
   const handleAvatarChange = (event) => {
@@ -139,22 +139,24 @@ export default function MyAccount() {
 
           <TabPanel>
             <VStack spacing={4}>
+              {!isThirdPartyUser && (
+                <>
+                  <FormControl>
+                    <FormLabel>Current Password</FormLabel>
+                    <Input type="password" />
+                  </FormControl>
+                  
+                </>
+              )}
               <FormControl>
-                <FormLabel>Current Password</FormLabel>
-                <Input type="password" />
-              </FormControl>
-              <FormControl>
-                <FormLabel>New Password</FormLabel>
-                <Input type="password" />
-              </FormControl>
-              <FormControl>
-                <FormLabel>Confirm New Password</FormLabel>
-                <Input type="password" />
-              </FormControl>
-              <FormControl display="flex" justifyContent="space-between" alignItems="center">
-                <FormLabel>Two-Factor Authentication</FormLabel>
-                <Switch />
-              </FormControl>
+                    <FormLabel>New Password</FormLabel>
+                    <Input type="password" />
+                  </FormControl>
+                  <FormControl>
+                    <FormLabel>Confirm New Password</FormLabel>
+                    <Input type="password" />
+                  </FormControl>
+          
             </VStack>
           </TabPanel>
         </TabPanels>

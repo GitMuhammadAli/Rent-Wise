@@ -7,6 +7,11 @@ export const authReducer = (state,action)=>{
         case 'GET_USER':
             
                 return { ...state, user: action.payload };
+        case 'UPDATE_USER':
+            
+                return { ...state, user: action.payload };
+
+                
             
         default:
             return state

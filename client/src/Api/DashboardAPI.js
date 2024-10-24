@@ -11,6 +11,9 @@ export const getUser = () =>
   axios.get(`${API_BASE_URL}/getUserDashboard`, { withCredentials: true });
 
 
+export const updateUserDashboard = (data) =>
+  axios.put(`${API_BASE_URL}/updateUserDashboard`, data, { withCredentials: true });
+
 
   
 
