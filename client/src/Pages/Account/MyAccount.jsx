@@ -34,14 +34,12 @@ export default function MyAccount() {
     fetchUser();
   }, [dispatch]);
 
-  console.log("avatr" , avatar)
   console.log("user" , user);
   // Handle avatar change (image upload preview)
   const handleAvatarChange = (event) => {
     const file = event.target.files?.[0];
     if (file) {
       setAvatar(file);
-     
     }
   };
 
@@ -62,7 +60,7 @@ export default function MyAccount() {
     formData.append('name', username);
     formData.append('email', userEmail);
     formData.append('bio', bio);
-    if (avatar) formData.append('avatar', avatar);  // Use file object
+    if (avatar) formData.append('avatar', avatar);  
 
     if (newPassword) formData.append('password', newPassword);
   
