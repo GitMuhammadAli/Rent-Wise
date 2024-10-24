@@ -4,6 +4,7 @@ const { ERROR_MESSAGE } = require("../../messages/error");
 const { RESPONCE_MESSAGE, LISTINGS } = require("../../messages/response");
 const { STATUS } = require("../../messages/status");
 const { GetAndDecodeToken } = require("../../token/Tokens");
+const bcrypt = require('bcrypt')
 
 exports.GetUser = async (req, res) => {
     try {
@@ -40,9 +41,18 @@ exports.GetUser = async (req, res) => {
 
 exports.updateUserDashboard = async (req, res) => {
     const { id } = req.params;
-    console.log(req.body);
+    const {name,email,bio,avatar} = req.body;
+    console.log("body is",req.body);
+    console.log("biooo is", bio);
+
+    
     const { password, ...updateData } = req.body;
-    console.log(req.body);
+    if(bio==='' || bio==='\r\n')
+    {
+      delete updateData.bio;
+    }
+
+    console.log("body after bio empty is",req.body);
   
     try {
       const user = await User.findById(id);
@@ -62,6 +72,9 @@ exports.updateUserDashboard = async (req, res) => {
           const salt = await bcrypt.genSalt(10);
           updateData.password = await bcrypt.hash(password, salt);
         } else {
+          
+
+
           const salt = await bcrypt.genSalt(10);
           updateData.password = await bcrypt.hash(password, salt);
         }

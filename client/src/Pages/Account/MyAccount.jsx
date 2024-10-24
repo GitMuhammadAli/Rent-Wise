@@ -47,7 +47,7 @@ export default function MyAccount() {
   const handleSaveChanges = async () => {
     if (newPassword !== confirmNewPassword) {
       toast({
-        title: 'Passwords do not match.',
+        title: 'Passwords do not match. Enter again',
         status: 'error',
         duration: 3000,
         isClosable: true,
@@ -74,9 +74,11 @@ export default function MyAccount() {
         duration: 3000,
         isClosable: true,
       });
+      console.log("in changing profiile", response.data.user)
       dispatch({ type: 'UPDATE_USER', payload: response.data.user });
     } catch (err) {
       console.log(err);
+      console.log("error in profile updating", err)
       toast({
         title: 'Failed to update profile.',
         status: 'error',
@@ -184,18 +186,18 @@ export default function MyAccount() {
                 <>
                   <FormControl>
                     <FormLabel>Current Password</FormLabel>
-                    <Input type="password" />
+                    <Input type="password"  />
                   </FormControl>
                   
                 </>
               )}
               <FormControl>
                     <FormLabel>New Password</FormLabel>
-                    <Input type="password" />
+                    <Input type="password" value={newPassword} onChange={(e)=> setNewPassword(e.target.value)}/>
                   </FormControl>
                   <FormControl>
                     <FormLabel>Confirm New Password</FormLabel>
-                    <Input type="password" />
+                    <Input type="password" value={confirmNewPassword} onChange={(e)=> setConfirmNewPassword(e.target.value)}/>
                   </FormControl>
           
             </VStack>
