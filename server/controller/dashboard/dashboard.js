@@ -40,7 +40,9 @@ exports.GetUser = async (req, res) => {
 
 exports.updateUserDashboard = async (req, res) => {
     const { id } = req.params;
+    console.log(req.body);
     const { password, ...updateData } = req.body;
+    console.log(req.body);
   
     try {
       const user = await User.findById(id);
@@ -50,10 +52,10 @@ exports.updateUserDashboard = async (req, res) => {
           message: ERROR_MESSAGE.USER_NOT_FOUND,
         });
       }
-  
-      if (req.file) {
-        updateData.imageUrl = req.file.path; 
-      }
+  console.log(req.file);
+  if (req.file) {
+    updateData.imageUrl = `/uploads/media/${id}/${req.file.filename}`;
+  }
   
       if (password) {
         if (user.googleId || user.facebookId) {

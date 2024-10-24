@@ -40,7 +40,7 @@ export default function Dashboard() {
         </Box>
 
         {/* Pass the actual userResponse object to the Account Settings page */}
-        <Button as={Link} to={'/acc'}>
+        <Button as={Link} to={`/acc`} colorScheme="teal" variant="solid">
           Account Setting
         </Button>
       </Flex>

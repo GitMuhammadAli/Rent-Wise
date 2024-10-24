@@ -1,56 +1,99 @@
 import React, { useEffect, useState } from 'react'
 import { 
-  Box, Button, FormControl, FormLabel, Input, Switch, Tabs, TabList, TabPanels, Tab, TabPanel, Avatar, Image,
-  Textarea, VStack, HStack, useToast, Text 
+  Box, Button, FormControl, FormLabel, Input, Switch, Tabs, TabList, TabPanels, Tab, TabPanel, Avatar, Textarea, VStack, HStack, useToast, Text 
 } from '@chakra-ui/react'
 
 import { useDasboardHook } from '../../hooks/DashboardUserContext';
-import { getUser , updateUserDashboard } from '../../Api/DashboardAPI';
-// import { CameraIcon } from '@chakra-ui/icons'
+import { getUser, updateUserDashboard } from '../../Api/DashboardAPI';
 
 export default function MyAccount() {
   const [avatar, setAvatar] = useState('')
-  const {user,dispatch} = useDasboardHook();
-  const[username,setUsername] = useState('');
-  const[userEmail,setUserEmail] = useState('');
-  const[isThirdPartyUser, setIsThirdPartyUser] = useState(false);
+  const { user, dispatch } = useDasboardHook();
+  const [bio, setBio] = useState('');
+  const [username, setUsername] = useState('');
+  const [userEmail, setUserEmail] = useState('');
+  const [isThirdPartyUser, setIsThirdPartyUser] = useState(false);
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmNewPassword, setConfirmNewPassword] = useState('');
+  const toast = useToast();
 
   useEffect(() => {
-      const fetchUser = async () => {
-        try {
-          const response = await getUser();
-          console.log("User:", response.data.user);
-          
-          dispatch({ type: 'GET_USER', payload: response.data.user });
-          setUsername(response.data.user.name);
-          setUserEmail(response.data.user.email);
-          setAvatar(response.data.user.imageUrl);
-          setIsThirdPartyUser(response.data.user.googleId || response.data.user.facebookId);
-        } catch (err) {
-          console.log(err);
-        }
-      };
-
-      fetchUser();
-
-  }, [dispatch]);
-  
-  const toast = useToast()
-
-  const handleAvatarChange = (event) => {
-    const file = event.target.files?.[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setAvatar(reader.result)
+    const fetchUser = async () => {
+      try {
+        const response = await getUser();
+        dispatch({ type: 'GET_USER', payload: response.data.user });
+        setUsername(response.data.user.name);
+        setUserEmail(response.data.user.email);
+        setAvatar(`${import.meta.env.VITE_BACK_END_URL}${response.data.user.imageUrl}`);
+        setIsThirdPartyUser(!!response.data.user.googleId || !!response.data.user.facebookId);
+      } catch (err) {
+        console.log(err);
       }
-      reader.readAsDataURL(file)
+    };
+
+    fetchUser();
+  }, [dispatch]);
+
+  console.log("avatr" , avatar)
+  console.log("user" , user);
+  // Handle avatar change (image upload preview)
+  const handleAvatarChange = (event) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setAvatar(file);
+     
     }
-  }
+  };
+
+  // Handle form submission and save changes
+  const handleSaveChanges = async () => {
+    if (newPassword !== confirmNewPassword) {
+      toast({
+        title: 'Passwords do not match.',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+      return; 
+    }
+  
+    const formData = new FormData();
+    formData.append('userid', user._id);
+    formData.append('name', username);
+    formData.append('email', userEmail);
+    formData.append('bio', bio);
+    if (avatar) formData.append('avatar', avatar);  // Use file object
+
+    if (newPassword) formData.append('password', newPassword);
+  
+    try {
+      // Pass the user ID in the API URL
+      const response = await updateUserDashboard(user._id, formData);
+  
+      toast({
+        title: 'Profile updated successfully!',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+      dispatch({ type: 'UPDATE_USER', payload: response.data.user });
+    } catch (err) {
+      console.log(err);
+      toast({
+        title: 'Failed to update profile.',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+  
   function check()
   {
     console.log("username to display:", username)
     console.log("useremail to display:", userEmail)
+    console.log("bio to display:", bio)
+
   }
   
 
@@ -94,7 +137,7 @@ export default function MyAccount() {
               </FormControl>
               <FormControl>
                 <FormLabel htmlFor="bio">Bio</FormLabel>
-                <Textarea id="bio" placeholder="Tell us about yourself" />
+                <Textarea id="bio" placeholder="Tell us about yourself" value={bio} onChange={(e)=> setBio(e.target.value)} />
               </FormControl>
             </VStack>
           </TabPanel>
@@ -163,7 +206,7 @@ export default function MyAccount() {
       </Tabs>
       <HStack justifyContent="space-between" mt={6}>
         <Button variant="outline">Cancel</Button>
-        <Button colorScheme="blue" onClick={check}>Save Changes</Button>
+        <Button colorScheme="blue" onClick={handleSaveChanges }   >Save Changes</Button>
       </HStack>
     </Box>
   )

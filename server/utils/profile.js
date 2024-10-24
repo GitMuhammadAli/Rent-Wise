@@ -10,8 +10,8 @@ const UserDynamicfile = (directory) => {
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const userId = req.body.user; 
-    const userDirectory = path.join(__dirname, `../uploads/profile/${userId}`);
+    const userId = req.body.userid; // Make sure this matches the key being passed in the form
+    const userDirectory = path.join(__dirname, `../uploads/media/${userId}`); // Now saving under "uploads/media"
     UserDynamicfile(userDirectory);
     cb(null, userDirectory);
   },
@@ -21,13 +21,11 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (req, file, cb) => {
-  const allowedTypes = [
-    "image/png", "image/jpg", "image/jpeg", "image/gif", "image/webp"
-  ];
+  const allowedTypes = ["image/png", "image/jpg", "image/jpeg", "image/gif", "image/webp"];
   if (allowedTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(null, false);
+    cb(null, false); 
   }
 };
 

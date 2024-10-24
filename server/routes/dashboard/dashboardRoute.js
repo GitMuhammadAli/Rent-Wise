@@ -5,5 +5,6 @@ const profileImage = require("../../utils/profile");
 router.get("/getUserDashboard", UserDashboard.GetUser);
 
 
-router.put("/updateUserDashboard", profileImage.single("profile"), UserDashboard.updateUserDashboard);
+router.put("/updateUserDashboard/:id", profileImage.single("avatar"), UserDashboard.updateUserDashboard);
+
 module.exports = router
