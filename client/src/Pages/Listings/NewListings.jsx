@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { Box, Button, Flex, FormControl, FormLabel, Heading, Image, Input, Stack, Text, Textarea, Switch } from "@chakra-ui/react";
 // import { createListingAPI } from "../../src/Api/ListingApi"; 
-import { ListingsContext } from "../../src/hooks/ListingsContext";
+import { ListingsContext } from "../../hooks/ListingsContext";
 
 export default function CreateListingForm() {
   const { state, dispatch } = useContext(ListingsContext);

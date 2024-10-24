@@ -18,14 +18,14 @@ import Cookies from "js-cookie";
 import decodeToken from "./utils/jwt";
 import { AuthProvider } from "./hooks/AuthContext";
 import Otp from "./components/Otp";
-import GetAllListings from "../Pages/Listings/GetAllListings";
+import GetAllListings from "../src/Pages/Listings/GetAllListings";
 // import MakeListing from "../Pages/Listings/MakeListing";
-import NewListings from "../Pages/Listings/NewListings";
+import NewListings from "../src/Pages/Listings/NewListings";
 import { ListingsProvider } from "./hooks/ListingsContext";
-import Media from "../Pages/Listings/Media";
-import ListingDetails from "../Pages/Listings/ListingDetails";
-import Dashboard from "../Pages/Dashboard";
-import MyAccount from "../Pages/Account/MyAccount";
+import Media from "../src/Pages/Listings/Media";
+import ListingDetails from "../src/Pages/Listings/ListingDetails";
+import Dashboard from "./Pages/Dashboard/Dashboard";
+import MyAccount from "../src/Pages/Account/MyAccount";
 import DashboardUserContextProvider from "./hooks/DashboardUserContext";
 
 function YourComponent() {

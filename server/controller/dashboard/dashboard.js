@@ -1,6 +1,8 @@
 const User = require("../../model/user/userModel");
+const { ERROR_MESSAGE } = require("../../messages/error");
+const { RESPONCE_MESSAGE, LISTINGS } = require("../../messages/response");
+const { STATUS } = require("../../messages/status");
 const { GetAndDecodeToken } = require("../../token/Tokens");
-
 
 exports.GetUser = async (req, res) => {
     try {
@@ -34,3 +36,9 @@ exports.GetUser = async (req, res) => {
         });
     }
 };
+
+
+
+exports.updateUserDashboard = async(req, res)=>{
+
+}

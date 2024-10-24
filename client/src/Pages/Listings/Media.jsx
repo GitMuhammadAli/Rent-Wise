@@ -2,9 +2,9 @@ import React, { useContext, useState } from 'react';
 import {
   Box, Button, FormControl, FormLabel, Input, Stack, Heading, useToast, Textarea, Flex, Text, Image,
   Switch, Select} from "@chakra-ui/react";
-import { uploadMediaAPI } from "../../src/Api/ListingApi";  // Adjust the path to your API utility file
-import { useAuth } from "../../src/hooks/AuthContext";
-import { ListingsContext } from '../../src/hooks/ListingsContext';
+import { uploadMediaAPI } from "../../Api/ListingApi";  // Adjust the path to your API utility file
+import { useAuth } from "../../hooks/AuthContext";
+import { ListingsContext } from '../../hooks/ListingsContext';
 
 export default function Media() {
   const [formData, setFormData] = useState({
