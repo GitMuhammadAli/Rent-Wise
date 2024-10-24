@@ -1,4 +1,5 @@
 const User = require("../../model/user/userModel");
+const logger = require("../../utils/logger");
 const { ERROR_MESSAGE } = require("../../messages/error");
 const { RESPONCE_MESSAGE, LISTINGS } = require("../../messages/response");
 const { STATUS } = require("../../messages/status");
@@ -44,19 +45,21 @@ exports.updateUserDashboard = async (req, res) => {
     try {
       const user = await User.findById(id);
       if (!user) {
-        return res.status(404).json({
+        return res.status(STATUS.NOT_FOUND).json({
           success: false,
-          message: "User not found",
+          message: ERROR_MESSAGE.USER_NOT_FOUND,
         });
       }
   
-      if (user.googleId || user.facebookId) {
-        if (password) {
+      if (req.file) {
+        updateData.imageUrl = req.file.path; 
+      }
+  
+      if (password) {
+        if (user.googleId || user.facebookId) {
           const salt = await bcrypt.genSalt(10);
           updateData.password = await bcrypt.hash(password, salt);
-        }
-      } else {
-        if (password) {
+        } else {
           const salt = await bcrypt.genSalt(10);
           updateData.password = await bcrypt.hash(password, salt);
         }
@@ -67,17 +70,18 @@ exports.updateUserDashboard = async (req, res) => {
         runValidators: true, 
       });
   
-      return res.status(200).json({
+      return res.status(STATUS.SUCCESS).json({
         success: true,
-        message: "User updated successfully",
+        message: RESPONCE_MESSAGE.USER_UPDATED,
         user: updatedUser,
       });
     } catch (error) {
       console.error(error);
-      return res.status(500).json({
+      logger.error(error + " in updateUserDashboard");
+      return res.status(STATUS.INTERNAL_SERVER_ERROR).json({
         success: false,
-        message: "Internal Server Error",
+        message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
       });
     }
   };
-
+  

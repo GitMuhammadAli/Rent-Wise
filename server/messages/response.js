@@ -1,6 +1,7 @@
 const RESPONCE_MESSAGE = {
     USER_FOUND: "User found",
     USER_NOT_FOUND: "User not found",
+    USER_UPDATED: "Account updated successfully",
     USER_FETCHED: "User fetched successfully",
     OTP_SENT_EMAIL_SENT: "OTP sent successfully Please Check your email",
     OTP_VERIFIED: "OTP verified successfully",

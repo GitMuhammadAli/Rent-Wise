@@ -1,5 +1,6 @@
 const RentalItem = require("../../model/listings/RentalItemModel");
 const path = require("path");
+const logger = require("../../utils/logger");
 const fs = require("fs");
 const { ERROR_MESSAGE } = require("../../messages/error");
 const { RESPONCE_MESSAGE, LISTINGS } = require("../../messages/response");
