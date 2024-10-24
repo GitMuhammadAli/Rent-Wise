@@ -21,6 +21,7 @@ function SignIn() {
     try {
       await GoogleLoginRequest();
       
+      
       navigate("/", { state: { successMessage: response.login.google } });
     } catch (error) {
       console.error("Google sign-in failed", error);

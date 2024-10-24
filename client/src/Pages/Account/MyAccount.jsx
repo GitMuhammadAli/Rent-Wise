@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { 
-  Box, Button, FormControl, FormLabel, Input, Switch, Tabs, TabList, TabPanels, Tab, TabPanel, Avatar, 
+  Box, Button, FormControl, FormLabel, Input, Switch, Tabs, TabList, TabPanels, Tab, TabPanel, Avatar, Image,
   Textarea, VStack, HStack, useToast, Text 
 } from '@chakra-ui/react'
 
@@ -73,7 +73,9 @@ export default function MyAccount() {
           <TabPanel>
             <VStack spacing={4}>
               <HStack spacing={4}>
-                <Avatar size="xl" src={avatar} />
+
+<Avatar size="xl" src={avatar} />
+
                 <Box>
                   <FormLabel htmlFor="avatar-upload" cursor="pointer" display="flex" alignItems="center">
                     {/* <CameraIcon mr={2} /> */}

@@ -46,6 +46,11 @@ const userSchema = new UserSchema({
     trim: true,
     default: "",
   },
+  bio :{
+    type: String,
+    trim: true,
+    default: "",
+  },
   createdAt: {
     type: Date,
     default: Date.now,
