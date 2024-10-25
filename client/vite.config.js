@@ -6,6 +6,7 @@ export default defineConfig({
   server: {
     // Changing port Should also Change in Third-Party-logins
     port: 4000,
+    open: true,
     watch: {
       usePolling: true,
     },

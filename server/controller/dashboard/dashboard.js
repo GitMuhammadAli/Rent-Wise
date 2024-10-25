@@ -64,7 +64,7 @@ exports.updateUserDashboard = async (req, res) => {
       }
   console.log(req.file);
   if (req.file) {
-    updateData.imageUrl = `/uploads/media/${id}/${req.file.filename}`;
+    updateData.imageUrl = `/uploads/profile/${id}/${req.file.filename}`;
   }
   
       if (password) {
@@ -73,10 +73,10 @@ exports.updateUserDashboard = async (req, res) => {
           updateData.password = await bcrypt.hash(password, salt);
         } else {
 
- const pass = await bcrypt.compare(currentPassword, user.password);
+ const pass = bcrypt.compare(currentPassword, user.password);
  if(!pass)
  {
-  console.log("current password does not match!");
+ logger.error("Current Password not matched in updateUserDashboard " + currentPassword);
   return res.status(STATUS.INTERNAL_SERVER_ERROR).json({
     success: false,
     message: ERROR_MESSAGE.CURRENT_PASSWORD_INVALID,
