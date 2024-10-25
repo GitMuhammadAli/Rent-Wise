@@ -17,6 +17,7 @@ export default function MyAccount() {
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [currentPassword, setCurrentPassword] = useState('');
+  const [avatarPreview, setAvatarPreview] = useState('');
   const toast = useToast();
 
   useEffect(() => {
@@ -42,8 +43,12 @@ export default function MyAccount() {
     const file = event.target.files?.[0];
     if (file) {
       setAvatar(file);
+      
+      const previewUrl = URL.createObjectURL(file);
+      setAvatarPreview(previewUrl); 
     }
   };
+  
 
   // Handle form submission and save changes
   const handleSaveChanges = async () => {
@@ -121,7 +126,8 @@ export default function MyAccount() {
             <VStack spacing={4}>
               <HStack spacing={4}>
 
-<Avatar size="xl" src={avatar} />
+              <Avatar size="xl" src={avatarPreview || avatar} />
+              
 
                 <Box>
                   <FormLabel htmlFor="avatar-upload" cursor="pointer" display="flex" alignItems="center">

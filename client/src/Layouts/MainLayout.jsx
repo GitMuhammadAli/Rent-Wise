@@ -41,7 +41,7 @@ function MainLayout() {
                 <>
                   <Button
                     as={Link}
-                    to="/account-settings"
+                    to="/acc"
                     bg="green.500"
                     _hover={{ bg: "green.600" }}
                     color="white"

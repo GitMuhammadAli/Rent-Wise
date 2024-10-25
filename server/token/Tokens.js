@@ -4,7 +4,7 @@ require("dotenv").config();
 
 const makeToken = async (_id) => {
   return jsonwebtoken.sign({ _id }, process.env.JWT_API_SECRET_KEY, {
-    expiresIn: "1d",
+    expiresIn: "30d",
   });
 };
 

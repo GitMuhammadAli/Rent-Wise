@@ -10,8 +10,8 @@ const UserDynamicfile = (directory) => {
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const userId = req.body.userid; // Make sure this matches the key being passed in the form
-    const userDirectory = path.join(__dirname, `../uploads/media/${userId}`); // Now saving under "uploads/media"
+    const userId = req.body.userid; 
+    const userDirectory = path.join(__dirname, `../uploads/profile/${userId}`); 
     UserDynamicfile(userDirectory);
     cb(null, userDirectory);
   },
