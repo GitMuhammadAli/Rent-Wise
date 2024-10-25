@@ -100,12 +100,12 @@ export default function GetAllListings() {
                         borderRadius="md"
                         onError={(e) => {
                           e.target.onerror = null; 
-                          e.target.src = 'path/to/fallback-image.png'; 
+                          e.target.src = 'images/make_listing/random.png'; 
                         }}
                       />
                     ) : (
                       <Image
-                        src='path/to/fallback-image.png' 
+                        src='images/make_listing/random.png' 
                         alt='No Image Available'
                         width="100%"
                         height="200px"

@@ -18,6 +18,12 @@ export const uploadMediaAPI = (formData) =>
 
   export const getOneUserListingAPI = (id) =>
     axios.get(`${API_BASE_URL}/GetListingsById/${id}`, { withCredentials: true });
+
+
+  //to get all listings by a specific user (by user ID)
+export const getAlListingsofSpecificUser = (id) =>
+  axios.get(`${API_BASE_URL}/user/${id}`, { withCredentials: true });
+
   
 
 

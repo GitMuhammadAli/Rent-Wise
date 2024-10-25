@@ -512,9 +512,13 @@ exports.GetListings = async (req, res) => {
     }
 }
 
+
+// function to get a single listing by id
 exports.GetListingsById = async (req, res) => {
     const { id } = req.params;
     try {
+
+       
         const listing = await RentalItem.findById(id).populate("owner", "name email").populate("images", "url caption ").populate("videos", "url caption").populate('bidding')
         if (!listing) {
             return res.status(404).json({ error: "Listing not found" });
@@ -526,15 +530,21 @@ exports.GetListingsById = async (req, res) => {
 }
 
 
-
+// function to get all the listings by user id
 exports.GetListingByUserId = async (req, res) => {
     const { id } = req.params;
     try {
+       
         const listing = await RentalItem.find({ owner: id });
+        const count = await RentalItem.countDocuments({ owner: id });
+      
+
         if (!listing) {
             return res.status(404).json({ error: "Listing not found" });
         }
-        res.json(listing);
+        res.json({listing,count});
+        console.log("Count of this owner is:", count)
+        
     } catch (error) {
         res.status(500).json({ error: "Failed to fetch listing" });
     }

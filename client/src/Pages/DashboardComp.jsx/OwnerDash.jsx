@@ -1,13 +1,43 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { DollarSign, Users, Package, AlertCircle, BarChart2, Plus } from 'lucide-react';
 import { Box, Button, Card, CardBody, CardFooter, CardHeader, Divider, Flex, Heading, SimpleGrid, Stack, Table, Tbody, Td, Th, Thead, Tr, Text } from '@chakra-ui/react';
+import { useDasboardHook } from '../../hooks/DashboardUserContext';
+import { getAlListingsofSpecificUser } from '../../Api/ListingApi';
 
 export default function OwnerDash() {
+  const [count, setCount] = useState('');
+  const {user,dispatch} = useDasboardHook();
+  const [items, setItems] = useState([]);
   const recentBookings = [
     { id: 1, item: 'Luxury Sedan', renter: 'John Doe', startDate: '2023-05-20', endDate: '2023-05-23', status: 'Active' },
     { id: 2, item: 'Mountain Bike', renter: 'Jane Smith', startDate: '2023-05-25', endDate: '2023-05-26', status: 'Upcoming' },
     { id: 3, item: 'Apartment', renter: 'Bob Johnson', startDate: '2023-06-01', endDate: '2023-06-30', status: 'Upcoming' },
   ];
+
+  useEffect(()=>{
+    async function getOwnerListings(){
+          
+      
+      if (user && user._id) {
+      const user_id = user._id;
+      console.log("User id is:", user_id)
+
+      const response = await getAlListingsofSpecificUser(user_id)
+      console.log("Response of user in ownerdash is: ", response.data);
+      setCount(response.data.count)
+
+      setItems(response.data.listing);
+      console.log("listing in ownerdash are:" , response.data.listing);
+
+      
+      }
+    
+
+
+
+    }
+    getOwnerListings();
+  },[user])
 
   return (
     <Box minH="100vh" bg="gray.100" p={8}>
@@ -63,9 +93,19 @@ export default function OwnerDash() {
               </Flex>
             </CardHeader>
             <CardBody>
-              <Text fontSize="2xl" fontWeight="bold">
-                12
+
+              {
+               count && count > 0 ? (
+                <Text fontSize="2xl" fontWeight="bold">
+                {count}
               </Text>
+               ) : (
+                <Text fontSize="2xl" fontWeight="bold">
+                0
+              </Text>
+               ) 
+              }
+             
               <Text fontSize="xs" color="gray.500">
                 +2 new listings this month
               </Text>
@@ -91,29 +131,38 @@ export default function OwnerDash() {
           </Card>
         </SimpleGrid>
 
-        <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={8}>
+        <SimpleGrid columns={{ base: 1, lg: 1 }} spacing={8}>
           <Card>
             <CardHeader>
               <Heading as="h2" size="md">
-                Recent Bookings
+                Listings
               </Heading>
             </CardHeader>
             <CardBody>
               <Table variant="simple">
                 <Thead>
                   <Tr>
-                    <Th>Item</Th>
-                    <Th>Renter</Th>
-                    <Th>Dates</Th>
+                    <Th>Title</Th>
+                    <Th>Description</Th>
+                    <Th>Category</Th>
                     <Th>Status</Th>
+                    <Th>Price</Th>
+                    <Th>Amenities</Th>
+                   
+                    <Th>AVG Rating</Th>
+                   
+                  
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {recentBookings.map((booking) => (
-                    <Tr key={booking.id}>
-                      <Td fontWeight="medium">{booking.item}</Td>
-                      <Td>{booking.renter}</Td>
-                      <Td>{`${booking.startDate} - ${booking.endDate}`}</Td>
+                  {
+                  items && items.length > 0 && 
+                  
+                  items.map((booking,index) => (
+                    <Tr key={index}>
+                      <Td fontWeight="medium">{booking.title}</Td>
+                      <Td>{booking.description}</Td>
+                      <Td>{booking.category}</Td>
                       <Td>
                         <Text
                           display="inline-flex"
@@ -129,6 +178,17 @@ export default function OwnerDash() {
                           {booking.status}
                         </Text>
                       </Td>
+                      <Td>{booking.price}</Td>
+                      <Td>
+                      {booking.amenities && 
+  <Text>
+    {JSON.parse(booking.amenities).join(', ')}
+  </Text>
+}
+</Td>
+
+                   
+                      <Td>{booking.averageRating}</Td>
                     </Tr>
                   ))}
                 </Tbody>

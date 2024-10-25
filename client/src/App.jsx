@@ -60,19 +60,21 @@ const router = createBrowserRouter(
       </Route>
       
       {/* home */}
-      <Route path="/getAll" element={<GetAllListings />} />
-      {/* <Route path="/createListings" element={<MakeListing />} /> */}
-      <Route path="/createNewListings" element={<NewListings />} />
-      <Route path="/media" element={<Media />} />
-      <Route path="/rental/:id" element={<ListingDetails />} />
-      <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/acc" element={<MyAccount />} />
+      
 
       {/* Main Application Routes */}
       <Route element={<MainLayout />}>
         <Route element={<ProtectedRoute requiredRole="user" />}>
           <Route path="/" element={<Home />} />
         </Route>
+
+        <Route path="/getAll" element={<GetAllListings />} />
+      {/* <Route path="/createListings" element={<MakeListing />} /> */}
+      <Route path="/createNewListings" element={<NewListings />} />
+      <Route path="/media" element={<Media />} />
+      <Route path="/rental/:id" element={<ListingDetails />} />
+      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/acc" element={<MyAccount />} />
 
         {/* <Route element={<ProtectedRoute requiredRole="user" />}>
           <Route path="/getAll" element={<GetAllListings />} />
