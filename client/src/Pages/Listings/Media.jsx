@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import {
   Box, Button, FormControl, FormLabel, Input, Stack, Heading, useToast, Textarea, Flex, Text, Image,
   Switch, Select} from "@chakra-ui/react";
-import { uploadMediaAPI } from "../../Api/ListingApi";  // Adjust the path to your API utility file
+import { uploadMediaAPI } from "../../Api/ListingApi";  
 import { useAuth } from "../../hooks/AuthContext";
 import { ListingsContext } from '../../hooks/ListingsContext';
 
@@ -100,10 +100,10 @@ const handleSubmit = async (e) => {
       duration: 3000,
       isClosable: true,
     });
-    return; // Prevent form submission if user is not logged in
+    return;
   }
 
-  // Check if bidding is enabled and required fields are missing
+ 
   if (formData.biddingEnabled) {
     if (!formData.minimumBid || !formData.bidEndDate) {
       toast({
@@ -113,7 +113,7 @@ const handleSubmit = async (e) => {
         duration: 3000,
         isClosable: true,
       });
-      return; // Prevent form submission if fields are missing
+      return;
     }
   }
 

@@ -24,6 +24,8 @@ export const uploadMediaAPI = (formData) =>
 export const getAlListingsofSpecificUser = (id) =>
   axios.get(`${API_BASE_URL}/user/${id}`, { withCredentials: true });
 
+export const Updatelistings = (id, data) =>
+  axios.put(`${API_BASE_URL}/update/${id}`, data, { withCredentials: true });
   
 
 

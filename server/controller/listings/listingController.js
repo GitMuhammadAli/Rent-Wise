@@ -372,63 +372,88 @@ exports.placeBid = async (req, res) => {
 
 exports.UpdateListings = async (req, res) => {
     const { id } = req.params;
+    const { removedImages = '[]', removedVideos = '[]', updatedFields } = req.body;
 
-    const existingListing = await RentalItem.findById(id).populate("images").populate("videos");
+    // Parse JSON strings into arrays
+    const parsedRemovedImages = JSON.parse(removedImages);
+    const parsedRemovedVideos = JSON.parse(removedVideos);
+    const amenities = JSON.parse(req.body.amenities || '[]');
+const rules = JSON.parse(req.body.rules || '[]');
 
 
-    console.log(existingListing);
-    if (!existingListing) {
-        return res.status(404).json({ error: "Listing not found" });
-    }
     const {
         title,
         description,
         price,
         category,
         priceUnit,
-        amenities = [],
-        rules = [],
         location,
         availability,
         averageRating,
         status
     } = req.body;
 
-    console.log("body ", req.body);
+    console.log("body is" , req.body)
     const missingFields = [];
     if (!title) missingFields.push("title");
     if (!description) missingFields.push("description");
     if (!price) missingFields.push("price");
     if (!category) missingFields.push("category");
     if (!priceUnit) missingFields.push("priceUnit");
-    if (!location) missingFields.push("location");
 
     if (missingFields.length) {
-        return res.status(STATUS.BAD_REQUEST).json({
-            error: `${LISTINGS.ERROR_MISSING_REQUIRED_FIELDS} ${missingFields.join(", ")}. ${LISTINGS.PLEASE_PROVIDE_ALL_REQUIRED_FIELDS}`.trim()
+        return res.status(400).json({
+            error: `Missing required fields: ${missingFields.join(", ")}. Please provide all required fields.`.trim()
         });
     }
 
     try {
+        const existingListing = await RentalItem.findById(id);
+        console.log("existingListing", existingListing);
+
+        if (!existingListing) {
+            return res.status(404).json({ error: "Listing not found" });
+        }
 
         let newImageIds = existingListing.images.map(img => img._id);
         let newVideoIds = existingListing.videos.map(vid => vid._id);
 
+        // Handle removed images
+        for (const imageObj of parsedRemovedImages) {
+            const image = await Image.findByIdAndDelete(imageObj._id);
+            if (image) {
+                const filePath = path.join(__dirname, `../uploads/media/${existingListing.owner}/${path.basename(image.url)}`);
+                removeFile(filePath);
+            }
+        }
+        
+
+        // Handle removed videos
+        for (const videoObj of parsedRemovedVideos) {
+            const video = await Video.findByIdAndDelete(videoObj._id);
+            if (video) {
+                const filePath = path.join(__dirname, `../uploads/media/${existingListing.owner}/${path.basename(video.url)}`);
+                removeFile(filePath);
+            }
+        }
+
+        console.log("owner id  " , existingListing.owner) 
+        // Handle new image uploads
         if (req.files && req.files['images']) {
             const newImages = await Image.insertMany(req.files['images'].map(file => ({
                 url: `/uploads/media/${existingListing.owner}/${file.filename}`,
                 caption: ""
-            })));
-
+            })));            
+            console.log("newImages", newImages);
             newImageIds = [...newImageIds, ...newImages.map(img => img._id)];
         }
 
+        // Handle new video uploads
         if (req.files && req.files['videos']) {
             const newVideos = await Video.insertMany(req.files['videos'].map(file => ({
                 url: `/uploads/media/${existingListing.owner}/${file.filename}`,
                 caption: ""
             })));
-
             newVideoIds = [...newVideoIds, ...newVideos.map(vid => vid._id)];
         }
 
@@ -460,8 +485,23 @@ exports.UpdateListings = async (req, res) => {
     }
 };
 
-
-
+// Utility function to remove files from storage
+function removeFile(filePath) {
+    const fullPath = path.resolve(__dirname, filePath);
+    fs.access(fullPath, fs.constants.F_OK, (err) => {
+        if (err) {
+            console.error(`File does not exist: ${fullPath}`);
+        } else {
+            fs.unlink(fullPath, (unlinkErr) => {
+                if (unlinkErr) {
+                    console.error(`Error deleting file: ${fullPath}`, unlinkErr);
+                } else {
+                    console.log(`Deleted file: ${fullPath}`);
+                }
+            });
+        }
+    });
+}
 
 
 exports.DeleteListings = async (req, res) => {

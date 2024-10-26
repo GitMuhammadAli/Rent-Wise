@@ -27,6 +27,7 @@ import ListingDetails from "../src/Pages/Listings/ListingDetails";
 import Dashboard from "./Pages/Dashboard/Dashboard";
 import MyAccount from "../src/Pages/Account/MyAccount";
 import DashboardUserContextProvider from "./hooks/DashboardUserContext";
+import UpdateListing from "./Pages/Listings/updateListing";
 
 function YourComponent() {
   const token = Cookies.get("jwt");
@@ -55,13 +56,10 @@ const router = createBrowserRouter(
         <Route path="/you" element={<YourComponent />} />
         <Route path="*" element={<div>404 Not Found</div>} />
         <Route path="/auth/otp" element={<Otp/>} />
-        
-
       </Route>
       
       {/* home */}
       
-
       {/* Main Application Routes */}
       <Route element={<MainLayout />}>
         <Route element={<ProtectedRoute requiredRole="user" />}>
@@ -69,12 +67,13 @@ const router = createBrowserRouter(
         </Route>
 
         <Route path="/getAll" element={<GetAllListings />} />
-      {/* <Route path="/createListings" element={<MakeListing />} /> */}
-      <Route path="/createNewListings" element={<NewListings />} />
-      <Route path="/media" element={<Media />} />
-      <Route path="/rental/:id" element={<ListingDetails />} />
-      <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/acc" element={<MyAccount />} />
+        {/* <Route path="/createListings" element={<MakeListing />} /> */}
+        <Route path="/createNewListings" element={<NewListings />} />
+        <Route path="/media" element={<Media />} />
+        <Route path="/rental/:id" element={<ListingDetails />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/acc" element={<MyAccount />} />
+        <Route path="/listings/:id" element={<UpdateListing />} />
 
         {/* <Route element={<ProtectedRoute requiredRole="user" />}>
           <Route path="/getAll" element={<GetAllListings />} />
@@ -96,12 +95,11 @@ function App() {
   return (
     <AuthProvider>
       <DashboardUserContextProvider>
-      <ListingsProvider>
-        <RouterProvider router={router} />
-      </ListingsProvider>
+        <ListingsProvider>
+          <RouterProvider router={router} />
+        </ListingsProvider>
       </DashboardUserContextProvider>
     </AuthProvider>
-
   );
 }
 
