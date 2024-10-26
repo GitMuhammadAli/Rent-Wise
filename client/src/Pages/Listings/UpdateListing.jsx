@@ -1,10 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Box, Button, FormControl, FormLabel, Input, Stack, Heading, Textarea, Select, useToast, IconButton, Image
+  Box,
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  Stack,
+  Heading,
+  Textarea,
+  Select,
+  useToast,
+  Flex,
+  Image
 } from "@chakra-ui/react";
 import { useParams, useNavigate } from 'react-router-dom';
 import { getOneUserListingAPI, Updatelistings } from '../../Api/ListingApi';
-import { CloseIcon } from '@chakra-ui/icons';
 
 const baseUrl = `${import.meta.env.VITE_BACK_END_URL}`;
 
@@ -19,14 +29,17 @@ export default function UpdateListing() {
     amenities: [],
     rules: [],
   });
-  const [images, setImages] = useState([]);
-  const [imagePreviews, setImagePreviews] = useState([]);
+
+  // Media states
+  const [newImages, setNewImages] = useState([]);
+  const [newVideos, setNewVideos] = useState([]);
   const [existingImages, setExistingImages] = useState([]);
-  const [removedImages, setRemovedImages] = useState([]);
-  const [videos, setVideos] = useState([]);
-  const [videoPreviews, setVideoPreviews] = useState([]);
   const [existingVideos, setExistingVideos] = useState([]);
+  const [removedImages, setRemovedImages] = useState([]);
   const [removedVideos, setRemovedVideos] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState([]);
+  const [videoPreviews, setVideoPreviews] = useState([]);
+
   const toast = useToast();
   const navigate = useNavigate();
 
@@ -35,7 +48,7 @@ export default function UpdateListing() {
       try {
         const response = await getOneUserListingAPI(id);
         const listing = response.data;
-        console.log("listing", listing);
+        
         setFormData({
           title: listing.title,
           description: listing.description,
@@ -45,6 +58,7 @@ export default function UpdateListing() {
           amenities: listing.amenities || [],
           rules: listing.rules || [],
         });
+
         setExistingImages(listing.images || []);
         setExistingVideos(listing.videos || []);
         setImagePreviews(listing.images.map(img => `${baseUrl}${img.url}`));
@@ -69,70 +83,67 @@ export default function UpdateListing() {
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
-    setImages([...images, ...files]);
+    setNewImages(prev => [...prev, ...files]);
     const previewUrls = files.map(file => URL.createObjectURL(file));
-    setImagePreviews([...imagePreviews, ...previewUrls]);
+    setImagePreviews(prev => [...prev, ...previewUrls]);
   };
 
   const handleVideoChange = (e) => {
     const files = Array.from(e.target.files);
-    setVideos([...videos, ...files]);
+    setNewVideos(prev => [...prev, ...files]);
     const previewUrls = files.map(file => URL.createObjectURL(file));
-    setVideoPreviews([...videoPreviews, ...previewUrls]);
+    setVideoPreviews(prev => [...prev, ...previewUrls]);
   };
 
-  const handleRemoveImage = (index, isExisting) => {
+  const handleRemoveImage = (index, isExisting = false) => {
     if (isExisting) {
-      const removedImage = existingImages[index];
-      setRemovedImages([...removedImages, removedImage]);
-      setExistingImages(existingImages.filter((_, i) => i !== index));
-      setImagePreviews(imagePreviews.filter((_, i) => i !== index));
+      const imageToRemove = existingImages[index];
+      setRemovedImages(prev => [...prev, imageToRemove]);
+      setExistingImages(prev => prev.filter((_, i) => i !== index));
+      setImagePreviews(prev => prev.filter((_, i) => i !== index));
     } else {
-      const newImages = [...images];
-      newImages.splice(index, 1);
-      setImages(newImages);
-      const newPreviews = [...imagePreviews];
-      newPreviews.splice(index, 1);
-      setImagePreviews(newPreviews);
+      setNewImages(prev => prev.filter((_, i) => i !== index));
+      setImagePreviews(prev => prev.filter((_, i) => i !== index + existingImages.length));
     }
   };
 
-  const handleRemoveVideo = (index, isExisting) => {
+  const handleRemoveVideo = (index, isExisting = false) => {
     if (isExisting) {
-      const removedVideo = existingVideos[index];
-      setRemovedVideos([...removedVideos, removedVideo]);
-      setExistingVideos(existingVideos.filter((_, i) => i !== index));
-      setVideoPreviews(videoPreviews.filter((_, i) => i !== index));
+      const videoToRemove = existingVideos[index];
+      setRemovedVideos(prev => [...prev, videoToRemove]);
+      setExistingVideos(prev => prev.filter((_, i) => i !== index));
+      setVideoPreviews(prev => prev.filter((_, i) => i !== index));
     } else {
-      const newVideos = [...videos];
-      newVideos.splice(index, 1);
-      setVideos(newVideos);
-      const newPreviews = [...videoPreviews];
-      newPreviews.splice(index, 1);
-      setVideoPreviews(newPreviews);
+      setNewVideos(prev => prev.filter((_, i) => i !== index));
+      setVideoPreviews(prev => prev.filter((_, i) => i !== index + existingVideos.length));
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const updateData = new FormData();
-    updateData.append('title', formData.title);
-    updateData.append('description', formData.description);
-    updateData.append('price', formData.price);
-    updateData.append('category', formData.category);
-    updateData.append('priceUnit', formData.priceUnit);
-    updateData.append('amenities', JSON.stringify(formData.amenities));
-    updateData.append('rules', JSON.stringify(formData.rules));
+
+    // Append basic form data
+    Object.keys(formData).forEach(key => {
+      if (Array.isArray(formData[key])) {
+        updateData.append(key, JSON.stringify(formData[key]));
+      } else {
+        updateData.append(key, formData[key]);
+      }
+    });
+
+    // Append media files and data
+    newImages.forEach(image => updateData.append('images', image));
+    newVideos.forEach(video => updateData.append('videos', video));
+    updateData.append('existingImages', JSON.stringify(existingImages));
+    updateData.append('existingVideos', JSON.stringify(existingVideos));
     updateData.append('removedImages', JSON.stringify(removedImages));
     updateData.append('removedVideos', JSON.stringify(removedVideos));
-    images.forEach((file) => updateData.append('images', file));
-    videos.forEach((file) => updateData.append('videos', file));
 
     try {
       await Updatelistings(id, updateData);
       toast({
-        title: "Listing updated",
-        description: "The listing has been updated successfully.",
+        title: "Listing updated successfully",
         status: "success",
         duration: 3000,
         isClosable: true,
@@ -141,7 +152,7 @@ export default function UpdateListing() {
     } catch (error) {
       toast({
         title: "Update failed",
-        description: error.response?.data?.error || "Could not update listing.",
+        description: error.response?.data?.error || "Failed to update listing",
         status: "error",
         duration: 3000,
         isClosable: true,
@@ -151,21 +162,24 @@ export default function UpdateListing() {
 
   return (
     <Box p={6}>
-      <Heading>Update Listing</Heading>
+      <Heading mb={6}>Update Listing</Heading>
       <form onSubmit={handleSubmit}>
         <Stack spacing={4}>
           <FormControl isRequired>
             <FormLabel>Title</FormLabel>
             <Input name="title" value={formData.title} onChange={handleInputChange} />
           </FormControl>
+
           <FormControl isRequired>
             <FormLabel>Description</FormLabel>
             <Textarea name="description" value={formData.description} onChange={handleInputChange} />
           </FormControl>
+
           <FormControl isRequired>
             <FormLabel>Price</FormLabel>
             <Input name="price" type="number" value={formData.price} onChange={handleInputChange} />
           </FormControl>
+
           <FormControl isRequired>
             <FormLabel>Category</FormLabel>
             <Select name="category" value={formData.category} onChange={handleInputChange}>
@@ -175,6 +189,7 @@ export default function UpdateListing() {
               <option value="house">House</option>
             </Select>
           </FormControl>
+
           <FormControl isRequired>
             <FormLabel>Price Unit</FormLabel>
             <Select name="priceUnit" value={formData.priceUnit} onChange={handleInputChange}>
@@ -185,35 +200,156 @@ export default function UpdateListing() {
             </Select>
           </FormControl>
 
-          {/* Images Section */}
+          {formData.category && formData.category !== 'car' && (
+            <FormControl>
+              <FormLabel>Amenities</FormLabel>
+              {formData.amenities.map((amenity, index) => (
+                <Flex key={index} mb={2}>
+                  <Input
+                    value={amenity}
+                    onChange={(e) => {
+                      const newAmenities = [...formData.amenities];
+                      newAmenities[index] = e.target.value;
+                      setFormData({ ...formData, amenities: newAmenities });
+                    }}
+                    placeholder={`Amenity ${index + 1}`}
+                    mr={2}
+                  />
+                  <Button onClick={() => {
+                    const newAmenities = formData.amenities.filter((_, i) => i !== index);
+                    setFormData({ ...formData, amenities: newAmenities });
+                  }}>Remove</Button>
+                </Flex>
+              ))}
+              <Button onClick={() => setFormData({ 
+                ...formData, 
+                amenities: [...formData.amenities, ''] 
+              })}>Add Amenity</Button>
+            </FormControl>
+          )}
+
+          <FormControl>
+            <FormLabel>Rules</FormLabel>
+            {formData.rules.map((rule, index) => (
+              <Flex key={index} mb={2}>
+                <Input
+                  value={rule}
+                  onChange={(e) => {
+                    const newRules = [...formData.rules];
+                    newRules[index] = e.target.value;
+                    setFormData({ ...formData, rules: newRules });
+                  }}
+                  placeholder={`Rule ${index + 1}`}
+                  mr={2}
+                />
+                <Button onClick={() => {
+                  const newRules = formData.rules.filter((_, i) => i !== index);
+                  setFormData({ ...formData, rules: newRules });
+                }}>Remove</Button>
+              </Flex>
+            ))}
+            <Button onClick={() => setFormData({ 
+              ...formData, 
+              rules: [...formData.rules, ''] 
+            })}>Add Rule</Button>
+          </FormControl>
+
+          {/* Media Sections */}
           <FormControl>
             <FormLabel>Images</FormLabel>
-            <Input type="file" multiple accept="image/*" onChange={handleImageChange} />
-            <Box display="flex" flexWrap="wrap" gap={2} mt={2}>
-              {imagePreviews.map((src, index) => (
-                <Box key={index} position="relative">
-                  <Image src={src} alt={`preview-${index}`} boxSize="80px" />
-                  <IconButton icon={<CloseIcon />} size="xs" position="absolute" top={1} right={1} colorScheme="red" onClick={() => handleRemoveImage(index, index < existingImages.length)} />
+            <Input type="file" accept="image/*" multiple onChange={handleImageChange} />
+            <Flex wrap="wrap" gap={4} mt={4}>
+              {existingImages.map((image, index) => (
+                <Box key={`existing-image-${index}`} position="relative">
+                  <Image 
+                    src={`${baseUrl}${image.url}`} 
+                    alt={`Existing ${index}`} 
+                    boxSize="150px" 
+                    objectFit="cover"
+                  />
+                  <Button
+                    position="absolute"
+                    top={1}
+                    right={1}
+                    size="sm"
+                    colorScheme="red"
+                    onClick={() => handleRemoveImage(index, true)}
+                  >
+                    Remove
+                  </Button>
                 </Box>
               ))}
-            </Box>
+              
+              {newImages.map((_, index) => (
+                <Box key={`new-image-${index}`} position="relative">
+                  <Image 
+                    src={imagePreviews[index + existingImages.length]} 
+                    alt={`New ${index}`} 
+                    boxSize="150px" 
+                    objectFit="cover"
+                  />
+                  <Button
+                    position="absolute"
+                    top={1}
+                    right={1}
+                    size="sm"
+                    colorScheme="red"
+                    onClick={() => handleRemoveImage(index)}
+                  >
+                    Remove
+                  </Button>
+                </Box>
+              ))}
+            </Flex>
           </FormControl>
 
-          {/* Videos Section */}
           <FormControl>
             <FormLabel>Videos</FormLabel>
-            <Input type="file" multiple accept="video/*" onChange={handleVideoChange} />
-            <Box display="flex" flexWrap="wrap" gap={2} mt={2}>
-              {videoPreviews.map((src, index) => (
-                <Box key={index} position="relative">
-                  <video src={src} width="80px" height="80px" controls />
-                  <IconButton icon={<CloseIcon />} size="xs" position="absolute" top={1} right={1} colorScheme="red" onClick={() => handleRemoveVideo(index, index < existingVideos.length)} />
+            <Input type="file" accept="video/*" multiple onChange={handleVideoChange} />
+            <Flex wrap="wrap" gap={4} mt={4}>
+              {existingVideos.map((video, index) => (
+                <Box key={`existing-video-${index}`} position="relative">
+                  <video width="150" controls>
+                    <source src={`${baseUrl}${video.url}`} type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                  <Button
+                    position="absolute"
+                    top={1}
+                    right={1}
+                    size="sm"
+                    colorScheme="red"
+                    onClick={() => handleRemoveVideo(index, true)}
+                  >
+                    Remove
+                  </Button>
                 </Box>
               ))}
-            </Box>
+              
+              {newVideos.map((_, index) => (
+                <Box key={`new-video-${index}`} position="relative">
+                  <video width="150" controls>
+                    <source src={videoPreviews[index + existingVideos.length]} type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                  <Button
+                    position="absolute"
+                    top={1}
+                    right={1}
+                    size="sm"
+                    colorScheme="red"
+                    onClick={() => handleRemoveVideo(index)}
+                  >
+                    Remove
+                  </Button>
+                </Box>
+              ))}
+            </Flex>
           </FormControl>
 
-          <Button type="submit" colorScheme="blue" mt={4}>Update Listing</Button>
+          <Button type="submit" colorScheme="teal" size="lg">
+            Update Listing
+          </Button>
         </Stack>
       </form>
     </Box>

@@ -372,15 +372,6 @@ exports.placeBid = async (req, res) => {
 
 exports.UpdateListings = async (req, res) => {
     const { id } = req.params;
-    const { removedImages = '[]', removedVideos = '[]', updatedFields } = req.body;
-
-    // Parse JSON strings into arrays
-    const parsedRemovedImages = JSON.parse(removedImages);
-    const parsedRemovedVideos = JSON.parse(removedVideos);
-    const amenities = JSON.parse(req.body.amenities || '[]');
-const rules = JSON.parse(req.body.rules || '[]');
-
-
     const {
         title,
         description,
@@ -393,7 +384,16 @@ const rules = JSON.parse(req.body.rules || '[]');
         status
     } = req.body;
 
-    console.log("body is" , req.body)
+    console.log("Received request to update listing" , req.body);
+    // Parse JSON data
+    const parsedRemovedImages = JSON.parse(req.body.removedImages || '[]');
+    const parsedRemovedVideos = JSON.parse(req.body.removedVideos || '[]');
+    const parsedExistingImages = JSON.parse(req.body.existingImages || '[]');
+    const parsedExistingVideos = JSON.parse(req.body.existingVideos || '[]');
+    const amenities = JSON.parse(req.body.amenities || '[]');
+    const rules = JSON.parse(req.body.rules || '[]');
+
+    // Validate required fields
     const missingFields = [];
     if (!title) missingFields.push("title");
     if (!description) missingFields.push("description");
@@ -403,60 +403,58 @@ const rules = JSON.parse(req.body.rules || '[]');
 
     if (missingFields.length) {
         return res.status(400).json({
-            error: `Missing required fields: ${missingFields.join(", ")}. Please provide all required fields.`.trim()
+            error: `Missing required fields: ${missingFields.join(", ")}`
         });
     }
 
     try {
         const existingListing = await RentalItem.findById(id);
-        console.log("existingListing", existingListing);
-
         if (!existingListing) {
             return res.status(404).json({ error: "Listing not found" });
         }
 
-        let newImageIds = existingListing.images.map(img => img._id);
-        let newVideoIds = existingListing.videos.map(vid => vid._id);
-
-        // Handle removed images
+        // Handle removed media
         for (const imageObj of parsedRemovedImages) {
-            const image = await Image.findByIdAndDelete(imageObj._id);
-            if (image) {
-                const filePath = path.join(__dirname, `../uploads/media/${existingListing.owner}/${path.basename(image.url)}`);
-                removeFile(filePath);
-            }
+            await Image.findByIdAndDelete(imageObj._id);
+            const filePath = path.join(__dirname, `../uploads/media/${existingListing.owner}/${path.basename(imageObj.url)}`);
+            await removeFile(filePath);
         }
-        
 
-        // Handle removed videos
         for (const videoObj of parsedRemovedVideos) {
-            const video = await Video.findByIdAndDelete(videoObj._id);
-            if (video) {
-                const filePath = path.join(__dirname, `../uploads/media/${existingListing.owner}/${path.basename(video.url)}`);
-                removeFile(filePath);
-            }
+            await Video.findByIdAndDelete(videoObj._id);
+            const filePath = path.join(__dirname, `../uploads/media/${existingListing.owner}/${path.basename(videoObj.url)}`);
+            await removeFile(filePath);
         }
 
-        console.log("owner id  " , existingListing.owner) 
-        // Handle new image uploads
-        if (req.files && req.files['images']) {
-            const newImages = await Image.insertMany(req.files['images'].map(file => ({
-                url: `/uploads/media/${existingListing.owner}/${file.filename}`,
-                caption: ""
-            })));            
-            console.log("newImages", newImages);
-            newImageIds = [...newImageIds, ...newImages.map(img => img._id)];
-        }
+        // Handle new media
+        let finalImageIds = parsedExistingImages.map(img => img._id);
+        let finalVideoIds = parsedExistingVideos.map(vid => vid._id);
 
-        // Handle new video uploads
-        if (req.files && req.files['videos']) {
-            const newVideos = await Video.insertMany(req.files['videos'].map(file => ({
-                url: `/uploads/media/${existingListing.owner}/${file.filename}`,
-                caption: ""
-            })));
-            newVideoIds = [...newVideoIds, ...newVideos.map(vid => vid._id)];
-        }
+        // Process new images
+       // Process new images
+if (req.files?.['newImages']) {
+    const newImages = await Image.insertMany(
+        req.files['newImages'].map(file => ({
+            url: `/uploads/media/${existingListing.owner.toString()}/${file.filename}`,
+            caption: ""
+        }))
+    );
+    finalImageIds = [...finalImageIds, ...newImages.map(img => img._id)];
+}
 
+// Process new videos
+if (req.files?.['newVideos']) {
+    const newVideos = await Video.insertMany(
+        req.files['newVideos'].map(file => ({
+            url: `/uploads/media/${existingListing.owner.toString()}/${file.filename}`,
+            caption: ""
+        }))
+    );
+    finalVideoIds = [...finalVideoIds, ...newVideos.map(vid => vid._id)];
+}
+
+
+        // Update listing with all changes
         const updatedListing = await RentalItem.findByIdAndUpdate(
             id,
             {
@@ -469,8 +467,8 @@ const rules = JSON.parse(req.body.rules || '[]');
                 amenities,
                 rules,
                 availability,
-                images: newImageIds,
-                videos: newVideoIds,
+                images: finalImageIds,
+                videos: finalVideoIds,
                 averageRating,
                 status,
                 updatedAt: Date.now(),
@@ -485,23 +483,21 @@ const rules = JSON.parse(req.body.rules || '[]');
     }
 };
 
-// Utility function to remove files from storage
-function removeFile(filePath) {
-    const fullPath = path.resolve(__dirname, filePath);
-    fs.access(fullPath, fs.constants.F_OK, (err) => {
-        if (err) {
-            console.error(`File does not exist: ${fullPath}`);
-        } else {
-            fs.unlink(fullPath, (unlinkErr) => {
-                if (unlinkErr) {
-                    console.error(`Error deleting file: ${fullPath}`, unlinkErr);
-                } else {
-                    console.log(`Deleted file: ${fullPath}`);
-                }
-            });
-        }
+// Utility function to remove files
+const removeFile = (filePath) => {
+    return new Promise((resolve, reject) => {
+        fs.unlink(filePath, (err) => {
+            if (err) {
+                console.error(`Error deleting file: ${filePath}`, err);
+                reject(err);
+            } else {
+                console.log(`Successfully deleted file: ${filePath}`);
+                resolve();
+            }
+        });
     });
-}
+};
+
 
 
 exports.DeleteListings = async (req, res) => {

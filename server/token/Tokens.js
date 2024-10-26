@@ -102,7 +102,17 @@ const generatetokenForOtp = async (
 };
 
 const decodingToken = async (token, key) => {
-  return jsonwebtoken.verify(token, key);
+  try {
+    
+    const decoded = jsonwebtoken.verify(token, key);
+    return decoded;
+  } catch (error) {
+      if (error.name === 'TokenExpiredError') {
+        return res.status(401).json({ message: "Token has expired, please log in again." });
+      }
+  return res.status(401).json({ message: "login again" });
+  }
+
 };
 
 const setEncryptedCookieForOtp = (res, cookieData) => {
