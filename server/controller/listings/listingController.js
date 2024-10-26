@@ -368,7 +368,19 @@ exports.placeBid = async (req, res) => {
 };
 
 
-
+const removeFile = (filePath) => {
+    return new Promise((resolve, reject) => {
+        fs.unlink(filePath, (err) => {
+            if (err) {
+                console.error(`Error deleting file: ${filePath}`, err);
+                reject(err);
+            } else {
+                console.log(`Successfully deleted file: ${filePath}`);
+                resolve();
+            }
+        });
+    });
+};
 
 exports.UpdateListings = async (req, res) => {
     const { id } = req.params;
@@ -384,7 +396,8 @@ exports.UpdateListings = async (req, res) => {
         status
     } = req.body;
 
-    console.log("Received request to update listing" , req.body);
+    console.log("Received request to update listing", req.body);
+
     // Parse JSON data
     const parsedRemovedImages = JSON.parse(req.body.removedImages || '[]');
     const parsedRemovedVideos = JSON.parse(req.body.removedVideos || '[]');
@@ -416,13 +429,13 @@ exports.UpdateListings = async (req, res) => {
         // Handle removed media
         for (const imageObj of parsedRemovedImages) {
             await Image.findByIdAndDelete(imageObj._id);
-            const filePath = path.join(__dirname, `../uploads/media/${existingListing.owner}/${path.basename(imageObj.url)}`);
+            const filePath = path.resolve(`uploads/media/${existingListing.owner}/${path.basename(imageObj.url)}`);
             await removeFile(filePath);
         }
 
         for (const videoObj of parsedRemovedVideos) {
             await Video.findByIdAndDelete(videoObj._id);
-            const filePath = path.join(__dirname, `../uploads/media/${existingListing.owner}/${path.basename(videoObj.url)}`);
+            const filePath = path.resolve(`uploads/media/${existingListing.owner}/${path.basename(videoObj.url)}`);
             await removeFile(filePath);
         }
 
@@ -431,28 +444,26 @@ exports.UpdateListings = async (req, res) => {
         let finalVideoIds = parsedExistingVideos.map(vid => vid._id);
 
         // Process new images
-       // Process new images
-if (req.files?.['newImages']) {
-    const newImages = await Image.insertMany(
-        req.files['newImages'].map(file => ({
-            url: `/uploads/media/${existingListing.owner.toString()}/${file.filename}`,
-            caption: ""
-        }))
-    );
-    finalImageIds = [...finalImageIds, ...newImages.map(img => img._id)];
-}
+        if (req.files?.['images']) {
+            const newImages = await Image.insertMany(
+                req.files['images'].map(file => ({
+                    url: `/uploads/media/${existingListing.owner}/${file.filename}`,
+                    caption: ""
+                }))
+            );
+            finalImageIds = [...finalImageIds, ...newImages.map(img => img._id)];
+        }
 
-// Process new videos
-if (req.files?.['newVideos']) {
-    const newVideos = await Video.insertMany(
-        req.files['newVideos'].map(file => ({
-            url: `/uploads/media/${existingListing.owner.toString()}/${file.filename}`,
-            caption: ""
-        }))
-    );
-    finalVideoIds = [...finalVideoIds, ...newVideos.map(vid => vid._id)];
-}
-
+        // Process new videos
+        if (req.files?.['vedios']) {
+            const newVideos = await Video.insertMany(
+                req.files['vedios'].map(file => ({
+                    url: `/uploads/media/${existingListing.owner}/${file.filename}`,
+                    caption: ""
+                }))
+            );
+            finalVideoIds = [...finalVideoIds, ...newVideos.map(vid => vid._id)];
+        }
 
         // Update listing with all changes
         const updatedListing = await RentalItem.findByIdAndUpdate(
@@ -483,20 +494,133 @@ if (req.files?.['newVideos']) {
     }
 };
 
-// Utility function to remove files
-const removeFile = (filePath) => {
-    return new Promise((resolve, reject) => {
-        fs.unlink(filePath, (err) => {
-            if (err) {
-                console.error(`Error deleting file: ${filePath}`, err);
-                reject(err);
-            } else {
-                console.log(`Successfully deleted file: ${filePath}`);
-                resolve();
-            }
-        });
-    });
-};
+// exports.UpdateListings = async (req, res) => {
+//     const { id } = req.params;
+//     const {
+//         title,
+//         description,
+//         price,
+//         category,
+//         priceUnit,
+//         location,
+//         availability,
+//         averageRating,
+//         status
+//     } = req.body;
+
+//     console.log("Received request to update listing" , req.body);
+//     // Parse JSON data
+//     const parsedRemovedImages = JSON.parse(req.body.removedImages || '[]');
+//     const parsedRemovedVideos = JSON.parse(req.body.removedVideos || '[]');
+//     const parsedExistingImages = JSON.parse(req.body.existingImages || '[]');
+//     const parsedExistingVideos = JSON.parse(req.body.existingVideos || '[]');
+//     const amenities = JSON.parse(req.body.amenities || '[]');
+//     const rules = JSON.parse(req.body.rules || '[]');
+
+//     // Validate required fields
+//     const missingFields = [];
+//     if (!title) missingFields.push("title");
+//     if (!description) missingFields.push("description");
+//     if (!price) missingFields.push("price");
+//     if (!category) missingFields.push("category");
+//     if (!priceUnit) missingFields.push("priceUnit");
+
+//     if (missingFields.length) {
+//         return res.status(400).json({
+//             error: `Missing required fields: ${missingFields.join(", ")}`
+//         });
+//     }
+
+//     try {
+//         const existingListing = await RentalItem.findById(id);
+//         if (!existingListing) {
+//             return res.status(404).json({ error: "Listing not found" });
+//         }
+
+//         // Handle removed media
+//         for (const imageObj of parsedRemovedImages) {
+//             await Image.findByIdAndDelete(imageObj._id);
+//             const filePath = path.resolve(__dirname, `../uploads/media/${existingListing.owner}/${path.basename(imageObj.url)}`);
+//             await removeFile(filePath);
+//         }
+
+//         for (const videoObj of parsedRemovedVideos) {
+//             await Video.findByIdAndDelete(videoObj._id);
+//             const filePath = path.resolve(__dirname, `../uploads/media/${existingListing.owner}/${path.basename(videoObj.url)}`);
+//             await removeFile(filePath);
+//         }
+
+//         // Handle new media
+//         let finalImageIds = parsedExistingImages.map(img => img._id);
+//         let finalVideoIds = parsedExistingVideos.map(vid => vid._id);
+
+//         // Process new images
+//        // Process new images
+// if (req.files?.['images']) {
+//     const newImages = await Image.insertMany(
+//         req.files['images'].map(file => ({
+//             url: `/uploads/media/${existingListing.owner}/${file.filename}`,
+//             caption: ""
+//         }))
+//     );
+//     finalImageIds = [...finalImageIds, ...newImages.map(img => img._id)];
+// }
+
+// // Process new videos
+// if (req.files?.['vedios']) {
+//     const newVideos = await Video.insertMany(
+//         req.files['vedios'].map(file => ({
+//             url: `/uploads/media/${existingListing.owner}/${file.filename}`,
+//             caption: ""
+//         }))
+//     );
+//     finalVideoIds = [...finalVideoIds, ...newVideos.map(vid => vid._id)];
+// }
+
+
+//         // Update listing with all changes
+//         const updatedListing = await RentalItem.findByIdAndUpdate(
+//             id,
+//             {
+//                 title,
+//                 description,
+//                 price,
+//                 category,
+//                 priceUnit,
+//                 location,
+//                 amenities,
+//                 rules,
+//                 availability,
+//                 images: finalImageIds,
+//                 videos: finalVideoIds,
+//                 averageRating,
+//                 status,
+//                 updatedAt: Date.now(),
+//             },
+//             { new: true, runValidators: true }
+//         );
+
+//         res.json(updatedListing);
+//     } catch (error) {
+//         console.error("Error updating listing:", error);
+//         res.status(500).json({ error: "Failed to update listing", details: error.message });
+//     }
+// };
+
+// // Utility function to remove files
+// const removeFile = (filePath) => {
+//     return new Promise((resolve, reject) => {
+//         fs.unlink(filePath, (err) => {
+//             if (err) {
+//                 console.error(`Error deleting file: ${filePath}`, err);
+//                 reject(err);
+//             } else {
+//                 console.log(`Successfully deleted file: ${filePath}`);
+//                 resolve();
+//             }
+//         });
+//     });
+// };
 
 
 

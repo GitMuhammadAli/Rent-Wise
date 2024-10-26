@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useAuth } from "../../hooks/AuthContext";
 import {
   Box,
   Button,
@@ -17,9 +18,10 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getOneUserListingAPI, Updatelistings } from '../../Api/ListingApi';
 
 const baseUrl = `${import.meta.env.VITE_BACK_END_URL}`;
-
 export default function UpdateListing() {
   const { id } = useParams();
+const { user } = useAuth();
+
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -121,6 +123,16 @@ export default function UpdateListing() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!user) {
+        toast({
+          title: "Not authenticated.",
+          description: "Please log in to upload listing.",
+          status: "warning",
+          duration: 3000,
+          isClosable: true,
+        });
+        return;
+      }
     const updateData = new FormData();
 
     // Append basic form data
@@ -131,7 +143,7 @@ export default function UpdateListing() {
         updateData.append(key, formData[key]);
       }
     });
-
+    updateData.append('owner', user._id);
     // Append media files and data
     newImages.forEach(image => updateData.append('images', image));
     newVideos.forEach(video => updateData.append('videos', video));

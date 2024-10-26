@@ -11,6 +11,7 @@ const UserDynamicfile = (directory) => {
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     const userId = req.body.owner; 
+    console.log("owner id in media is" ,userId )
     const userDirectory = path.join(__dirname, `../uploads/media/${userId}`);
     UserDynamicfile(userDirectory);
     cb(null, userDirectory);
