@@ -167,7 +167,7 @@ export default function OwnerDash() {
                         <Td fontSize={{ base: "xs", sm: "sm" }} maxW={{ base: "100px", sm: "150px", md: "200px" }} overflow="hidden" textOverflow="ellipsis" whiteSpace="nowrap">
                           {booking.amenities && 
                             <Text>
-                              {JSON.parse(booking.amenities).join(', ')}
+                              {(booking.amenities).join(',')}
                             </Text>
                           }
                         </Td>

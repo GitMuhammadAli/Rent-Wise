@@ -1,3 +1,16 @@
+process.on('uncaughtException', (error) => {
+  console.error('Uncaught Exception:', error);
+logger.error(`Unhandled Rejection: ${reason}`);
+
+  // Optionally, you might want to log this to an external service
+  // Optionally, restart the server or exit the process if needed
+});
+
+// Global handler for unhandled promise rejections
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection:', reason);
+logger.error(`Unhandled Rejection: ${reason}`);
+});
 require("dotenv").config();
 const express = require("express");
 const session = require("express-session");
@@ -13,6 +26,7 @@ const listingRoutes = require("./routes/listings/listingRoutes");
 const dashboardRoutes = require("./routes/dashboard/dashboardRoute");
 const logger = require("./utils/logger");
 const path = require('path');
+const errorHandler = require("./middleware/errorHandler");
 
 
 connectDB();
@@ -54,7 +68,7 @@ app.use(
     httpOnly: false,
     // secure: process.env.NODE_ENV === 'production', 
     sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
-    maxAge: 7 * 24 * 60 * 60 * 1000,
+    maxAge: 30 * 24 * 60 * 60 * 1000,
   },
 }));
 
@@ -69,7 +83,14 @@ app.use((req, res, next) => {
   logger.info(`${req.method} ${req.url} ${req.hostname}`);
   next();
 })
-
+app.get('/error-demo', (req, res, next) => {
+  try {
+    throw new Error("This is a custom error message");
+  } catch (error) {
+    error.statusCode = 400; // Set a custom status code if needed
+    next(error); // Pass error to custom error handler
+  }
+});
 
 
 // Routes
@@ -77,6 +98,9 @@ app.use("/", home);
 app.use("/auth", userRoutes);
 app.use("/listings", listingRoutes);
 app.use("/dashboard" , dashboardRoutes)
+
+
+app.use(errorHandler);
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

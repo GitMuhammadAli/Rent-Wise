@@ -28,6 +28,7 @@ export default function MyAccount() {
         setUsername(response.data.user.name);
         setUserEmail(response.data.user.email);
         setAvatar(`${import.meta.env.VITE_BACK_END_URL}${response.data.user.imageUrl}`);
+        setBio(response.data.user.bio);
         setIsThirdPartyUser(!!response.data.user.googleId || !!response.data.user.facebookId);
       } catch (err) {
         console.log(err);
