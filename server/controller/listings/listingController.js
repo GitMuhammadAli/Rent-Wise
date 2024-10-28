@@ -370,18 +370,55 @@ exports.placeBid = async (req, res) => {
 
 const removeFile = (filePath) => {
     return new Promise((resolve, reject) => {
-        fs.unlink(filePath, (err) => {
+        fs.access(filePath, fs.constants.F_OK, (err) => {
             if (err) {
-                console.error(`Error deleting file: ${filePath}`, err);
-                reject(err);
-            } else {
+                console.warn(`File not found, skipping delete: ${filePath}`);
+                return resolve(); // Resolve even if the file is missing
+            }
+            fs.unlink(filePath, (err) => {
+                if (err) {
+                    console.error(`Error deleting file: ${filePath}`, err);
+                    return reject(err);
+                }
                 console.log(`Successfully deleted file: ${filePath}`);
                 resolve();
-            }
+            });
         });
     });
 };
 
+const cleanUpUnreferencedMedia = async (listingId) => {
+    try {
+        // Fetch the updated listing's images and videos
+        const listing = await RentalItem.findById(listingId).populate(['images', 'videos']);
+        if (!listing) throw new Error('Listing not found');
+
+        // Paths from the database
+        const referencedFiles = [
+            ...listing.images.map(img => path.basename(img.url)),
+            ...listing.videos.map(vid => path.basename(vid.url))
+        ];
+
+        // Path to the directory containing the listing's media files
+        const mediaDirPath = path.resolve(`uploads/media/${listing.owner}`);
+        
+        // List all files in the directory
+        const allFiles = await fs.promises.readdir(mediaDirPath);
+
+        // Files to delete: those not in `referencedFiles`
+        const unreferencedFiles = allFiles.filter(file => !referencedFiles.includes(file));
+
+        // Delete each unreferenced file
+        for (const file of unreferencedFiles) {
+            const filePath = path.join(mediaDirPath, file);
+            await fs.promises.unlink(filePath);
+            console.log(`Deleted unreferenced file: ${filePath}`);
+        }
+        
+    } catch (error) {
+        console.error('Error during cleanup:', error);
+    }
+};
 exports.UpdateListings = async (req, res) => {
     const { id } = req.params;
     const {
@@ -398,7 +435,6 @@ exports.UpdateListings = async (req, res) => {
 
     console.log("Received request to update listing", req.body);
 
-    // Parse JSON data
     const parsedRemovedImages = JSON.parse(req.body.removedImages || '[]');
     const parsedRemovedVideos = JSON.parse(req.body.removedVideos || '[]');
     const parsedExistingImages = JSON.parse(req.body.existingImages || '[]');
@@ -406,7 +442,6 @@ exports.UpdateListings = async (req, res) => {
     const amenities = JSON.parse(req.body.amenities || '[]');
     const rules = JSON.parse(req.body.rules || '[]');
 
-    // Validate required fields
     const missingFields = [];
     if (!title) missingFields.push("title");
     if (!description) missingFields.push("description");
@@ -419,12 +454,14 @@ exports.UpdateListings = async (req, res) => {
             error: `Missing required fields: ${missingFields.join(", ")}`
         });
     }
+    const uploadedFilePaths = [];
 
     try {
-        const existingListing = await RentalItem.findById(id);
+        const existingListing = await RentalItem.findById(id).populate("images").populate("videos");
         if (!existingListing) {
             return res.status(404).json({ error: "Listing not found" });
         }
+        console.log("Existing listing:", existingListing);
 
         // Handle removed media
         for (const imageObj of parsedRemovedImages) {
@@ -443,26 +480,35 @@ exports.UpdateListings = async (req, res) => {
         let finalImageIds = parsedExistingImages.map(img => img._id);
         let finalVideoIds = parsedExistingVideos.map(vid => vid._id);
 
-        // Process new images
-        if (req.files?.['images']) {
-            const newImages = await Image.insertMany(
-                req.files['images'].map(file => ({
-                    url: `/uploads/media/${existingListing.owner}/${file.filename}`,
-                    caption: ""
-                }))
-            );
-            finalImageIds = [...finalImageIds, ...newImages.map(img => img._id)];
-        }
+        try {
+            // Process new images
+            if (req.files?.['images']) {
+                const newImages = await Image.insertMany(
+                    req.files['images'].map(file => {
+                        const filePath = `/uploads/media/${existingListing.owner}/${file.filename}`;
+                        uploadedFilePaths.push(filePath);  // Track for potential cleanup
+                        return { url: filePath, caption: "" };
+                    })
+                );
+                finalImageIds = [...finalImageIds, ...newImages.map(img => img._id)];
+            }
 
-        // Process new videos
-        if (req.files?.['vedios']) {
-            const newVideos = await Video.insertMany(
-                req.files['vedios'].map(file => ({
-                    url: `/uploads/media/${existingListing.owner}/${file.filename}`,
-                    caption: ""
-                }))
-            );
-            finalVideoIds = [...finalVideoIds, ...newVideos.map(vid => vid._id)];
+            // Process new videos
+            if (req.files?.['videos']) {
+                const newVideos = await Video.insertMany(
+                    req.files['videos'].map(file => {
+                        const filePath = `/uploads/media/${existingListing.owner}/${file.filename}`;
+                        uploadedFilePaths.push(filePath);  // Track for potential cleanup
+                        return { url: filePath, caption: "" };
+                    })
+                );
+                finalVideoIds = [...finalVideoIds, ...newVideos.map(vid => vid._id)];
+            }
+        } catch (mediaError) {
+            // If any media insertion fails, delete all uploaded files
+            console.error("Error processing media:", mediaError);
+            await Promise.all(uploadedFilePaths.map(filePath => removeFile(path.resolve(filePath))));
+            return res.status(500).json({ error: "Failed to upload media files", details: mediaError.message });
         }
 
         // Update listing with all changes
@@ -486,13 +532,18 @@ exports.UpdateListings = async (req, res) => {
             },
             { new: true, runValidators: true }
         );
+        await cleanUpUnreferencedMedia(id);
 
+        console.log("Updated listing:", updatedListing);
+        
         res.json(updatedListing);
     } catch (error) {
         console.error("Error updating listing:", error);
+        await Promise.all(uploadedFilePaths.map(filePath => removeFile(path.resolve(filePath))));
         res.status(500).json({ error: "Failed to update listing", details: error.message });
     }
 };
+
 
 // exports.UpdateListings = async (req, res) => {
 //     const { id } = req.params;
