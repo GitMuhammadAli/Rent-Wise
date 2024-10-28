@@ -294,7 +294,7 @@ exports.CreateListings = async (req, res) => {
             // location: newLocation._id,
         });
 
-        if (biddingEnabled) {
+        if (biddingEnabled===true) {
             if (!minimumBid || !bidEndDate) {
                 return res.status(400).json({
                     error: "Bidding enabled but missing required fields: minimumBid and bidEndDate",
@@ -685,7 +685,7 @@ exports.GetListingsById = async (req, res) => {
         }
         res.json(listing);
     } catch (error) {
-        res.status(500).json({ error: "Fjadaddsad" });
+        res.status(500).json({ error: error.message });
     }
 }
 
