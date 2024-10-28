@@ -387,6 +387,38 @@ const removeFile = (filePath) => {
     });
 };
 
+const cleanUpUnreferencedMedia = async (listingId) => {
+    try {
+        // Fetch the updated listing's images and videos
+        const listing = await RentalItem.findById(listingId).populate(['images', 'videos']);
+        if (!listing) throw new Error('Listing not found');
+
+        // Paths from the database
+        const referencedFiles = [
+            ...listing.images.map(img => path.basename(img.url)),
+            ...listing.videos.map(vid => path.basename(vid.url))
+        ];
+
+        // Path to the directory containing the listing's media files
+        const mediaDirPath = path.resolve(`uploads/media/${listing.owner}`);
+        
+        // List all files in the directory
+        const allFiles = await fs.promises.readdir(mediaDirPath);
+
+        // Files to delete: those not in `referencedFiles`
+        const unreferencedFiles = allFiles.filter(file => !referencedFiles.includes(file));
+
+        // Delete each unreferenced file
+        for (const file of unreferencedFiles) {
+            const filePath = path.join(mediaDirPath, file);
+            await fs.promises.unlink(filePath);
+            console.log(`Deleted unreferenced file: ${filePath}`);
+        }
+        
+    } catch (error) {
+        console.error('Error during cleanup:', error);
+    }
+};
 exports.UpdateListings = async (req, res) => {
     const { id } = req.params;
     const {
@@ -500,7 +532,10 @@ exports.UpdateListings = async (req, res) => {
             },
             { new: true, runValidators: true }
         );
+        await cleanUpUnreferencedMedia(id);
 
+        console.log("Updated listing:", updatedListing);
+        
         res.json(updatedListing);
     } catch (error) {
         console.error("Error updating listing:", error);
