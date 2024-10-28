@@ -1,15 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { DollarSign, Users, Package, AlertCircle, BarChart2, Plus, Edit } from 'lucide-react';
 import { Box, Button, Card, CardBody, CardFooter, CardHeader, Divider, Flex, Heading, SimpleGrid, Stack, Table, Tbody, Td, Th, Thead, Tr, Text, TableContainer } from '@chakra-ui/react';
 import { useDasboardHook } from '../../hooks/DashboardUserContext';
 import { getAlListingsofSpecificUser } from '../../Api/ListingApi';
 import { Link } from 'react-router-dom';
+import { ListingsContext } from '../../hooks/ListingsContext';
 
 
 export default function OwnerDash() {
 const [count, setCount] = useState('');
-const {user,dispatch} = useDasboardHook();
-const [items, setItems] = useState([]);
+const {user} = useDasboardHook();
+const { state, dispatch} = useContext(ListingsContext); 
+// const [items, setItems] = useState([]);
+
+const { listings } = state; 
 const recentBookings = [
 { id: 1, item: 'Luxury Sedan', renter: 'John Doe', startDate: '2023-05-20', endDate: '2023-05-23', status: 'Active' },
 { id: 2, item: 'Mountain Bike', renter: 'Jane Smith', startDate: '2023-05-25', endDate: '2023-05-26', status: 'Upcoming' },
@@ -26,7 +30,9 @@ const response = await getAlListingsofSpecificUser(user_id)
 console.log("Response of user in ownerdash is: ", response.data);
 setCount(response.data.count)
 
-setItems(response.data.listing);
+
+// setItems(response.data.listing);
+dispatch({ type: 'GET_LISTINGS', payload: response.data.listing });
 console.log("listing in ownerdash are:" , response.data.listing);
 }
 }
@@ -144,7 +150,7 @@ Listings
 </Tr>
 </Thead>
 <Tbody>
-{items && items.length > 0 && items.map((booking,index) => (
+{listings && listings.length > 0 && listings.map((booking,index) => (
 <Tr key={index}>
 <Td fontSize={{ base: "xs", sm: "sm" }} fontWeight="medium">{booking.title}</Td>
 
