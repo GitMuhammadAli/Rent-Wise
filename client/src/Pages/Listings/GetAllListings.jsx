@@ -17,6 +17,8 @@ export default function GetAllListings() {
         console.log("Response is: ", response.data);
         
         dispatch({ type: 'GET_LISTINGS', payload: response.data });
+       
+        
       } catch (error) {
         console.error("Error fetching listings:", error);
       }
@@ -24,6 +26,10 @@ export default function GetAllListings() {
 
     fetchData();
   }, [dispatch]);
+
+  useEffect(()=>{
+    console.log("Current listings in get state in getAll:", listings)
+  },[listings])
 
   const categories = [
     { name: 'Cars', icon: FaCar, description: 'Rent a wide variety of cars for any occasion' },

@@ -61,9 +61,9 @@ export default function ListingDetails() {
       <h1>Details page is working for now</h1>
       <h1>{currentListing.title}</h1>
       <p>{currentListing.price}</p>
-      <p>{currentListing.bidding.minimumBid}</p>
+      {/* <p>{currentListing.bidding.minimumBid}</p>
       <p>{currentListing.bidding.bidIncrement}</p>
-      <p>{currentListing.bidding.bidEndDate}</p>
+      <p>{currentListing.bidding.bidEndDate}</p> */}
     
 
       {currentListing.images && currentListing.images.length > 0 && (

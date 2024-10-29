@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useAuth } from "../../hooks/AuthContext";
 import {
   Box,
@@ -12,15 +12,20 @@ import {
   Select,
   useToast,
   Flex,
-  Image
+  Image,
+  Text
 } from "@chakra-ui/react";
 import { useParams, useNavigate } from 'react-router-dom';
 import { getOneUserListingAPI, Updatelistings } from '../../Api/ListingApi';
+import { ListingsContext } from '../../hooks/ListingsContext';
 
 const baseUrl = `${import.meta.env.VITE_BACK_END_URL}`;
 export default function UpdateListing() {
   const { id } = useParams();
 const { user } = useAuth();
+const {state,dispatch } = useContext(ListingsContext); 
+const { listings,currentListing } = state; 
+
 
   const [formData, setFormData] = useState({
     title: '',
@@ -45,11 +50,21 @@ const { user } = useAuth();
   const toast = useToast();
   const navigate = useNavigate();
 
+ 
+
   useEffect(() => {
     async function fetchListing() {
       try {
         const response = await getOneUserListingAPI(id);
         const listing = response.data;
+
+
+        console.log("response updation", response.data);
+        dispatch({ type: "GET_ONE_LISTING", payload: listing });
+      
+       
+          
+        console.log("useeffect fetch lists", currentListing)
         
         setFormData({
           title: listing.title,
@@ -65,6 +80,10 @@ const { user } = useAuth();
         setExistingVideos(listing.videos || []);
         setImagePreviews(listing.images.map(img => `${baseUrl}${img.url}`));
         setVideoPreviews(listing.videos.map(vid => `${baseUrl}${vid.url}`));
+
+       
+
+       
       } catch (error) {
         toast({
           title: "Error loading listing",
@@ -73,10 +92,11 @@ const { user } = useAuth();
           duration: 3000,
           isClosable: true,
         });
+        
       }
     }
     fetchListing();
-  }, [id, toast]);
+  }, [id, toast,dispatch]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -153,15 +173,22 @@ const { user } = useAuth();
     updateData.append('removedVideos', JSON.stringify(removedVideos));
 
     try {
-      await Updatelistings(id, updateData);
+    
+      const response =  await Updatelistings(id, updateData);
+     dispatch({type:'UPDATE_LISTING', payload:response.data})
+     console.log("Listingggs are",listings)
+      
+
       toast({
         title: "Listing updated successfully",
         status: "success",
         duration: 3000,
         isClosable: true,
       });
+    
       navigate(`/listings/${id}`);
     } catch (error) {
+     
       toast({
         title: "Update failed",
         description: error.response?.data?.error || "Failed to update listing",
@@ -169,12 +196,23 @@ const { user } = useAuth();
         duration: 3000,
         isClosable: true,
       });
+      console.log('errrrrrr', error.response.data.details);
+      
     }
   };
 
   return (
-    <Box p={6}>
+    <Box p={6} bg={'white'} borderRadius={'10px'}>
+     
       <Heading mb={6}>Update Listing</Heading>
+      {
+        currentListing && <Box>
+          {
+            <Text>{currentListing.title}</Text>
+          }
+        </Box>
+      }
+
       <form onSubmit={handleSubmit}>
         <Stack spacing={4}>
           <FormControl isRequired>
@@ -359,7 +397,7 @@ const { user } = useAuth();
             </Flex>
           </FormControl>
 
-          <Button type="submit" colorScheme="teal" size="lg">
+          <Button alignSelf={'flex-end'} w={'fit-content'} type="submit" colorScheme="teal" size="lg">
             Update Listing
           </Button>
         </Stack>

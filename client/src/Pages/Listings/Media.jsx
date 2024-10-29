@@ -104,7 +104,7 @@ const handleSubmit = async (e) => {
   }
 
  
-  if (formData.biddingEnabled) {
+  if (formData.biddingEnabled===true) {
     if (!formData.minimumBid || !formData.bidEndDate) {
       toast({
         title: "Missing required fields.",
@@ -222,15 +222,17 @@ const handleSubmit = async (e) => {
               />
             </FormControl>
 
-            <FormControl isRequired>
-              <FormLabel>Price</FormLabel>
-              <Input
-                type="number"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                placeholder="Enter listing price"
-              />
-            </FormControl>
+
+  <FormControl isRequired>
+  <FormLabel>Price</FormLabel>
+  <Input
+    type="number"
+    value={price}
+    onChange={(e) => setPrice(e.target.value)}
+    placeholder="Enter listing price"
+  />
+</FormControl>
+           
 
             <FormControl isRequired>
               <FormLabel>Category</FormLabel>
