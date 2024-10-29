@@ -108,7 +108,7 @@ const RentalSchema = new mongoose.Schema({
   // Referencing bids
   bidding: { type: mongoose.Schema.Types.ObjectId, ref: "Bidding" },
 
-  
+  comment: { type: mongoose.Schema.Types.ObjectId, ref: "Comment" },
 
   status: {
     type: String,
