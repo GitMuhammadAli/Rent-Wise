@@ -176,7 +176,7 @@ const Bidding = require("../../model/listings/biddingModel");
 // };
 
 
-exports.uploadMedia = async (req, res) => {
+exports.uploadMedia = async (req, res , next) => {
     try {
         // Handle image uploads
         let images = [];
@@ -216,12 +216,13 @@ exports.uploadMedia = async (req, res) => {
         });
     } catch (error) {
         console.error("Error uploading media:", error);
-        return res.status(500).json({ error: "Failed to upload media" });
+        logger.error(error);
+        next(error);
     }
 };
 
 // Updated_One-&-Latest
-exports.CreateListings = async (req, res) => {
+exports.CreateListings = async (req, res , next) => {
     try {
         const { owner, title, description, price, category, priceUnit, amenities = [],
             location, biddingEnabled, minimumBid, bidIncrement, bidEndDate
@@ -258,7 +259,8 @@ exports.CreateListings = async (req, res) => {
                 images = savedImages.map(img => img._id);
             } catch (error) {
                 console.error("Error uploading images:", error);
-                return res.status(500).json({ error: "Error uploading images." });
+                logger.error(error);
+                return res.status(500).json({ error: LISTINGS.ERROR_UPLOADING_IMAGES });
             }
         }
 
@@ -276,7 +278,7 @@ exports.CreateListings = async (req, res) => {
                 videos = savedVideos.map(vid => vid._id);
             } catch (error) {
                 console.error("Error uploading videos:", error);
-                return res.status(500).json({ error: "Error uploading videos." });
+                return res.status(500).json({ error: LISTINGS.ERROR_UPLOADING_VIDEOS });
             }
         }
 
@@ -297,7 +299,7 @@ exports.CreateListings = async (req, res) => {
         if (biddingEnabled === true) {
             if (!minimumBid || !bidEndDate) {
                 return res.status(400).json({
-                    error: "Bidding enabled but missing required fields: minimumBid and bidEndDate",
+                    error: LISTINGS.BIDDING_ERROR_MISSING_REQUIRED_FIELDS,
                 });
             }
 
@@ -319,12 +321,13 @@ exports.CreateListings = async (req, res) => {
 
         return res.status(201).json({
             rentalItem: newRentalItem,
-            message: "Listing created successfully."
+            message: LISTINGS.LISTING_CREATED,
         });
 
     } catch (error) {
         console.error("Error creating rental listing:", error);
-        return res.status(500).json({ error: "Error creating listing." });
+        logger.error(error);
+        next(error)
     }
 };
 
@@ -387,7 +390,7 @@ const removeFile = (filePath) => {
     });
 };
 
-const cleanUpUnreferencedMedia = async (listingId) => {
+const cleanUpUnreferencedMedia = async (listingId , next) => {
     try {
         // Fetch the updated listing's images and videos
         const listing = await RentalItem.findById(listingId).populate(['images', 'videos']);
@@ -417,6 +420,8 @@ const cleanUpUnreferencedMedia = async (listingId) => {
         
     } catch (error) {
         console.error('Error during cleanup:', error);
+        logger.error(error);
+        next(error);
     }
 };
 exports.UpdateListings = async (req, res) => {

@@ -29,7 +29,8 @@ const LISTINGS = {
     LISTING_NOT_AVAILABLE_FOR_SALE: "Listing not available for sale",
     LISTING_NOT_AVAILABLE_FOR_RENT_OR_SALE: "Listing not available for rent or sale",
     LISTING_NOT_AVAILABLE_FOR_RENT_OR_SALE_OR_RENT_AND_SALE: "Listing not available for rent or sale or rent and sale",
-
+    ERROR_UPLOADING_IMAGES:"Error uploading images",
+    ERROR_UPLOADING_VIDEOS:"Error uploading videos",
     TITLE_IS_REQUIRED: "Title is required",
     DESCRIPTION_IS_REQUIRED: "Description is required",
     PRICE_IS_REQUIRED: "Price is required",
@@ -43,6 +44,7 @@ const LISTINGS = {
     ERROR_MISSING_REQUIRED_FIELDS: "Missing required fields ",
     FILL_FORM_AND_SUBMIT_AGAIN: "Please Fill the form Correctly and Submit again",
     PLEASE_PROVIDE_ALL_REQUIRED_FIELDS: "Please provide all required fields",
+    BIDDING_ERROR_MISSING_REQUIRED_FIELDS: "Bidding enabled but missing required fields: Minimum Bid and Bid End Date",
 
 }
 

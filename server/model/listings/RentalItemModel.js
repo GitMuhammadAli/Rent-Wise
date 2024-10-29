@@ -108,6 +108,8 @@ const RentalSchema = new mongoose.Schema({
   // Referencing bids
   bidding: { type: mongoose.Schema.Types.ObjectId, ref: "Bidding" },
 
+  
+
   status: {
     type: String,
     enum: ["active", "inactive", "pending"],
