@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { 
-  Box, Button, FormControl, FormLabel, Input, Switch, Tabs, TabList, TabPanels, Tab, TabPanel, Avatar, Textarea, VStack, HStack, useToast, Text 
+  Box, Button, FormControl, FormLabel, Input, Switch, Tabs, TabList, TabPanels, Tab, TabPanel, Avatar, Textarea, VStack, HStack, useToast, Text, 
+  
 } from '@chakra-ui/react'
+import {Link} from 'react-router-dom'
 
 import { useDasboardHook } from '../../hooks/DashboardUserContext';
 import { getUser, updateUserDashboard } from '../../Api/DashboardAPI';
-import { response } from '../../utils/ResponceMessages';
+
 
 export default function MyAccount() {
   const [avatar, setAvatar] = useState('')
@@ -150,6 +152,7 @@ export default function MyAccount() {
                 <FormLabel htmlFor="bio">Bio</FormLabel>
                 <Textarea id="bio" placeholder="Tell us about yourself" value={bio} onChange={(e)=> setBio(e.target.value)} />
               </FormControl>
+             
             </VStack>
           </TabPanel>
 
@@ -210,6 +213,7 @@ export default function MyAccount() {
                     <FormLabel>Confirm New Password</FormLabel>
                     <Input type="password" value={confirmNewPassword} onChange={(e)=> setConfirmNewPassword(e.target.value)}/>
                   </FormControl>
+                  <Text alignSelf={'flex-start'} color={'blue.500'} as={Link} to={'/auth/forgetPassword'}>Forget Password?</Text>
           
             </VStack>
           </TabPanel>

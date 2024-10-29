@@ -18,6 +18,7 @@ import {
   useToast
 } from '@chakra-ui/react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
+import { useAuth } from '../../hooks/AuthContext';
 
 const baseUrl = import.meta.env.VITE_BACK_END_URL;
 
@@ -32,6 +33,7 @@ const ListingDetails = () => {
   const [newComment, setNewComment] = useState('');
   const [replyingTo, setReplyingTo] = useState(null);
   const [replyContent, setReplyContent] = useState('');
+  const {user, dispatch:AuthDispatch} = useAuth();
   const toast = useToast();
 
   useEffect(() => {
@@ -43,13 +45,13 @@ const ListingDetails = () => {
         setComments([
           {
             id: '1',
-            user: { name: 'John Doe', avatar: 'https://bit.ly/dan-abramov' },
+            userDetail: { name: 'John Doe', avatar: 'https://bit.ly/dan-abramov' },
             content: 'Great place! Loved the amenities.',
             createdAt: '2023-06-15T10:00:00Z',
             replies: [
               {
                 id: '2',
-                user: { name: 'Host', avatar: 'https://bit.ly/kent-c-dodds' },
+                userDetail: { name: 'Host', avatar: 'https://bit.ly/kent-c-dodds' },
                 content: 'Thank you, John! We\'re glad you enjoyed your stay.',
                 createdAt: '2023-06-15T11:30:00Z',
               }
@@ -86,9 +88,9 @@ const ListingDetails = () => {
     if (newComment.trim()) {
       const comment = {
         id: Date.now().toString(),
-        user: {
-          name: 'Current User',
-          avatar: 'https://bit.ly/ryan-florence',
+        userDetail: {
+          name: user.name,
+          avatar: `${import.meta.env.VITE_BACK_END_URL}${user.imageUrl}`,
         },
         content: newComment,
         createdAt: new Date().toISOString(),
@@ -109,7 +111,7 @@ const ListingDetails = () => {
     if (replyContent.trim()) {
       const newReply = {
         id: Date.now().toString(),
-        user: {
+        userDetail: {
           name: 'Current User',
           avatar: 'https://bit.ly/ryan-florence',
         },
@@ -193,6 +195,7 @@ const ListingDetails = () => {
         <VStack spacing={4} align="stretch">
           <Box>
             <Textarea
+            bg={'white'}
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
               placeholder="Write a comment..."
@@ -204,8 +207,8 @@ const ListingDetails = () => {
           {comments.map(comment => (
             <Box key={comment.id} borderWidth={1} borderRadius="md" p={4}>
               <HStack>
-                <Avatar src={comment.user.avatar} name={comment.user.name} size="sm" />
-                <Text fontWeight="bold">{comment.user.name}</Text>
+                <Avatar src={comment.userDetail.avatar} name={comment.userDetail.name} size="sm" />
+                <Text fontWeight="bold">{comment.userDetail.name}</Text>
                 <Text fontSize="sm" color="gray.500">
                   {new Date(comment.createdAt).toLocaleDateString()}
                 </Text>
@@ -226,7 +229,7 @@ const ListingDetails = () => {
                   </Button>
                 </Box>
               ) : (
-                <Button mt={2} size="sm" variant="outline" onClick={() => setReplyingTo(comment.id)}>
+                <Button bg={'blue.300'}  color={'white'} _hover={{color:'black', bg:'white',border:'1px solid black'}} mt={2} size="sm" variant="outline" onClick={() => setReplyingTo(comment.id)}>
                   Reply
                 </Button>
               )}
