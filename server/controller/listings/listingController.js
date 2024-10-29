@@ -294,7 +294,7 @@ exports.CreateListings = async (req, res) => {
             // location: newLocation._id,
         });
 
-        if (biddingEnabled) {
+        if (biddingEnabled === true) {
             if (!minimumBid || !bidEndDate) {
                 return res.status(400).json({
                     error: "Bidding enabled but missing required fields: minimumBid and bidEndDate",
@@ -535,7 +535,7 @@ exports.UpdateListings = async (req, res) => {
         await cleanUpUnreferencedMedia(id);
 
         console.log("Updated listing:", updatedListing);
-        
+
         res.json(updatedListing);
     } catch (error) {
         console.error("Error updating listing:", error);
