@@ -736,7 +736,7 @@ exports.GetListingsById = async (req, res) => {
         }
         res.json(listing);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ error: "Fjadaddsad" });
     }
 }
 
