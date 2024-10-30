@@ -91,7 +91,7 @@ function MainLayout() {
               ) : (
                 <Button
                   as="a"
-                  href="/login"
+                  href="/auth/signIn"
                   bg="blue.500"
                   _hover={{ bg: "blue.600" }}
                   color="white"
