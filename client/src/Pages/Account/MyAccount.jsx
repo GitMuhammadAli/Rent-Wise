@@ -41,7 +41,7 @@ export default function MyAccount() {
   }, [dispatch]);
 
   console.log("user" , user);
-  console.log("file from backend is " , user.imageUrl)
+  // console.log("file from backend is " , user.imageUrl)
   // Handle avatar change (image upload preview)
   const handleAvatarChange = (event) => {
     const file = event.target.files?.[0];
