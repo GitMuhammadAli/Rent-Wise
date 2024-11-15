@@ -30,10 +30,10 @@ exports.Check = async(req, res)=>{
 
 exports.showSpecificListComments = async (req, res) => {
     try {
-        const { rental } = req.body;
-        // const rental = '6717e21f92f7deab36bfdcf2'
-        console.log("Data For Comments is " , rental);
-        const comments = await Comment.find({ rental }).populate("author", "name email").populate("rental", "title");
+        const { id } = req.body;
+        // const rental = '671aa58e6973118ab008c850'
+        console.log("Data For Comments is " , id);
+        const comments = await Comment.find({ id }).populate("author", "name email").populate("rental", "title");
         console.log("Comments are ", comments);
         res.status(STATUS.SUCCESS).json({ message: RESPONCE_MESSAGE.COMMENT_FETCHED, comments });
     } catch (error) {

@@ -5,6 +5,6 @@ router.post("/createListingComment", Comments.createComment)
 
 router.post("/comment" , Comments.Check )
 
-router.get("/showSpecificListComments" , Comments.showSpecificListComments )
+router.get("/showSpecificListComments/:id" , Comments.showSpecificListComments )
 
 module.exports = router

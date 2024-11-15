@@ -20,6 +20,7 @@ import {
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 import { useAuth } from '../../hooks/AuthContext';
 import { AddComment } from '../../Api/commentsApi';
+import ListingComments from './Comments/ListingComments';
 
 const baseUrl = import.meta.env.VITE_BACK_END_URL;
 
@@ -226,9 +227,12 @@ const ListingDetails = () => {
             <Button mt={2} colorScheme="teal" onClick={handleCommentSubmit}>
               Post Comment
             </Button>
+
+            <ListingComments currentID={currentListing._id}/>
           </Box>
-          {comments.map(comment => (
-            <Box key={comment.id} borderWidth={1} borderRadius="md" p={4}>
+
+          {comments.map((comment,index) => (
+            <Box key={comment.id || index} borderWidth={1} borderRadius="md" p={4}>
               <HStack>
                 <Avatar src={comment.userDetail.avatar} name={comment.userDetail.name} size="sm" />
                 <Text fontWeight="bold">{comment.userDetail.name}</Text>
