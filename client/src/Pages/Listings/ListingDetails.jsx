@@ -19,6 +19,7 @@ import {
 } from '@chakra-ui/react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 import { useAuth } from '../../hooks/AuthContext';
+import { AddComment } from '../../Api/commentsApi';
 
 const baseUrl = import.meta.env.VITE_BACK_END_URL;
 
@@ -33,7 +34,7 @@ const ListingDetails = () => {
   const [newComment, setNewComment] = useState('');
   const [replyingTo, setReplyingTo] = useState(null);
   const [replyContent, setReplyContent] = useState('');
-  const {user, dispatch:AuthDispatch} = useAuth();
+  const { user } = useAuth();
   const toast = useToast();
 
   useEffect(() => {
@@ -84,26 +85,48 @@ const ListingDetails = () => {
     ));
   };
 
-  const handleCommentSubmit = () => {
+  const handleCommentSubmit = async () => {
     if (newComment.trim()) {
-      const comment = {
-        id: Date.now().toString(),
-        userDetail: {
-          name: user.name,
-          avatar: `${import.meta.env.VITE_BACK_END_URL}${user.imageUrl}`,
-        },
-        content: newComment,
-        createdAt: new Date().toISOString(),
+      const commentData = {
+        rental: id, // Pass the rental ID
+        author: user._id, // Pass the current user ID
+        text: newComment,
       };
-      setComments([comment, ...comments]);
-      setNewComment('');
-      toast({
-        title: "Comment added",
-        description: "Your comment has been successfully added.",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-      });
+
+      try {
+        const response = await AddComment(commentData); // Call API to save the comment
+        const savedComment = response.data;
+
+        // Update state with the new comment
+        setComments([
+          {
+            ...savedComment,
+            userDetail: {
+              name: user.name,
+              avatar: `${import.meta.env.VITE_BACK_END_URL}${user.imageUrl}`,
+            },
+          },
+          ...comments,
+        ]);
+        setNewComment('');
+
+        toast({
+          title: "Comment added",
+          description: "Your comment has been successfully added.",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+      } catch (error) {
+        console.error('Error submitting comment', error);
+        toast({
+          title: "Error",
+          description: "There was an issue adding your comment.",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      }
     }
   };
 
@@ -195,7 +218,7 @@ const ListingDetails = () => {
         <VStack spacing={4} align="stretch">
           <Box>
             <Textarea
-            bg={'white'}
+              bg={'white'}
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
               placeholder="Write a comment..."
@@ -229,7 +252,7 @@ const ListingDetails = () => {
                   </Button>
                 </Box>
               ) : (
-                <Button bg={'blue.300'}  color={'white'} _hover={{color:'black', bg:'white',border:'1px solid black'}} mt={2} size="sm" variant="outline" onClick={() => setReplyingTo(comment.id)}>
+                <Button bg={'blue.300'} color={'white'} _hover={{color:'black', bg:'white',border:'1px solid black'}} mt={2} size="sm" variant="outline" onClick={() => setReplyingTo(comment.id)}>
                   Reply
                 </Button>
               )}

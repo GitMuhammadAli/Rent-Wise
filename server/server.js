@@ -24,6 +24,7 @@ const { corsOptions } = require("./utils/cors");
 const { initializeAdmin } = require("./controller/user/userController");
 const listingRoutes = require("./routes/listings/listingRoutes");
 const dashboardRoutes = require("./routes/dashboard/dashboardRoute");
+const commentRoutes = require("./routes/comment/commentRoutes");
 const logger = require("./utils/logger");
 const path = require('path');
 const errorHandler = require("./middleware/errorHandler");
@@ -98,6 +99,7 @@ app.use("/", home);
 app.use("/auth", userRoutes);
 app.use("/listings", listingRoutes);
 app.use("/dashboard" , dashboardRoutes)
+app.use("/comments" , commentRoutes)
 
 
 app.use(errorHandler);
