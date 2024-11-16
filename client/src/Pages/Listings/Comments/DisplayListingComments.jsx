@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { getComments } from '../../../Api/commentsApi';
+import { getCommentswithReplies } from '../../../Api/commentsApi';
 import { Box, HStack, VStack, Avatar, Text } from '@chakra-ui/react';
 
-export default function ListingComments({ currentID }) {
+export default function DisplayListingComments({ currentID }) {
     const [comments, setComments] = useState([]);
 
     useEffect(() => {
         async function fetchData() {
             try {
                 if (currentID) {
-                    const response = await getComments(currentID);
+                    const response = await getCommentswithReplies(currentID);
                     console.log("comments are: ", response.data);
                     setComments(response.data.comments);
                     console.log("curr idd", currentID);
