@@ -83,10 +83,10 @@ exports.getCommentsWithReplies = async (req, res) => {
           path: "replies", 
           populate: {
             path: "author", 
-            select: "name avatar", 
+            select: "name imageUrl", 
           },
         })
-        .populate("author", "name avatar");
+        .populate("author", "name imageUrl");
         console.log("Comments are ", comments);
   
       res.status(200).json({ comments });
