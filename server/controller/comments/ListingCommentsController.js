@@ -77,10 +77,8 @@ exports.listingcommentReply =  async(req, res)=>{
 exports.getCommentsWithReplies = async (req, res) => {
     try {
          const { id: rental } = req.params;
-       
-    
         console.log("Data For Comments is " , rental);
-      const comments = await Comment.find({rental} )
+          const comments = await Comment.find({rental} )
         .populate({
           path: "replies", 
           populate: {
@@ -98,3 +96,29 @@ exports.getCommentsWithReplies = async (req, res) => {
       res.status(500).json({ message: "Internal server error" });
     }
   };
+
+
+
+// exports.getCommentsWithReplies = async (req, res) => {
+//   try {
+//       // const { id } = req.body;
+//       const id = "67363ba7180afc7b6aa88c9b"
+//       console.log("Data For Comments is " , id);
+//       const comments = await Comment.findById(id)
+//       .populate({
+//           path: "replies",
+//           populate: {
+//               path: "author",
+//               select: "name avatar",
+//           },
+//       })
+//       .populate("author", "name avatar");
+//       console.log("Comments are ", comments);
+
+//       res.status(200).json({ comments });
+    
+//   } catch (error) {
+//       console.error("Error fetching comments with replies:", error);
+//       res.status(500).json({ message: "Internal server error" });
+//   }
+// };

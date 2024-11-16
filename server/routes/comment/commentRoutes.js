@@ -10,5 +10,6 @@ router.get("/showSpecificListComments/:id" , Comments.showSpecificListComments )
 router.post("/reply" , Comments.listingcommentReply )
 
 router.get("/CommentWithReply/:id" ,  Comments.getCommentsWithReplies)
+// router.get("/CommentWithReply" ,  Comments.getCommentsWithReplies)
 
 module.exports = router
