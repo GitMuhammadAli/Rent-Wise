@@ -47,15 +47,15 @@ exports.showSpecificListComments = async (req, res) => {
 
 exports.listingcommentReply =  async(req, res)=>{
     try{
-        const { commentId, author, text , taggedUser } = req.body;
-        console.log("Data For Comments is " , commentId, author, text , taggedUser);
+        const { commentId, author, text  } = req.body;  // taggedUser
+        console.log("Data For Comments is " , commentId, author, text ); //taggedUser
         const comment = await Comment.findById(commentId);
         console.log("Comment is", comment);
         if (!comment) {
             console.log("comment is not found");
             return res.status(STATUS.NOT_FOUND).json({ message: RESPONCE_MESSAGE.COMMENT_NOT_FOUND });
         }
-        const reply = await Reply.create({ comment: commentId, author, text , taggedUser });
+        const reply = await Reply.create({ comment: commentId, author, text ,  }); //taggedUser
         console.log("Reply is", reply);
 
         comment.replies.push(reply._id);

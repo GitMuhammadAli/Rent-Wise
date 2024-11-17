@@ -26,6 +26,7 @@ export default function AddCommentsInListing({toast,id}) {
     const [newComment, setNewComment] = useState('');
     const { user } = useAuth();
 
+
    
 
     const handleCommentSubmit = async () => {
@@ -72,6 +73,10 @@ export default function AddCommentsInListing({toast,id}) {
           }
         }
       };
+
+
+
+     
   return (
     <div>
 
@@ -88,6 +93,8 @@ export default function AddCommentsInListing({toast,id}) {
               Post Comment
             </Button>
         </Box>
+
+        
       
     </div>
   )

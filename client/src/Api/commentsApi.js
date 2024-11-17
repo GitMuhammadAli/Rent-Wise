@@ -12,6 +12,10 @@ export const AddComment = (data) =>
     axios.post(`${API_BASE_URL}/createListingComment`, data, { withCredentials: true });
 
 
+export const AddReply = (data) =>
+    axios.post(`${API_BASE_URL}/reply`, data, { withCredentials: true });
+
+
 export const getComments = (ListingId) =>
     axios.get(`${API_BASE_URL}/showSpecificListComments/${ListingId}`, { withCredentials: true });
 

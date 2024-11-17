@@ -32,8 +32,8 @@ const ListingDetails = () => {
   const [loading, setLoading] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
-  const [replyingTo, setReplyingTo] = useState(null);
-  const [replyContent, setReplyContent] = useState('');
+  // const [replyingTo, setReplyingTo] = useState(null);
+  // const [replyContent, setReplyContent] = useState('');
   const { user } = useAuth();
   const toast = useToast();
 
@@ -68,38 +68,7 @@ const ListingDetails = () => {
         : (prevIndex - 1 + currentListing.videos.length) % currentListing.videos.length
     ));
   };
-  const handleReplySubmit = (parentId) => {
-    if (replyContent.trim()) {
-      const newReply = {
-        id: Date.now().toString(),
-        userDetail: {
-          name: 'Current User',
-          avatar: 'https://bit.ly/ryan-florence',
-        },
-        content: replyContent,
-        createdAt: new Date().toISOString(),
-      };
-      const updatedComments = comments.map(comment => {
-        if (comment.id === parentId) {
-          return {
-            ...comment,
-            replies: [...(comment.replies || []), newReply],
-          };
-        }
-        return comment;
-      });
-      setComments(updatedComments);
-      setReplyingTo(null);
-      setReplyContent('');
-      toast({
-        title: "Reply added",
-        description: "Your reply has been successfully added.",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-      });
-    }
-  };
+  
 
   if (loading) {
     return (
