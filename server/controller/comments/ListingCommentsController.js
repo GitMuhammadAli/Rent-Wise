@@ -147,9 +147,9 @@ exports.getCommentsWithReplies = async (req, res) => {
             select: "name imageUrl",
           },
           {
-            path: "replies", // Populate nested replies
+            path: "replies", 
             populate: {
-              path: "author", // Populate the author of nested replies
+              path: "author", 
               select: "name imageUrl",
             },
           },
