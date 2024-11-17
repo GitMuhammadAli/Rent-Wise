@@ -45,80 +45,123 @@ exports.showSpecificListComments = async (req, res) => {
 
 
 
-exports.listingcommentReply =  async(req, res)=>{
-    try{
-        const { commentId, author, text  } = req.body;  // taggedUser
-        console.log("Data For Comments is " , commentId, author, text ); //taggedUser
-        const comment = await Comment.findById(commentId);
-        console.log("Comment is", comment);
-        if (!comment) {
-            console.log("comment is not found");
-            return res.status(STATUS.NOT_FOUND).json({ message: RESPONCE_MESSAGE.COMMENT_NOT_FOUND });
-        }
-        const reply = await Reply.create({ comment: commentId, author, text ,  }); //taggedUser
-        console.log("Reply is", reply);
+// exports.listingcommentReply =  async(req, res)=>{
+//     try{
+//         const { commentId, author, text  } = req.body;  
+//         console.log("Data For Comments is " , commentId, author, text ); 
+//         const comment = await Comment.findById(commentId);
+//         console.log("Comment is", comment);
+//         if (!comment) {
+//             console.log("comment is not found");
+//             return res.status(STATUS.NOT_FOUND).json({ message: RESPONCE_MESSAGE.COMMENT_NOT_FOUND });
+//         }
+//         const reply = await Reply.create({ comment: commentId, author, text ,  }); //taggedUser
+//         console.log("Reply is", reply);
 
-        comment.replies.push(reply._id);
-        await comment.save(); // Save the updated comment
-        console.log("Comment is", comment);
-        res.status(STATUS.CREATED).json({ message: RESPONCE_MESSAGE.REPLY_CREATED, reply });
+//         comment.replies.push(reply._id);
+//         await comment.save(); // Save the updated comment
+//         console.log("Comment is", comment);
+//         res.status(STATUS.CREATED).json({ message: RESPONCE_MESSAGE.REPLY_CREATED, reply });
 
 
-    }catch(error){
-        res.status(STATUS.INTERNAL_SERVER_ERROR).json({ message: RESPONCE_MESSAGE.INTERNAL_SERVER_ERROR });
+//     }catch(error){
+//         res.status(STATUS.INTERNAL_SERVER_ERROR).json({ message: RESPONCE_MESSAGE.INTERNAL_SERVER_ERROR });
+//     }
+
+// }
+exports.listingcommentReply = async (req, res) => {
+  try {
+    const { commentId, parentReplyId, author, text, taggedUser } = req.body;
+
+    console.log("Data For Comments is ", commentId, parentReplyId, author, text, taggedUser);
+    // Find the parent comment or reply
+    let parent;
+    if (parentReplyId) {
+      parent = await Reply.findById(parentReplyId);
+    } else {
+      parent = await Comment.findById(commentId);
     }
 
-}
-
-
-
-
-
-exports.getCommentsWithReplies = async (req, res) => {
-    try {
-         const { id: rental } = req.params;
-        console.log("Data For Comments is " , rental);
-          const comments = await Comment.find({rental} )
-        .populate({
-          path: "replies", 
-          populate: {
-            path: "author", 
-            select: "name imageUrl", 
-          },
-        })
-        .populate("author", "name imageUrl");
-        console.log("Comments are ", comments);
-  
-      res.status(200).json({ comments });
-      
-    } catch (error) {
-      console.error("Error fetching comments with replies:", error);
-      res.status(500).json({ message: "Internal server error" });
+    if (!parent) {
+      return res.status(404).json({ message: "Parent comment or reply not found." });
     }
-  };
+
+    // Create the reply
+    const reply = await Reply.create({
+      comment: commentId,
+      parentReply: parentReplyId || null,
+      author,
+      text,
+      taggedUser,
+    });
+
+    // Push reply to the parent's `replies` field
+    parent.replies.push(reply._id);
+    await parent.save();
+
+    res.status(201).json({ message: "Reply created successfully.", reply });
+  } catch (error) {
+    console.error("Error creating reply:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+};
+
 
 
 
 // exports.getCommentsWithReplies = async (req, res) => {
-//   try {
-//       // const { id } = req.body;
-//       const id = "67363ba7180afc7b6aa88c9b"
-//       console.log("Data For Comments is " , id);
-//       const comments = await Comment.findById(id)
-//       .populate({
-//           path: "replies",
+//     try {
+//          const { id: rental } = req.params;
+//         console.log("Data For Comments is " , rental);
+//           const comments = await Comment.find({rental} )
+//         .populate({
+//           path: "replies", 
 //           populate: {
-//               path: "author",
-//               select: "name avatar",
+//             path: "author", 
+//             select: "name imageUrl", 
 //           },
-//       })
-//       .populate("author", "name avatar");
-//       console.log("Comments are ", comments);
-
+//         })
+//         .populate("author", "name imageUrl");
+//         console.log("Comments are ", comments);
+  
 //       res.status(200).json({ comments });
-    
-//   } catch (error) {
+      
+//     } catch (error) {
 //       console.error("Error fetching comments with replies:", error);
 //       res.status(500).json({ message: "Internal server error" });
-//   }
-// };
+//     }
+//   };
+
+
+exports.getCommentsWithReplies = async (req, res) => {
+  try {
+    const { id: rental } = req.params;
+    console.log("Data For Comments is ", rental);
+
+    const comments = await Comment.find({ rental })
+      .populate({
+        path: "replies",
+        populate: [
+          {
+            path: "author",
+            select: "name imageUrl",
+          },
+          {
+            path: "replies", // Populate nested replies
+            populate: {
+              path: "author", // Populate the author of nested replies
+              select: "name imageUrl",
+            },
+          },
+        ],
+      })
+      .populate("author", "name imageUrl");
+
+    console.log("Comments are ", comments);
+
+    res.status(200).json({ comments });
+  } catch (error) {
+    console.error("Error fetching comments with replies:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
