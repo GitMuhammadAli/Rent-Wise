@@ -41,24 +41,35 @@ export default function DisplayListingComments({ currentID }) {
     parentType = "comment",
     replyToId = null
   ) => {
-    const replyKey = `${parentId}-${replyToId || "null"}`;
+    const replyKey = parentType === "comment" ? parentId : `${parentId}-${replyToId}`;
     const replyContent = replyContents[replyKey];
 
-    if (replyContent && replyContent.trim()) {
-      const newReply = {
-        commentId: parentType === "comment" ? parentId : replyToId,
-        parentReplyId: parentType === "reply" ? parentId : null,
-        author: user._id,
-        text: replyContent,
-        taggedUser: taggedUser,
-      };
+    if (!replyContent || !replyContent.trim()) {
+      toast({
+        title: "Error",
+        description: "Reply content cannot be empty",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
 
-      try {
-        const response = await AddReply(newReply);
-        const addedReply = response.data.reply;
+    const newReply = {
+      commentId: parentType === "comment" ? parentId : replyToId,
+      parentReplyId: parentType === "reply" ? parentId : null,
+      author: user._id,
+      text: replyContent,
+      taggedUser: taggedUser,
+    };
 
-        const updatedComments = comments.map((comment) => {
-          if (comment._id === newReply.commentId) {
+    try {
+      const response = await AddReply(newReply);
+      const addedReply = response.data.reply;
+
+      const updatedComments = comments.map((comment) => {
+        if (comment._id === (parentType === "comment" ? parentId : replyToId)) {
+          if (parentType === "comment") {
             return {
               ...comment,
               replies: [
@@ -69,36 +80,57 @@ export default function DisplayListingComments({ currentID }) {
                 },
               ],
             };
+          } else {
+            return {
+              ...comment,
+              replies: comment.replies.map((reply) => {
+                if (reply._id === parentId) {
+                  return {
+                    ...reply,
+                    replies: [
+                      ...(reply.replies || []),
+                      {
+                        ...addedReply,
+                        author: { name: user.name, imageUrl: user.imageUrl },
+                      },
+                    ],
+                  };
+                }
+                return reply;
+              }),
+            };
           }
-          return comment;
-        });
+        }
+        return comment;
+      });
 
-        setComments(updatedComments);
-        setReplyingTo(null);
-        setReplyContents((prev) => ({ ...prev, [replyKey]: "" }));
-        setTaggedUser(null);
+      setComments(updatedComments);
+      setReplyingTo(null);
+      setReplyContents((prev) => ({ ...prev, [replyKey]: "" }));
+      setTaggedUser(null);
 
-        toast({
-          title: "Reply added",
-          description: "Your reply has been successfully added.",
-          status: "success",
-          duration: 3000,
-          isClosable: true,
-        });
-      } catch (error) {
-        toast({
-          title: "Error",
-          description: "Failed to add reply.",
-          status: "error",
-          duration: 3000,
-          isClosable: true,
-        });
-      }
+      toast({
+        title: "Reply added",
+        description: "Your reply has been successfully added.",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      console.error("Error adding reply:", error);
+      console.log("Reply data:", newReply);
+      toast({
+        title: "Error",
+        description: "Failed to add reply. Please try again.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 
   const RenderReply = ({ reply, parentCommentId }) => {
-    const replyKey = `${parentCommentId}-${reply._id}`;
+    const replyKey = `${reply._id}-${parentCommentId}`;
 
     return (
       <Box ml={4} borderLeft="1px solid lightgray" pl={4} mt={2}>
@@ -133,10 +165,7 @@ export default function DisplayListingComments({ currentID }) {
             <Button
               mt={2}
               colorScheme="teal"
-              onClick={() => {
-                setTaggedUser(reply.author._id);
-                handleReplySubmit(reply._id, "reply", parentCommentId);
-              }}
+              onClick={() => handleReplySubmit(reply._id, "reply", parentCommentId)}
             >
               Post Reply
             </Button>
@@ -168,7 +197,7 @@ export default function DisplayListingComments({ currentID }) {
         {reply.replies &&
           reply.replies
             .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
-            .map((nestedReply, index) => (
+            .map((nestedReply) => (
               <RenderReply
                 key={nestedReply._id}
                 reply={nestedReply}
@@ -217,10 +246,7 @@ export default function DisplayListingComments({ currentID }) {
                 <Button
                   mt={2}
                   colorScheme="teal"
-                  onClick={() => {
-                    setTaggedUser(comment.author._id);
-                    handleReplySubmit(comment._id, "comment");
-                  }}
+                  onClick={() => handleReplySubmit(comment._id, "comment")}
                 >
                   Post Reply
                 </Button>
