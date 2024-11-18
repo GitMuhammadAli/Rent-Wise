@@ -29,6 +29,9 @@ const ERROR_MESSAGE = {
   PASSWORD_VALIDATION_FAILED: "Password must be at least 8 characters long",
   INVALID_INPUT: "Please Fill the Form Correctly",
   INVALID_CREDENTIALS: "InValid Credentials",
+ROUTE_NOT_FOUND: "Route not found",
+  
+
 };
 
 module.exports = {

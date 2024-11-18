@@ -3,6 +3,7 @@ const Reply = require("../../model/comments/listingReplyModel");
 const { RESPONCE_MESSAGE, LISTINGS } = require("../../messages/response");
 const { STATUS } = require("../../messages/status");
 const { ERROR_MESSAGE } = require("../../messages/error");
+const logger = require("../../utils/logger");
 
 
 
@@ -45,30 +46,7 @@ exports.showSpecificListComments = async (req, res) => {
 
 
 
-// exports.listingcommentReply =  async(req, res)=>{
-//     try{
-//         const { commentId, author, text  } = req.body;  
-//         console.log("Data For Comments is " , commentId, author, text ); 
-//         const comment = await Comment.findById(commentId);
-//         console.log("Comment is", comment);
-//         if (!comment) {
-//             console.log("comment is not found");
-//             return res.status(STATUS.NOT_FOUND).json({ message: RESPONCE_MESSAGE.COMMENT_NOT_FOUND });
-//         }
-//         const reply = await Reply.create({ comment: commentId, author, text ,  }); //taggedUser
-//         console.log("Reply is", reply);
 
-//         comment.replies.push(reply._id);
-//         await comment.save(); // Save the updated comment
-//         console.log("Comment is", comment);
-//         res.status(STATUS.CREATED).json({ message: RESPONCE_MESSAGE.REPLY_CREATED, reply });
-
-
-//     }catch(error){
-//         res.status(STATUS.INTERNAL_SERVER_ERROR).json({ message: RESPONCE_MESSAGE.INTERNAL_SERVER_ERROR });
-//     }
-
-// }
 exports.listingcommentReply = async (req, res) => {
   try {
     const { commentId, parentReplyId, author, text, taggedUser } = req.body;
@@ -109,28 +87,6 @@ exports.listingcommentReply = async (req, res) => {
 
 
 
-// exports.getCommentsWithReplies = async (req, res) => {
-//     try {
-//          const { id: rental } = req.params;
-//         console.log("Data For Comments is " , rental);
-//           const comments = await Comment.find({rental} )
-//         .populate({
-//           path: "replies", 
-//           populate: {
-//             path: "author", 
-//             select: "name imageUrl", 
-//           },
-//         })
-//         .populate("author", "name imageUrl");
-//         console.log("Comments are ", comments);
-  
-//       res.status(200).json({ comments });
-      
-//     } catch (error) {
-//       console.error("Error fetching comments with replies:", error);
-//       res.status(500).json({ message: "Internal server error" });
-//     }
-//   };
 
 
 exports.getCommentsWithReplies = async (req, res) => {
@@ -157,7 +113,7 @@ exports.getCommentsWithReplies = async (req, res) => {
       })
       .populate("author", "name imageUrl");
 
-    console.log("Comments are ", comments);
+    // console.log("Comments are ", comments);
 
     res.status(200).json({ comments });
   } catch (error) {
@@ -165,3 +121,105 @@ exports.getCommentsWithReplies = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+
+  exports.deleteComments = async (req, res) => {
+    try {
+      const { id } = req.params;
+      console.log("Data For Comments is " , id);
+      const comment = await Comment.findById(id);
+      if (!comment) {
+        return res.status(404).json({ message: "Comment not found." });
+      }
+
+      // if (comment.author.toString() !== req.user._id.toString() && 
+      //     comment.rental.createdBy.toString() !== req.user._id.toString()) {
+      //   return res.status(403).json({ message: "Not authorized to delete this comment" });
+      // }
+
+      await Comment.findByIdAndDelete(id);
+      res.status(200).json({ message: "Comment deleted successfully." });
+
+    } catch (error) {
+      console.error("Error deleting comment:", error);
+      logger.error("Error deleting comment:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  };
+
+  exports.deleteCommentsReplies = async(req,res)=>{
+    try {
+      const { id } = req.params;
+      console.log("Data For Comments is " , id);
+      const reply = await Reply.findById(id);
+      if (!reply) {
+        return res.status(404).json({ message: "Comment not found." });
+      }
+
+      // if (reply.author.toString() !== req.user?._id?.toString()) {
+      //   return res.status(403).json({ message: "Not authorized to delete this reply" });
+      // }
+
+      await Reply.findByIdAndDelete(id);
+      res.status(200).json({ message: "Comment deleted successfully." });
+
+    } catch (error) {
+      console.error("Error deleting comment:", error);
+      logger.error("Error deleting comment:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }
+
+
+
+
+// exports.getCommentsWithReplies = async (req, res) => {
+//     try {
+//          const { id: rental } = req.params;
+//         console.log("Data For Comments is " , rental);
+//           const comments = await Comment.find({rental} )
+//         .populate({
+//           path: "replies", 
+//           populate: {
+//             path: "author", 
+//             select: "name imageUrl", 
+//           },
+//         })
+//         .populate("author", "name imageUrl");
+//         console.log("Comments are ", comments);
+  
+//       res.status(200).json({ comments });
+      
+//     } catch (error) {
+//       console.error("Error fetching comments with replies:", error);
+//       res.status(500).json({ message: "Internal server error" });
+//     }
+//   };
+
+
+
+
+  // exports.listingcommentReply =  async(req, res)=>{
+//     try{
+//         const { commentId, author, text  } = req.body;  
+//         console.log("Data For Comments is " , commentId, author, text ); 
+//         const comment = await Comment.findById(commentId);
+//         console.log("Comment is", comment);
+//         if (!comment) {
+//             console.log("comment is not found");
+//             return res.status(STATUS.NOT_FOUND).json({ message: RESPONCE_MESSAGE.COMMENT_NOT_FOUND });
+//         }
+//         const reply = await Reply.create({ comment: commentId, author, text ,  }); //taggedUser
+//         console.log("Reply is", reply);
+
+//         comment.replies.push(reply._id);
+//         await comment.save(); // Save the updated comment
+//         console.log("Comment is", comment);
+//         res.status(STATUS.CREATED).json({ message: RESPONCE_MESSAGE.REPLY_CREATED, reply });
+
+
+//     }catch(error){
+//         res.status(STATUS.INTERNAL_SERVER_ERROR).json({ message: RESPONCE_MESSAGE.INTERNAL_SERVER_ERROR });
+//     }
+
+// }

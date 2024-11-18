@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const rentalController = require("../../controller/listings/listingController");
 const upload = require("../../utils/media");
+const  asyncHandler = require('../../middleware/asyncWrapper');
+
 
 // Route to create a new listing with image/video upload
 router.post("/create", upload.fields([

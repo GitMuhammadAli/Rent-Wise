@@ -15,7 +15,10 @@ import {
   Button,
   Textarea,
   HStack,
-  useToast
+  useToast,
+  Badge,
+  Grid,
+  GridItem
 } from '@chakra-ui/react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 import { useAuth } from '../../hooks/AuthContext';
@@ -32,8 +35,6 @@ const ListingDetails = () => {
   const [loading, setLoading] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
-  // const [replyingTo, setReplyingTo] = useState(null);
-  // const [replyContent, setReplyContent] = useState('');
   const { user } = useAuth();
   const toast = useToast();
 
@@ -42,7 +43,6 @@ const ListingDetails = () => {
       try {
         const response = await getOneUserListingAPI(id);
         dispatch({ type: 'GET_ONE_LISTING', payload: response.data });
-        
       } catch (error) {
         console.error('Error fetching rental details', error);
       } finally {
@@ -61,15 +61,6 @@ const ListingDetails = () => {
     ));
   };
 
-  const handleVideoNavigation = (direction) => {
-    setCurrentVideoIndex(prevIndex => (
-      direction === 'next'
-        ? (prevIndex + 1) % currentListing.videos.length
-        : (prevIndex - 1 + currentListing.videos.length) % currentListing.videos.length
-    ));
-  };
-  
-
   if (loading) {
     return (
       <Flex justify="center" align="center" height="100vh">
@@ -79,19 +70,56 @@ const ListingDetails = () => {
   }
 
   return (
-    <VStack spacing={8} align="stretch">
+    <VStack spacing={8} align="stretch" p={6}>
       <Box>
-        <Text fontSize="2xl" fontWeight="bold">{currentListing.title}</Text>
-        <Text fontSize="xl">Price: ${currentListing.price}</Text>
+        <Text fontSize="3xl" fontWeight="bold">{currentListing.title}</Text>
+        <Badge colorScheme={currentListing.status === 'pending' ? 'yellow' : 'green'}>
+          {currentListing.status}
+        </Badge>
       </Box>
 
-      {currentListing.images && (
+      <Grid templateColumns="repeat(2, 1fr)" gap={6}>
+        <GridItem>
+          <Box borderWidth="1px" borderRadius="lg" p={4}>
+            <Text fontSize="lg" fontWeight="semibold">Basic Information</Text>
+            <VStack align="stretch" spacing={3} mt={2}>
+              <Text>Category: {currentListing.category}</Text>
+              <Text>Price: ${currentListing.price}/{currentListing.priceUnit}</Text>
+              <Text>Description: {currentListing.description}</Text>
+              <Text>Average Rating: {currentListing.averageRating || 'No ratings yet'}</Text>
+            </VStack>
+          </Box>
+        </GridItem>
+
+        <GridItem>
+          <Box borderWidth="1px" borderRadius="lg" p={4}>
+            <Text fontSize="lg" fontWeight="semibold">Additional Details</Text>
+            <VStack align="stretch" spacing={3} mt={2}>
+              <Box>
+                <Text fontWeight="medium">Amenities:</Text>
+                {currentListing.amenities.map((amenity, index) => (
+                  <Badge key={index} m={1}>{amenity}</Badge>
+                ))}
+              </Box>
+              <Box>
+                <Text fontWeight="medium">Rules:</Text>
+                {currentListing.rules.map((rule, index) => (
+                  <Text key={index}>• {rule}</Text>
+                ))}
+              </Box>
+            </VStack>
+          </Box>
+        </GridItem>
+      </Grid>
+
+      {currentListing.images && currentListing.images.length > 0 && (
         <Box position="relative" width="600px" height="400px" mx="auto">
           <Image
             src={`${baseUrl}${currentListing.images[currentImageIndex].url}`}
             alt={currentListing.images[currentImageIndex].caption || 'Image'}
             boxSize="full"
             objectFit="cover"
+            borderRadius="lg"
           />
           <IconButton
             icon={<ChevronLeftIcon />}
@@ -121,11 +149,9 @@ const ListingDetails = () => {
       <Divider />
 
       <Box>
-       
         <VStack spacing={4} align="stretch">
           <Box>
             <AddCommentsInListing toast={toast} id={id}/> 
-
             <DisplayListingComments currentID={currentListing._id}/>
           </Box>
         </VStack>

@@ -1,6 +1,8 @@
 const router = require("express").Router();
 const UserDashboard = require("../../controller/dashboard/dashboard");
 const profileImage = require("../../utils/profile");
+const  asyncHandler = require('../../middleware/asyncWrapper');
+
 
 router.get("/getUserDashboard", UserDashboard.GetUser);
 

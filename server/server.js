@@ -134,7 +134,10 @@ const dashboardRoutes = require("./routes/dashboard/dashboardRoute");
 const commentRoutes = require("./routes/comment/commentRoutes");
 const logger = require("./utils/logger");
 const path = require('path');
-const errorHandler = require("./middleware/errorHandler");
+const {errorHandler , notFound } = require("./middleware/errorHandler");
+const AppError = require("../server/utils/AppError");
+const asyncHandler = require("./middleware/asyncWrapper");
+
 
 
 connectDB();
@@ -197,19 +200,22 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
+// app.get('/err', (req, res, next) => {
+//   try {
+//     throw new AppError("This is a custom error message");
+//   } catch (error) {
+//     error.statusCode = 400; // Set a custom status code if needed
+//     next(error); // Pass error to custom error handler
+//   }
+// });
 // logger
 app.use((req, res, next) => {
   logger.info(`${req.method} ${req.url} ${req.hostname}`);
   next();
 })
-app.get('/error-demo', (req, res, next) => {
-  try {
+app.get('/err', asyncHandler(async (req, res, next) => {
     throw new Error("This is a custom error message");
-  } catch (error) {
-    error.statusCode = 400; // Set a custom status code if needed
-    next(error); // Pass error to custom error handler
-  }
-});
+}));
 
 
 // Routes
@@ -220,7 +226,6 @@ app.use("/dashboard" , dashboardRoutes)
 app.use("/comments" , commentRoutes)
 
 
-app.use(errorHandler);
 
 // Passport middleware
 app.use(passport.initialize());
@@ -241,6 +246,15 @@ app.use("/comments", commentRoutes);
 
 // Error handler middleware
 app.use(errorHandler);
+app.use(notFound);
+app.use((err, req, res, next) => {
+  if (err instanceof AppError) {
+    return res.status(err.statusCode).json({ message: err.message });
+  }
+  res.status(500).json({ message: "Internal Server Error" });
+});
+
+
 
 // Uncaught exceptions and unhandled promise rejections
 process.on('uncaughtException', (err) => {

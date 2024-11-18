@@ -3,15 +3,17 @@ const router = express.Router();
 const userController = require("../../controller/user/userController");
 const passwardController = require("../../controller/password/passwordController");
 const passport = require("passport");
+const  asyncHandler = require('../../middleware/asyncWrapper');
+
 
 // Functional routes
-router.post("/register", userController.Register);
-router.post("/login", userController.login);
-router.post("/forget-password", passwardController.CheckMailforForget);
-router.post("/verify-otp", passwardController.ConfirmOtp);
-router.post("/reset-password", passwardController.CreateNewPassword);
+router.post("/register", asyncHandler(userController.Register));
+router.post("/login", asyncHandler(userController.login));
+router.post("/forget-password", asyncHandler(passwardController.CheckMailforForget));
+router.post("/verify-otp", asyncHandler(passwardController.ConfirmOtp));
+router.post("/reset-password", asyncHandler(passwardController.CreateNewPassword));
 // router.get("/account", userController.UserAccount);
-router.get("/logout", userController.logout);
+router.get("/logout", asyncHandler(userController.logout));
 
 // Google authentication routes
 router.get(

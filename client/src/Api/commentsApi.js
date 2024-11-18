@@ -23,3 +23,9 @@ export const getComments = (ListingId) =>
 export const getCommentswithReplies = (ListingId) =>
     axios.get(`${API_BASE_URL}/CommentWithReply/${ListingId}`, { withCredentials: true });
 
+export const deleteComment = (commentId) =>
+    axios.delete(`${API_BASE_URL}/deleteComment/${commentId}`, { withCredentials: true });
+
+export const deleteReply = (replyId) =>
+    axios.delete(`${API_BASE_URL}/deleteReply/${replyId}`, { withCredentials: true });
+

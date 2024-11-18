@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { AddReply, getCommentswithReplies } from "../../../Api/commentsApi";
+import { AddReply, getCommentswithReplies, deleteComment, deleteReply } from "../../../Api/commentsApi";
 import {
   Box,
   HStack,
@@ -9,13 +9,16 @@ import {
   Text,
   Textarea,
   useToast,
+  IconButton,
 } from "@chakra-ui/react";
+import { DeleteIcon } from "@chakra-ui/icons";
 import { useAuth } from "../../../hooks/AuthContext";
 
 export default function DisplayListingComments({ currentID }) {
   const [comments, setComments] = useState([]);
   const [replyingTo, setReplyingTo] = useState(null);
   const [replyContents, setReplyContents] = useState({});
+  const [cursorPosition, setCursorPosition] = useState(0);
   const { user } = useAuth();
   const toast = useToast();
 
@@ -55,11 +58,16 @@ export default function DisplayListingComments({ currentID }) {
       return;
     }
 
+    const taggedUserMatch = replyContent.match(/@(\w+)/);
+    const taggedUser = taggedUserMatch ? taggedUserMatch[1] : null;
+
     const newReply = {
       commentId: parentType === "comment" ? parentId : replyToId,
       parentReplyId: parentType === "reply" ? parentId : null,
-      author: user._id,
+      author: user.name,
       text: replyContent,
+
+      taggedUser: taggedUser,
     };
 
     try {
@@ -120,7 +128,82 @@ export default function DisplayListingComments({ currentID }) {
     }
   };
 
-  const RenderReply = ({ reply, parentCommentId }) => {
+  const handleDeleteComment = async (commentId) => {
+    try {
+      await deleteComment(commentId);
+      setComments(comments.filter(comment => comment._id !== commentId));
+      toast({
+        title: "Success",
+        description: "Comment deleted successfully.",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to delete comment.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+
+  const handleDeleteReply = async (replyId, parentCommentId) => {
+    try {
+      await deleteReply(replyId);
+      setComments(prevComments =>
+        prevComments.map(comment => {
+          if (comment._id === parentCommentId) {
+            return {
+              ...comment,
+              replies: comment.replies.filter(reply => {
+                if (reply._id === replyId) return false;
+                if (reply.replies) {
+                  reply.replies = reply.replies.filter(r => r.parentReplyId !== replyId);
+                }
+                return true;
+              })
+            };
+          }
+          return comment;
+        })
+      );
+      toast({
+        title: "Success",
+        description: "Reply deleted successfully.",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to delete reply.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+
+  const handleReplyTextChange = (e, replyKey, replyToName = "") => {
+    const value = e.target.value;
+    const position = e.target.selectionStart;
+    setCursorPosition(position);
+
+    if (value.endsWith("@")) {
+      // Show user suggestions here
+    }
+
+    setReplyContents((prev) => ({
+      ...prev,
+      [replyKey]: value,
+    }));
+  };
+
+  const RenderReply = ({ reply, parentCommentId, depth = 0 }) => {
     const replyKey = `${parentCommentId}-${reply._id}`;
     const imageUrl =
       reply.author?.imageUrl ||
@@ -128,30 +211,38 @@ export default function DisplayListingComments({ currentID }) {
 
     return (
       <Box ml={4} borderLeft="1px solid lightgray" pl={4} mt={2}>
-        <HStack>
-          <Avatar
-            src={imageUrl.startsWith("http") ? imageUrl : `${import.meta.env.VITE_BACK_END_URL}${imageUrl}`}
-            name={reply.author?.name}
-            size="xs"
-          />
-          <Text fontWeight="bold">{reply.author?.name}</Text>
-          <Text fontSize="sm" color="gray.500">
-            {new Date(reply.createdAt).toLocaleDateString()}
-          </Text>
+        <HStack justify="space-between">
+          <HStack>
+            <Avatar
+              src={imageUrl.startsWith("http") ? imageUrl : `${import.meta.env.VITE_BACK_END_URL}${imageUrl}`}
+              name={reply.author?.name}
+              size="xs"
+            />
+            <Text fontWeight="bold">{reply.author?.name}</Text>
+            <Text fontSize="sm" color="gray.500">
+              {new Date(reply.createdAt).toLocaleDateString()}
+            </Text>
+          </HStack>
+          {reply.author?.name === user.name && (
+            <IconButton
+              size="sm"
+              icon={<DeleteIcon />}
+              onClick={() => handleDeleteReply(reply._id, parentCommentId)}
+              aria-label="Delete reply"
+            />
+          )}
         </HStack>
-        <Text mt={1}>{reply.text}</Text>
+        <Text mt={1}>
+          {reply.taggedUser && <Text as="span" color="blue.500">@{reply.taggedUser} </Text>}
+          {reply.text.replace(`@${reply.taggedUser}`, '')}
+        </Text>
 
-        {replyingTo === reply._id ? (
+        {replyingTo === reply._id && depth < 2 && (
           <Box mt={2}>
             <Textarea
               bg="white"
               value={replyContents[replyKey] || ""}
-              onChange={(e) =>
-                setReplyContents((prev) => ({
-                  ...prev,
-                  [replyKey]: e.target.value,
-                }))
-              }
+              onChange={(e) => handleReplyTextChange(e, replyKey, reply.author?.name)}
               placeholder={`Reply to ${reply.author?.name}...`}
               rows={3}
               resize="vertical"
@@ -175,7 +266,9 @@ export default function DisplayListingComments({ currentID }) {
               Cancel
             </Button>
           </Box>
-        ) : (
+        )}
+
+        {depth < 2 && (
           <Button
             size="sm"
             mt={2}
@@ -199,6 +292,7 @@ export default function DisplayListingComments({ currentID }) {
                 key={`${parentCommentId}-${nestedReply._id}`}
                 reply={nestedReply}
                 parentCommentId={parentCommentId}
+                depth={depth + 1}
               />
             ))}
       </Box>
@@ -210,19 +304,29 @@ export default function DisplayListingComments({ currentID }) {
       {comments.length > 0 ? (
         comments.map((comment) => (
           <Box key={comment._id} borderWidth={1} borderRadius="md" p={4}>
-            <HStack>
-              <Avatar
-                src={
-                  comment.author?.imageUrl ||
-                  "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
-                }
-                name={comment.author?.name}
-                size="sm"
-              />
-              <Text fontWeight="bold">{comment.author?.name}</Text>
-              <Text fontSize="sm" color="gray.500">
-                {new Date(comment.createdAt).toLocaleDateString()}
-              </Text>
+            <HStack justify="space-between">
+              <HStack>
+                <Avatar
+                  src={
+                    comment.author?.imageUrl ||
+                    "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+                  }
+                  name={comment.author?.name}
+                  size="sm"
+                />
+                <Text fontWeight="bold">{comment.author?.name}</Text>
+                <Text fontSize="sm" color="gray.500">
+                  {new Date(comment.createdAt).toLocaleDateString()}
+                </Text>
+              </HStack>
+              {comment.author?.name === user.name && (
+                <IconButton
+                  size="sm"
+                  icon={<DeleteIcon />}
+                  onClick={() => handleDeleteComment(comment._id)}
+                  aria-label="Delete comment"
+                />
+              )}
             </HStack>
             <Text mt={2}>{comment.text}</Text>
 
@@ -231,12 +335,7 @@ export default function DisplayListingComments({ currentID }) {
                 <Textarea
                   bg="white"
                   value={replyContents[comment._id] || ""}
-                  onChange={(e) =>
-                    setReplyContents((prev) => ({
-                      ...prev,
-                      [comment._id]: e.target.value,
-                    }))
-                  }
+                  onChange={(e) => handleReplyTextChange(e, comment._id, comment.author?.name)}
                   placeholder="Write a reply..."
                   rows={3}
                   resize="vertical"
@@ -280,7 +379,7 @@ export default function DisplayListingComments({ currentID }) {
             )}
 
             {comment.replies?.map((reply) => (
-              <RenderReply key={reply._id} reply={reply} parentCommentId={comment._id} />
+              <RenderReply key={reply._id} reply={reply} parentCommentId={comment._id} depth={0} />
             ))}
           </Box>
         ))
