@@ -66,7 +66,6 @@ export default function DisplayListingComments({ currentID }) {
       parentReplyId: parentType === "reply" ? parentId : null,
       author: user.name,
       text: replyContent,
-
       taggedUser: taggedUser,
     };
 
