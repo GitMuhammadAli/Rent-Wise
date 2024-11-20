@@ -4,9 +4,9 @@ const profileImage = require("../../utils/profile");
 const  asyncHandler = require('../../middleware/asyncWrapper');
 
 
-router.get("/getUserDashboard", UserDashboard.GetUser);
+router.get("/getUserDashboard", asyncHandler(UserDashboard.GetUser));
 
 
-router.put("/updateUserDashboard/:id", profileImage.single("avatar"), UserDashboard.updateUserDashboard);
+router.put("/updateUserDashboard/:id", profileImage.single("avatar"), asyncHandler(UserDashboard.updateUserDashboard));
 
 module.exports = router

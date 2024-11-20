@@ -129,9 +129,13 @@ const connectDB = require("./config/db");
 const cors = require("cors");
 const { corsOptions } = require("./utils/cors");
 const { initializeAdmin } = require("./controller/user/userController");
+
+
 const listingRoutes = require("./routes/listings/listingRoutes");
 const dashboardRoutes = require("./routes/dashboard/dashboardRoute");
 const commentRoutes = require("./routes/comment/commentRoutes");
+const chatsRoutes = require("./routes/chats/chatRoutes");
+
 const logger = require("./utils/logger");
 const path = require('path');
 const {errorHandler , notFound } = require("./middleware/errorHandler");
@@ -153,7 +157,7 @@ app.use(helmet({
 }));
 app.use(xss());
 app.use(hpp());
-app.use(limiter);
+// app.use(limiter);
 
 
 
@@ -218,15 +222,6 @@ app.get('/err', asyncHandler(async (req, res, next) => {
 }));
 
 
-// Routes
-app.use("/", home);
-app.use("/auth", userRoutes);
-app.use("/listings", listingRoutes);
-app.use("/dashboard" , dashboardRoutes)
-app.use("/comments" , commentRoutes)
-
-
-
 // Passport middleware
 app.use(passport.initialize());
 // app.use(passport.session());
@@ -243,6 +238,7 @@ app.use("/auth", userRoutes);
 app.use("/listings", listingRoutes);
 app.use("/dashboard", dashboardRoutes);
 app.use("/comments", commentRoutes);
+app.use("/chats" , chatsRoutes)
 
 // Error handler middleware
 app.use(errorHandler);

@@ -74,6 +74,7 @@ const router = createBrowserRouter(
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/acc" element={<MyAccount />} />
         <Route path="/listings/:id" element={<UpdateListing />} />
+        
 
         {/* <Route element={<ProtectedRoute requiredRole="user" />}>
           <Route path="/getAll" element={<GetAllListings />} />

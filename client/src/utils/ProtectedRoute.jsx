@@ -5,8 +5,8 @@ import { useAuth } from "../hooks/AuthContext";
 const ProtectedRoute = ({ requiredStatus, requiredRole }) => {
   const { user, status } = useAuth();
 
-  console.log("User:", user);
-  console.log("Status:", status);
+  // console.log("User:", user);
+  // console.log("Status:", status);
 
   if (status === "loading") {
     return <div>Loading...</div>;

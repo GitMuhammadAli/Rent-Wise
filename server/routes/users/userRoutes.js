@@ -3,7 +3,7 @@ const router = express.Router();
 const userController = require("../../controller/user/userController");
 const passwardController = require("../../controller/password/passwordController");
 const passport = require("passport");
-const  asyncHandler = require('../../middleware/asyncWrapper');
+const asyncHandler = require('../../middleware/asyncWrapper');
 
 
 // Functional routes

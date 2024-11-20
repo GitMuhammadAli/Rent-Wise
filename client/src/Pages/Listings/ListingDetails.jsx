@@ -25,6 +25,7 @@ import { useAuth } from '../../hooks/AuthContext';
 
 import DisplayListingComments from './Comments/DisplayListingComments';
 import AddCommentsInListing from './Comments/AddCommentsInListing';
+import ChatComponent from '../Chats/Chats';
 
 const baseUrl = import.meta.env.VITE_BACK_END_URL;
 
@@ -84,6 +85,7 @@ const ListingDetails = () => {
             <Text fontSize="lg" fontWeight="semibold">Basic Information</Text>
             <VStack align="stretch" spacing={3} mt={2}>
               <Text>Category: {currentListing.category}</Text>
+              <Text>Owner: {currentListing.owner?.name} ({currentListing.owner?.email})</Text>
               <Text>Price: ${currentListing.price}/{currentListing.priceUnit}</Text>
               <Text>Description: {currentListing.description}</Text>
               <Text>Average Rating: {currentListing.averageRating || 'No ratings yet'}</Text>
@@ -147,6 +149,16 @@ const ListingDetails = () => {
       )}
 
       <Divider />
+
+      {user && currentListing.owner && (
+        <Box>
+          <ChatComponent 
+            currentUserId={user._id.toString()}
+            ownerId={currentListing.owner._id.toString()}
+            listingId={currentListing._id.toString()}
+          />
+        </Box>
+      )}
 
       <Box>
         <VStack spacing={4} align="stretch">

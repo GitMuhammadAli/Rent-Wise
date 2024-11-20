@@ -10,23 +10,57 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [status, setStatus] = useState("loading");
 
+  // const fetchUserData = async () => {
+  //   try {
+  //     const token = Cookies.get("jwt");
+  //     if (token) {
+  //       const decodedToken = decodeToken(token);
+  //       if (decodedToken) {
+  //         const response = await User();
+  //         const userData = response.data?.user;
+  //         if (userData) {
+  //           setUser(userData);
+  //           setStatus("authenticated");
+  //         } else {
+  //           setStatus("unauthenticated");
+  //         }
+  //       } else {
+  //         setStatus("unauthenticated");
+  //       }
+  //     } else {
+  //       setStatus("unauthenticated");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching user data:", error);
+  //     setStatus("unauthenticated");
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   fetchUserData();
+  // }, []);
+
+  // const syncTokenWithLocalStorage = () => {
+  //   const tokenFromCookie = Cookies.get("jwt");
+  //   const tokenFromLocalStorage = localStorage.getItem("jwt");
+
+  //   if (tokenFromCookie && tokenFromLocalStorage !== tokenFromCookie) {
+  //     localStorage.setItem("jwt", tokenFromCookie);
+  //   } else if (tokenFromLocalStorage && !tokenFromCookie) {
+  //     Cookies.set("jwt", tokenFromLocalStorage, { expires: 7 });
+  //   }
+  // };
+
+
   const fetchUserData = async () => {
     try {
-      const token = Cookies.get("jwt");
-      if (token) {
-        const decodedToken = decodeToken(token);
-        if (decodedToken) {
-          const response = await User();
-          const userData = response.data?.user;
-          if (userData) {
-            setUser(userData);
-            setStatus("authenticated");
-          } else {
-            setStatus("unauthenticated");
-          }
-        } else {
-          setStatus("unauthenticated");
-        }
+      const response = await User();
+      // console.log("Response:", response);
+      const userData = response.data?.user;
+
+      if (userData) {
+        setUser(userData);
+        setStatus("authenticated");
       } else {
         setStatus("unauthenticated");
       }
@@ -40,16 +74,6 @@ export const AuthProvider = ({ children }) => {
     fetchUserData();
   }, []);
 
-  // const syncTokenWithLocalStorage = () => {
-  //   const tokenFromCookie = Cookies.get("jwt");
-  //   const tokenFromLocalStorage = localStorage.getItem("jwt");
-
-  //   if (tokenFromCookie && tokenFromLocalStorage !== tokenFromCookie) {
-  //     localStorage.setItem("jwt", tokenFromCookie);
-  //   } else if (tokenFromLocalStorage && !tokenFromCookie) {
-  //     Cookies.set("jwt", tokenFromLocalStorage, { expires: 7 });
-  //   }
-  // };
 
   const login = async (credentials) => {
     try {

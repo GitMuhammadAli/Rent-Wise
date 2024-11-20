@@ -9,15 +9,15 @@ router.post("/comment" , asyncHandler(Comments.Check) )
 
 router.get("/showSpecificListComments/:id" , asyncHandler(Comments.showSpecificListComments) )
 
-router.post("/reply" , Comments.listingcommentReply )
+// router.post("/reply" , Comments.listingcommentReply )
 
 router.get("/CommentWithReply/:id" ,  Comments.getCommentsWithReplies)
 // router.get("/CommentWithReply" ,  Comments.getCommentsWithReplies)
 
 
 
-router.delete("/deleteComment/:id" , Comments.deleteComments)
+router.delete("/deleteComment/:id" ,asyncHandler( Comments.deleteComments))
 
-router.delete("/deleteReply/:id" , Comments.deleteCommentsReplies)
+router.delete("/deleteReply/:id" , asyncHandler(Comments.deleteCommentsReplies))
 
 module.exports = router

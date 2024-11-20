@@ -9,6 +9,7 @@ function clearCookies(req, res) {
 exports.AuthorizeUser = (RequiredRole) => {
   return async (req, res, next) => {
     const token = req.cookies.jwt;
+   console.log("JWT Cookie:", token); // Debugging
 
     if (!token) {
       return res.status(401).json({ message: "No token provided" });
