@@ -16,10 +16,14 @@ const GenerateToken = async (user, req, res) => {
     const token = await makeToken(user._id);
     res.cookie("jwt", token, {
       httpOnly: false,
+      secure: process.env.NODE_ENV !== "development",
       maxAge: 30 * 24 * 60 * 60 * 1000,
-      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+      // sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+      sameSite: "strict",
       //   secure: process.env.NODE_ENV === 'production', // Use HTTPS in production
     });
+
+    // localStorage.setItem('jwtToken', token);
     return token;
   } catch (error) {
     console.log(error);
