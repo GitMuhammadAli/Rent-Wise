@@ -33,7 +33,81 @@ const CreateToken = async (payload) => {
   return otptoken;
 };
 
-const generatetokenForOtpForEncryption = async (
+const generatetokenForOtp = async (
+  SendedOtp,
+  expirationTime,
+  _id,
+  email,
+  otpVerified = false,
+  emailVerified = false,
+  res
+) => {
+  const payload = {
+    SendedOtp,
+    expirationTime,
+    _id,
+    email,
+    otpVerified,
+    emailVerified,
+  };
+  const tok = await CreateToken(payload);
+
+  if (res) {
+    console.log("send to cookie");
+    res.cookie("resetPasswordOTP", tok, {
+      sameSite: "strict",
+      maxAge: 24 * 60 * 60 * 1000,
+      httpOnly: true,
+    });
+  }
+
+  return tok;
+};
+
+
+
+const decodingToken = async (token, key) => {
+  try {
+    
+    const decoded = jsonwebtoken.verify(token, key);
+    return decoded;
+  } catch (error) {
+      if (error.name === 'TokenExpiredError') {
+        return res.status(401).json({ message: "Token has expired, please log in again." });
+      }
+  return res.status(401).json({ message: "login again" });
+  }
+
+};
+
+
+const GetAndDecodeToken = async (req, res) => {
+  const token = req.cookies.jwt; // Ensure req is passed
+
+  if (!token) {
+    return res.status(401).json({ message: "No token provided" });
+  }
+
+  try {
+    const decodedToken = await decodingToken(token, process.env.JWT_API_SECRET_KEY);
+    console.log("decodedToken", decodedToken);
+    return decodedToken; 
+  } catch (error) {
+    console.error("Error decoding token:", error);
+    return res.status(401).json({ message: "Invalid token" });
+  }
+};
+
+  
+
+
+
+
+
+
+//Encryption token for Otp & Decryption token for Otp
+
+const generatetokenForOtpForEncryption = async (   // replace this with generatetokenForOtp in passwordCon
   SendedOtp,
   expirationTime,
   _id,
@@ -70,50 +144,9 @@ const generatetokenForOtpForEncryption = async (
 };
 
 
-const generatetokenForOtp = async (
-  SendedOtp,
-  expirationTime,
-  _id,
-  email,
-  otpVerified = false,
-  emailVerified = false,
-  res
-) => {
-  const payload = {
-    SendedOtp,
-    expirationTime,
-    _id,
-    email,
-    otpVerified,
-    emailVerified,
-  };
-  const tok = await CreateToken(payload);
 
-  if (res) {
-    console.log("send to cookie");
-    res.cookie("resetPasswordOTP", tok, {
-      sameSite: "strict",
-      maxAge: 24 * 60 * 60 * 1000,
-      httpOnly: true,
-    });
-  }
 
-  return tok;
-};
 
-const decodingToken = async (token, key) => {
-  try {
-    
-    const decoded = jsonwebtoken.verify(token, key);
-    return decoded;
-  } catch (error) {
-      if (error.name === 'TokenExpiredError') {
-        return res.status(401).json({ message: "Token has expired, please log in again." });
-      }
-  return res.status(401).json({ message: "login again" });
-  }
-
-};
 
 const setEncryptedCookieForOtp = (res, cookieData) => {
   const encryptedData = encryptCookieForOtp(JSON.stringify(cookieData)); // Encrypting the entire cookie data
@@ -176,24 +209,7 @@ const decryptCookieForOtp = (text) => {
 };
 
 
-const GetAndDecodeToken = async (req, res) => {
-  const token = req.cookies.jwt; // Ensure req is passed
 
-  if (!token) {
-    return res.status(401).json({ message: "No token provided" });
-  }
-
-  try {
-    const decodedToken = await decodingToken(token, process.env.JWT_API_SECRET_KEY);
-    console.log("decodedToken", decodedToken);
-    return decodedToken; // Return the decoded token for further use
-  } catch (error) {
-    console.error("Error decoding token:", error);
-    return res.status(401).json({ message: "Invalid token" });
-  }
-};
-
-  
 
 
 

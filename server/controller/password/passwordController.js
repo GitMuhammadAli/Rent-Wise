@@ -106,6 +106,14 @@ const CheckMailforForget = async (req, res) => {
   }
 };
 
+
+
+
+
+
+
+
+
 // OTP confirmation
 const verifyOTP = async (userOTP, storedOTP, expirationTime) => {
   try {
@@ -143,6 +151,20 @@ const verifyOTP = async (userOTP, storedOTP, expirationTime) => {
     return false;
   }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 const ConfirmOtp = async (req, res) => {
   const { otp } = req.body;
@@ -228,6 +250,9 @@ const ConfirmOtp = async (req, res) => {
   }
 };
 
+
+
+
 const ConfirmOtpForEncyption = async (req, res) => {
   const { otp } = req.body;
   let cookieOtp = req.cookies.resetPasswordOTP;
@@ -284,6 +309,10 @@ const ConfirmOtpForEncyption = async (req, res) => {
     });
   }
 };
+
+
+
+
 
 // New password
 const CreateNewPassword = async (req, res) => {
