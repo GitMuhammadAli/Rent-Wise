@@ -48,30 +48,63 @@ const ChatComponent = ({ currentUserId, ownerId, listingId }) => {
     }
   }
 
-  const sendMessage = async () => {
-    if (newMessage.trim() === '') return
+//   const sendMessage = async () => {
+//     if (newMessage.trim() === '') return
 
+//     try {
+//       await createChatAPI({
+//         ownerId: ownerId,
+//         message: newMessage,
+//         listing: listingId,
+//         replyTo: true
+//       })
+//       console.log('Message sent successfully')
+
+//       setNewMessage('')
+//       await fetchMessages() // Refetch messages to include the new one
+//     } catch (error) {
+//       console.error('Error sending message:', error)
+//       toast({
+//         title: 'Error sending message',
+//         status: 'error',
+//         duration: 3000,
+//         isClosable: true,
+//       })
+//     }
+//   }
+const sendMessage = async () => {
+    if (newMessage.trim() === '') return;
+  
     try {
-      await createChatAPI({
-        sender: currentUserId,
-        ownerId: ownerId,
-        message: newMessage,
-        listing: listingId
-      })
-
-      setNewMessage('')
-      await fetchMessages() // Refetch messages to include the new one
+      // Prepare the message data
+      const data = {
+        // sender: currentUserId,
+        receiver: ownerId,
+        message: newMessage.trim(),
+        listing: listingId,
+        replyTo: messages.length > 0 ? messages[messages.length - 1]._id : null, // Handle replyTo if applicable
+      };
+  
+      console.log('Sending message data:', data);
+  
+      // Send the message data to the backend
+      const response = await createChatAPI(data);
+      console.log('Message sent successfully', response);
+  
+      setNewMessage(''); // Clear input field
+      fetchMessages();   // Refetch messages to include the new one
     } catch (error) {
-      console.error('Error sending message:', error)
+      console.error('Error sending message:', error);
       toast({
         title: 'Error sending message',
         status: 'error',
         duration: 3000,
         isClosable: true,
-      })
+      });
     }
-  }
-
+  };
+  
+  
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
@@ -94,7 +127,7 @@ const ChatComponent = ({ currentUserId, ownerId, listingId }) => {
         <Text fontSize="xl" fontWeight="bold">Chat</Text>
       </Box>
       <VStack flex={1} overflowY="auto" p={4} spacing={4} alignItems="stretch">
-        {messages.map((message) => (
+        {/* {messages.map((message) => (
           <HStack
             key={message._id}
             alignSelf={message.sender === currentUserId ? 'flex-end' : 'flex-start'}
@@ -116,7 +149,37 @@ const ChatComponent = ({ currentUserId, ownerId, listingId }) => {
               </Text>
             </Box>
           </HStack>
-        ))}
+        ))} */}
+        {messages.map((message) => (
+  <HStack
+    key={message._id}
+    alignSelf={message.sender === currentUserId ? 'flex-end' : 'flex-start'}
+    maxW="70%"
+  >
+    {message.sender !== currentUserId && (
+      <Avatar size="sm" name={message.sender === ownerId ? 'Owner' : 'User'} />
+    )}
+    <Box
+      bg={message.sender === currentUserId ? 'blue.500' : 'gray.100'}
+      color={message.sender === currentUserId ? 'white' : 'black'}
+      borderRadius="lg"
+      px={3}
+      py={2}
+    >
+      <Text>{message.message}</Text>
+      {message.replyTo && (
+        <Box mt={2} bg="gray.200" p={2} borderRadius="md">
+          <Text fontSize="sm" color="gray.600">Replying to:</Text>
+          <Text>{message.replyTo.message}</Text>  {/* Show the original message */}
+        </Box>
+      )}
+      <Text fontSize="xs" color={message.sender === currentUserId ? 'blue.100' : 'gray.500'} textAlign="right">
+        {formatTimestamp(message.createdAt)}
+      </Text>
+    </Box>
+  </HStack>
+))}
+
         <div ref={messagesEndRef} />
       </VStack>
       <HStack as="form" onSubmit={(e) => { e.preventDefault(); sendMessage(); }} p={4} spacing={4}>

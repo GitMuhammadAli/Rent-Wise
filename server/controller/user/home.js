@@ -27,3 +27,17 @@ exports.userHome = async (req, res, next) => {
 
 
 exports.adminHome = async (req, res) => {};
+
+
+exports.checkAuth = (req, res) => {
+  try {
+    console.log("User in checkAuth:", req.user);
+    res.status(200).json({
+      success: true,
+      user: req.user
+    });
+  } catch (error) {
+    console.log("Error in checkAuth controller", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};

@@ -31,8 +31,10 @@ export const getUserAccount = () =>
 export const logout = () =>
   axios.get(`${API_BASE_URL}/logout`, { withCredentials: true });
 
+// export const User = () =>
+//   axios.get(`${API_BASE_URL}/user/home`, { withCredentials: true });
 export const User = () =>
-  axios.get(`${API_BASE_URL}/user/home`, { withCredentials: true });
+  axios.get(`${API_BASE_URL}/user/check`, { withCredentials: true });
 
 export const GoogleLoginRequest = async () => {
   try {

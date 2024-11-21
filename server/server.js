@@ -123,14 +123,14 @@ const express = require("express");
 const session = require("express-session");
 const passport = require("passport");
 const cookieParser = require("cookie-parser");
-const userRoutes = require("./routes/users/userRoutes");
 const home = require("./routes/users/home");
 const connectDB = require("./config/db");
 const cors = require("cors");
 const { corsOptions } = require("./utils/cors");
 const { initializeAdmin } = require("./controller/user/userController");
 
-
+const userRoutes = require("./routes/users/userRoutes");
+const loggedUser = require("./routes/users/auth");
 const listingRoutes = require("./routes/listings/listingRoutes");
 const dashboardRoutes = require("./routes/dashboard/dashboardRoute");
 const commentRoutes = require("./routes/comment/commentRoutes");
@@ -239,6 +239,7 @@ app.use("/listings", listingRoutes);
 app.use("/dashboard", dashboardRoutes);
 app.use("/comments", commentRoutes);
 app.use("/chats" , chatsRoutes)
+app.use("/auth/user" , loggedUser )
 
 // Error handler middleware
 app.use(errorHandler);
