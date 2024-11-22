@@ -14,13 +14,25 @@ function Otp() {
       const res = await verifyOtp({ otp });
       if (res.status === 200) {
         navigate("/auth/resetPassword", {
-          state: { successMessage: response.otp.success || res.message },
+          state: { successMessage: res.data.success || res.data.message },
         });
+      } else if (res.status === 401) {
+        toast.error(res.data.message || "OTP verification failed.");
       } else {
-        toast.error(res.message || "OTP verification failed.");
+        toast.error(res.data.message || "OTP verification failed.");
       }
     } catch (error) {
-      toast.error("An error occurred. Please try again.");
+      console.error("Error during OTP verification:", error);
+  
+      if (error.response) {
+        toast.error(
+          error.response.data.message || "An error occurred. Please try again."
+        );
+      } else if (error.request) {
+        toast.error("No response received from the server.");
+      } else {
+        toast.error("An error occurred while setting up the request.");
+      }
     }
   };
 

@@ -30,6 +30,8 @@ const ERROR_MESSAGE = {
   INVALID_INPUT: "Please Fill the Form Correctly",
   INVALID_CREDENTIALS: "InValid Credentials",
 ROUTE_NOT_FOUND: "Route not found",
+TOKEN_EXPIRED: "Token Expired",
+OTP_EXPIRED: "OTP has expired Please request a new OTP",
   
 
 };

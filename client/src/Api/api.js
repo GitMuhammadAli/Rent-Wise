@@ -1,7 +1,6 @@
 import axios from "axios";
 
 const API_BASE_URL = `${import.meta.env.VITE_BACK_END_URL}/auth`;
-console.log('API Base URL:', API_BASE_URL);
 
 
 export const register = (userData) =>

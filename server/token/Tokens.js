@@ -69,20 +69,18 @@ const generatetokenForOtp = async (
 
 
 
+
 const decodingToken = async (token, key) => {
   try {
-    
     const decoded = jsonwebtoken.verify(token, key);
-    return decoded;
+    return { success: true, decoded };
   } catch (error) {
-      if (error.name === 'TokenExpiredError') {
-        return res.status(401).json({ message: "Token has expired, please log in again." });
-      }
-  return res.status(401).json({ message: "login again" });
+    if (error.name === 'TokenExpiredError') {
+      return { success: false, error: { status: 401, message: "Token has expired" } };
+    }
+    return { success: false, error: { status: 401, message: "Invalid token" } };
   }
-
 };
-
 
 const GetAndDecodeToken = async (req, res) => {
   const token = req.cookies.jwt; // Ensure req is passed
@@ -110,7 +108,7 @@ const GetAndDecodeToken = async (req, res) => {
 
 //Encryption token for Otp & Decryption token for Otp
 
-const generatetokenForOtpForEncryption = async (   // replace this with generatetokenForOtp in passwordCon
+const generatetokenForOtpForEncryption = async (  
   SendedOtp,
   expirationTime,
   _id,
@@ -128,11 +126,12 @@ const generatetokenForOtpForEncryption = async (   // replace this with generate
     emailVerified,
   };
   
-  // Encrypting OTP before signing token
-  const encryptedOtp = encryptCookieForOtp(SendedOtp);
+  console.log("payload", payload);
+  const jsonStringPayloadForOtp = JSON.stringify(payload);
 
-  // Create token with encrypted OTP
-  const tok = await CreateToken({ ...payload, SendedOtp: encryptedOtp });
+  const encryptedOtp = encryptCookieForOtp(jsonStringPayloadForOtp);
+console.log("encryptedOtp", encryptedOtp);
+  const tok = await CreateToken({ SendedOtp: encryptedOtp });
 
   if (res) {
     console.log("send encrypted OTP to cookie");
@@ -162,7 +161,7 @@ const setEncryptedCookieForOtp = (res, cookieData) => {
 };
 
 
-const verifyEncryptedCookieForOtp = (req, res) => {
+const verifyEncryptedCookieForOtp = (req, res ) => {
   const encryptedCookie = req.cookies.resetPasswordToken;
 
   if (!encryptedCookie) {
@@ -172,6 +171,7 @@ const verifyEncryptedCookieForOtp = (req, res) => {
   try {
     const decryptedData = decryptCookieForOtp(encryptedCookie);
     const cookieData = JSON.parse(decryptedData); // Parse the decrypted cookie data
+    console.log("cookie for otp after decryption", cookieData);
 
     // Proceed with password reset verification logic
     return res.status(200).json({ success: true, data: cookieData });
@@ -181,10 +181,18 @@ const verifyEncryptedCookieForOtp = (req, res) => {
 };
 
 const encryptCookieForOtp = (text) => {
+  if (typeof text !== 'string' || text.length === 0) {
+    throw new TypeError('The text to encrypt must be a non-empty string.');
+  }
+
   const algorithm = 'aes-256-cbc'; // Encryption algorithm
   const secretKey = process.env.COOKIE_ENCRYPTION_KEY; // Secret key (256-bit)
-  const iv = crypto.randomBytes(16); // Initialization vector
+  
+  if (!secretKey) {
+    throw new Error('Secret key for encryption is not defined in environment variables.');
+  }
 
+  const iv = crypto.randomBytes(16); // Initialization vector
   const cipher = crypto.createCipheriv(algorithm, Buffer.from(secretKey, 'hex'), iv);
 
   let encrypted = cipher.update(text);
@@ -195,21 +203,35 @@ const encryptCookieForOtp = (text) => {
 };
 
 
-const decryptCookieForOtp = (text) => {
-  const algorithm = 'aes-256-cbc';
-  const secretKey = process.env.COOKIE_ENCRYPTION_KEY;
-  const textParts = text.split(':'); // Split the IV and encrypted data
 
-  const iv = Buffer.from(textParts.shift(), 'hex');
-  const encryptedText = Buffer.from(textParts.join(':'), 'hex');
 
-  const decipher = crypto.createDecipheriv(algorithm, Buffer.from(secretKey, 'hex'), iv);
+function decryptCookieForOtp(decodedToken) {
+  const secretKeyHex = process.env.COOKIE_ENCRYPTION_KEY;
 
-  let decrypted = decipher.update(encryptedText);
-  decrypted = Buffer.concat([decrypted, decipher.final()]);
+if (!secretKeyHex) {
+  throw new Error('Secret key for encryption/decryption is not defined in environment variables.');
+}
 
-  return decrypted.toString();
-};
+const secretKey = Buffer.from(secretKeyHex, 'hex');
+
+if (secretKey.length !== 32) {
+  throw new Error('Invalid key length. The key must be 32 bytes (64 hex characters) for AES-256-CBC.');
+}
+
+  const encryptedData = decodedToken.SendedOtp;
+  const [ivHex, encryptedHex] = encryptedData.split(':');
+
+  const iv = Buffer.from(ivHex, 'hex');
+  const encryptedText = Buffer.from(encryptedHex, 'hex');
+
+  const decipher = crypto.createDecipheriv('aes-256-cbc', secretKey, iv);
+
+  let decrypted = decipher.update(encryptedText, 'hex', 'utf8');
+  decrypted += decipher.final('utf8');
+
+  return decrypted;
+}
+
 
 
 
@@ -220,7 +242,10 @@ module.exports = {
   GenerateToken,
   makeToken,
   CreateToken,
-  generatetokenForOtp,
+  // generatetokenForOtp,
+  generatetokenForOtpForEncryption,
   decodingToken,
+  verifyEncryptedCookieForOtp,
+  decryptCookieForOtp,
   GetAndDecodeToken
 };

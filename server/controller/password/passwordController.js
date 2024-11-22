@@ -3,7 +3,7 @@ const otpGenerator = require("otp-generator");
 const bcrypt = require("bcrypt");
 const logger = require("../../utils/logger");
 
-const { generatetokenForOtp, decodingToken , decodeTokenForRestPassword } = require("../../token/Tokens");
+const { generatetokenForOtp, decodingToken , decodeTokenForRestPassword , decryptCookieForOtp,verifyEncryptedCookieForOtp,generatetokenForOtpForEncryption } = require("../../token/Tokens");
 const sendMail = require("../../config/sendmail");
 const { ERROR_MESSAGE } = require("../../messages/error");
 const { RESPONCE_MESSAGE } = require("../../messages/response");
@@ -21,10 +21,13 @@ const generateOTP = () => {
 
 const CheckMailforForget = async (req, res) => {
   const { email } = req.body;
+  console.log(email);
   try {
     // if (!validator.isEmail(email)) {
     //   return res.status(400).json({ success: false, message: "Invalid email format." });
     // }
+
+    
 
     const Findmail = await Users.findOne({ email });
     if (Findmail.role === "admin") {
@@ -42,10 +45,9 @@ const CheckMailforForget = async (req, res) => {
     } else {
       const { SendedOtp, expirationTime } = generateOTP();
 
-      // const encryptedOtp = await bcrypt.hash(SendedOtp, 10);
 
-      await generatetokenForOtp(
-        // encryptedOtp,
+      // await generatetokenForOtp(
+       await generatetokenForOtpForEncryption(
         SendedOtp,
         expirationTime,
         Findmail._id,
@@ -122,6 +124,7 @@ const verifyOTP = async (userOTP, storedOTP, expirationTime) => {
     console.log(
       `Comparing OTPs - User OTP: ${userOTP}, Stored OTP: ${storedOTP}`
     );
+
     // if (userOTP !== storedOTP) {
     //   console.log("OTP mismatch");
     //   return false;
@@ -166,11 +169,104 @@ const verifyOTP = async (userOTP, storedOTP, expirationTime) => {
 
 
 
+// const ConfirmOtp = async (req, res) => {
+//   const { otp } = req.body;
+//   let cookieOtp = req.cookies.resetPasswordOTP;
+//   console.log("OTP from the cookie: " + cookieOtp);
+//   if (!cookieOtp) {
+//     return res
+//       .status(STATUS.NOT_FOUND)
+//       .json({ success: false, message: ERROR_MESSAGE.OTP_NOT_PROVIDED });
+//   }
+
+//   try {
+//     const decodedToken = await decodingToken(
+//       cookieOtp,
+//       process.env.JWT_API_SECRET_KEY
+//     );
+
+
+//     // verifyEncryptedCookieForOtp
+
+//     console.log("Decoded Token:", decodedToken);
+
+//     const decrpyptedDecodedToken = decryptCookieForOtp(decodedToken);
+
+
+//     console.log("Decoded Token after decryption:", decrpyptedDecodedToken);
+
+//     // const { SendedOtp, expirationTime } = decodedToken;
+//     const { SendedOtp, expirationTime } = decrpyptedDecodedToken;
+//     // console.log(`SendedOtp: ${SendedOtp}, Expiration Time: ${expirationTime}`);
+//     console.log(`SendedOtp: ${SendedOtp}, Expiration Time: ${expirationTime}`);
+//     if (!SendedOtp) {
+//       return res
+//         .status(STATUS.NOT_FOUND)
+//         .json({ success: false, message: ERROR_MESSAGE.OTP_TIMEOUT });
+//     }
+//     // if (!SendedOtp) {
+//     //   return res
+//     //     .status(STATUS.NOT_FOUND)
+//     //     .json({ success: false, message: ERROR_MESSAGE.OTP_TIMEOUT });
+//     // }
+//     if (decodedToken.emailVerified === true) {
+//       console.log("Email is already verified");
+//       if (await verifyOTP(otp, SendedOtp, new Date(expirationTime))) {
+//         console.log("OTP verified successfully");
+
+//         // const encryptedOtp = await bcrypt.hash(SendedOtp, 10);
+
+
+//         await generatetokenForOtp(
+//           // encryptedOtp,
+//           SendedOtp,
+//           expirationTime,
+//           decodedToken._id,
+//           decodedToken.email,
+//           (decodedToken.otpVerified = true),
+//           (decodedToken.emailVerified = true),
+//           res
+//         );
+
+//         return res
+//           .status(STATUS.SUCCESS)
+//           .json({ success: true, message: RESPONCE_MESSAGE.OTP_VERIFIED });
+//       } else {
+//         console.log("OTP verification failed or expired");
+
+//         res.clearCookie("resetPasswordOTP");
+//         return res.status(400).json({
+//           success: false,
+//           message: ERROR_MESSAGE.OTP_VERIFICATION_FAILED,
+//         });
+//       }
+//     } else {
+//       console.log("Email not verified");
+//       return res
+//         .status(400)
+//         .json({ success: false, message: ERROR_MESSAGE.PROVIDE_REGISTER_EMAIL });
+//     }
+//   } catch (error) {
+//     logger.error('Error in ConfirmOtp:', error);
+//     if (error.name === 'TokenExpiredError') {
+//       return res.status(STATUS.UNAUTHORIZED).json({
+//         success: false,
+//         message: ERROR_MESSAGE.TOKEN_EXPIRED,
+//       });
+//     }
+//     return res.status(STATUS.INTERNAL_SERVER_ERROR).json({
+//       success: false,
+//       message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
+//     });
+//   }
+// };
+
 const ConfirmOtp = async (req, res) => {
   const { otp } = req.body;
-  let cookieOtp = req.cookies.resetPasswordOTP;
-  console.log(req.body);
-  console.log(cookieOtp);
+  const cookieOtp = req.cookies.resetPasswordOTP;
+
+  console.log("OTP from the cookie:", cookieOtp);
+
   if (!cookieOtp) {
     return res
       .status(STATUS.NOT_FOUND)
@@ -178,42 +274,58 @@ const ConfirmOtp = async (req, res) => {
   }
 
   try {
-    const decodedToken = await decodingToken(
-      cookieOtp,
-      process.env.JWT_API_SECRET_KEY
-    );
+    const { success, decoded: decodedToken } = await decodingToken(cookieOtp, process.env.JWT_API_SECRET_KEY);
+    if (!success) {
+      return res.status(STATUS.UNAUTHORIZED).json({
+        success: false,
+        message: ERROR_MESSAGE.OTP_EXPIRED,
+      });
+    }
 
     console.log("Decoded Token:", decodedToken);
-    // const { SendedOtp, expirationTime } = decodedToken;
-    const { SendedOtp, expirationTime } = decodedToken;
-    // console.log(`SendedOtp: ${SendedOtp}, Expiration Time: ${expirationTime}`);
+    // Decrypt the token to get the OTP and other details
+    
+    
+
+    const decrpyptedDecodedToken = decryptCookieForOtp(decodedToken);
+    console.log(typeof decrpyptedDecodedToken);
+
+
+    // Convert the decrypted string into an object
+    const parsedToken = JSON.parse(decrpyptedDecodedToken);
+  
+    console.log("Decoded Token after decryption:", parsedToken);
+
+    // Extract necessary fields
+    const { SendedOtp, expirationTime, emailVerified, _id, email, otpVerified } =
+    parsedToken;
+
     console.log(`SendedOtp: ${SendedOtp}, Expiration Time: ${expirationTime}`);
+
+    // Check if the OTP is present
     if (!SendedOtp) {
       return res
         .status(STATUS.NOT_FOUND)
         .json({ success: false, message: ERROR_MESSAGE.OTP_TIMEOUT });
     }
-    // if (!SendedOtp) {
-    //   return res
-    //     .status(STATUS.NOT_FOUND)
-    //     .json({ success: false, message: ERROR_MESSAGE.OTP_TIMEOUT });
-    // }
-    if (decodedToken.emailVerified === true) {
-      console.log("Email is already verified");
-      if (await verifyOTP(otp, SendedOtp, new Date(expirationTime))) {
-        console.log("OTP verified successfully");
 
-        // const encryptedOtp = await bcrypt.hash(SendedOtp, 10);
+    // Check if the email is already verified
+    if (emailVerified === true) {
+      console.log("Email is already verified.");
 
+      // Verify the OTP entered by the user
+      const isOtpValid = await verifyOTP(otp, SendedOtp, new Date(expirationTime));
+      if (isOtpValid) {
+        console.log("OTP verified successfully.");
 
+        // Generate a new token after OTP verification
         await generatetokenForOtp(
-          // encryptedOtp,
           SendedOtp,
           expirationTime,
-          decodedToken._id,
-          decodedToken.email,
-          (decodedToken.otpVerified = true),
-          (decodedToken.emailVerified = true),
+          _id,
+          email,
+          (decrpyptedDecodedToken.otpVerified = true),
+          (decrpyptedDecodedToken.emailVerified = true),
           res
         );
 
@@ -221,8 +333,9 @@ const ConfirmOtp = async (req, res) => {
           .status(STATUS.SUCCESS)
           .json({ success: true, message: RESPONCE_MESSAGE.OTP_VERIFIED });
       } else {
-        console.log("OTP verification failed or expired");
+        console.log("OTP verification failed or expired.");
 
+        // Clear the OTP cookie as it is invalid
         res.clearCookie("resetPasswordOTP");
         return res.status(400).json({
           success: false,
@@ -230,26 +343,29 @@ const ConfirmOtp = async (req, res) => {
         });
       }
     } else {
-      console.log("Email not verified");
+      console.log("Email not verified.");
       return res
         .status(400)
         .json({ success: false, message: ERROR_MESSAGE.PROVIDE_REGISTER_EMAIL });
     }
   } catch (error) {
-    logger.error('Error in ConfirmOtp:', error);
-    if (error.name === 'TokenExpiredError') {
+    console.error("Error in ConfirmOtp:", error);
+
+    // Handle token expiration errors
+    if (error.name === "TokenExpiredError") {
       return res.status(STATUS.UNAUTHORIZED).json({
         success: false,
         message: ERROR_MESSAGE.TOKEN_EXPIRED,
       });
     }
+
+    // Handle any other server errors
     return res.status(STATUS.INTERNAL_SERVER_ERROR).json({
       success: false,
       message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
     });
   }
 };
-
 
 
 
