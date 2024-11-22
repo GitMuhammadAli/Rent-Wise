@@ -28,6 +28,8 @@ import Dashboard from "./Pages/Dashboard/Dashboard";
 import MyAccount from "../src/Pages/Account/MyAccount";
 import DashboardUserContextProvider from "./hooks/DashboardUserContext";
 import UpdateListing from "./Pages/Listings/updateListing";
+import Chats from './Pages/Chats/Chats';
+import SideChat from "./Pages/Chats/SideChat";
 
 function YourComponent() {
   const token = Cookies.get("jwt");
@@ -74,6 +76,7 @@ const router = createBrowserRouter(
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/acc" element={<MyAccount />} />
         <Route path="/listings/:id" element={<UpdateListing />} />
+        <Route path="/chat" element={<SideChat/>} />
         
 
         {/* <Route element={<ProtectedRoute requiredRole="user" />}>
