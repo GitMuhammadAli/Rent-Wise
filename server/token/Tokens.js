@@ -36,36 +36,6 @@ const CreateToken = async (payload) => {
   return otptoken;
 };
 
-const generatetokenForOtp = async (
-  SendedOtp,
-  expirationTime,
-  _id,
-  email,
-  otpVerified = false,
-  emailVerified = false,
-  res
-) => {
-  const payload = {
-    SendedOtp,
-    expirationTime,
-    _id,
-    email,
-    otpVerified,
-    emailVerified,
-  };
-  const tok = await CreateToken(payload);
-
-  if (res) {
-    console.log("send to cookie");
-    res.cookie("resetPasswordOTP", tok, {
-      sameSite: "strict",
-      maxAge: 24 * 60 * 60 * 1000,
-      httpOnly: true,
-    });
-  }
-
-  return tok;
-};
 
 
 
@@ -145,20 +115,6 @@ console.log("encryptedOtp", encryptedOtp);
   return tok;
 };
 
-
-
-
-
-
-const setEncryptedCookieForOtp = (res, cookieData) => {
-  const encryptedData = encryptCookieForOtp(JSON.stringify(cookieData)); // Encrypting the entire cookie data
-
-  res.cookie('resetPasswordToken', encryptedData, {
-    httpOnly: true,
-    secure: true, // Set this to true in production
-    maxAge: 15 * 60 * 1000, // 15 minutes expiration
-  });
-};
 
 
 const verifyEncryptedCookieForOtp = (req, res ) => {
@@ -242,7 +198,6 @@ module.exports = {
   GenerateToken,
   makeToken,
   CreateToken,
-  // generatetokenForOtp,
   generatetokenForOtpForEncryption,
   decodingToken,
   verifyEncryptedCookieForOtp,
