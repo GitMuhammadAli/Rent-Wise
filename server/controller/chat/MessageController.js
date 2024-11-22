@@ -1,20 +1,20 @@
 const Message = require("../../model/chat/messageModel")
 const User = require("../../model/user/userModel")
 exports.CreateMessages = async (req, res) => {
-    const { ownerId, message, listing, replyTo } = req.body; 
+    const { ownerId, message, listing, replyTo ,receiver } = req.body; 
     console.log('Received body:', req.body);
 
     const id = req.user._id; 
     console.log("Data For Comments sender id is", id);
 
-    if (!id || !ownerId || !message || !listing) {
-        return res.status(400).json({ error: "All fields are required" });
-    }
+    // if (!id || !ownerId || !message || !listing) {
+    //     return res.status(400).json({ error: "All fields are required" });
+    // }
 
     const sender = id;
     // If replyTo is not provided, receiver should be the owner
     console.log("sender is ", sender);
-    const receiver = replyTo ? ownerId : ownerId; // Check if you need logic for a different receiver
+    // const receiverId = replyTo ? ownerId : receiver ; // Check if you need logic for a different receiver
 
     console.log("Data for chats are", sender, receiver, message, listing);
 
@@ -89,19 +89,46 @@ exports.checkloggeduser = async(req,res)=>{
 //     return res.status(200).json({ message: "Message sent successfully" })
 // }
 
+// exports.getMessages = async (req, res) => {
+//     try {
+//         const { listing } = req.query;
+//         console.log(req.query);
+//         const messages = await Message.find({
+//             listing,
+//             $or: [
+//                 { sender: req.query.sender, receiver: req.query.receiver },
+//                 { sender: req.query.receiver, receiver: req.query.sender }
+//             ]
+//         }).sort({ createdAt: 1 });
+        
+//         return res.status(200).json(messages);
+//     } catch (error) {
+//         return res.status(500).json({ error: "Error retrieving messages" });
+//     }
+// }
+
+
 exports.getMessages = async (req, res) => {
     try {
-        const { listing } = req.query;
+        const { listing, sender, receiver } = req.query;
         console.log(req.query);
         const messages = await Message.find({
             listing,
             $or: [
-                { sender: req.query.sender, receiver: req.query.receiver },
-                { sender: req.query.receiver, receiver: req.query.sender }
+                { sender, receiver },
+                { sender: receiver, receiver: sender }
             ]
         }).sort({ createdAt: 1 });
         
-        return res.status(200).json(messages);
+        const replies = await Message.find({
+            listing,
+            replyTo: { $exists: true, $ne: null }
+        }).sort({ createdAt: 1 });
+        
+        const allMessages = messages.concat(replies);
+        allMessages.sort((a, b) => a.createdAt - b.createdAt);
+        
+        return res.status(200).json(allMessages);
     } catch (error) {
         return res.status(500).json({ error: "Error retrieving messages" });
     }
