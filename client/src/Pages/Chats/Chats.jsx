@@ -23,7 +23,7 @@ const ChatComponent = ({ currentUserId, ownerId, listingId }) => {
 
   useEffect(() => {
     fetchMessages()
-    const intervalId = setInterval(fetchMessages, 5000) 
+    const intervalId = setInterval(fetchMessages, 5000) // Poll for new messages every 5 seconds
     return () => clearInterval(intervalId)
   }, [])
 
@@ -122,78 +122,80 @@ const sendMessage = async () => {
   }
 
   return (
-    <Box height="100vh" display="flex" flexDirection="column">
-      <Box bg="blue.500" color="white" p={4}>
-        <Text fontSize="xl" fontWeight="bold">Chat</Text>
-      </Box>
-      <VStack flex={1} overflowY="auto" p={4} spacing={4} alignItems="stretch">
-        {/* {messages.map((message) => (
-          <HStack
-            key={message._id}
-            alignSelf={message.sender === currentUserId ? 'flex-end' : 'flex-start'}
-            maxW="70%"
-          >
-            {message.sender !== currentUserId && (
-              <Avatar size="sm" name={message.sender === ownerId ? 'Owner' : 'User'} />
-            )}
-            <Box
-              bg={message.sender === currentUserId ? 'blue.500' : 'gray.100'}
-              color={message.sender === currentUserId ? 'white' : 'black'}
-              borderRadius="lg"
-              px={3}
-              py={2}
-            >
-              <Text>{message.message}</Text>
-              <Text fontSize="xs" color={message.sender === currentUserId ? 'blue.100' : 'gray.500'} textAlign="right">
-                {formatTimestamp(message.createdAt)}
-              </Text>
-            </Box>
-          </HStack>
-        ))} */}
-        {messages.map((message) => (
-  <HStack
-    key={message._id}
-    alignSelf={message.sender === currentUserId ? 'flex-end' : 'flex-start'}
-    maxW="70%"
-  >
-    {message.sender !== currentUserId && (
-      <Avatar size="sm" name={message.sender === ownerId ? 'Owner' : 'User'} />
-    )}
-    <Box
-      bg={message.sender === currentUserId ? 'blue.500' : 'gray.100'}
-      color={message.sender === currentUserId ? 'white' : 'black'}
-      borderRadius="lg"
-      px={3}
-      py={2}
-    >
-      <Text>{message.message}</Text>
-      {message.replyTo && (
-        <Box mt={2} bg="gray.200" p={2} borderRadius="md">
-          <Text fontSize="sm" color="gray.600">Replying to:</Text>
-          <Text>{message.replyTo.message}</Text>  {/* Show the original message */}
-        </Box>
-      )}
-      <Text fontSize="xs" color={message.sender === currentUserId ? 'blue.100' : 'gray.500'} textAlign="right">
-        {formatTimestamp(message.createdAt)}
-      </Text>
-    </Box>
-  </HStack>
-))}
+//     <Box height="100vh" display="flex" flexDirection="column">
+//       <Box bg="blue.500" color="white" p={4}>
+//         <Text fontSize="xl" fontWeight="bold">Chat</Text>
+//       </Box>
+//       <VStack flex={1} overflowY="auto" p={4} spacing={4} alignItems="stretch">
+//         {/* {messages.map((message) => (
+//           <HStack
+//             key={message._id}
+//             alignSelf={message.sender === currentUserId ? 'flex-end' : 'flex-start'}
+//             maxW="70%"
+//           >
+//             {message.sender !== currentUserId && (
+//               <Avatar size="sm" name={message.sender === ownerId ? 'Owner' : 'User'} />
+//             )}
+//             <Box
+//               bg={message.sender === currentUserId ? 'blue.500' : 'gray.100'}
+//               color={message.sender === currentUserId ? 'white' : 'black'}
+//               borderRadius="lg"
+//               px={3}
+//               py={2}
+//             >
+//               <Text>{message.message}</Text>
+//               <Text fontSize="xs" color={message.sender === currentUserId ? 'blue.100' : 'gray.500'} textAlign="right">
+//                 {formatTimestamp(message.createdAt)}
+//               </Text>
+//             </Box>
+//           </HStack>
+//         ))} */}
+//         {messages.map((message) => (
+//   <HStack
+//     key={message._id}
+//     alignSelf={message.sender === currentUserId ? 'flex-end' : 'flex-start'}
+//     maxW="70%"
+//   >
+//     {message.sender !== currentUserId && (
+//       <Avatar size="sm" name={message.sender === ownerId ? 'Owner' : 'User'} />
+//     )}
+//     <Box
+//       bg={message.sender === currentUserId ? 'blue.500' : 'gray.100'}
+//       color={message.sender === currentUserId ? 'white' : 'black'}
+//       borderRadius="lg"
+//       px={3}
+//       py={2}
+//     >
+//       <Text>{message.message}</Text>
+//       {message.replyTo && (
+//         <Box mt={2} bg="gray.200" p={2} borderRadius="md">
+//           <Text fontSize="sm" color="gray.600">Replying to:</Text>
+//           <Text>{message.replyTo.message}</Text>  {/* Show the original message */}
+//         </Box>
+//       )}
+//       <Text fontSize="xs" color={message.sender === currentUserId ? 'blue.100' : 'gray.500'} textAlign="right">
+//         {formatTimestamp(message.createdAt)}
+//       </Text>
+//     </Box>
+//   </HStack>
+// ))}
 
-        <div ref={messagesEndRef} />
-      </VStack>
-      <HStack as="form" onSubmit={(e) => { e.preventDefault(); sendMessage(); }} p={4} spacing={4}>
-        <Input
-          value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
-          placeholder="Type a message..."
-          flex={1}
-        />
-        <Button type="submit" colorScheme="blue" rightIcon={<SendIcon size={16} />}>
-          Send
-        </Button>
-      </HStack>
-    </Box>
+//         <div ref={messagesEndRef} />
+//       </VStack>
+//       <HStack as="form" onSubmit={(e) => { e.preventDefault(); sendMessage(); }} p={4} spacing={4}>
+//         <Input
+//           value={newMessage}
+//           onChange={(e) => setNewMessage(e.target.value)}
+//           placeholder="Type a message..."
+//           flex={1}
+//         />
+//         <Button type="submit" colorScheme="blue" rightIcon={<SendIcon size={16} />}>
+//           Send
+//         </Button>
+//       </HStack>
+//     </Box>
+
+<p>this is chat</p>
   )
 }
 
