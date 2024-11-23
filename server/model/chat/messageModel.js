@@ -5,7 +5,7 @@ const MessageSchema = new mongoose.Schema({
     receiver: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     message: { type: String, required: true },
     listing: { type: mongoose.Schema.Types.ObjectId, ref: 'Listing', required: true },
-    replyTo: { type: mongoose.Schema.Types.ObjectId, ref: 'Message', default: null },
+    status: { type: String, enum: ['sent', 'read'], default: 'sent' },
         createdAt: { type: Date, default: Date.now },
         updatedAt: { type: Date, default: Date.now },
     });
