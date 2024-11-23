@@ -30,6 +30,7 @@ import DashboardUserContextProvider from "./hooks/DashboardUserContext";
 import UpdateListing from "./Pages/Listings/updateListing";
 import Chats from './Pages/Chats/Chats';
 import SideChat from "./Pages/Chats/SideChat";
+import MainChatComponent from "./Pages/Chats/MainChat";
 
 
 function YourComponent() {
@@ -77,7 +78,7 @@ const router = createBrowserRouter(
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/acc" element={<MyAccount />} />
         <Route path="/listings/:id" element={<UpdateListing />} />
-        <Route path="/chat" element={<SideChat/>} />
+        <Route path="/chat/:ownerId/:listingId/:user_id" element={<MainChatComponent/>} />
 
         {/* <Route element={<ProtectedRoute requiredRole="user" />}>
           <Route path="/getAll" element={<GetAllListings />} />

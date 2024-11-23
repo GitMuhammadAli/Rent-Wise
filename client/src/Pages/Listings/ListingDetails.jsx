@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState ,  } from 'react';
 import { ListingsContext } from '../../hooks/ListingsContext';
 import { getOneUserListingAPI } from "../../Api/ListingApi";
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { 
   Box, 
   Image, 
@@ -18,19 +18,20 @@ import {
   useToast,
   Badge,
   Grid,
-  GridItem
+  GridItem,
 } from '@chakra-ui/react';
-import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
+import { ChevronLeftIcon, ChevronRightIcon, ChatIcon } from '@chakra-ui/icons';
 import { useAuth } from '../../hooks/AuthContext';
 
 import DisplayListingComments from './Comments/DisplayListingComments';
 import AddCommentsInListing from './Comments/AddCommentsInListing';
-import ChatComponent from '../Chats/Chats';
+import MainChatComponent from '../Chats/MainChat';
 
 const baseUrl = import.meta.env.VITE_BACK_END_URL;
 
 const ListingDetails = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { state, dispatch } = useContext(ListingsContext);
   const { currentListing } = state;
   const [loading, setLoading] = useState(true);
@@ -70,6 +71,9 @@ const ListingDetails = () => {
     );
   }
 
+  const handleChatButtonClick = () => {
+    navigate(`/chat/${currentListing.owner._id}/${currentListing._id}/${user._id}`);
+  };
   return (
     <VStack spacing={8} align="stretch" p={6}>
       <Box>
@@ -84,6 +88,7 @@ const ListingDetails = () => {
           <Box borderWidth="1px" borderRadius="lg" p={4}>
             <Text fontSize="lg" fontWeight="semibold">Basic Information</Text>
             <VStack align="stretch" spacing={3} mt={2}>
+              <Text>ID: {currentListing._id}</Text>
               <Text>Category: {currentListing.category}</Text>
               <Text>Owner: {currentListing.owner?.name} ({currentListing.owner?.email})</Text>
               <Text>Price: ${currentListing.price}/{currentListing.priceUnit}</Text>
@@ -150,13 +155,22 @@ const ListingDetails = () => {
 
       <Divider />
 
-      {user && currentListing.owner && (
+     {user && currentListing.owner && (
         <Box>
-          <ChatComponent 
-            currentUserId={user._id.toString()}
-            ownerId={currentListing.owner._id.toString()}
-            listingId={currentListing._id.toString()}
-          />
+          <Button
+            colorScheme="teal"
+            leftIcon={<ChatIcon />}
+            onClick={handleChatButtonClick} 
+            mb={4}
+          >
+            Chat with Owner
+          </Button>
+
+          {/* <MainChatComponent 
+            user={user} 
+            currentListing={currentListing} 
+            setActiveIndex={() => {}}
+          /> */}
         </Box>
       )}
 
