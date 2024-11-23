@@ -1,7 +1,28 @@
 import { Avatar, Box, Flex, Heading, Input, Text, VStack } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { getSideBarParticipants } from '../../Api/Chats';
 
 export default function SideChat({ users, handleClick, activeIndex }) {
+
+
+  useEffect(()=>{
+
+    const getSideChat = async()=>{
+
+      try {
+        
+        const response = await getSideBarParticipants();
+        console.log("response is::" ,response);
+      } catch (error) {
+        console.log("error getting side chat", error)
+      }
+
+    }
+
+    getSideChat();
+
+  },[])
+  
   return (
     <div>
       <VStack bg={'white'} p={'40px 0px'} maxW={'fit-content'} h={'100%'}>
