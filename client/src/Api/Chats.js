@@ -17,7 +17,7 @@ export const createChatAPI = (data) =>
           });
 
 
-  export const getSideBarParticipants = (param) =>
+  export const getSideBarParticipants = () =>
       axios.get(`${API_BASE_URL}/sidebar`, { withCredentials: true })
           .catch((error) => {
               console.error(error.response.data);

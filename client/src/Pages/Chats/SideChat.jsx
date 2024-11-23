@@ -3,24 +3,19 @@ import React, { useEffect, useState } from 'react';
 import { getSideBarParticipants } from '../../Api/Chats';
 
 export default function SideChat({ users, handleClick, activeIndex }) {
-
+  const [participants, setParticipants] = useState([]);
 
   useEffect(()=>{
-
     const getSideChat = async()=>{
-
       try {
-        
         const response = await getSideBarParticipants();
-        console.log("response is::" ,response);
+        setParticipants(response.data.participants);
+        console.log("participants", participants)
       } catch (error) {
         console.log("error getting side chat", error)
       }
-
     }
-
     getSideChat();
-
   },[])
   
   return (
@@ -32,26 +27,24 @@ export default function SideChat({ users, handleClick, activeIndex }) {
           Peoples
         </Heading>
 
-      
         <Box maxH={'70vh'} overflowY={'scroll'} w={'100%'}>
-          {users.map((user, index) => (
+          {participants.map((participant, index) => (
             <Flex
-              key={user.id}
+              key={participant._id}
               p={'10px'}
               w={'full'}
               alignItems={'center'}
               gap={3}
-              onClick={() => handleClick(index, user)}
+              onClick={() => handleClick(index, participant)}
               bg={activeIndex === index ? 'blue.200' : 'gray.100'}
               cursor="pointer"
             >
-              <Avatar src={user.avatar} />
-              <Box>
+              <Avatar src={`${import.meta.env.VITE_BACK_END_URL}${participant.avatar}`} />              <Box>
                 <Text fontWeight={'bold'} fontSize={'large'}>
-                  {user.name}
+                  {participant.name}
                 </Text>
                 <Text color={'gray.700'} fontSize={'sm'}>
-                  {user.message}
+                  {participant.message}
                 </Text>
               </Box>
             </Flex>
