@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import SideChat from './SideChat'
 import LiveChat from './LiveChat'
 import { Flex } from '@chakra-ui/react'
+import { useLocation } from 'react-router-dom';
 
 export default function MainChat() {
     const [activeIndex, setActiveIndex] = useState(null); 
@@ -11,7 +12,15 @@ export default function MainChat() {
         avatar: ''
 
     })
+    const location = useLocation();
+    const { ownerId, listingId, userId } = location.state || {};
         
+
+    useEffect(()=>{
+      console.log("Owner",ownerId);
+      console.log("useer",userId);
+      console.log("listingggg",listingId);
+    },[ownerId,userId,listingId])
 
     
     const handleClick = (index,user) => {

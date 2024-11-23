@@ -14,6 +14,7 @@ import {
 import { SendIcon } from 'lucide-react'
 import {createChatAPI , getChatsAPI} from '../../Api/Chats'
 
+
 const ChatComponent = ({ currentUserId, ownerId, listingId }) => {
   const [messages, setMessages] = useState([])
   const [newMessage, setNewMessage] = useState('')
