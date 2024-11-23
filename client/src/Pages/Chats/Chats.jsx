@@ -23,7 +23,7 @@ const ChatComponent = ({ currentUserId, ownerId, listingId }) => {
 
   useEffect(() => {
     fetchMessages()
-    const intervalId = setInterval(fetchMessages, 5000) // Poll for new messages every 5 seconds
+    const intervalId = setInterval(fetchMessages, 5000) 
     return () => clearInterval(intervalId)
   }, [])
 

@@ -138,8 +138,9 @@ exports.checkloggeduser = async(req,res)=>{
 //new\-one
 exports.getMessages = async (req, res) => {
     const { otherUserId, listingId } = req.params;
-    const userId = req.user._id; // Extracted from middleware
+    const userId = req.user._id;
 
+    console.log(req.params);
     try {
         const messages = await Message.find({
             $or: [

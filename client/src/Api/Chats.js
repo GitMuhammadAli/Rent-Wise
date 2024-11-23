@@ -8,8 +8,6 @@ export const createChatAPI = (data) =>
     axios.post(`${API_BASE_URL}/createMessage`, data, { withCredentials: true });
 
 
-
-
   export const getChatsAPI = (param) =>
       axios.get(`${API_BASE_URL}/getMessages?${param}`, { withCredentials: true })
           .catch((error) => {
@@ -17,7 +15,6 @@ export const createChatAPI = (data) =>
               console.error(error.response.status);
               console.error(error.response.headers);
           });
-
 
 
   export const getSideBarParticipants = (param) =>
