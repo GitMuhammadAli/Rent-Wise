@@ -65,7 +65,32 @@ function MainLayout() {
                   >
                     User
                   </Button>
-
+                  <Button
+                    as={Link}
+                    to="/chat"
+                    bg="purple.500"
+                    _hover={{ bg: "purple.600" }}
+                    color="white"
+                    fontWeight="bold"
+                    px={4}
+                    mr={2}
+                    leftIcon={
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    }
+                  >
+                    Chats
+                  </Button>
                   <Text as={Link} to="/getAll" _hover={{ color: "gray.300" }} mr={4}>
                     Get Listings
                   </Text>

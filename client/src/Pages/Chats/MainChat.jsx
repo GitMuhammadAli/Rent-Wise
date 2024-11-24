@@ -13,14 +13,14 @@ export default function MainChat() {
 
     })
     const location = useLocation();
-    const { ownerId, listingId, userId } = location.state || {};
+    const { ownerIdDetails, listingIdDetails, userIdDetails } = location.state || {};
         
 
     useEffect(()=>{
-      console.log("Owner",ownerId);
-      console.log("useer",userId);
-      console.log("listingggg",listingId);
-    },[ownerId,userId,listingId])
+      console.log("Owner",ownerIdDetails);
+      console.log("useer",userIdDetails);
+      console.log("listingggg",listingIdDetails);
+    },[ownerIdDetails,userIdDetails,listingIdDetails])
 
     
     const handleClick = (index,user) => {
@@ -53,7 +53,7 @@ export default function MainChat() {
     <div>
         <Flex justifyContent={'center'} maxH={'70vh'}>
         <SideChat users={users} activeIndex={activeIndex} handleClick={handleClick} />
-        <LiveChat users={users}  userDetails={userDetails} />
+        <LiveChat users={users} userDetails={userDetails} ownerIdDetails={ownerIdDetails} userIdDetails={userIdDetails} listingIdDetails={listingIdDetails} />
         </Flex>
        
       

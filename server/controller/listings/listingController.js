@@ -735,7 +735,7 @@ exports.GetListingsById = async (req, res) => {
     try {
 
        
-        const listing = await RentalItem.findById(id).populate("owner", "name email").populate("images", "url caption ").populate("videos", "url caption").populate('bidding')
+        const listing = await RentalItem.findById(id).populate("owner", "name email imageUrl").populate("images", "url caption ").populate("videos", "url caption").populate('bidding')
         if (!listing) {
             return res.status(404).json({ error: "Listing not found" });
         }

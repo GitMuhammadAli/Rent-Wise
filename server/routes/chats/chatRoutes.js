@@ -19,7 +19,12 @@ router.post("/createMessage",asyncHandler(MessageController.CreateMessages));
 
 // router.get("/getMessages", AuthorizeUser("user" , "admin") ,asyncHandler(MessageController.getMessages));
 
-router.get("/getMessages/:receiverId/:listingId/:userId", asyncHandler(MessageController.getMessages));
+// router.get("/getMessages/:receiverId/:listingId/:userId", asyncHandler(MessageController.getMessages)); // for html
+
+
+router.get("/getMessages/:receiverId/:listingId", AuthorizeUser("user" , "admin"), asyncHandler(MessageController.getMessages));
+
+
 // router.get("/checkloggeduser", AuthorizeUser("user" , "admin"), asyncHandler(MessageController.checkloggeduser));
 
 router.get("/checkloggeduser", AuthorizeUser("user" , "admin") ,asyncHandler(MessageController.checkloggeduser));
