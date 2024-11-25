@@ -8,13 +8,22 @@ export const createChatAPI = (data) =>
     axios.post(`${API_BASE_URL}/createMessage`, data, { withCredentials: true });
 
 
-  export const getChatsAPI = (param) =>
-      axios.get(`${API_BASE_URL}/getMessages?${param}`, { withCredentials: true })
+  export const getChatsAPI = (receiverId , listingId) =>
+      axios.get(`${API_BASE_URL}/getMessages/${receiverId}/${listingId}`, { withCredentials: true })
           .catch((error) => {
               console.error(error.response.data);
               console.error(error.response.status);
               console.error(error.response.headers);
           });
+
+
+//   export const getChatsAPI = (param) =>
+//       axios.get(`${API_BASE_URL}/getMessages?${param}`, { withCredentials: true })
+//           .catch((error) => {
+//               console.error(error.response.data);
+//               console.error(error.response.status);
+//               console.error(error.response.headers);
+//           });
 
 
   export const getSideBarParticipants = () =>

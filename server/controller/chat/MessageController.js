@@ -250,36 +250,36 @@ exports.checkloggeduser = async (req, res) => {
 
 
 
-exports.getChatParticipants = async (req, res) => {
-    // console.log(req.body);
-    try {
-        const id = req.user._id;
-        const userId = id;
-        console.log(userId);
-        // const userId = "67190918ef0a307e1e499b6f";
-        // const userId = "670e21628426323ce4847a99";
+// exports.getChatParticipants = async (req, res) => {
+//     // console.log(req.body);
+//     try {
+//         const id = req.user._id;
+//         const userId = id;
+//         console.log(userId);
+//         // const userId = "67190918ef0a307e1e499b6f";
+//         // const userId = "670e21628426323ce4847a99";
 
-        // Find all messages where the user is either the sender or receiver
-        const messages = await Message.find({
-            chatWithUsers: userId
-        }).populate('chatWithUsers', 'name imageUrl'); // Populate to get the user's name and avatar
+//         // Find all messages where the user is either the sender or receiver
+//         const messages = await Message.find({
+//             chatWithUsers: userId
+//         }).populate('chatWithUsers', 'name imageUrl'); // Populate to get the user's name and avatar
 
-        // Get unique chat participants (users)
-        const participants = messages.reduce((acc, message) => {
-            message.chatWithUsers.forEach((user) => {
-                if (user._id.toString() !== userId.toString() && !acc.some((u) => u._id.toString() === user._id.toString())) {
-                    acc.push(user); // Add user to participants if not already included
-                }
-            });
-            return acc;
-        }, []);
+//         // Get unique chat participants (users)
+//         const participants = messages.reduce((acc, message) => {
+//             message.chatWithUsers.forEach((user) => {
+//                 if (user._id.toString() !== userId.toString() && !acc.some((u) => u._id.toString() === user._id.toString())) {
+//                     acc.push(user); // Add user to participants if not already included
+//                 }
+//             });
+//             return acc;
+//         }, []);
 
-        return res.status(200).json({ participants });
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ error: 'Server error' });
-    }
-};
+//         return res.status(200).json({ participants });
+//     } catch (error) {
+//         console.error(error);
+//         return res.status(500).json({ error: 'Server error' });
+//     }
+// };
 
 
 
@@ -343,14 +343,20 @@ exports.getChatParticipants = async (req, res) => {
 
 exports.getMessages = async (req, res) => {
     try {
-        const { listingId, otherUserId } = req.params;
-        const userId = req.query.userId; // Get logged user ID from query
+        const { listingId, receiverId  } = req.params;
+        const userId = req.user._id;
+        console.log("params from get messages",req.params);
+        console.log("loogeed user id in getmessages" ,  userId); 
+
+        console.log("Listing ID:", listingId);
+        console.log("Other User ID:", receiverId);
+        console.log("User ID:", userId);
 
         const messages = await Message.find({
             listing: listingId,
             $or: [
-                { sender: userId, receiver: otherUserId },
-                { sender: otherUserId, receiver: userId },
+                { sender: userId, receiver: receiverId },
+                { sender: receiverId, receiver: userId },
             ],
         })
             .sort({ createdAt: 1 })
@@ -363,6 +369,35 @@ exports.getMessages = async (req, res) => {
         return res.status(500).json({ error: "Failed to fetch messages" });
     }
 };
+
+
+// for html
+// exports.getMessages = async (req, res) => {   
+//     try {
+//         const { listingId, receiverId , userId } = req.params;
+//         // const userId = req.query.userId; // Get logged user ID from query
+
+//         console.log("Listing ID:", listingId);
+//         console.log("Other User ID:", receiverId);
+//         console.log("User ID:", userId);
+
+//         const messages = await Message.find({
+//             listing: listingId,
+//             $or: [
+//                 { sender: userId, receiver: receiverId },
+//                 { sender: receiverId, receiver: userId },
+//             ],
+//         })
+//             .sort({ createdAt: 1 })
+//             .populate('sender', 'name email')
+//             .populate('receiver', 'name email');
+
+//         return res.status(200).json({ success: true, messages });
+//     } catch (error) {
+//         console.error("Error fetching messages:", error);
+//         return res.status(500).json({ error: "Failed to fetch messages" });
+//     }
+// };
 
 
 
@@ -407,38 +442,56 @@ exports.CreateMessages = async (req, res) => {
 
 
 
-// exports.getChatParticipants = async (req, res) => {
-//     try {
-//         // const { userId } = req.body;
-//         const  userId  = "67190918ef0a307e1e499b6f";
+exports.getChatParticipants = async (req, res) => {
+    try {
+        const userId = req.user._id; 
+        console.log("Logged in user ID:", userId);
 
-//         const participants = await Message.aggregate([
-//             {
-//                 $match: {
-//                     $or: [{ sender: mongoose.Types.ObjectId(userId) }, { receiver: mongoose.Types.ObjectId(userId) }],
-//                 },
-//             },
-//             {
-//                 $group: {
-//                     _id: {
-//                         $cond: [{ $eq: ["$sender", mongoose.Types.ObjectId(userId)] }, "$receiver", "$sender"],
-//                     },
-//                 },
-//             },
-//             {
-//                 $lookup: {
-//                     from: "users",
-//                     localField: "_id",
-//                     foreignField: "_id",
-//                     as: "user",
-//                 },
-//             },
-//             { $unwind: "$user" },
-//         ]);
+        const participants = await Message.aggregate([
+            {
+                $match: {
+                    $or: [
+                        { sender: new mongoose.Types.ObjectId(userId) },
+                        { receiver: new mongoose.Types.ObjectId(userId) },
+                    ],
+                },
+            },
+            {
+                $group: {
+                    _id: {
+                        $cond: [
+                            { $eq: ["$sender", new mongoose.Types.ObjectId(userId)] },
+                            "$receiver",
+                            "$sender",
+                        ],
+                    },
+                },
+            },
+            {
+                $lookup: {
+                    from: "users", // MongoDB collection name for User model
+                    localField: "_id",
+                    foreignField: "_id",
+                    as: "user",
+                },
+            },
+            { $unwind: "$user" },
+            {
+                $project: {
+                    _id: 0, // Exclude the aggregation's _id field
+                    user: {
+                        _id: 1,
+                        name: 1,
+                        email: 1,
+                        imageUrl: 1, // Include avatar if available
+                    },
+                },
+            },
+        ]);
 
-//         return res.status(200).json({ success: true, participants });
-//     } catch (error) {
-//         console.error("Error fetching participants:", error);
-//         return res.status(500).json({ error: "Internal server error" });
-//     }
-// };
+        return res.status(200).json({ success: true, participants });
+    } catch (error) {
+        console.error("Error fetching participants:", error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+};

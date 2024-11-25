@@ -44,6 +44,7 @@ const ListingDetails = () => {
     const fetchRentalDetails = async () => {
       try {
         const response = await getOneUserListingAPI(id);
+        console.log('Fetched listing data:', response.data);
         dispatch({ type: 'GET_ONE_LISTING', payload: response.data });
       } catch (error) {
         console.error('Error fetching rental details', error);
@@ -73,7 +74,7 @@ const ListingDetails = () => {
 
   const handleChatButtonClick = () => {
     // navigate(`/chat/${currentListing.owner._id}/${currentListing._id}/${user._id}`);
-    navigate(`/chat`, { state: { ownerId: currentListing.owner._id, listingId: currentListing._id, userId: user._id } });
+    navigate(`/chat`, { state: { ownerIdDetails: currentListing.owner, listingIdDetails : currentListing, userIdDetails: user } });
 
   };
   return (

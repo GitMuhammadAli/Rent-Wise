@@ -10,7 +10,7 @@ export default function SideChat({ users, handleClick, activeIndex }) {
       try {
         const response = await getSideBarParticipants();
         setParticipants(response.data.participants);
-        console.log("participants", participants)
+        console.log("participants", response.data.participants)
       } catch (error) {
         console.log("error getting side chat", error)
       }
@@ -39,12 +39,13 @@ export default function SideChat({ users, handleClick, activeIndex }) {
               bg={activeIndex === index ? 'blue.200' : 'gray.100'}
               cursor="pointer"
             >
-              <Avatar src={`${import.meta.env.VITE_BACK_END_URL}${participant.avatar}`} />              <Box>
+              <Avatar src={`${import.meta.env.VITE_BACK_END_URL}${participant.user.imageUrl}`} />              
+              <Box>
                 <Text fontWeight={'bold'} fontSize={'large'}>
-                  {participant.name}
+                  {participant.user.name}
                 </Text>
                 <Text color={'gray.700'} fontSize={'sm'}>
-                  {participant.message}
+                  {participant.user.email}
                 </Text>
               </Box>
             </Flex>
@@ -53,4 +54,5 @@ export default function SideChat({ users, handleClick, activeIndex }) {
       </VStack>
     </div>
   );
+
 }
