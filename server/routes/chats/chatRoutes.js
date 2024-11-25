@@ -23,6 +23,7 @@ router.post("/createMessage",asyncHandler(MessageController.CreateMessages));
 // router.get("/getMessages/:receiverId/:listingId/:userId", asyncHandler(MessageController.getMessages)); // for html
 
 
+
 router.get("/getMessages/:receiverId/:listingId", AuthorizeUser("user" , "admin"), asyncHandler(MessageController.getMessages));
 
 
