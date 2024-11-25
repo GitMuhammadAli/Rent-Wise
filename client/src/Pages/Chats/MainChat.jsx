@@ -51,7 +51,7 @@ export default function MainChat() {
       ];
   return (
     <div>
-        <Flex justifyContent={'center'} maxH={'70vh'}>
+        <Flex justifyContent={'center'} maxH={'70vh'} h={'70vh'}>
         <SideChat users={users} activeIndex={activeIndex} handleClick={handleClick} />
         <LiveChat users={users}  userDetails={userDetails} />
         </Flex>
