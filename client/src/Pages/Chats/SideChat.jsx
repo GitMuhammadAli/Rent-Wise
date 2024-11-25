@@ -2,7 +2,7 @@ import { Avatar, Box, Flex, Heading, Input, Text, VStack } from '@chakra-ui/reac
 import React, { useEffect, useState } from 'react';
 import { getSideBarParticipants } from '../../Api/Chats';
 
-export default function SideChat({ users, handleClick, activeIndex }) {
+export default function SideChat({ users, handleSideBarClick, activeIndex }) {
   const [participants, setParticipants] = useState([]);
 
   useEffect(()=>{
@@ -30,12 +30,12 @@ export default function SideChat({ users, handleClick, activeIndex }) {
         <Box maxH={'70vh'} overflowY={'scroll'} w={'100%'}>
           {participants.map((participant, index) => (
             <Flex
-              key={participant._id}
+              key={participant._id || index}
               p={'10px'}
               w={'full'}
               alignItems={'center'}
               gap={3}
-              onClick={() => handleClick(index, participant)}
+              onClick={() => handleSideBarClick(index, participant)}
               bg={activeIndex === index ? 'blue.200' : 'gray.100'}
               cursor="pointer"
             >

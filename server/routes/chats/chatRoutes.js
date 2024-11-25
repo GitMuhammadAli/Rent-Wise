@@ -12,8 +12,8 @@ const { AuthorizeUser, FindUser } = require("../../middleware/auth");
 //     res.send("Hello")
 // })
 
-// router.post("/createMessage", AuthorizeUser("user" , "admin") ,asyncHandler(MessageController.CreateMessages));
-router.post("/createMessage",asyncHandler(MessageController.CreateMessages));
+router.post("/createMessage", AuthorizeUser("user" , "admin") ,asyncHandler(MessageController.CreateMessages));
+// router.post("/createMessage",asyncHandler(MessageController.CreateMessages));
 
 // router.post("/createMessage",asyncHandler(MessageController.CreateMessages));
 

@@ -8,13 +8,14 @@ export const createChatAPI = (data) =>
     axios.post(`${API_BASE_URL}/createMessage`, data, { withCredentials: true });
 
 
-  export const getChatsAPI = (receiverId , listingId) =>
-      axios.get(`${API_BASE_URL}/getMessages/${receiverId}/${listingId}`, { withCredentials: true })
-          .catch((error) => {
-              console.error(error.response.data);
-              console.error(error.response.status);
-              console.error(error.response.headers);
-          });
+
+export const getChatsAPI = (receiverId, listingId) =>
+    axios.get(`${API_BASE_URL}/getMessages/${receiverId}/${listingId}`, { withCredentials: true })
+        .catch((error) => {
+            console.error(error.response.data);
+            console.error(error.response.status);
+            console.error(error.response.headers);
+        });
 
 
 //   export const getChatsAPI = (param) =>
@@ -26,11 +27,63 @@ export const createChatAPI = (data) =>
 //           });
 
 
-  export const getSideBarParticipants = () =>
-      axios.get(`${API_BASE_URL}/sidebar`, { withCredentials: true })
-          .catch((error) => {
-              console.error(error.response.data);
-              console.error(error.response.status);
-              console.error(error.response.headers);
-          });
+export const getSideBarParticipants = () =>
+    axios.get(`${API_BASE_URL}/sidebar`, { withCredentials: true })
+        .catch((error) => {
+            console.error(error.response.data);
+            console.error(error.response.status);
+            console.error(error.response.headers);
+        });
 
+
+
+
+
+
+
+
+
+
+
+
+// Converstaion Routes New-One
+export const createOrGetConversation = (data) =>
+    axios.post(`${API_BASE_URL}/conversations`, data, { withCredentials: true })
+        .catch((error) => {
+            console.error(error.response.data);
+            console.error(error.response.status);
+            console.error(error.response.headers);
+        });
+
+
+
+
+export const createMessage = (data) =>
+    axios.post(`${API_BASE_URL}/messages`, data, { withCredentials: true })
+        .catch((error) => {
+            console.error(error.response.data);
+            console.error(error.response.status);
+            console.error(error.response.headers);
+        });
+
+
+
+
+export const fetchConversationsForSidebar = () =>
+    axios.get(`${API_BASE_URL}/conversations`, { withCredentials: true })
+        .catch((error) => {
+            console.error(error.response.data);
+            console.error(error.response.status);
+            console.error(error.response.headers);
+        });
+
+
+
+
+export const fetchMessagesByConversation = (conversationId) =>
+    axios.get(`${API_BASE_URL}/conversations/${conversationId}/messages`, { withCredentials: true })
+        .catch((error) => {
+            console.error(error.response.data);
+            console.error(error.response.status);
+            console.error(error.response.headers);
+        });

@@ -1,6 +1,14 @@
 const Message = require("../../model/chat/messageModel")
 const User = require("../../model/user/userModel")
 const mongoose = require("mongoose");
+
+
+
+
+
+
+
+
 // exports.CreateMessages = async (req, res) => {
 //     const { ownerId, message, listing, receiver } = req.body; 
 //     console.log('Received body:', req.body);
@@ -407,8 +415,12 @@ exports.getMessages = async (req, res) => {
 
 exports.CreateMessages = async (req, res) => {
     try {
-        const { senderId, receiver, message, listing } = req.body;
+        const {  receiver, message, listing } = req.body;
 
+        const  userId = req.user._id;
+        const senderId = userId;
+        console.log("datat recieved", req.body);
+        console.log("user id in create message", userId);
         // Validate input
         if (!senderId || !receiver || !message || !listing) {
             return res.status(400).json({ error: "All fields are required" });

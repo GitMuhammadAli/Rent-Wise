@@ -18,6 +18,7 @@ export default function LiveChat({
   ownerIdDetails,
   userIdDetails,
   listingIdDetails,
+  activeIndex
 }) {
   const [source, setSource] = useState("");
   const [displayUser, setDisplayUser] = useState(null);
@@ -70,13 +71,15 @@ export default function LiveChat({
       if (!userIdDetails?._id || !displayUser?._id || !listingIdDetails?._id) return;
 
       const messageData = {
-        senderId: userIdDetails._id, 
+        // senderId: userIdDetails._id, 
         receiver: displayUser._id,  
         message: message.trim(),
         listing: listingIdDetails._id,
       }
+      console.log("Message data", messageData);
 
-      await createChatAPI(messageData);
+     const sendData =  await createChatAPI(messageData);
+     console.log("Send data",sendData);
       setMessage("");
       const param = `userId=${userIdDetails._id}&listingId=${listingIdDetails._id}&otherUserId=${displayUser._id}`;
       const response = await getChatsAPI(param);
@@ -115,11 +118,17 @@ export default function LiveChat({
               }
             />
             <Flex flexDir={"column"}>
-              <Text fontWeight={"bold"}>{displayUser.name}</Text>
-              <Flex alignItems={"center"} gap={1}>
-                <Image w={"8px"} h={"8px"} src={source} alt="status image" />
-                <Text fontSize={"sm"}>{displayUser.status}</Text>
-              </Flex>
+              {
+                userDetails && ( <>
+                  <Text fontWeight={"bold"}>{userDetails.name}</Text>
+                  <Flex alignItems={"center"} gap={1}>
+                    <Image w={"8px"} h={"8px"} src={source} alt="status image" />
+                    <Text fontSize={"sm"}>{displayUser.status}</Text>
+                  
+                  </Flex>
+                  </>) 
+              }
+             
             </Flex>
           </Flex>
         )}

@@ -23,7 +23,7 @@ export default function MainChat() {
     },[ownerIdDetails,userIdDetails,listingIdDetails])
 
     
-    const handleClick = (index,user) => {
+    const handleSideBarClick = (index,user) => {
       setActiveIndex(index); 
       console.log("user issss", user)
       if(user)
@@ -52,8 +52,8 @@ export default function MainChat() {
   return (
     <div>
         <Flex justifyContent={'center'} maxH={'70vh'}>
-        <SideChat users={users} activeIndex={activeIndex} handleClick={handleClick} />
-        <LiveChat users={users} userDetails={userDetails} ownerIdDetails={ownerIdDetails} userIdDetails={userIdDetails} listingIdDetails={listingIdDetails} />
+        <SideChat users={users} activeIndex={activeIndex} handleSideBarClick={handleSideBarClick} />
+        <LiveChat  users={users} userDetails={userDetails} ownerIdDetails={ownerIdDetails} userIdDetails={userIdDetails} listingIdDetails={listingIdDetails} />
         </Flex>
        
       
