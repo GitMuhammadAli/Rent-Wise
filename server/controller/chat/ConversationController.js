@@ -116,31 +116,68 @@ const fetchConversationsForSidebar = async (req, res) => {
 
 
 
+// const fetchMessagesByConversation = async (req, res) => {
+//     try {
+//         const { conversationId } = req.params;
+
+//         if (!conversationId) {
+//             return res.status(400).json({ error: "Conversation ID is required" });
+//         }
+
+//         const messages = await Messsage.find({ conversation: conversationId })
+//             .sort({ createdAt: 1 })
+
+//             .populate("sender", "name imageUrl")
+            
+//             .populate("receiver", "name imageUrl")
+//             .populate("listing", "title image");
+
+//         if (!messages.length) {
+//             return res.status(200).json({ message: "No messages found.", data: [] });
+//         }
+
+//         res.status(200).json({ success: true, data: messages });
+//     } catch (error) {
+//         console.error("Error fetching messages:", error);
+//         return res.status(500).json({ error: "Failed to fetch messages." });
+//     }
+// };
+
 const fetchMessagesByConversation = async (req, res) => {
     try {
         const { conversationId } = req.params;
+        const userId = req.user._id; // Assuming `req.user` contains the authenticated user's ID
 
         if (!conversationId) {
             return res.status(400).json({ error: "Conversation ID is required" });
         }
 
-        const messages = await Messsage.find({ conversation: conversationId })
-            .sort({ createdAt: 1 })
-            .populate("sender", "name imageUrl")
-            .populate("receiver", "name imageUrl")
-            .populate("listing", "title image");
-
-        if (!messages.length) {
-            return res.status(200).json({ message: "No messages found.", data: [] });
+        // Verify if the user is a participant in the conversation
+        const conversation = await Conversation.findById(conversationId);
+        if (!conversation) {
+            return res.status(404).json({ error: "Conversation not found" });
         }
 
-        res.status(200).json({ success: true, data: messages });
+        if (!conversation.participants.includes(userId)) {
+            return res.status(403).json({ error: "You are not authorized to view this conversation" });
+        }
+
+        // Fetch all messages for this conversation
+        const messages = await Messsage.find({ conversation: conversationId })
+            .sort({ createdAt: 1 }) // Sort messages in chronological order
+            .populate("sender", "name imageUrl") // Include sender details
+            .populate("receiver", "name imageUrl") // Include receiver details
+            .populate("listing", "title image"); // Include listing details if needed
+
+        res.status(200).json({
+            success: true,
+            data: messages,
+        });
     } catch (error) {
         console.error("Error fetching messages:", error);
         return res.status(500).json({ error: "Failed to fetch messages." });
     }
 };
-
 
 
 

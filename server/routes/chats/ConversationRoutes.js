@@ -4,15 +4,15 @@ const router = express.Router();
 
 
 // Get or create a conversation
-router.post("/conversations", conversation.createOrGetConversation);
+router.post("/CreateorGetconversations", conversation.createOrGetConversation);
 
 // Create a new message in a conversation
-router.post("/messages", conversation.createMessage);
+router.post("/CreateMessages", conversation.createMessage);
 
 // Fetch all conversations for the sidebar
-router.get("/conversations", conversation.fetchConversationsForSidebar);
+router.get("/GetAllConversations", conversation.fetchConversationsForSidebar);
 
 // Fetch all messages for a specific conversation
-router.get("/conversations/:conversationId/messages", conversation.fetchMessagesByConversation);
+router.get("/FetchAllMessages/:conversationId/messages", conversation.fetchMessagesByConversation);
 
 module.exports = router;

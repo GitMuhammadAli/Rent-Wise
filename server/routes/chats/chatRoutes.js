@@ -13,6 +13,8 @@ const { AuthorizeUser, FindUser } = require("../../middleware/auth");
 // })
 
 router.post("/createMessage", AuthorizeUser("user" , "admin") ,asyncHandler(MessageController.CreateMessages));
+
+
 // router.post("/createMessage",asyncHandler(MessageController.CreateMessages));
 
 // router.post("/createMessage",asyncHandler(MessageController.CreateMessages));
@@ -27,7 +29,13 @@ router.post("/createMessage", AuthorizeUser("user" , "admin") ,asyncHandler(Mess
 router.get("/getMessages/:receiverId/:listingId", AuthorizeUser("user" , "admin"), asyncHandler(MessageController.getMessages));
 
 
-// router.get("/checkloggeduser", AuthorizeUser("user" , "admin"), asyncHandler(MessageController.checkloggeduser));
+
+
+router.get("/checkloggeduser", AuthorizeUser("user" , "admin"), asyncHandler(MessageController.checkloggeduser));
+
+
+
+
 
 router.get("/checkloggeduser", AuthorizeUser("user" , "admin") ,asyncHandler(MessageController.checkloggeduser));
 
