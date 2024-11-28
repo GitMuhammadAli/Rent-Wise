@@ -77,9 +77,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    const userToken = JSON.parse(localStorage.getItem('user'))
-    if(!userToken)
-    {
+    const storedUser = localStorage.getItem('user');
+    const userToken = storedUser ? JSON.parse(storedUser) : null;
+    if(!userToken)    {
       console.log("token required")  
       setStatus("unauthenticated");
       return

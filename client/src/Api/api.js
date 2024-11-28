@@ -32,6 +32,9 @@ export const logout = () =>
 
 // export const User = () =>
 //   axios.get(`${API_BASE_URL}/user/home`, { withCredentials: true });
+
+
+
 export const User = (token) =>
   axios.get(`${API_BASE_URL}/user/check`, { withCredentials: true,
     headers: {

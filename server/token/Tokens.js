@@ -30,6 +30,11 @@ const GenerateToken = async (user, req, res) => {
     throw error;
   }
 };
+
+
+
+
+
 const CreateToken = async (payload) => {
   const otptoken = jsonwebtoken.sign(payload, process.env.JWT_API_SECRET_KEY, {
     expiresIn: "5m",

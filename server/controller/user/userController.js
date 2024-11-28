@@ -117,7 +117,9 @@ const login = async (req, res) => {
 const handleGoogleCallback = async (req, res) => {
   try {
    const token =  await GenerateToken(req.user, req, res);
-    res.redirect(process.env.CLIENT_URL || "http://localhost:4000/" );
+   console.log("token in google is", token);
+
+    res.redirect(`${process.env.CLIENT_URL || "http://localhost:4000/"}`);
   
   } catch (error) {
     logger.error("Error during Google callback:", error);
@@ -125,7 +127,6 @@ const handleGoogleCallback = async (req, res) => {
     res.status(STATUS.INTERNAL_SERVER_ERROR).json({ message: RESPONCE_MESSAGE.INTERNAL_SERVER_ERROR });
   }
 };
-
 const logout = async (req, res) => {
   try {
     await res.clearCookie("jwt");
