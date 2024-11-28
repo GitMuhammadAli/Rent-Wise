@@ -59,8 +59,9 @@ export const AuthProvider = ({ children }) => {
 
   const fetchUserData = async (userToken) => {
     try {
+      console.log(userToken)
       const response = await User(userToken);
-      // console.log("Response:", response);
+      console.log("Response:", response);
       const userData = response.data?.user;
 
       if (userData) {

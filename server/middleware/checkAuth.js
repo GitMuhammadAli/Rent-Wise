@@ -2,15 +2,15 @@ const jwt = require("jsonwebtoken");
 const User = require("../model/user/userModel");
 exports.protectRoute = async (req, res, next) => {
   try {
-    // const token = req.cookies.jwt;
-    const {authorization } = req.headers;
-    console.log("JWT Cookie:", authorization); 
+    const token = req.cookies.jwt;
+    // const {authorization } = req.headers;
+    // console.log("JWT Cookie:", authorization); 
 
-    if (!authorization) {
-      return res.status(401).json({ message: "No token provided" });
-    }
+    // if (!authorization) {
+    //   return res.status(401).json({ message: "No token provided" });
+    // }
 
-    const token = authorization.split(' ')[1]
+    // const token = authorization.split(' ')[1]
     console.log("token extracted", token)
 
   
@@ -21,7 +21,7 @@ exports.protectRoute = async (req, res, next) => {
       return res.status(401).json({ message: "Unauthorized - Invalid Token" });
     }
 
-    const user = await User.findById(decoded._id).select("-password");
+    const user = await User.findById(decoded._id).select("-password  -phoneNumber");
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });

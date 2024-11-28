@@ -14,6 +14,7 @@ const GenerateToken = async (user, req, res) => {
     console.log("user in generate token", user);
     await res.clearCookie("jwt");
     const token = await makeToken(user._id);
+    console.log(token);
     res.cookie("jwt", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV !== "development",

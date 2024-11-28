@@ -8,15 +8,15 @@ function clearCookies(req, res) {
 
 exports.AuthorizeUser = (RequiredRole) => {
   return async (req, res, next) => {
-    // const token = req.cookies.jwt;
-    const {authorization } = req.headers;
-   console.log("JWT Cookie:", authorization); // Debugging
+    const token = req.cookies.jwt;
+  //   const {authorization } = req.headers;
+  //  console.log("JWT Cookie:", authorization); // Debugging
 
-    if (!authorization) {
-      return res.status(401).json({ message: "No token provided" });
-    }
+  //   if (!authorization) {
+  //     return res.status(401).json({ message: "No token provided" });
+  //   }
 
-    const token = authorization.split(' ')[1]
+  //   const token = authorization.split(' ')[1]
     console.log("token extracted", token)
 
     try {
