@@ -100,10 +100,11 @@ const login = async (req, res) => {
      
       return res.status(STATUS.UNAUTHORIZED).json({ message: ERROR_MESSAGE.INVALID_PASSWORD });
     }
-    await GenerateToken(user, req, res);
+    const token =  await GenerateToken(user, req, res);
     return res.status(200).json({
       message: "Login successful",
       user: { id: user._id, role: user.role },
+      token
     }); 
     
   } catch (error) {
@@ -115,8 +116,9 @@ const login = async (req, res) => {
 
 const handleGoogleCallback = async (req, res) => {
   try {
-    await GenerateToken(req.user, req, res);
+   const token =  await GenerateToken(req.user, req, res);
     res.redirect(process.env.CLIENT_URL || "http://localhost:4000/" );
+  
   } catch (error) {
     logger.error("Error during Google callback:", error);
     console.error(error);

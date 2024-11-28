@@ -2,11 +2,18 @@ const jwt = require("jsonwebtoken");
 const User = require("../model/user/userModel");
 exports.protectRoute = async (req, res, next) => {
   try {
-    const token = req.cookies.jwt;
+    // const token = req.cookies.jwt;
+    const {authorization } = req.headers;
+    console.log("JWT Cookie:", authorization); 
 
-    if (!token) {
-      return res.status(401).json({ message: "Unauthorized - No Token Provided" });
+    if (!authorization) {
+      return res.status(401).json({ message: "No token provided" });
     }
+
+    const token = authorization.split(' ')[1]
+    console.log("token extracted", token)
+
+  
 
     const decoded = jwt.verify(token, process.env.JWT_API_SECRET_KEY);
 

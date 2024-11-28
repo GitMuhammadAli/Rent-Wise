@@ -16,7 +16,7 @@ import ProtectedRoute from "./utils/ProtectedRoute";
 import Home from "./components/Home";
 import Cookies from "js-cookie";
 import decodeToken from "./utils/jwt";
-import { AuthProvider } from "./hooks/AuthContext";
+import { AuthProvider, useAuth } from "./hooks/AuthContext";
 import Otp from "./components/Otp";
 import GetAllListings from "../src/Pages/Listings/GetAllListings";
 // import MakeListing from "../Pages/Listings/MakeListing";
@@ -31,6 +31,7 @@ import UpdateListing from "./Pages/Listings/updateListing";
 import Chats from './Pages/Chats/Chats';
 import SideChat from "./Pages/Chats/SideChat";
 import MainChat from "./Pages/NewChat/MainChat";
+
 
 
 
@@ -99,6 +100,7 @@ const router = createBrowserRouter(
 );
 
 function App() {
+  
   return (
     <AuthProvider>
       <DashboardUserContextProvider>

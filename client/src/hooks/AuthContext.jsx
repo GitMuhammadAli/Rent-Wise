@@ -2,6 +2,9 @@ import React, { createContext, useState, useEffect, useContext } from "react";
 import Cookies from "js-cookie";
 import { User, login as apiLogin, logout } from "../Api/api";
 import decodeToken from "../utils/jwt";
+import { useNavigate } from "react-router-dom";
+
+
 
 
 const AuthContext = createContext();
@@ -9,6 +12,8 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [status, setStatus] = useState("loading");
+  const [token, setToken] = useState("");
+  
 
   // const fetchUserData = async () => {
   //   try {
@@ -52,9 +57,9 @@ export const AuthProvider = ({ children }) => {
   // };
 
 
-  const fetchUserData = async () => {
+  const fetchUserData = async (userToken) => {
     try {
-      const response = await User();
+      const response = await User(userToken);
       // console.log("Response:", response);
       const userData = response.data?.user;
 
@@ -71,7 +76,17 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    fetchUserData();
+    const userToken = JSON.parse(localStorage.getItem('user'))
+    if(!userToken)
+    {
+      console.log("token required")  
+      setStatus("unauthenticated");
+      return
+    }
+    setToken(userToken)
+
+   
+    fetchUserData(userToken);
   }, []);
 
 
@@ -79,7 +94,10 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await apiLogin(credentials);
       if (response.status === 200) {
-        await fetchUserData();
+        const newToken = response.data?.token;
+        localStorage.setItem("user", JSON.stringify(newToken)); 
+        setToken(newToken); 
+        await fetchUserData(newToken);
         return response;
       }
     } catch (error) {
@@ -87,21 +105,28 @@ export const AuthProvider = ({ children }) => {
       throw error;
     }
   };
-
+  
+  const navigateTo = (path) => {
+    window.location.href = path;
+  };
 
   const handleLogout = async () => {
+  
     await logout();
 
-    Cookies.remove("jwt");
+    //Cookies.remove("jwt");
     setUser(null);
     setStatus("unauthenticated");
+    setToken(null);
+    localStorage.removeItem('user')
+    navigateTo('/auth/SignUp')
   };
 
   console.log("AuthContext:", { user, status });
 
   return (
     <AuthContext.Provider
-      value={{ user, status, handleLogout, login, fetchUserData }}
+      value={{ user, status, token, handleLogout, login, fetchUserData }}
     >
       {children}
     </AuthContext.Provider>

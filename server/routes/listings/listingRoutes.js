@@ -2,11 +2,13 @@ const express = require("express");
 const router = express.Router();
 const rentalController = require("../../controller/listings/listingController");
 const upload = require("../../utils/media");
+const { AuthorizeUser, FindUser } = require("../../middleware/auth");
 const asyncHandler = require("../../middleware/asyncWrapper");
+const { hydrate } = require("../../model/listings/LocationModel");
 
 // Route to create a new listing with image/video upload
 router.post(
-  "/create",
+  "/create",AuthorizeUser("user" , "admin"),
   upload.fields([
     { name: "images", maxCount: 10 }, // Max 10 images
     { name: "videos", maxCount: 5 }, // Max 5 videos
@@ -45,11 +47,12 @@ router.post(
 router.delete("/delete/:id", asyncHandler(rentalController.DeleteListings));
 
 // Route to get all listings
-router.get("/all", asyncHandler(rentalController.GetListings));
+router.get("/all", AuthorizeUser("user" , "admin"), asyncHandler(rentalController.GetListings));
 
 // Route to get a single listing by listing ID
 router.get(
   "/GetListingsById/:id",
+  AuthorizeUser("user" , "admin"),
   asyncHandler(rentalController.GetListingsById)
 );
 

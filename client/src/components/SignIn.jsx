@@ -12,6 +12,7 @@ function SignIn() {
 
   const navigate = useNavigate();
   const { login } = useAuth();
+  
 
 
 
@@ -51,6 +52,8 @@ function SignIn() {
   // };
 
   const handleSubmit = async (e) => {
+ 
+   
     e.preventDefault();
     try {
       const apiResponse = await login({ your_email, your_pass });

@@ -37,13 +37,20 @@ const ListingDetails = () => {
   const [loading, setLoading] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const toast = useToast();
+ 
 
   useEffect(() => {
+    
     const fetchRentalDetails = async () => {
+      if(!token)
+        {
+          console.log("token required")
+          return;
+        }
       try {
-        const response = await getOneUserListingAPI(id);
+        const response = await getOneUserListingAPI(id, token);
         console.log('Fetched listing data:', response.data);
         dispatch({ type: 'GET_ONE_LISTING', payload: response.data });
       } catch (error) {
@@ -54,7 +61,7 @@ const ListingDetails = () => {
     };
 
     fetchRentalDetails();
-  }, [id, dispatch]);
+  }, [id, dispatch, token]);
 
   const handleImageNavigation = (direction) => {
     setCurrentImageIndex(prevIndex => (

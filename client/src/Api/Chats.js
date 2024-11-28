@@ -4,13 +4,22 @@ import axios from 'axios';
 const API_BASE_URL = `${import.meta.env.VITE_BACK_END_URL}/chats`;
 
 
-export const createChatAPI = (data) =>
-    axios.post(`${API_BASE_URL}/createMessage`, data, { withCredentials: true });
+export const createChatAPI = (data,token) =>
+    axios.post(`${API_BASE_URL}/createMessage`, data, { withCredentials: true,
+        headers: {
+            Authorization: `Bearer ${token}`,
+        }
+     });
 
 
 
-export const getChatsAPI = (receiverId, listingId) =>
-    axios.get(`${API_BASE_URL}/getMessages/${receiverId}/${listingId}`, { withCredentials: true })
+export const getChatsAPI = (receiverId, listingId,token) =>
+    axios.get(`${API_BASE_URL}/getMessages/${receiverId}/${listingId}`, { withCredentials: true,
+        headers: {
+            Authorization: `Bearer ${token}`,
+        }
+        
+     })
         .catch((error) => {
             console.error(error.response.data);
             console.error(error.response.status);
@@ -27,8 +36,12 @@ export const getChatsAPI = (receiverId, listingId) =>
 //           });
 
 
-export const getSideBarParticipants = () =>
-    axios.get(`${API_BASE_URL}/sidebar`, { withCredentials: true })
+export const getSideBarParticipants = (token) =>
+    axios.get(`${API_BASE_URL}/sidebar`, { withCredentials: true ,
+        headers: {
+            Authorization: `Bearer ${token}`,
+        }
+    })
         .catch((error) => {
             console.error(error.response.data);
             console.error(error.response.status);

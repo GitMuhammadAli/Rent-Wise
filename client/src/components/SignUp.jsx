@@ -23,7 +23,7 @@ function SignUp() {
     try {
       const res  = await register({ name, email, password });
       console.log(res);
-      navigate("/", {
+      navigate("/auth/signIn", {
         state: { successMessage: response.register.success || res.message},
       });
     } catch (error) {

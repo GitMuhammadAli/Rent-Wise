@@ -5,15 +5,23 @@ import { getAllListingAPI } from "../../Api/ListingApi";
 import { Link } from 'react-router-dom';
 import { FaCar, FaBicycle, FaBuilding, FaHotel } from 'react-icons/fa';
 import { ListingsContext } from '../../hooks/ListingsContext';
+import { useAuth } from '../../hooks/AuthContext';
 
 export default function GetAllListings() {
   const { state, dispatch } = useContext(ListingsContext); 
   const { listings } = state; 
+  const {token} = useAuth();
 
   useEffect(() => {
     async function fetchData() {
+      if(!token)
+      {
+        console.log("user not here")
+        return;
+      }
+      console.log("user token", token)
       try {
-        const response = await getAllListingAPI();
+        const response = await getAllListingAPI(token);
         console.log("Response is: ", response.data);
         
         dispatch({ type: 'GET_LISTINGS', payload: response.data });
@@ -25,7 +33,7 @@ export default function GetAllListings() {
     }
 
     fetchData();
-  }, [dispatch]);
+  }, [dispatch,token]);
 
   useEffect(()=>{
     console.log("Current listings in get state in getAll:", listings)
