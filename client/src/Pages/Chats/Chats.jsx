@@ -35,6 +35,7 @@ const ChatComponent = ({ currentUserId, ownerId, listingId }) => {
   const fetchMessages = async () => {
     try {
       const queryParams = `sender=${currentUserId}&receiver=${ownerId}&listing=${listingId}`
+      
       const response = await getChatsAPI(queryParams)
       setMessages(response.data)
       setIsLoading(false)

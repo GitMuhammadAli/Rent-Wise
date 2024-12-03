@@ -1,18 +1,19 @@
 const conversation = require("../../controller/chat/ConversationController");
 const express = require("express");
 const router = express.Router();
+const { AuthorizeUser, FindUser } = require("../../middleware/auth");
 
 
 // Get or create a conversation
-router.post("/CreateorGetconversations", conversation.createOrGetConversation);
+router.post("/CreateorGetconversations", AuthorizeUser("user" , "admin") ,conversation.createOrGetConversation);
 
 // Create a new message in a conversation
-router.post("/CreateMessages", conversation.createMessage);
+router.post("/CreateMessages", AuthorizeUser("user" , "admin") , conversation.createMessage);
 
 // Fetch all conversations for the sidebar
-router.get("/GetAllConversations", conversation.fetchConversationsForSidebar);
+router.get("/GetAllConversations", AuthorizeUser("user" , "admin") ,conversation.fetchConversationsForSidebar);
 
 // Fetch all messages for a specific conversation
-router.get("/FetchAllMessages/:conversationId/messages", conversation.fetchMessagesByConversation);
+router.get("/FetchAllMessages/:conversationId/messages", AuthorizeUser("user" , "admin") , conversation.fetchMessagesByConversation);
 
 module.exports = router;

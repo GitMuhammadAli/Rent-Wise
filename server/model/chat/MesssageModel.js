@@ -4,7 +4,7 @@ const MesssageSchema = new mongoose.Schema({
     sender: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     receiver: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     conversation: { type: mongoose.Schema.Types.ObjectId, ref: 'Conversation', required: true },
-    listing: { type: mongoose.Schema.Types.ObjectId, ref: 'Listing', required: true },
+    listing: { type: mongoose.Schema.Types.ObjectId, ref: 'RentalItem', required: true },
     message: { type: String, required: true },
     status: { type: String, enum: ['sent', 'read'], default: 'sent' },
     createdAt: { type: Date, default: Date.now },

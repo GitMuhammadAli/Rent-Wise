@@ -75,7 +75,6 @@ const ListingDetails = () => {
   const handleChatButtonClick = () => {
     // navigate(`/chat/${currentListing.owner._id}/${currentListing._id}/${user._id}`);
     navigate(`/chat`, { state: { ownerIdDetails: currentListing.owner, listingIdDetails : currentListing, userIdDetails: user } });
-
   };
   return (
     <VStack spacing={8} align="stretch" p={6}>

@@ -7,6 +7,9 @@ const createOrGetConversation = async (req, res) => {
     try {
         const { receiver, listing } = req.body;
         const senderId = req.user._id;
+        console.log("Data For Comments sender id is", senderId);
+        console.log(req.body);
+
 
         if (!senderId || !receiver || !listing) {
             return res.status(400).json({ error: "All fields are required" });
@@ -15,9 +18,10 @@ const createOrGetConversation = async (req, res) => {
         // Check if a conversation already exists between these participants for the given listing
         let conversation = await Conversation.findOne({
             participants: { $all: [senderId, receiver] }, // Match both participants
-            listing,
+            // listing,
         });
 
+        console.log("Conversation is", conversation);
         if (!conversation) {
             conversation = new Conversation({
                 participants: [senderId, receiver],
@@ -146,7 +150,7 @@ const fetchConversationsForSidebar = async (req, res) => {
 const fetchMessagesByConversation = async (req, res) => {
     try {
         const { conversationId } = req.params;
-        const userId = req.user._id; // Assuming `req.user` contains the authenticated user's ID
+        const userId = req.user._id; 
 
         if (!conversationId) {
             return res.status(400).json({ error: "Conversation ID is required" });
