@@ -15,5 +15,9 @@ router.get("/GetAllConversations", AuthorizeUser("user" , "admin") ,conversation
 
 // Fetch all messages for a specific conversation
 router.get("/FetchAllMessages/:conversationId/messages", AuthorizeUser("user" , "admin") , conversation.fetchMessagesByConversation);
+// Fetch all messages for a specific conversation to the sidebar
+router.get("/sidebar", AuthorizeUser("user" , "admin") ,conversation.getChatParticipants);
+
+
 
 module.exports = router;

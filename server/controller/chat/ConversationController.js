@@ -1,44 +1,112 @@
-
+const mongoose = require("mongoose");
 const Conversation = require("../../model/chat/ConversationModel");
 const Messsage = require("../../model/chat/MesssageModel");
+
+
+// const createOrGetConversation = async (req, res) => {
+//     try {
+//         const { receiver, listing } = req.body;
+//         const senderId = req.user._id;
+//         console.log("Data For Comments sender id is", senderId);
+//         console.log(req.body);
+
+
+//         if (!senderId || !receiver || !listing) {
+//             return res.status(400).json({ error: "All fields are required" });
+//         }
+
+//         // Check if a conversation already exists between these participants for the given listing
+//         let conversation = await Conversation.findOne({
+//             participants: { $all: [senderId, receiver] }, // Match both participants
+//             // listing,
+//         });
+
+//         console.log("Conversation is here avalible already", conversation);
+//         if (!conversation) {
+//             conversation = new Conversation({
+//                 participants: [senderId, receiver],
+//                 listing: [listing],
+//             });
+
+//             await conversation.save();
+//         } else if (!conversation.listing.includes(listing)) {
+//             // Add the listing to the existing conversation if it's not already included
+//             conversation.listing.push(listing);
+//             await conversation.save();
+//         }
+
+//         res.status(200).json({
+//             success: true,
+//             message: "Conversation retrieved/created successfully",
+//             data: conversation,
+//         });
+//     } catch (error) {
+//         console.error("Error creating/getting conversation:", error);
+//         return res.status(500).json({ error: "Internal server error" });
+//     }
+// };
+
+
 
 
 const createOrGetConversation = async (req, res) => {
     try {
         const { receiver, listing } = req.body;
         const senderId = req.user._id;
-        console.log("Data For Comments sender id is", senderId);
-        console.log(req.body);
-
 
         if (!senderId || !receiver || !listing) {
             return res.status(400).json({ error: "All fields are required" });
         }
 
-        // Check if a conversation already exists between these participants for the given listing
         let conversation = await Conversation.findOne({
-            participants: { $all: [senderId, receiver] }, // Match both participants
-            // listing,
+            participants: { $all: [senderId, receiver] },
         });
 
-        console.log("Conversation is", conversation);
         if (!conversation) {
             conversation = new Conversation({
                 participants: [senderId, receiver],
                 listing: [listing],
             });
-
             await conversation.save();
         } else if (!conversation.listing.includes(listing)) {
-            // Add the listing to the existing conversation if it's not already included
             conversation.listing.push(listing);
             await conversation.save();
         }
 
+        const participants = await Conversation.aggregate([
+            { $match: { _id: conversation._id } },
+            { $unwind: "$participants" },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "participants",
+                    foreignField: "_id",
+                    as: "user",
+                },
+            },
+            { $unwind: "$user" },
+            {
+                $project: {
+                    user: {
+                        _id: 1,
+                        name: 1,
+                        email: 1,
+                        imageUrl: 1,
+                    },
+                },
+            },
+        ]);
+
+        const messages = await Messsage.find({ conversation: conversation._id }).sort({ createdAt: 1 });
+
         res.status(200).json({
             success: true,
             message: "Conversation retrieved/created successfully",
-            data: conversation,
+            data: {
+                conversation,
+                participants: participants.map((p) => p.user),
+                messages,
+            },
         });
     } catch (error) {
         console.error("Error creating/getting conversation:", error);
@@ -46,7 +114,49 @@ const createOrGetConversation = async (req, res) => {
     }
 };
 
+const getChatParticipants = async (req, res) => {
+    try {
+        const userId = req.user._id;
 
+        const participants = await Conversation.aggregate([
+            {
+                $match: {
+                    participants: new mongoose.Types.ObjectId(userId),
+                },
+            },
+            { $unwind: "$participants" },
+            {
+                $match: {
+                    participants: { $ne: new mongoose.Types.ObjectId(userId) },
+                },
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "participants",
+                    foreignField: "_id",
+                    as: "user",
+                },
+            },
+            { $unwind: "$user" },
+            {
+                $project: {
+                    user: {
+                        _id: 1,
+                        name: 1,
+                        email: 1,
+                        imageUrl: 1,
+                    },
+                },
+            },
+        ]);
+
+        res.status(200).json({ success: true, participants });
+    } catch (error) {
+        console.error("Error fetching participants:", error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+};
 
 
 
@@ -191,6 +301,7 @@ module.exports = {
     createOrGetConversation,
     createMessage,
     fetchConversationsForSidebar,
-    fetchMessagesByConversation
+    fetchMessagesByConversation,
+    getChatParticipants
 };
 

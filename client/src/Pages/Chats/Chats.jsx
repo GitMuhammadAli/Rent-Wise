@@ -12,7 +12,8 @@ import {
   useToast,
 } from '@chakra-ui/react'
 import { SendIcon } from 'lucide-react'
-import {createChatAPI , getChatsAPI} from '../../Api/Chats'
+// import {createChatAPI , getChatsAPI} from '../../Api/Chats'
+import { createMessage, fetchMessagesByConversation } from "./../../Api/Chats";
 
 
 const ChatComponent = ({ currentUserId, ownerId, listingId }) => {
@@ -35,8 +36,8 @@ const ChatComponent = ({ currentUserId, ownerId, listingId }) => {
   const fetchMessages = async () => {
     try {
       const queryParams = `sender=${currentUserId}&receiver=${ownerId}&listing=${listingId}`
-      
-      const response = await getChatsAPI(queryParams)
+
+      const response = await fetchMessagesByConversation(queryParams)
       setMessages(response.data)
       setIsLoading(false)
     } catch (error) {
@@ -90,7 +91,7 @@ const sendMessage = async () => {
       console.log('Sending message data:', data);
   
       // Send the message data to the backend
-      const response = await createChatAPI(data);
+      const response = await createMessage(data);
       console.log('Message sent successfully', response);
   
       setNewMessage(''); // Clear input field

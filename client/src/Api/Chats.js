@@ -79,3 +79,13 @@ export const fetchMessagesByConversation = (conversationId) =>
             console.error(error.response.status);
             console.error(error.response.headers);
         });
+
+
+        export const getSideBarParticipants = () =>
+    axios.get(`${API_BASE_URL}/sidebar`, { withCredentials: true })
+        .catch((error) => {
+            console.error(error.response.data);
+            console.error(error.response.status);
+            console.error(error.response.headers);
+        });
+

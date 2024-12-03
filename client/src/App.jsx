@@ -30,7 +30,7 @@ import DashboardUserContextProvider from "./hooks/DashboardUserContext";
 import UpdateListing from "./Pages/Listings/updateListing";
 import Chats from './Pages/Chats/Chats';
 import SideChat from "./Pages/Chats/SideChat";
-import MainChat from "./Pages/NewChat/MainChat";
+import MainChat from "./Pages/Conversation/MainChat";
 
 
 
