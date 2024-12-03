@@ -1,6 +1,7 @@
 import { Avatar, Box, Flex, Heading, Input, Text, VStack } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
-import { getSideBarParticipants } from '../../Api/Chats';
+// import { getSideBarParticipants } from '../../Api/Chats';
+import { fetchConversationsForSidebar } from '../../Api/Chats';
 
 export default function SideChat({ users, handleSideBarClick, activeIndex }) {
   const [participants, setParticipants] = useState([]);

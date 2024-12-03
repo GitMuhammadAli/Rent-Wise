@@ -2,7 +2,7 @@ import { Box, Text, VStack } from '@chakra-ui/react';
 import React, { useEffect } from 'react'
 import { fetchConversationsForSidebar } from '../../Api/Chats';
 
-export default function SideChat() {
+export default function SideChat({ ownerIdDetails, userIdDetails, listingIdDetails }) {
 
 
     useEffect(()=>{

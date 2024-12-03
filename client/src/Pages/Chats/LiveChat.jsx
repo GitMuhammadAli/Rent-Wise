@@ -10,7 +10,8 @@ import {
 } from "@chakra-ui/react";
 import React, { useState, useEffect } from "react";
 import { SendHorizontal } from "lucide-react";
-import { createChatAPI, getChatsAPI } from "./../../Api/Chats";
+// import { createChatAPI, getChatsAPI } from "./../../Api/Chats";
+import { createMessage, fetchMessagesByConversation } from "./../../Api/Chats";
 
 export default function LiveChat({
   users,
