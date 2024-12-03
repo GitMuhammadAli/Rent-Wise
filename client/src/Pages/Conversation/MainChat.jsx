@@ -3,7 +3,7 @@ import SideChat from './SideChat'
 import LiveChat from './LiveChat'
 import { Flex } from '@chakra-ui/react'
 import { useLocation } from 'react-router-dom';
-import { createOrGetConversation } from '../../Api/Chats'
+// import { createOrGetConversation } from '../../Api/Chats'
 
 export default function MainChat() {
 const location = useLocation();
@@ -14,22 +14,22 @@ useEffect(()=>{
   console.log("listingggg",listingIdDetails);
 },[ownerIdDetails,userIdDetails,listingIdDetails])
 
-useEffect(()=>{
-    const createConversation = async () => {
-      try {
-        await createOrGetConversation({
-          receiver: ownerIdDetails._id,
-          listing: listingIdDetails._id
-        });
-      } catch (error) {
-        console.error("Error creating conversation:", error);
-      }
-    };
+// useEffect(()=>{
+//     const createConversation = async () => {
+//       try {
+//         await createOrGetConversation({
+//           receiver: ownerIdDetails._id,
+//           listing: listingIdDetails._id
+//         });
+//       } catch (error) {
+//         console.error("Error creating conversation:", error);
+//       }
+//     };
 
-    if (ownerIdDetails && userIdDetails && listingIdDetails) {
-      createConversation();
-    }
-},[ownerIdDetails,userIdDetails,listingIdDetails])
+//     if (ownerIdDetails && userIdDetails && listingIdDetails) {
+//       createConversation();
+//     }
+// },[ownerIdDetails,userIdDetails,listingIdDetails])
 
 return (
     <div>

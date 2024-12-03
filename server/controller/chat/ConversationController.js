@@ -97,7 +97,7 @@ const createOrGetConversation = async (req, res) => {
             },
         ]);
 
-        const messages = await Messsage.find({ conversation: conversation._id }).sort({ createdAt: 1 });
+        // const messages = await Messsage.find({ conversation: conversation._id }).sort({ createdAt: 1 });
 
         res.status(200).json({
             success: true,
@@ -105,9 +105,12 @@ const createOrGetConversation = async (req, res) => {
             data: {
                 conversation,
                 participants: participants.map((p) => p.user),
-                messages,
+                // messages,
             },
         });
+
+        return conversation;
+
     } catch (error) {
         console.error("Error creating/getting conversation:", error);
         return res.status(500).json({ error: "Internal server error" });
@@ -160,19 +163,96 @@ const getChatParticipants = async (req, res) => {
 
 
 
-
-
-const createMessage = async (req, res) => {
+const createOrGetConversations = async(receiver,listing , senderId )=>{
     try {
-        const { conversationId, message, listing } = req.body;
-        const senderId = req.user._id;
-        const receiver = req.body.receiver;
+        // const { receiver, listing } = req.body;
+        // const senderId = req.user._id;
 
-        if (!conversationId || !message || !listing || !senderId || !receiver) {
+        if (!senderId || !receiver || !listing) {
             return res.status(400).json({ error: "All fields are required" });
         }
 
-        // Ensure the conversation exists
+        let conversation = await Conversation.findOne({
+            participants: { $all: [senderId, receiver] },
+        });
+
+        if (!conversation) {
+            conversation = new Conversation({
+                participants: [senderId, receiver],
+                listing: [listing],
+            });
+            await conversation.save();
+        } else if (!conversation.listing.includes(listing)) {
+            conversation.listing.push(listing);
+            await conversation.save();
+        }
+
+        const participants = await Conversation.aggregate([
+            { $match: { _id: conversation._id } },
+            { $unwind: "$participants" },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "participants",
+                    foreignField: "_id",
+                    as: "user",
+                },
+            },
+            { $unwind: "$user" },
+            {
+                $project: {
+                    user: {
+                        _id: 1,
+                        name: 1,
+                        email: 1,
+                        imageUrl: 1,
+                    },
+                },
+            },
+        ]);
+
+        // const messages = await Messsage.find({ conversation: conversation._id }).sort({ createdAt: 1 });
+
+        // res.status(200).json({
+        //     success: true,
+        //     message: "Conversation retrieved/created successfully",
+        //     data: {
+        //         conversation,
+        //         participants: participants.map((p) => p.user),
+        //         // messages,
+        //     },
+        // });
+
+            return {
+                conversation,
+                participants: participants.map((p) => p.user),
+            };
+
+    } catch (error) {
+        console.error("Error creating/getting conversation:", error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+}
+
+const createMessage = async (req, res) => {
+        try {
+            const { message, listing } = req.body;
+            
+            
+            const senderId = req.user._id;
+            const receiver = req.body.receiver;
+            const conversationData = await createOrGetConversations(receiver , listing , senderId);
+            console.log("conversationData", conversationData);
+  
+
+            const conversationId = conversationData.conversation._id;
+            console.log("conversationId", conversationId);
+
+            if (!conversationId || !message || !listing || !senderId || !receiver) {
+                return res.status(400).json({ error: "All fields are required" });
+            }
+
+            // Ensure the conversation exists
         const conversation = await Conversation.findById(conversationId);
         if (!conversation) {
             return res.status(404).json({ error: "Conversation not found" });
