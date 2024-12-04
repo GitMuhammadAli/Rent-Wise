@@ -1,25 +1,70 @@
-import { Box, Button, HStack, Input ,   Flex} from '@chakra-ui/react';
-import React , { useState , useEffect } from 'react'
-import { createMessage , fetchMessagesByConversation } from '../../Api/Chats';
+import { Box, Button, HStack, Input, Text } from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react'
+import {createMessage, fetchMessagesByConversation} from '../../Api/Chats'
 
-export default function LiveChat({ ownerIdDetails, userIdDetails, listingIdDetails }) {
 
-  const [messages, setMessages] = useState([]);
+export default function LiveChat({owner,listingIdDetails, ownerIdDetails, Messages, setMessages}) {
   const [message, setMessage] = useState('');
-  const [users, setUsers] = useState([]);
-  const [displayUser, setDisplayUser] = useState(null);
-  const [userDetails, setUserDetails] = useState(null);
-  const [source, setSource] = useState('');
+  const [convoID, setConvoId] = useState('');
+ 
 
 
-  useEffect(() => {
-    console.log("userIdDetails in live chat", userIdDetails);
-    console.log("ownerIdDetails in live chat", ownerIdDetails);
-    console.log("listingIdDetails in live chat", listingIdDetails);
-   
-  })
+  useEffect(()=>{
+       
+        console.log("Onwer is live chat is-->", owner);
+        console.log("lsiting id", listingIdDetails)
 
 
+        const fetchMessages = async()=>{
+          if(!owner)
+            {
+              console.log("no owner in live chat rn")
+              return
+            }
+          if(!convoID)
+          {
+            console.log("no convo id yet")
+            return
+          }
+          try {
+            console.log("convo in func is:", convoID)
+            const values = await fetchMessagesByConversation(convoID);
+
+           
+            const messagesToSet = values?.data?.data || [];
+            console.log("fetch messages are",  messagesToSet)
+            setMessages(messagesToSet);
+            
+          } catch (error) {
+           console.log("errors", error) 
+          }
+        }
+        fetchMessages()
+      
+  },[convoID, owner])
+
+
+  const handleMessageSubmit = async(e)=>{
+    e.preventDefault();
+
+    try {
+      console.log("messageIS", message);
+        console.log("lsiting id in func", listingIdDetails)
+        console.log("Onwer is live chat is-->", owner);
+       
+
+      const data = { message, listing:listingIdDetails, receiver: owner._id }
+      const values = await createMessage(data); 
+      console.log("meess",values.data.data.message)
+      console.log("convo",values.data.data.conversation)
+      setConvoId(values.data.data.conversation);
+    
+     setMessage('')
+      console.log("Data of response of messages is:", values)
+    } catch (error) {
+      console.error('Error sending message:', error);
+    }
+  }
     return (
         <Box
           flex="1"
@@ -30,59 +75,48 @@ export default function LiveChat({ ownerIdDetails, userIdDetails, listingIdDetai
           borderColor="gray.200"
           borderRadius="md"
         >
-          <Flex
-        justifyContent={"space-between"}
-        flexDir={"column"}
-        borderLeft={"1px solid gray"}
-        bg={"white"}
-        w={"60vw"}
-        h={"100%"}
-      >
-        {users && displayUser && (
-          <Flex
-            gap={4}
-            alignItems={"center"}
-            borderBottom={"1px solid gray"}
-            p={"20px"}
-          >
-            <Avatar
-              src={
-                displayUser.imageUrl
-                  ? `${import.meta.env.VITE_BACK_END_URL}${
-                      displayUser.imageUrl
-                    }`
-                  : undefined
-              }
-            />
-            <Flex flexDir={"column"}>
-              {
-                userDetails && ( <>
-                  <Text fontWeight={"bold"}>{userDetails.name}</Text>
-                  <Flex alignItems={"center"} gap={1}>
-                    <Image w={"8px"} h={"8px"} src={source} alt="status image" />
-                    <Text fontSize={"sm"}>{displayUser.status}</Text>
-                  
-                  </Flex>
-                  </>) 
-              }
-             
-            </Flex>
-          </Flex>
-        )}
+          <HStack borderBottom={'1px solid gray'} bg={'red.200'} h={'70px'}>
+            {
+              owner && (
+                <Box>
+                  <Text>{owner.name}</Text>
+
+                </Box>
+
+              )
+                
+              
+            }
+
+          </HStack>
           <Box flex="1" height="300px" overflowY="scroll" bg="gray.50" borderRadius="md" p={4}>
-            {/* Messages will appear here */}
+           {/* display messages her */}
+
+           {
+            Messages && Messages.length > 0 && Messages.map((Messages,i)=>(
+              <Box key={Messages._id  || i }> 
+              <Text>{Messages.message}</Text>
+               </Box>
+
+            )) 
+              
+            
+           }
           </Box>
           <HStack mt={4}>
+            <form onSubmit={handleMessageSubmit}>
             <Input
               placeholder="Type your message..."
               border="none"
               bg="gray.100"
               borderRadius="md"
               _focus={{ boxShadow: "outline" }}
+              value={message}
+              onChange={(e)=> setMessage(e.target.value)}
             />
-            <Button colorScheme="blue">Send</Button>
+            <Button type='submit' colorScheme="blue">Send</Button>
+            </form>
           </HStack>
-          </Flex>
         </Box>
       );
 }

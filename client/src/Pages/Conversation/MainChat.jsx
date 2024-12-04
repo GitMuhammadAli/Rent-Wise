@@ -1,18 +1,29 @@
-import React , { useEffect } from 'react'
+import React , { useEffect, useState } from 'react'
 import SideChat from './SideChat'
 import LiveChat from './LiveChat'
 import { Flex } from '@chakra-ui/react'
-import { useLocation } from 'react-router-dom';
+import {useLocation } from 'react-router-dom';
 // import { createOrGetConversation } from '../../Api/Chats'
 
 export default function MainChat() {
 const location = useLocation();
 const { ownerIdDetails, listingIdDetails, userIdDetails } = location.state || {};
+const [owner,setOwner] = useState('');
+const [Messages, setMessages] = useState([]);
+
 useEffect(()=>{
   console.log("Owner",ownerIdDetails);
   console.log("useer",userIdDetails);
   console.log("listingggg",listingIdDetails);
 },[ownerIdDetails,userIdDetails,listingIdDetails])
+
+
+const handleSideBarClick = (receiver_id, receiver_name)=>{
+  // setOwner([{_id:ownerIdDetails._id, name:ownerIdDetails.name}] );
+  setOwner({_id:receiver_id, name:receiver_name} );
+  setMessages([])
+
+}
 
 // useEffect(()=>{
 //     const createConversation = async () => {
@@ -34,8 +45,8 @@ useEffect(()=>{
 return (
     <div>
         <Flex>
-        <SideChat ownerIdDetails={ownerIdDetails} userIdDetails={userIdDetails} listingIdDetails={listingIdDetails} />
-        <LiveChat ownerIdDetails={ownerIdDetails} userIdDetails={userIdDetails} listingIdDetails={listingIdDetails} />
+        <SideChat handleSideBarClick={handleSideBarClick} ownerIdDetails={ownerIdDetails} userIdDetails={userIdDetails} listingIdDetails={listingIdDetails} />
+        <LiveChat Messages={Messages} setMessages={setMessages} owner={owner} ownerIdDetails={ownerIdDetails} userIdDetails={userIdDetails} listingIdDetails={listingIdDetails} />
         </Flex>
     </div>
 )

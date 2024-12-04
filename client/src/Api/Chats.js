@@ -51,7 +51,7 @@ export const createOrGetConversation = (data) =>
 
 
 
-export const createMessage = (data) =>
+export const createMessage = (data) =>  ///thiiis
     axios.post(`${API_BASE_URL}/CreateMessages`, data, { withCredentials: true })
         .catch((error) => {
             console.error(error.response.data);
@@ -79,6 +79,7 @@ export const fetchMessagesByConversation = (conversationId) =>
             console.error(error.response.status);
             console.error(error.response.headers);
         });
+      
 
 
         export const getSideBarParticipants = () =>
