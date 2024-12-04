@@ -9,18 +9,27 @@ export default function MainChat() {
 const location = useLocation();
 const { ownerIdDetails, listingIdDetails, userIdDetails } = location.state || {};
 const [owner,setOwner] = useState('');
+const [listing,setListing] = useState('');
+const [item , setItem] = useState('');
+const [allData , setAllData] = useState('');
 const [Messages, setMessages] = useState([]);
 
 useEffect(()=>{
   console.log("Owner",ownerIdDetails);
   console.log("useer",userIdDetails);
   console.log("listingggg",listingIdDetails);
-},[ownerIdDetails,userIdDetails,listingIdDetails])
+  console.log("item",item);
+  console.log("allData",allData);
+},[ownerIdDetails,userIdDetails,listingIdDetails,item,allData])
 
 
-const handleSideBarClick = (receiver_id, receiver_name)=>{
+const handleSideBarClick = (receiver_id, receiver_name , item ,   listings, allData)=>{
   // setOwner([{_id:ownerIdDetails._id, name:ownerIdDetails.name}] );
   setOwner({_id:receiver_id, name:receiver_name} );
+  setItem(item);
+  setListing(listings);
+  setAllData(allData);
+
   setMessages([])
 
 }
@@ -46,7 +55,7 @@ return (
     <div>
         <Flex>
         <SideChat handleSideBarClick={handleSideBarClick} ownerIdDetails={ownerIdDetails} userIdDetails={userIdDetails} listingIdDetails={listingIdDetails} />
-        <LiveChat Messages={Messages} setMessages={setMessages} owner={owner} ownerIdDetails={ownerIdDetails} userIdDetails={userIdDetails} listingIdDetails={listingIdDetails} />
+        <LiveChat Messages={Messages} setMessages={setMessages} owner={owner} ownerIdDetails={ownerIdDetails} userIdDetails={userIdDetails} listingIdDetails={listingIdDetails} listing={listing} item={item} />
         </Flex>
     </div>
 )

@@ -13,6 +13,8 @@ router.post("/CreateMessages", AuthorizeUser("user" , "admin") , conversation.cr
 // Fetch all conversations for the sidebar
 router.get("/GetAllConversations", AuthorizeUser("user" , "admin") ,conversation.fetchConversationsForSidebar);
 
+router.get("/GetAllConversationsAll", AuthorizeUser("user" , "admin") ,conversation.fetchConversationsForSidebarOld);
+
 // Fetch all messages for a specific conversation
 router.get("/FetchAllMessages/:conversationId/messages", AuthorizeUser("user" , "admin") , conversation.fetchMessagesByConversation);
 // Fetch all messages for a specific conversation to the sidebar

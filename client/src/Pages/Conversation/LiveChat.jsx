@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import {createMessage, fetchMessagesByConversation} from '../../Api/Chats'
 
 
-export default function LiveChat({owner,listingIdDetails, ownerIdDetails, Messages, setMessages}) {
+export default function LiveChat({owner,listingIdDetails, ownerIdDetails, Messages, setMessages , listing}) {
   const [message, setMessage] = useState('');
   const [convoID, setConvoId] = useState('');
  
@@ -12,7 +12,7 @@ export default function LiveChat({owner,listingIdDetails, ownerIdDetails, Messag
   useEffect(()=>{
        
         console.log("Onwer is live chat is-->", owner);
-        console.log("lsiting id", listingIdDetails)
+        console.log("lsiting id", listing)
 
 
         const fetchMessages = async()=>{

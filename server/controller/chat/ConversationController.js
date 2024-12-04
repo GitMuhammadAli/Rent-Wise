@@ -121,14 +121,20 @@ const getChatParticipants = async (req, res) => {
 
 
 
-const createOrGetConversations = async(receiver,listing , senderId )=>{
+const createOrGetConversations = async(receiver,listing , senderId ,  )=>{
     try {
         // const { receiver, listing } = req.body;
         // const senderId = req.user._id;
 
+        
+        console.log("listing", listing);
+        console.log("receiver", receiver);
+        console.log("senderId", senderId);
+
         if (!senderId || !receiver || !listing) {
-            return res.status(400).json({ error: "All fields are required" });
+            return { error: "All fields are required" };
         }
+
 
         let conversation = await Conversation.findOne({
             participants: { $all: [senderId, receiver] },
@@ -199,6 +205,7 @@ const createMessage = async (req, res) => {
             
             const senderId = req.user._id;
             const receiver = req.body.receiver;
+
             const conversationData = await createOrGetConversations(receiver , listing , senderId);
             console.log("conversationData", conversationData);
   
@@ -240,7 +247,7 @@ const createMessage = async (req, res) => {
 
 
 
-const fetchConversationsForSidebar = async (req, res) => {
+const fetchConversationsForSidebarOld = async (req, res) => {
     try {
         const userId = req.user._id;
 
@@ -265,9 +272,73 @@ const fetchConversationsForSidebar = async (req, res) => {
 
 
 
+  const fetchConversationsForSidebar = async (req, res) => {
+      try {
+          const userId = req.user._id;
 
+          const conversations = await Conversation.aggregate([
+              {
+                  $match: {
+                      participants: new mongoose.Types.ObjectId(userId),
+                  },
+              },
+              { $unwind: "$participants" },
+              {
+                  $match: {
+                      participants: { $ne: new mongoose.Types.ObjectId(userId) },
+                  },
+              },
+              {
+                  $lookup: {
+                      from: "users",
+                      localField: "participants",
+                      foreignField: "_id",
+                      as: "user"
+                  },
+              },
+              {
+                  $lookup: {
+                      from: "rentalitems",
+                      localField: "listing",
+                      foreignField: "_id",
+                      as: "listing"
+                  },
+              },
+              { $unwind: "$user" },
+              {
+                  $project: {
+                      user: {
+                          _id: 1,
+                          name: 1,
+                          email: 1,
+                          imageUrl: 1,
+                      },
+                      listing: {
+                          _id: 1,
+                          title: 1,
+                          image: 1
+                      },
+                      createdAt: 1,
+                      updatedAt: 1
+                  },
+              },
+              {
+                  $group: {
+                      _id: "$_id",
+                      participants: { $push: "$user" },
+                      listing: { $first: "$listing" },
+                      createdAt: { $first: "$createdAt" },
+                      updatedAt: { $first: "$updatedAt" }
+                  }
+              }
+          ]);
 
-
+          res.status(200).json({ success: true, data: conversations });
+      } catch (error) {
+          console.error("Error fetching sidebar conversations:", error);
+          return res.status(500).json({ error: "Failed to fetch conversations." });
+      }
+  };
 
 const fetchMessagesByConversation = async (req, res) => {
     try {
@@ -313,6 +384,7 @@ module.exports = {
     createOrGetConversation,
     createMessage,
     fetchConversationsForSidebar,
+    fetchConversationsForSidebarOld,
     fetchMessagesByConversation,
     getChatParticipants
 };

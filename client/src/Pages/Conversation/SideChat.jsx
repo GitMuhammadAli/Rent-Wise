@@ -1,19 +1,26 @@
 import { Box, Text, VStack } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
-import { getSideBarParticipants } from '../../Api/Chats';
+import { getSideBarParticipants , fetchConversationsForSidebar } from '../../Api/Chats';
 
 export default function SideChat({ handleSideBarClick, ownerIdDetails, userIdDetails, listingIdDetails }) {
   const [participants, setParticipants] = useState([]);
   const [owner, setOwner] = useState(null);
+  const [listings, setListings] = useState([]);
+  const [allData, setAllData] = useState(null);
 
   // Fetch participants from the API
   useEffect(() => {
     const fetchParticipants = async () => {
       try {
-        const response = await getSideBarParticipants();
-        const participantData = response?.data?.participants || [];
+        const response = await fetchConversationsForSidebar();
+        console.log("response", response);
+        const participantData = response.data.data[0].participants || [];
+        const listingData = response.data.data[0].listing || [];
         console.log("Participants are: ", participantData);
+        console.log("Listings are: ", listingData);
         setParticipants(participantData);
+        setListings(listingData);
+        setAllData(response.data.data[0]);
       } catch (error) {
         console.error("Error fetching participants:", error);
       }
@@ -31,16 +38,14 @@ export default function SideChat({ handleSideBarClick, ownerIdDetails, userIdDet
     }
   }, [ownerIdDetails]);
 
-  // Combine participants and owner (if not already in the list)
   const combinedList = React.useMemo(() => {
     if (!owner) return participants;
-    const isOwnerInParticipants = participants.some((participant) => participant.user._id === owner._id);
-    return isOwnerInParticipants ? participants : [{ user: owner }, ...participants];
+    const isOwnerInParticipants = participants.some((participant) => participant._id === owner._id);
+    return isOwnerInParticipants ? participants : [owner, ...participants];
   }, [participants, owner]);
 
   useEffect(()=>{
     console.log("combines", combinedList)
-
   },[combinedList])
 
   return (
@@ -53,19 +58,32 @@ export default function SideChat({ handleSideBarClick, ownerIdDetails, userIdDet
       p={4}
     >
       <VStack spacing={4} align="stretch">
+        <Text fontWeight="bold">Listings:</Text>
+        {listings.map((listing, i) => (
+          <Box
+            key={listing._id}
+            p={2}
+            bg="gray.300"
+            borderRadius="md"
+          >
+            <Text>{listing.title}</Text>
+          </Box>
+        ))}
+        
+        <Text fontWeight="bold">Participants:</Text>
         {combinedList && combinedList.length > 0 ? (
           combinedList.map((item, i) => (
             <Box
-              key={item.user?._id || i}
+              key={item._id || i}
               display="flex"
               alignItems="center"
               cursor="pointer"
               p={2}
               bg="gray.200"
               borderRadius="md"
-              onClick={() => handleSideBarClick(item.user._id, item.user.name)}
+              onClick={() => handleSideBarClick(item._id, item.name, item, listings, allData)}
             >
-              <Text>{item.user.name}</Text>
+              <Text>{item.name}</Text>
             </Box>
           ))
         ) : (
