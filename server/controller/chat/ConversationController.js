@@ -228,8 +228,9 @@ const createMessage = async (req, res) => {
             sender: senderId,
             receiver,
             conversation: conversationId,
-            listing,
+            listing: Array.isArray(listing) ? listing : [listing],
             message,
+            status: 'sent'
         });
 
         await newMessage.save();
@@ -244,8 +245,6 @@ const createMessage = async (req, res) => {
         return res.status(500).json({ error: "Internal server error" });
     }
 };
-
-
 
 const fetchConversationsForSidebarOld = async (req, res) => {
     try {
