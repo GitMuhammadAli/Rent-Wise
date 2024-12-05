@@ -1,47 +1,24 @@
-import { Box, Button, HStack, Input, Text } from '@chakra-ui/react';
+import { Box, Button, Flex, HStack, Input, Text } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react'
+import { useAuth } from '../../hooks/AuthContext';
 import {createMessage, fetchMessagesByConversation} from '../../Api/Chats'
 
 
-export default function LiveChat({owner,listingIdDetails, ownerIdDetails, Messages, setMessages , listing}) {
+
+export default function LiveChat({owner,listingIdDetails,convoID,setConvoId, ownerIdDetails, Messages, setMessages , listings}) {
   const [message, setMessage] = useState('');
-  const [convoID, setConvoId] = useState('');
- 
+  const { user } = useAuth();
+  const [localListingId, setLocalListingId] = useState([]); // listings detail is comming from main chat, this state is used to just set the id's from that listing so can send while creating messages
+
+  useEffect(() => {
+    console.log("lsiting is effect 1 ", listings)
+    // Compute listing IDs when listings change
+    const listing_id = listings.map(list => list._id);
+    console.log("listIIID in live chat", listing_id);
+    setLocalListingId(listing_id);
+  }, [listings]);
 
 
-  useEffect(()=>{
-       
-        console.log("Onwer is live chat is-->", owner);
-        console.log("lsiting id", listing)
-
-
-        const fetchMessages = async()=>{
-          if(!owner)
-            {
-              console.log("no owner in live chat rn")
-              return
-            }
-          if(!convoID)
-          {
-            console.log("no convo id yet")
-            return
-          }
-          try {
-            console.log("convo in func is:", convoID)
-            const values = await fetchMessagesByConversation(convoID);
-
-           
-            const messagesToSet = values?.data?.data || [];
-            console.log("fetch messages are",  messagesToSet)
-            setMessages(messagesToSet);
-            
-          } catch (error) {
-           console.log("errors", error) 
-          }
-        }
-        fetchMessages()
-      
-  },[convoID, owner])
 
 
   const handleMessageSubmit = async(e)=>{
@@ -50,32 +27,94 @@ export default function LiveChat({owner,listingIdDetails, ownerIdDetails, Messag
     try {
       console.log("messageIS", message);
         console.log("lsiting id in func", listingIdDetails)
+        console.log("local lsiting id in func", localListingId)
         console.log("Onwer is live chat is-->", owner);
        
 
-      const data = { message, listing:listingIdDetails, receiver: owner._id }
+        const listingsToSend = listingIdDetails || localListingId; // the localListingId is the one comming from directChat
+
+        if (!listingsToSend || listingsToSend.length === 0) {
+          console.log("No listing IDs available, neither from Chat with Owner, nor from Direct Chat");
+          return;
+        }
+    
+        const data = { message, listing: listingsToSend, receiver: owner._id };
+        console.log("Data to be sent for creating messages is", data);
       const values = await createMessage(data); 
-      console.log("meess",values.data.data.message)
+      console.log("Data of response of messages is:", values)
+      console.log("meess",values?.data?.data?.message)
       console.log("convo",values.data.data.conversation)
       setConvoId(values.data.data.conversation);
+      console.log("convoAg",convoID)
     
      setMessage('')
-      console.log("Data of response of messages is:", values)
+      
     } catch (error) {
       console.error('Error sending message:', error);
     }
   }
+
+
+
+
+  useEffect(()=>{
+    if(!user)
+    {
+      console.log('no user')
+    }
+    console.log("userHEre", user)
+       
+    console.log("Onwer is live chat is-->", owner);
+    console.log("lsiting ", listings)
+
+    // const listing_id = listings.map(list=>(
+    //  list._id
+    // ))
+    // console.log("listIIID in live chat",listing_id)
+    // setLocalListingId(listing_id);
+
+    const fetchMessages = async()=>{
+      if(!owner)
+        {
+          console.log("no owner in live chat rn")
+          return
+        }
+      if(!convoID)
+      {
+        console.log("no convo id yet")
+        return
+      }
+      else
+      {
+         console.log("convo Id while fetching", convoID)
+      }
+      try {
+        console.log("convo in func is:", convoID)
+        const values = await fetchMessagesByConversation(convoID);
+
+       
+        const messagesToSet = values?.data?.data || [];
+        console.log("fetch messages are",  messagesToSet)
+        setMessages(messagesToSet);
+        
+      } catch (error) {
+       console.log("errors", error) 
+      }
+    }
+    fetchMessages()
+  
+},[convoID, owner, listings])
     return (
         <Box
           flex="1"
-          p={4}
+         
           bg="white"
           boxShadow="md"
-          border="1px solid"
+          
           borderColor="gray.200"
           borderRadius="md"
         >
-          <HStack borderBottom={'1px solid gray'} bg={'red.200'} h={'70px'}>
+          <HStack color={'white'} borderBottom={'1px solid gray'} p={4} bg={'gray.800'} h={'70px'}>
             {
               owner && (
                 <Box>
@@ -89,12 +128,23 @@ export default function LiveChat({owner,listingIdDetails, ownerIdDetails, Messag
             }
 
           </HStack>
-          <Box flex="1" height="300px" overflowY="scroll" bg="gray.50" borderRadius="md" p={4}>
+          <Box flex="1"  height="300px" overflowY="scroll" bg="gray.800" borderRadius="md" display={'flex'}
+           p={6}
+           flexDir={'column'}
+           gap={4}
+           >
            {/* display messages her */}
 
            {
             Messages && Messages.length > 0 && Messages.map((Messages,i)=>(
-              <Box key={Messages._id  || i }> 
+              <Box
+              
+              alignSelf={Messages.sender._id === user?._id ? 'flex-end' : 'flex-start'}
+              bg={Messages.sender._id === user?._id ? 'green.600' : 'gray.600'}
+              color={'white'}
+              borderRadius={'8px'}
+              p={2}
+              key={Messages._id  || i }> 
               <Text>{Messages.message}</Text>
                </Box>
 
@@ -103,20 +153,29 @@ export default function LiveChat({owner,listingIdDetails, ownerIdDetails, Messag
             
            }
           </Box>
-          <HStack mt={4}>
-            <form onSubmit={handleMessageSubmit}>
-            <Input
+
+          <Flex mt={4} >
+
+            
+            <form onSubmit={handleMessageSubmit} style={{width:'100%'}}>
+              <Flex >
+              <Input
+            
               placeholder="Type your message..."
               border="none"
               bg="gray.100"
               borderRadius="md"
-              _focus={{ boxShadow: "outline" }}
+              _focus={{outline:'none'}}
               value={message}
               onChange={(e)=> setMessage(e.target.value)}
+              
             />
             <Button type='submit' colorScheme="blue">Send</Button>
+              </Flex>
+            
             </form>
-          </HStack>
+            
+          </Flex>
         </Box>
       );
 }

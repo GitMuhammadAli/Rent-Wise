@@ -2,11 +2,12 @@ import { Box, Text, VStack } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { getSideBarParticipants , fetchConversationsForSidebar } from '../../Api/Chats';
 
-export default function SideChat({ handleSideBarClick, ownerIdDetails, userIdDetails, listingIdDetails }) {
+export default function SideChat({ handleSideBarClick, ownerIdDetails, userIdDetails, listingIdDetails, listings,allData,setListings, setAllData }) {
   const [participants, setParticipants] = useState([]);
   const [owner, setOwner] = useState(null);
-  const [listings, setListings] = useState([]);
-  const [allData, setAllData] = useState(null);
+ 
+
+  const [participantName , setParticipantName] = useState([]);
 
   // Fetch participants from the API
   useEffect(() => {
@@ -14,13 +15,29 @@ export default function SideChat({ handleSideBarClick, ownerIdDetails, userIdDet
       try {
         const response = await fetchConversationsForSidebar();
         console.log("response", response);
-        const participantData = response.data.data[0].participants || [];
-        const listingData = response.data.data[0].listing || [];
+        
+        // const participantData = response.data.data[0].participants || [];
+        // const listingData = response.data.data[0].listing || [];
+        const participantData = response?.data?.data.flatMap(item =>
+          item.participants
+        );
+
+           // to directly get anything from participants data but make sure to add that column above first
+        // const participantNames = participantData.map(participant => participant.name);
+        // console.log(participantNames);
+        
+
+        const listingData = response?.data?.data.flatMap(item => item.listing);
+
+
+
+
         console.log("Participants are: ", participantData);
         console.log("Listings are: ", listingData);
-        setParticipants(participantData);
+         setParticipants(participantData);
         setListings(listingData);
-        setAllData(response.data.data[0]);
+        // setAllData(response.data.data[0]);
+        setAllData(response.data.data);
       } catch (error) {
         console.error("Error fetching participants:", error);
       }
@@ -51,29 +68,19 @@ export default function SideChat({ handleSideBarClick, ownerIdDetails, userIdDet
   return (
     <Box
       width={{ base: "100%", md: "20%" }}
-      height="100vh"
-      bg="red.100"
+     
+      bg="gray.800"
       borderRight="1px solid"
       borderColor="gray.200"
       p={4}
     >
       <VStack spacing={4} align="stretch">
-        <Text fontWeight="bold">Listings:</Text>
-        {listings.map((listing, i) => (
-          <Box
-            key={listing._id}
-            p={2}
-            bg="gray.300"
-            borderRadius="md"
-          >
-            <Text>{listing.title}</Text>
-          </Box>
-        ))}
         
-        <Text fontWeight="bold">Participants:</Text>
+        <Text color={'white'} fontWeight="bold">Chats</Text>
         {combinedList && combinedList.length > 0 ? (
           combinedList.map((item, i) => (
             <Box
+            _active={{bg:'gray.500'}}
               key={item._id || i}
               display="flex"
               alignItems="center"
@@ -81,7 +88,7 @@ export default function SideChat({ handleSideBarClick, ownerIdDetails, userIdDet
               p={2}
               bg="gray.200"
               borderRadius="md"
-              onClick={() => handleSideBarClick(item._id, item.name, item, listings, allData)}
+              onClick={() => handleSideBarClick(item._id, item.name, item)}
             >
               <Text>{item.name}</Text>
             </Box>
