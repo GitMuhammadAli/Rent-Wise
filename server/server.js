@@ -27,6 +27,7 @@ const path = require('path');
 const {errorHandler , notFound } = require("./middleware/errorHandler");
 const AppError = require("../server/utils/AppError");
 const asyncHandler = require("./middleware/asyncWrapper");
+const {setupSocket , io} = require("./utils/socket");
 
 
 
@@ -43,6 +44,8 @@ app.use(helmet({
 }));
 app.use(xss());
 app.use(hpp());
+setupSocket(io);
+app.set("io", io);
 
 // app.use(limiter);
 

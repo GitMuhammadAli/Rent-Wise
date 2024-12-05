@@ -206,6 +206,8 @@ const createMessage = async (req, res) => {
             const senderId = req.user._id;
             const receiver = req.body.receiver;
 
+            const io = req.app.get("io");
+
             const conversationData = await createOrGetConversations(receiver , listing , senderId);
             console.log("conversationData", conversationData);
   
@@ -239,6 +241,8 @@ const createMessage = async (req, res) => {
         conversation.updatedAt = new Date();
         await conversation.save();
 
+        io.to(receiver).emit("newMessage", { message: newMessage });
+        
         res.status(201).json({ success: true, message: "Message sent successfully", data: newMessage });
     } catch (error) {
         console.error("Error creating message:", error);
