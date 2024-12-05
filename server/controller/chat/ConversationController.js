@@ -120,37 +120,44 @@ const getChatParticipants = async (req, res) => {
 };
 
 
-
-const createOrGetConversations = async(receiver,listing , senderId ,  )=>{
+const createOrGetConversations = async (receiver, listing, senderId) => {
     try {
-        // const { receiver, listing } = req.body;
-        // const senderId = req.user._id;
-
-        
         console.log("listing", listing);
         console.log("receiver", receiver);
         console.log("senderId", senderId);
 
+        // Validate required fields
         if (!senderId || !receiver || !listing) {
             return { error: "All fields are required" };
         }
 
+        // Ensure listing is an array of ObjectIds
+        const listingArray = Array.isArray(listing) ? listing : [listing];
 
+        // Check if a conversation already exists between sender and receiver
         let conversation = await Conversation.findOne({
             participants: { $all: [senderId, receiver] },
         });
 
+        // If no conversation exists, create one
         if (!conversation) {
             conversation = new Conversation({
                 participants: [senderId, receiver],
-                listing: [listing],
+                listing: listingArray,
             });
             await conversation.save();
-        } else if (!conversation.listing.includes(listing)) {
-            conversation.listing.push(listing);
-            await conversation.save();
+        } else {
+            // Ensure listing is added if it's not already in the conversation
+            const newListings = listingArray.filter(
+                (listId) => !conversation.listing.includes(listId)
+            );
+            if (newListings.length > 0) {
+                conversation.listing.push(...newListings);
+                await conversation.save();
+            }
         }
 
+        // Fetch participants of the conversation
         const participants = await Conversation.aggregate([
             { $match: { _id: conversation._id } },
             { $unwind: "$participants" },
@@ -175,49 +182,39 @@ const createOrGetConversations = async(receiver,listing , senderId ,  )=>{
             },
         ]);
 
-        // const messages = await Messsage.find({ conversation: conversation._id }).sort({ createdAt: 1 });
-
-        // res.status(200).json({
-        //     success: true,
-        //     message: "Conversation retrieved/created successfully",
-        //     data: {
-        //         conversation,
-        //         participants: participants.map((p) => p.user),
-        //         // messages,
-        //     },
-        // });
-
-            return {
-                conversation,
-                participants: participants.map((p) => p.user),
-            };
-
+        // Return the conversation and participants
+        return {
+            conversation,
+            participants: participants.map((p) => p.user),
+        };
+        
     } catch (error) {
         console.error("Error creating/getting conversation:", error);
-        return res.status(500).json({ error: "Internal server error" });
+        throw new Error("Internal server error");
     }
-}
+};
+
 
 const createMessage = async (req, res) => {
-        try {
-            const { message, listing } = req.body;
-            
-            
-            const senderId = req.user._id;
-            const receiver = req.body.receiver;
+    try {
+        const { message, listing } = req.body;
+        const senderId = req.user._id;
+        const receiver = req.body.receiver;
 
-            const conversationData = await createOrGetConversations(receiver , listing , senderId);
-            console.log("conversationData", conversationData);
-  
+        // Ensure listing is an array (to handle both single and multiple listings)
+        const listingArray = Array.isArray(listing) ? listing : [listing];
 
-            const conversationId = conversationData.conversation._id;
-            console.log("conversationId", conversationId);
+        const conversationData = await createOrGetConversations(receiver, listingArray, senderId);
+        console.log("conversationData", conversationData);
 
-            if (!conversationId || !message || !listing || !senderId || !receiver) {
-                return res.status(400).json({ error: "All fields are required" });
-            }
+        const conversationId = conversationData.conversation._id;
+        console.log("conversationId", conversationId);
 
-            // Ensure the conversation exists
+        if (!conversationId || !message || !listing || !senderId || !receiver) {
+            return res.status(400).json({ error: "All fields are required" });
+        }
+
+        // Ensure the conversation exists
         const conversation = await Conversation.findById(conversationId);
         if (!conversation) {
             return res.status(404).json({ error: "Conversation not found" });
@@ -228,9 +225,9 @@ const createMessage = async (req, res) => {
             sender: senderId,
             receiver,
             conversation: conversationId,
-            listing: Array.isArray(listing) ? listing : [listing],
+            listing: listingArray,
             message,
-            status: 'sent'
+            status: 'sent',
         });
 
         await newMessage.save();
@@ -245,6 +242,139 @@ const createMessage = async (req, res) => {
         return res.status(500).json({ error: "Internal server error" });
     }
 };
+
+
+
+
+
+// const createOrGetConversations = async(receiver,listing , senderId ,  )=>{
+//     try {
+//         // const { receiver, listing } = req.body;
+//         // const senderId = req.user._id;
+
+//         console.log("req body is create meg", req.body)
+//         console.log("listing", listing);
+//         console.log("receiver", receiver);
+//         console.log("senderId", senderId);
+
+//         if (!senderId || !receiver || !listing) {
+//             return { error: "All fields are required" };
+//         }
+
+
+//         let conversation = await Conversation.findOne({
+//             participants: { $all: [senderId, receiver] },
+//         });
+
+//         if (!conversation) {
+//             conversation = new Conversation({
+//                 participants: [senderId, receiver],
+//                 listing: [listing],
+//             });
+//             await conversation.save();
+//         } else if (!conversation.listing.includes(listing)) {
+//             conversation.listing.push(listing);
+//             await conversation.save();
+//         }
+
+//         const participants = await Conversation.aggregate([
+//             { $match: { _id: conversation._id } },
+//             { $unwind: "$participants" },
+//             {
+//                 $lookup: {
+//                     from: "users",
+//                     localField: "participants",
+//                     foreignField: "_id",
+//                     as: "user",
+//                 },
+//             },
+//             { $unwind: "$user" },
+//             {
+//                 $project: {
+//                     user: {
+//                         _id: 1,
+//                         name: 1,
+//                         email: 1,
+//                         imageUrl: 1,
+//                     },
+//                 },
+//             },
+//         ]);
+
+//         // const messages = await Messsage.find({ conversation: conversation._id }).sort({ createdAt: 1 });
+
+//         // res.status(200).json({
+//         //     success: true,
+//         //     message: "Conversation retrieved/created successfully",
+//         //     data: {
+//         //         conversation,
+//         //         participants: participants.map((p) => p.user),
+//         //         // messages,
+//         //     },
+//         // });
+
+//             return {
+//                 conversation,
+//                 participants: participants.map((p) => p.user),
+//             };
+
+//     } catch (error) {
+//         console.error("Error creating/getting conversation:", error);
+//         return res.status(500).json({ error: "Internal server error" });
+//     }
+// }
+
+
+
+
+
+// const createMessage = async (req, res) => {
+//         try {
+//             const { message, listing } = req.body;
+            
+            
+//             const senderId = req.user._id;
+//             const receiver = req.body.receiver;
+
+//             const conversationData = await createOrGetConversations(receiver , listing , senderId);
+//             console.log("conversationData", conversationData);
+  
+
+//             const conversationId = conversationData.conversation._id;
+//             console.log("conversationId", conversationId);
+
+//             if (!conversationId || !message || !listing || !senderId || !receiver) {
+//                 return res.status(400).json({ error: "All fields are required" });
+//             }
+
+//             // Ensure the conversation exists
+//         const conversation = await Conversation.findById(conversationId);
+//         if (!conversation) {
+//             return res.status(404).json({ error: "Conversation not found" });
+//         }
+
+//         // Create the message
+//         const newMessage = new Messsage({
+//             sender: senderId,
+//             receiver,
+//             conversation: conversationId,
+//             listing: Array.isArray(listing) ? listing : [listing],
+//             message,
+//             status: 'sent'
+//         });
+
+//         await newMessage.save();
+
+//         // Update the conversation's `updatedAt` timestamp
+//         conversation.updatedAt = new Date();
+//         await conversation.save();
+
+//         res.status(201).json({ success: true, message: "Message sent successfully", data: newMessage });
+//     } catch (error) {
+//         console.error("Error creating message:", error);
+//         return res.status(500).json({ error: "Internal server error" });
+//     }
+// };
 
 const fetchConversationsForSidebarOld = async (req, res) => {
     try {
