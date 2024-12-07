@@ -31,9 +31,15 @@ router.get(
     failureRedirect: "/fail",
     failureMessage: "Failed to authenticate. Go back and try again.",
   }),
-  userController.handleGoogleCallback
+  (req, res, next) => {
+    try {
+      userController.handleGoogleCallback(req, res, next);
+    } catch (err) {
+      console.error("Passport authentication failed:", err);
+      res.status(500).json({ message: "Authentication failed." });
+    }
+  }
 );
-
 // Facebook authentication routes
 // router.get('/facebook', passport.authenticate('facebook', { scope: ['email'] }));
 // router.get('/facebook/callback',

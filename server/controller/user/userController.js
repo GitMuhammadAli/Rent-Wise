@@ -115,6 +115,7 @@ const login = async (req, res) => {
 
 const handleGoogleCallback = async (req, res) => {
   try {
+    console.log("Callback URL: ", "http://localhost:3600/auth/google/callback");
     await GenerateToken(req.user, req, res);
     res.redirect(process.env.CLIENT_URL || "http://localhost:4000/" );
   } catch (error) {
