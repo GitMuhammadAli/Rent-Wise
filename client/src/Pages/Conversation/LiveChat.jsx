@@ -233,7 +233,6 @@ export default function LiveChat({
   const { user } = useAuth();
   const [localListingId, setLocalListingId] = useState([]);
 
-  // Extract listing IDs whenever listings change
   useEffect(() => {
     if (listings) {
       const listing_id = listings.map((list) => list._id);
@@ -241,20 +240,17 @@ export default function LiveChat({
     }
   }, [listings]);
 
-  // Handle conversation room management and real-time message updates
   useEffect(() => {
     if (!convoID) return;
 
     console.log("Joining conversation ID:", convoID);
     socket.emit("join-conversation", convoID);
 
-    // Listen for real-time messages
     socket.on("receiveMessage", (newMessage) => {
       console.log("New message received:", newMessage);
       setMessages((prevMessages) => [...prevMessages, newMessage]);
     });
 
-    // Clean up: Leave room and remove listeners on unmount or convoID change
     return () => {
       console.log("Leaving conversation ID:", convoID);
       socket.emit("leave-conversation", convoID);
@@ -262,7 +258,6 @@ export default function LiveChat({
     };
   }, [convoID]);
 
-  // Handle sending messages
   const handleMessageSubmit = async (e) => {
     e.preventDefault();
 
@@ -277,25 +272,24 @@ export default function LiveChat({
       const data = {
         message,
         listing: listingsToSend,
-        receiver: owner._id, // Receiver's ID
+        receiver: owner._id, 
       };
 
       console.log("Sending message data:", data);
-      socket.emit("send-message", data); // Emit message via Socket.IO to backend
+      socket.emit("send-message", data); 
 
-      const response = await createMessage(data); // Save message to the database
+      const response = await createMessage(data);
       if (response.status === 200) {
-        setConvoId(response.data.data.conversation); // Update conversation ID if needed
-        setMessages((prevMessages) => [...prevMessages, response.data.message]); // Add the message to the chat
+        setConvoId(response.data.data.conversation); 
+        setMessages((prevMessages) => [...prevMessages, response.data.message]); 
       }
 
-      setMessage(""); // Clear input
+      setMessage(""); 
     } catch (error) {
       console.error("Error sending message:", error);
     }
   };
 
-  // Fetch messages for the active conversation
   useEffect(() => {
     const fetchMessages = async () => {
       if (!owner || !convoID) return;

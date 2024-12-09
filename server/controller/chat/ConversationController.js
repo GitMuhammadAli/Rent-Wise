@@ -198,10 +198,9 @@ const createOrGetConversations = async (receiver, listing, senderId) => {
 const createMessage = async (req, res) => {
     try {
         const { message, listing } = req.body;
-        const senderId = req.user._id; // Get the sender ID from authenticated user
+        const senderId = req.user._id; 
         const receiver = req.body.receiver;
 
-        // Ensure listing is an array (to handle both single and multiple listings)
         const listingArray = Array.isArray(listing) ? listing : [listing];
 
         const conversationData = await createOrGetConversations(receiver, listingArray, senderId);
@@ -214,13 +213,11 @@ const createMessage = async (req, res) => {
             return res.status(400).json({ error: "All fields are required" });
         }
 
-        // Ensure the conversation exists
         const conversation = await Conversation.findById(conversationId);
         if (!conversation) {
             return res.status(404).json({ error: "Conversation not found" });
         }
 
-        // Create the message
         const newMessage = new Messsage({
             sender: senderId,
             receiver,
@@ -232,16 +229,14 @@ const createMessage = async (req, res) => {
 
         await newMessage.save();
 
-        // Update the conversation's `updatedAt` timestamp
         conversation.updatedAt = new Date();
         await conversation.save();
 
-        // Emit the new message event via Socket.IO to the conversation room
         if (io) {
             io.to(conversationId.toString()).emit("receiveMessage", {
                 conversationId,
                 message,
-                sender: senderId, // Include sender ID
+                sender: senderId, 
                 receiver,
                 listing: listingArray,
             });
