@@ -19,7 +19,6 @@ const loggedUser = require("./routes/users/auth");
 const listingRoutes = require("./routes/listings/listingRoutes");
 const dashboardRoutes = require("./routes/dashboard/dashboardRoute");
 const commentRoutes = require("./routes/comment/commentRoutes");
-const chatsRoutes = require("./routes/chats/chatRoutes");
 const ConversationRoutes = require ("./routes/chats/ConversationRoutes")
 
 const logger = require("./utils/logger");
@@ -27,7 +26,10 @@ const path = require('path');
 const {errorHandler , notFound } = require("./middleware/errorHandler");
 const AppError = require("../server/utils/AppError");
 const asyncHandler = require("./middleware/asyncWrapper");
-const {setupSocket , io} = require("./utils/socket");
+const {setupSocket , io , app , server} = require("./utils/socket");
+
+
+
 
 
 
@@ -37,14 +39,12 @@ require("./utils/third_party_Login");
 
 
 
-const app = express();
 // Middleware
 app.use(helmet({
   crossOriginResourcePolicy: false,
 }));
 app.use(xss());
 app.use(hpp());
-setupSocket(io);
 app.set("io", io);
 
 // app.use(limiter);
@@ -131,7 +131,7 @@ app.use("/auth", userRoutes);
 app.use("/listings", listingRoutes);
 app.use("/dashboard", dashboardRoutes);
 app.use("/comments", commentRoutes);
-app.use("/chats" , chatsRoutes)
+
 app.use("/conversations" , ConversationRoutes)
 app.use("/auth/user" , loggedUser )
 
@@ -198,7 +198,9 @@ process.on('SIGINT', shutdown);  // Catch Ctrl+C
 process.on('SIGTERM', shutdown); // Catch termination signal from process manager (e.g., PM2, Kubernetes)
 
 
-// Start server
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+
+
+// Start the server
+server.listen(3600, () => {
+  console.log("Server is running on port 3600");
 });

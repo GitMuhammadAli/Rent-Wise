@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Conversation = require("../../model/chat/ConversationModel");
 const Messsage = require("../../model/chat/MesssageModel");
-
+const { io } = require("../../utils/socket");
 
 
 
@@ -198,7 +198,7 @@ const createOrGetConversations = async (receiver, listing, senderId) => {
 const createMessage = async (req, res) => {
     try {
         const { message, listing } = req.body;
-        const senderId = req.user._id;
+        const senderId = req.user._id; // Get the sender ID from authenticated user
         const receiver = req.body.receiver;
 
         // Ensure listing is an array (to handle both single and multiple listings)
@@ -236,13 +236,23 @@ const createMessage = async (req, res) => {
         conversation.updatedAt = new Date();
         await conversation.save();
 
+        // Emit the new message event via Socket.IO to the conversation room
+        if (io) {
+            io.to(conversationId.toString()).emit("receiveMessage", {
+                conversationId,
+                message,
+                sender: senderId, // Include sender ID
+                receiver,
+                listing: listingArray,
+            });
+        }
+
         res.status(201).json({ success: true, message: "Message sent successfully", data: newMessage });
     } catch (error) {
         console.error("Error creating message:", error);
         return res.status(500).json({ error: "Internal server error" });
     }
 };
-
 
 
 
@@ -368,6 +378,10 @@ const fetchMessagesByConversation = async (req, res) => {
             .populate("receiver", "name imageUrl") // Include receiver details
             .populate("listing", "title image"); // Include listing details if needed
 
+        if (io) {
+            io.emit("joinRoom", conversationId.toString());
+        }
+
         res.status(200).json({
             success: true,
             data: messages,
@@ -389,7 +403,12 @@ module.exports = {
     fetchConversationsForSidebarOld,
     fetchMessagesByConversation,
     getChatParticipants
+
+
 };
+
+
+
 
 // const fetchMessagesByConversation = async (req, res) => {
 //     try {

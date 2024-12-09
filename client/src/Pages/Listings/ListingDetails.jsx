@@ -25,7 +25,6 @@ import { useAuth } from '../../hooks/AuthContext';
 
 import DisplayListingComments from './Comments/DisplayListingComments';
 import AddCommentsInListing from './Comments/AddCommentsInListing';
-import MainChatComponent from '../Chats/MainChat';
 
 const baseUrl = import.meta.env.VITE_BACK_END_URL;
 

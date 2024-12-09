@@ -28,8 +28,6 @@ import Dashboard from "./Pages/Dashboard/Dashboard";
 import MyAccount from "../src/Pages/Account/MyAccount";
 import DashboardUserContextProvider from "./hooks/DashboardUserContext";
 import UpdateListing from "./Pages/Listings/updateListing";
-import Chats from './Pages/Chats/Chats';
-import SideChat from "./Pages/Chats/SideChat";
 import MainChat from "./Pages/Conversation/MainChat";
 
 
