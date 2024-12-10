@@ -11,6 +11,8 @@ const createOrGetConversation = async (req, res) => {
     try {
         const { receiver, listing } = req.body;
         const senderId = req.user._id;
+        console.log("req.ody of create conversation" , req.body);
+        console.log("sender id "  , senderId)
 
         if (!senderId || !receiver || !listing) {
             return res.status(400).json({ error: "All fields are required" });
