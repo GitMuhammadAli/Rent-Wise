@@ -1,4 +1,4 @@
-import React , { useEffect, useState } from 'react'
+import React , { useEffect, useRef, useState } from 'react'
 import SideChat from './SideChat'
 import LiveChat from './LiveChat'
 import { Flex } from '@chakra-ui/react'
@@ -7,6 +7,7 @@ import { createOrGetConversation } from '../../Api/Chats'
 
 export default function MainChat() {
 const location = useLocation();
+const scrollRef = useRef(null);
 const { ownerIdDetails, listingIdDetails, userIdDetails } = location.state || {};
 const [owner,setOwner] = useState('');
 // const [listing,setListing] = useState('');
@@ -29,10 +30,11 @@ useEffect(()=>{
 },[ownerIdDetails,userIdDetails,listingIdDetails,item,allData])
 
 
-useEffect(()=>{
- 
-
-},[allData])
+useEffect(() => {
+  if (scrollRef.current) {
+    scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+  }
+}, [Messages]);
 
 
 const handleSideBarClick = (receiver_id, receiver_name, selectedParticipant,) => {
@@ -56,12 +58,11 @@ const handleSideBarClick = (receiver_id, receiver_name, selectedParticipant,) =>
   console.log("all data convoID", ConvoID)
   setConvoId(ConvoID)
 
-
-
   // Update the state
   setItem(selectedParticipant);
   setListings(specificListings); // Set the specific listings
   setMessages([]); // Clear messages for the new conversation
+
 };
 
 
@@ -86,7 +87,7 @@ return (
     <div>
         <Flex >
         <SideChat  listings={listings} allData={allData} setAllData={setAllData} setListings={setListings} handleSideBarClick={handleSideBarClick} ownerIdDetails={ownerIdDetails} userIdDetails={userIdDetails} listingIdDetails={listingIdDetails} />
-        <LiveChat convoID={convoID} setConvoId={setConvoId} Messages={Messages} setMessages={setMessages} owner={owner} ownerIdDetails={ownerIdDetails} userIdDetails={userIdDetails} listingIdDetails={listingIdDetails} listings={listings} item={item} />
+        <LiveChat scrollRef={scrollRef} convoID={convoID} setConvoId={setConvoId} Messages={Messages} setMessages={setMessages} owner={owner} ownerIdDetails={ownerIdDetails} userIdDetails={userIdDetails} listingIdDetails={listingIdDetails} listings={listings} item={item} />
         </Flex>
     </div>
 )

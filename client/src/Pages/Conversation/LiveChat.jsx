@@ -212,7 +212,7 @@
 
 
 import { Box, Button, Flex, HStack, Input, Text } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useAuth } from "../../hooks/AuthContext";
 import { createMessage, fetchMessagesByConversation } from "../../Api/Chats";
 import { io } from "socket.io-client";
@@ -220,6 +220,7 @@ import { io } from "socket.io-client";
 const socket = io("http://localhost:3600"); // Ensure backend runs on this port
 
 export default function LiveChat({
+  scrollRef,
   owner,
   listingIdDetails,
   convoID,
@@ -230,8 +231,18 @@ export default function LiveChat({
   listings,
 }) {
   const [message, setMessage] = useState("");
+  
   const { user } = useAuth();
   const [localListingId, setLocalListingId] = useState([]);
+
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [message]);
+
+
 
   useEffect(() => {
     if (listings) {
@@ -279,9 +290,11 @@ export default function LiveChat({
       socket.emit("send-message", data); 
 
       const response = await createMessage(data);
-      if (response.status === 200) {
+     
+      if (response) {
+        console.log("response after message created", response.data.data);
         setConvoId(response.data.data.conversation); 
-        setMessages((prevMessages) => [...prevMessages, response.data.message]); 
+       // setMessages((prevMessages) => [...prevMessages, response?.data?.data]); 
       }
 
       setMessage(""); 
@@ -328,7 +341,7 @@ export default function LiveChat({
             }
 
           </HStack>
-          <Box flex="1"  height="300px" overflowY="scroll" bg="gray.800" borderRadius="md" display={'flex'}
+          <Box flex="1"  ref={scrollRef}  height="300px" overflowY="scroll" bg="gray.800" borderRadius="md" display={'flex'}
            p={6}
            flexDir={'column'}
            gap={4}
@@ -339,8 +352,8 @@ export default function LiveChat({
             Messages && Messages.length > 0 && Messages.map((Messages,i)=>(
               <Box
               
-              alignSelf={Messages.sender._id === user?._id ? 'flex-end' : 'flex-start'}
-              bg={Messages.sender._id === user?._id ? 'green.600' : 'gray.600'}
+              alignSelf={ ((Messages.sender._id || Messages.sender) === user?._id)  ? 'flex-end' : 'flex-start'}
+              bg={((Messages.sender._id || Messages.sender) === user?._id)  ? 'green.600' : 'gray.600'}
               color={'white'}
               borderRadius={'8px'}
               p={2}
