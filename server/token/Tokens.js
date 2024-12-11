@@ -1,6 +1,11 @@
 const jsonwebtoken = require("jsonwebtoken");
 const crypto = require('crypto');
 require("dotenv").config();
+const AppError = require("../utils/AppError");
+const { ERROR_MESSAGE } = require("../messages/error");
+const { STATUS_CODE } = require("../messages/status");
+const { RESPONCE_MESSAGE } = require("../messages/response");
+const { BOOLEAN } = require("../utils/Roles");
 
 const makeToken = async (_id) => {
   return jsonwebtoken.sign({ _id }, process.env.JWT_API_SECRET_KEY, {
@@ -9,7 +14,7 @@ const makeToken = async (_id) => {
 };
 
 
-const GenerateToken = async (user, req, res) => {
+const GenerateToken = async (user, req, res, next) => {
   try {
     console.log("user in generate token", user);
     await res.clearCookie("jwt");
@@ -25,8 +30,7 @@ const GenerateToken = async (user, req, res) => {
 
     return token;
   } catch (error) {
-    console.log(error);
-    throw error;
+    next(error);
   }
 };
 const CreateToken = async (payload) => {
@@ -46,30 +50,29 @@ const decodingToken = async (token, key) => {
     return { success: true, decoded };
   } catch (error) {
     if (error.name === 'TokenExpiredError') {
-      return { success: false, error: { status: 401, message: "Token has expired" } };
+      throw new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.TOKEN_EXPIRED, STATUS_CODE.UNAUTHORIZED);
     }
-    return { success: false, error: { status: 401, message: "Invalid token" } };
+    throw new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.INVALID_TOKEN, STATUS_CODE.UNAUTHORIZED);
   }
 };
 
-const GetAndDecodeToken = async (req, res) => {
+const GetAndDecodeToken = async (req, res, next) => {
   const token = req.cookies.jwt; // Ensure req is passed
 
   if (!token) {
-    return res.status(401).json({ message: "No token provided" });
+    return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.TOKEN_NOT_FOUND, STATUS_CODE.NOT_FOUND));
   }
 
   try {
     const decodedToken = await decodingToken(token, process.env.JWT_API_SECRET_KEY);
     console.log("decodedToken", decodedToken);
-    return decodedToken; 
+    return decodedToken;
   } catch (error) {
-    console.error("Error decoding token:", error);
-    return res.status(401).json({ message: "Invalid token" });
+    next(error);
   }
 };
 
-  
+
 
 
 
@@ -78,7 +81,7 @@ const GetAndDecodeToken = async (req, res) => {
 
 //Encryption token for Otp & Decryption token for Otp
 
-const generatetokenForOtpForEncryption = async (  
+const generatetokenForOtpForEncryption = async (
   SendedOtp,
   expirationTime,
   _id,
@@ -95,12 +98,12 @@ const generatetokenForOtpForEncryption = async (
     otpVerified,
     emailVerified,
   };
-  
+
   console.log("payload", payload);
   const jsonStringPayloadForOtp = JSON.stringify(payload);
 
   const encryptedOtp = encryptCookieForOtp(jsonStringPayloadForOtp);
-console.log("encryptedOtp", encryptedOtp);
+  console.log("encryptedOtp", encryptedOtp);
   const tok = await CreateToken({ SendedOtp: encryptedOtp });
 
   if (res) {
@@ -117,11 +120,11 @@ console.log("encryptedOtp", encryptedOtp);
 
 
 
-const verifyEncryptedCookieForOtp = (req, res ) => {
+const verifyEncryptedCookieForOtp = (req, res, next) => {
   const encryptedCookie = req.cookies.resetPasswordToken;
 
   if (!encryptedCookie) {
-    return res.status(400).json({ success: false, message: 'No token provided' });
+    return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.TOKEN_NOT_FOUND, STATUS_CODE.NOT_FOUND));
   }
 
   try {
@@ -132,7 +135,7 @@ const verifyEncryptedCookieForOtp = (req, res ) => {
     // Proceed with password reset verification logic
     return res.status(200).json({ success: true, data: cookieData });
   } catch (error) {
-    return res.status(500).json({ success: false, message: 'Decryption failed', error });
+    return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.DECRYPTION_ERROR, STATUS_CODE.NOT_FOUND));
   }
 };
 
@@ -143,9 +146,9 @@ const encryptCookieForOtp = (text) => {
 
   const algorithm = 'aes-256-cbc'; // Encryption algorithm
   const secretKey = process.env.COOKIE_ENCRYPTION_KEY; // Secret key (256-bit)
-  
+
   if (!secretKey) {
-    throw new Error('Secret key for encryption is not defined in environment variables.');
+    throw new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.SECRET_KEY_NOT_DEFINED, STATUS_CODE.NOT_FOUND);
   }
 
   const iv = crypto.randomBytes(16); // Initialization vector
@@ -164,15 +167,15 @@ const encryptCookieForOtp = (text) => {
 function decryptCookieForOtp(decodedToken) {
   const secretKeyHex = process.env.COOKIE_ENCRYPTION_KEY;
 
-if (!secretKeyHex) {
-  throw new Error('Secret key for encryption/decryption is not defined in environment variables.');
-}
+  if (!secretKeyHex) {
+    throw new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.SECRET_KEY_NOT_DEFINED, STATUS_CODE.NOT_FOUND);
+  }
 
-const secretKey = Buffer.from(secretKeyHex, 'hex');
+  const secretKey = Buffer.from(secretKeyHex, 'hex');
 
-if (secretKey.length !== 32) {
-  throw new Error('Invalid key length. The key must be 32 bytes (64 hex characters) for AES-256-CBC.');
-}
+  if (secretKey.length !== 32) {
+    throw new Error('Invalid key length. The key must be 32 bytes (64 hex characters) for AES-256-CBC.');
+  }
 
   const encryptedData = decodedToken.SendedOtp;
   const [ivHex, encryptedHex] = encryptedData.split(':');

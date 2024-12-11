@@ -143,7 +143,7 @@ app.use(errorHandler);
 app.use(notFound);
 app.use((err, req, res, next) => {
   if (err instanceof AppError) {
-    return res.status(err.statusCode).json({ message: err.message });
+    return res.status(err.statusCode).json({ success:err.success,  message: err.message });
   }
   res.status(500).json({ message: "Internal Server Error" });
 });

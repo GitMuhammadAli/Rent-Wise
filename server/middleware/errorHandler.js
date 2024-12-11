@@ -1,6 +1,5 @@
 const logger = require("../utils/logger");
 const { ERROR_MESSAGE } = require("../messages/error");
-const { RESPONCE_MESSAGE, LISTINGS } = require("../messages/response");
 const { STATUS } = require("../messages/status");
 
 

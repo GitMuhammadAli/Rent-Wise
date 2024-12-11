@@ -21,47 +21,39 @@ const initializeAdmin = async () => {
       console.log("Admin user created with username: admin and password: admin");
     }
   } catch (error) {
-    logger.error("Error initializing admin user:", error);
-    console.error("Error initializing admin user:", error);
+    throw new AppError(false , ERROR_MESSAGE, STATUS.SERVER_ERROR);
   }
 };
 
-const Register = async (req, res) => {
+const Register = async (req, res , next) => {
   try {
     const { name, email, password } = req.body;
 
     if (!name || !email || !password) {
-      return res.status(STATUS.BAD_REQUEST).json({ message: ERROR_MESSAGE.INVALID_INPUT });
+      return next(new AppError(ERROR_MESSAGE.INVALID_INPUT, STATUS.BAD_REQUEST))
     }
 
     if (name.length < 5) {
-      return res.status(STATUS.BAD_REQUEST).json({ message: ERROR_MESSAGE.NAME_VALIDATION_FAILED });
+      return next(new AppError(ERROR_MESSAGE.NAME_VALIDATION_FAILED, STATUS.BAD_REQUEST))
     }
-
-    // if (!validator.isEmail(email)) {
-    //   return res.status(STATUS.BAD_REQUEST).json({ success: false, message: ERROR_MESSAGE.EMAIL_VALIDATION_FAILED });
-    // }
-
-    if (password.length < 8) {
-      return res.status(STATUS.BAD_REQUEST).json({ message: ERROR_MESSAGE.PASSWORD_VALIDATION_FAILED });
-    }
-    if (!email || !password) {
-      return res.status(STATUS.BAD_REQUEST).json({ message: ERROR_MESSAGE.INVALID_INPUT });
-    
-    }
-    
-    if (await Users.findOne({ email })) {
-      return res.status(STATUS.BAD_REQUEST).json({ message: RESPONCE_MESSAGE.EMAIL_ALREADY_EXISTS });
-    }
-
-
-  
-    // if (!validator.isEmail(email)) {
+  // if (!validator.isEmail(email)) {
     //   return res.status(400).json({ message: "Invalid email format" });
     // }
 
+    if (password.length < 8) {
+      return next(new AppError(ERROR_MESSAGE.PASSWORD_VALIDATION_FAILED, STATUS.BAD_REQUEST))
+    }
+    if (!email || !password) {
+      return next(new AppError(ERROR_MESSAGE.INVALID_INPUT, STATUS.BAD_REQUEST))
+    }
+    
     if (await Users.findOne({ email })) {
-      return res.status(STATUS.BAD_REQUEST).json({ message: RESPONCE_MESSAGE.EMAIL_ALREADY_EXISTS });
+      return next(new AppError(ERROR_MESSAGE.EMAIL_ALREADY_EXISTS, STATUS.BAD_REQUEST))
+    }
+
+  
+    if (await Users.findOne({ email })) {
+      return next(new AppError(ERROR_MESSAGE.EMAIL_ALREADY_EXISTS, STATUS.BAD_REQUEST))
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -74,67 +66,59 @@ const Register = async (req, res) => {
 
 
     if (newUser) {
-      const token = await GenerateToken(newUser, req, res);
+      const token = await GenerateToken(newUser, req, res , next);
       console.log("token user in regisster", token);;
 
       return res.status(STATUS.CREATED).json({ message: RESPONCE_MESSAGE.USER_REGISTERED, token });
     }
   } catch (error) {
-    logger.error("Error during registration:", error);
-    console.error(error);
-    return res.status(STATUS.INTERNAL_SERVER_ERROR).json({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
+    next(error); 
   }
 };
 
-const login = async (req, res) => {
+const login = async (req, res ,next) => {
   try {
     const { your_email, your_pass } = req.body;
     const user = await Users.findOne({ email: your_email });
 
 
     if (!user) {
-      return res.status(STATUS.UNAUTHORIZED).json({ message: ERROR_MESSAGE.EMAIL_NOT_FOUND });
+      return next(new AppError(ERROR_MESSAGE.EMAIL_NOT_FOUND, STATUS.UNAUTHORIZED))
     }
     const isPasswordValid = await bcrypt.compare(your_pass, user.password);
+
     if (!isPasswordValid) {
-     
-      return res.status(STATUS.UNAUTHORIZED).json({ message: ERROR_MESSAGE.INVALID_PASSWORD });
+      return next(new AppError(ERROR_MESSAGE.INVALID_PASSWORD, STATUS.UNAUTHORIZED))
     }
-    await GenerateToken(user, req, res);
+    await GenerateToken(user, req, res ,next);
     return res.status(200).json({
       message: "Login successful",
       user: { id: user._id, role: user.role },
     }); 
     
   } catch (error) {
-    logger.error("Error during login:", error);
-    console.log("Error during login:", error);
-    res.status(STATUS.INTERNAL_SERVER_ERROR).json({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
+    next(error);
   }
 };
 
-const handleGoogleCallback = async (req, res) => {
+const handleGoogleCallback = async (req, res ,next) => {
   try {
     console.log("Callback URL: ", "http://localhost:3600/auth/google/callback");
     await GenerateToken(req.user, req, res);
     res.redirect(process.env.CLIENT_URL || "http://localhost:4000/" );
   } catch (error) {
-    logger.error("Error during Google callback:", error);
-    console.error(error);
-    res.status(STATUS.INTERNAL_SERVER_ERROR).json({ message: RESPONCE_MESSAGE.INTERNAL_SERVER_ERROR });
+    next(error); 
   }
 };
 
-const logout = async (req, res) => {
+const logout = async (req, res , next) => {
   try {
     await res.clearCookie("jwt");
     await res.clearCookie("resetPasswordOTP");
     await req.session.destroy();
     return res.status(STATUS.SUCCESS).json({ message: RESPONCE_MESSAGE.LOGOUT_SUCCESS });
   } catch (error) {
-    logger.error("Error during logout:", error);
-    console.log(error);
-    res.status(STATUS.INTERNAL_SERVER_ERROR).json({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
+    next(error); 
   }
 };
 

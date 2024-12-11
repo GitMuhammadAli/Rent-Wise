@@ -2,12 +2,15 @@ const Users = require("../../model/user/userModel");
 const otpGenerator = require("otp-generator");
 const bcrypt = require("bcrypt");
 const logger = require("../../utils/logger");
+const AppError = require("../../utils/AppError");
 
-const { generatetokenForOtp, decodingToken , decodeTokenForRestPassword , decryptCookieForOtp,verifyEncryptedCookieForOtp,generatetokenForOtpForEncryption } = require("../../token/Tokens");
+const { generatetokenForOtp, decodingToken, decodeTokenForRestPassword, decryptCookieForOtp, verifyEncryptedCookieForOtp, generatetokenForOtpForEncryption } = require("../../token/Tokens");
 const sendMail = require("../../config/sendmail");
 const { ERROR_MESSAGE } = require("../../messages/error");
 const { RESPONCE_MESSAGE } = require("../../messages/response");
 const { STATUS } = require("../../messages/status");
+const forgetPasswordEmailTemplate = require("../../Mail/Templates/ForgetPassword");
+const { ROLES } = require("../../utils/Roles");
 
 const generateOTP = () => {
   let SendedOtp = otpGenerator.generate(6, {
@@ -19,34 +22,23 @@ const generateOTP = () => {
   return { SendedOtp, expirationTime };
 };
 
-const CheckMailforForget = async (req, res) => {
+const CheckMailforForget = async (req, res ,next) => {
   const { email } = req.body;
-  console.log(email);
+  console.log("email in forget password =  ", email);
   try {
     // if (!validator.isEmail(email)) {
     //   return res.status(400).json({ success: false, message: "Invalid email format." });
     // }
-
-    
-
     const Findmail = await Users.findOne({ email });
-    if (Findmail.role === "admin") {
-      return res.json({
-        success: false,
-        message: ERROR_MESSAGE.EMAIL_NOT_FOUND,
-        status: STATUS.NOT_FOUND,
-      });
+    if (Findmail.role === ROLES.ADMIN) {
+      return next(new AppError(false, ERROR_MESSAGE.EMAIL_NOT_FOUND, STATUS.NOT_FOUND))
     } else if (Findmail == null) {
-      return res.json({
-        success: false,
-        message: ERROR_MESSAGE.PROVIDE_EMAIL,
-        status: STATUS.NOT_FOUND,
-      });
+      return next(new AppError(false, ERROR_MESSAGE.PROVIDE_EMAIL, STATUS.NOT_FOUND))
     } else {
       const { SendedOtp, expirationTime } = generateOTP();
 
 
-       await generatetokenForOtpForEncryption(
+      await generatetokenForOtpForEncryption(
         SendedOtp,
         expirationTime,
         Findmail._id,
@@ -57,53 +49,26 @@ const CheckMailforForget = async (req, res) => {
       );
 
       const to = email;
-      const subject = "Your OTP for Resetting the Password";
-      const text = `Your OTP is ${SendedOtp}. It expires in 2 minutes.`;
-      const html = `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 5px;">
-          <h2 style="color: #333;">Reset Password</h2>
-          <p style="font-size: 16px; color: #333;">
-            Dear User,
-          </p>
-          <p style="font-size: 16px; color: #333;">
-            You have requested to reset your password. Please use the following One-Time Password (OTP) to proceed with resetting your password. This OTP is valid for 2 minutes.
-          </p>
-          <div style="text-align: center; margin: 20px 0;">
-            <span style="font-size: 24px; font-weight: bold; color: #333; background: #f0f0f0; padding: 10px 20px; border-radius: 5px; display: inline-block;">
-              ${SendedOtp}
-            </span>
-          </div>
-          <p style="font-size: 16px; color: #333;">
-            If you did not request a password reset, please ignore this email.
-          </p>
-          <p style="font-size: 16px; color: #333;">
-            Thank you,
-            <br>
-            The Support Team
-          </p>
-        </div>
-      `;
+      const ForgetPassEmail = await forgetPasswordEmailTemplate(SendedOtp);
 
-      const emailResult = await sendMail(to, subject, text, html);
+      if (forgetPasswordEmailTemplate) {
+        const emailResult = await sendMail(to, ForgetPassEmail);
+        console.log(emailResult);
 
-      if (emailResult.success) {
-        return res.status(STATUS.SUCCESS).json({
-          success: true,
-          message: RESPONCE_MESSAGE.OTP_SENT_EMAIL_SENT,
-        });
+        if (emailResult.success) {
+          return res.status(STATUS.SUCCESS).json({
+            success: true,
+            message: RESPONCE_MESSAGE.OTP_SENT_EMAIL_SENT,
+          });
+        } else {
+          return next(new AppError(false, ERROR_MESSAGE.OTP_SENDING_ERROR, STATUS.INTERNAL_SERVER_ERROR))
+        }
       } else {
-        return res.status(STATUS.INTERNAL_SERVER_ERROR).json({
-          success: false,
-          message: ERROR_MESSAGE.OTP_SENDING_ERROR,
-        });
+        return next(new AppError(false, ERROR_MESSAGE.EMAIL_NOT_FOUND, STATUS.NOT_FOUND))
       }
     }
   } catch (error) {
-    logger.error('Error in CheckMailforForget:', error);
-    return res.status(STATUS.INTERNAL_SERVER_ERROR).json({
-      success: false,
-      message: ERROR_MESSAGE.SERVER_ERROR,
-    });
+    next(error);
   }
 };
 
@@ -124,7 +89,7 @@ const verifyOTP = async (userOTP, storedOTP, expirationTime) => {
       `Comparing OTPs - User OTP: ${userOTP}, Stored OTP: ${storedOTP}`
     );
 
-   
+
     console.log("Encrted Otp " + storedOTP);
 
     if (userOTP !== storedOTP) {
@@ -143,79 +108,59 @@ const verifyOTP = async (userOTP, storedOTP, expirationTime) => {
 
     return true;
   } catch (error) {
-    logger.error('Error in verifyOTP:', error);
-    return false;
+    return next(new AppError(false, ERROR_MESSAGE.OTP_VERIFICATION_FAILED, STATUS.INTERNAL_SERVER_ERROR))
   }
 };
 
 
 
-const ConfirmOtp = async (req, res) => {
+const ConfirmOtp = async (req, res, next) => {
   const { otp } = req.body;
   const cookieOtp = req.cookies.resetPasswordOTP;
 
   console.log("OTP from the cookie:", cookieOtp);
 
   if (!cookieOtp) {
-    return res
-      .status(STATUS.NOT_FOUND)
-      .json({ success: false, message: ERROR_MESSAGE.OTP_NOT_PROVIDED });
+    return next(new AppError(false, ERROR_MESSAGE.OTP_NOT_PROVIDED, STATUS.NOT_FOUND));
   }
 
   try {
     const { success, decoded: decodedToken } = await decodingToken(cookieOtp, process.env.JWT_API_SECRET_KEY);
     if (!success) {
-      return res.status(STATUS.UNAUTHORIZED).json({
-        success: false,
-        message: ERROR_MESSAGE.OTP_EXPIRED,
-      });
+      return next(new AppError(false, ERROR_MESSAGE.OTP_EXPIRED, STATUS.UNAUTHORIZED));
     }
 
     console.log("Decoded Token:", decodedToken);
-    // Decrypt the token to get the OTP and other details
-    
-    
 
-    const decrpyptedDecodedToken = decryptCookieForOtp(decodedToken);
-    console.log(typeof decrpyptedDecodedToken);
+    // Decrypt and parse the token
+    const decryptedDecodedToken = decryptCookieForOtp(decodedToken);
+    const parsedToken = JSON.parse(decryptedDecodedToken);
 
-
-    // Convert the decrypted string into an object
-    const parsedToken = JSON.parse(decrpyptedDecodedToken);
-  
     console.log("Decoded Token after decryption:", parsedToken);
 
-    // Extract necessary fields
-    const { SendedOtp, expirationTime, emailVerified, _id, email, otpVerified } =
-    parsedToken;
+    const { SendedOtp, expirationTime, emailVerified, _id, email } = parsedToken;
 
-    console.log(`SendedOtp: ${SendedOtp}, Expiration Time: ${expirationTime}`);
-
-    // Check if the OTP is present
     if (!SendedOtp) {
       return res
         .status(STATUS.NOT_FOUND)
         .json({ success: false, message: ERROR_MESSAGE.OTP_TIMEOUT });
     }
 
-    // Check if the email is already verified
-    if (emailVerified === true) {
+    if (emailVerified) {
       console.log("Email is already verified.");
 
-      // Verify the OTP entered by the user
-      console.log(otp , SendedOtp, new Date(expirationTime));
       const isOtpValid = await verifyOTP(otp, SendedOtp, new Date(expirationTime));
       if (isOtpValid) {
         console.log("OTP verified successfully.");
 
-        // Generate a new token after OTP verification
+        // Generate a new token and set the cookie
         await generatetokenForOtpForEncryption(
           SendedOtp,
           expirationTime,
           _id,
           email,
-          (decrpyptedDecodedToken.otpVerified = true),
-          (decrpyptedDecodedToken.emailVerified = true),
+          (parsedToken.otpVerified = true),
+          (parsedToken.emailVerified = true),
           res
         );
 
@@ -225,9 +170,8 @@ const ConfirmOtp = async (req, res) => {
       } else {
         console.log("OTP verification failed or expired.");
 
-        // Clear the OTP cookie as it is invalid
         res.clearCookie("resetPasswordOTP");
-        return res.status(400).json({
+        return res.status(STATUS.BAD_REQUEST).json({
           success: false,
           message: ERROR_MESSAGE.OTP_VERIFICATION_FAILED,
         });
@@ -235,84 +179,57 @@ const ConfirmOtp = async (req, res) => {
     } else {
       console.log("Email not verified.");
       return res
-        .status(400)
+        .status(STATUS.BAD_REQUEST)
         .json({ success: false, message: ERROR_MESSAGE.PROVIDE_REGISTER_EMAIL });
     }
   } catch (error) {
-    console.error("Error in ConfirmOtp:", error);
-
-    // Handle token expiration errors
     if (error.name === "TokenExpiredError") {
-      return res.status(STATUS.UNAUTHORIZED).json({
-        success: false,
-        message: ERROR_MESSAGE.TOKEN_EXPIRED,
-      });
+     return next(new AppError(false, ERROR_MESSAGE.OTP_EXPIRED, STATUS.UNAUTHORIZED));
     }
 
-    // Handle any other server errors
-    return res.status(STATUS.INTERNAL_SERVER_ERROR).json({
-      success: false,
-      message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
-    });
+    // Pass unexpected errors to the error-handling middleware
+    next(error);
   }
 };
 
 
+
 // New password
-const CreateNewPassword = async (req, res) => {
+const CreateNewPassword = async (req, res , next) => {
   try {
     const Cookie = req.cookies.resetPasswordOTP;
     console.log("Cookie is ", Cookie);
 
     const { Password, RepeatPassword } = req.body;
     if (!Cookie) {
-      return res.json({
-        message: ERROR_MESSAGE.OTP_NOT_PROVIDED,
-        success: false,
-        status: 404,
-      });
+      return next(new AppError(false, ERROR_MESSAGE.OTP_NOT_PROVIDED, STATUS.NOT_FOUND));
     }
 
     const { success, decoded: decodedToken } = await decodingToken(Cookie, process.env.JWT_API_SECRET_KEY);
     if (!success) {
-      return res.status(STATUS.UNAUTHORIZED).json({
-        success: false,
-        message: ERROR_MESSAGE.OTP_EXPIRED,
-      });
+      return next(new AppError(false, ERROR_MESSAGE.OTP_EXPIRED, STATUS.UNAUTHORIZED));
     }
 
     console.log("Decoded Token:", decodedToken);
+
     // Decrypt the token to get the OTP and other details
-    
-    
-
     const decrpyptedDecodedToken = decryptCookieForOtp(decodedToken);
-    // const decodedToken = await decodingToken(
-    //   Cookie,
-    //   process.env.JWT_API_SECRET_KEY
-    // );
-
-
     const parsedToken = JSON.parse(decrpyptedDecodedToken);
-  
+
     console.log("Decoded Token after decryption:", parsedToken);
 
 
 
     if (parsedToken.otpVerified === false) {
-      return res.json({
-        success: false,
-        message: ERROR_MESSAGE.OTP_EXPIRED,
-        status: STATUS.GATEWAY_TIMEOUT,
-      });
+      return next(new AppError(false, ERROR_MESSAGE.OTP_EXPIRED, STATUS.GATEWAY_TIMEOUT));
     }
     console.log(Password);
     console.log(RepeatPassword);
     if (!Password || !RepeatPassword) {
-      return res.json({ success: false, message: ERROR_MESSAGE.PASSWORD_MISSING });
+      return next(new AppError(false, ERROR_MESSAGE.PASSWORD_MISSING, STATUS.BAD_REQUEST));
     }
     if (Password !== RepeatPassword) {
-      return res.json({ success: false, message: ERROR_MESSAGE.PASSWAORD_NOT_MATCHED });
+      return  next(new AppError(false, ERROR_MESSAGE.PASSWAORD_NOT_MATCHED, STATUS.BAD_REQUEST));
     }
 
     const { _id } = parsedToken;
@@ -330,7 +247,7 @@ const CreateNewPassword = async (req, res) => {
 
     console.log(user.password);
     if (!user) {
-      return res.json({ success: false, message: ERROR_MESSAGE.USER_NOT_FOUND });
+      return next(new AppError(false, ERROR_MESSAGE.USER_NOT_FOUND, STATUS.NOT_FOUND));
     } else {
       console.log(user);
 
@@ -343,8 +260,7 @@ const CreateNewPassword = async (req, res) => {
       });
     }
   } catch (error) {
-    logger.error('Error in CreateNewPassword:', error);
-    return res.json({ success: false, message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
+    next(error);
   }
 };
 

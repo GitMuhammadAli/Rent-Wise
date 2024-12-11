@@ -20,7 +20,6 @@ exports.userHome = async (req, res, next) => {
       user,
     });
   } catch (error) {
-    console.error("Error fetching user data:", error);
     next(error); 
   }
 };
@@ -37,7 +36,6 @@ exports.checkAuth = (req, res) => {
       user: req.user
     });
   } catch (error) {
-    console.log("Error in checkAuth controller", error.message);
-    res.status(500).json({ message: "Internal Server Error" });
+    next(error); 
   }
 };

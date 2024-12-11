@@ -7,9 +7,10 @@ const ERROR_MESSAGE = {
   USER_ALREADY_EXISTS: "User already exists",
   FETCHING_USER_ERROR: "Error fetching user data",
   SERVER_ERROR: "Server error",
+  SECRET_KEY_NOT_DEFINED: "Secret key is not defined",
 
 
-  CURRENT_PASSWORD_INVALID :"current password does not match",
+  CURRENT_PASSWORD_INVALID: "current password does not match",
   INVALID_EMAIL_OR_PASSWORD: "Invalid email or password",
   INVALID_PASSWORD: "Password Incorrect",
   PASSWAORD_NOT_MATCHED: "Password not matched Enter Correct Password",
@@ -29,10 +30,14 @@ const ERROR_MESSAGE = {
   PASSWORD_VALIDATION_FAILED: "Password must be at least 8 characters long",
   INVALID_INPUT: "Please Fill the Form Correctly",
   INVALID_CREDENTIALS: "InValid Credentials",
-ROUTE_NOT_FOUND: "Route not found",
-TOKEN_EXPIRED: "Token Expired",
-OTP_EXPIRED: "OTP has expired Please request a new OTP",
-  
+  ROUTE_NOT_FOUND: "Route not found",
+  TOKEN_EXPIRED: "Token Expired",
+  OTP_EXPIRED: "OTP has expired Please request a new OTP",
+  ERROR_IN_INITIALIZATION_ADMIN: " ERROR INIlization of Admin  ",
+  INVALID_TOKEN: "INvalid Token ",
+  TOKEN_NOT_FOUND:"No token provided",
+  DECRYPTION_ERROR: "Decryption error",
+
 
 };
 

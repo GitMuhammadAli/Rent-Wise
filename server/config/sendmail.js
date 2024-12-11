@@ -1,6 +1,6 @@
 const nodemailer = require("nodemailer");
 
-const sendMail = async (to, subject, text, html) => {
+const sendMail = async (to, emailContent ,  next) => {
     try {
         const transporter = nodemailer.createTransport({
             host: "sandbox.smtp.mailtrap.io",
@@ -14,16 +14,15 @@ const sendMail = async (to, subject, text, html) => {
         const info = await transporter.sendMail({
             from: "Reset Your Password  < uYn3T@example.com>",
             to: to,
-            subject: subject,
-            text: text,
-            html: html,
+            subject: emailContent.subject,
+            text: emailContent.text,
+            html: emailContent.html,
         });
 
         console.log("Message sent: %s", info.messageId);
         return { success: true, messageId: info.messageId };
     } catch (error) {
-        console.error("Error sending email:", error);
-        return { success: false, error: error.message };
+        next(error);
     }
 };
 

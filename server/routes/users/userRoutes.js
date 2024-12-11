@@ -40,6 +40,9 @@ router.get(
     }
   }
 );
+
+
+
 // Facebook authentication routes
 // router.get('/facebook', passport.authenticate('facebook', { scope: ['email'] }));
 // router.get('/facebook/callback',

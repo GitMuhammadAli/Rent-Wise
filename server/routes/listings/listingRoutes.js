@@ -69,6 +69,7 @@ router.get(
   "/AllDetailWithMedia",
   asyncHandler(rentalController.AllDetailWithMedia)
 );
+
 // Route to get all listings by a specific owner with populated owner details (name and email) with media
 router.get(
   "/AllDetailWithMedia/:id",
