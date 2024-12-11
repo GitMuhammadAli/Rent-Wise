@@ -211,7 +211,7 @@
 
 
 
-import { Box, Button, Flex, HStack, Input, Text } from "@chakra-ui/react";
+import { Avatar, Box, Button, Flex, HStack, Input, Text } from "@chakra-ui/react";
 import React, { useEffect, useRef, useState } from "react";
 import { useAuth } from "../../hooks/AuthContext";
 import { createMessage, fetchMessagesByConversation } from "../../Api/Chats";
@@ -306,6 +306,7 @@ export default function LiveChat({
   useEffect(() => {
     const fetchMessages = async () => {
       if (!owner || !convoID) return;
+      console.log("oowner is", owner)
 
       try {
         const response = await fetchMessagesByConversation(convoID);
@@ -330,10 +331,11 @@ export default function LiveChat({
           <HStack color={'white'} borderBottom={'1px solid gray'} p={4} bg={'gray.800'} h={'70px'}>
             {
               owner && (
-                <Box>
+                <Flex alignItems={'center'}> 
+                 <Avatar mr={3} src={`${import.meta.env.VITE_BACK_END_URL}${owner.imageUrl}`|| owner.imageUrl} />
                   <Text>{owner.name}</Text>
 
-                </Box>
+                </Flex>
 
               )
                 
@@ -345,21 +347,27 @@ export default function LiveChat({
            p={6}
            flexDir={'column'}
            gap={4}
+           
            >
            {/* display messages her */}
 
            {
             Messages && Messages.length > 0 && Messages.map((Messages,i)=>(
-              <Box
               
-              alignSelf={ ((Messages.sender._id || Messages.sender) === user?._id)  ? 'flex-end' : 'flex-start'}
-              bg={((Messages.sender._id || Messages.sender) === user?._id)  ? 'green.600' : 'gray.600'}
+             
+              <Box
               color={'white'}
               borderRadius={'8px'}
-              p={2}
-              key={Messages._id  || i }> 
-              <Text>{Messages.message}</Text>
+              w={'fit-content'} p={2}  
+              bg={((Messages.sender._id || Messages.sender) === user?._id)  ? 'green.600' : 'gray.600'}
+              alignSelf={ ((Messages.sender._id || Messages.sender) === user?._id)  ? 'flex-end' : 'flex-start'}
+             > 
+             
+              <Text >
+                {Messages.message}
+                </Text>
                </Box>
+             
 
             )) 
               

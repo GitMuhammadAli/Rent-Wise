@@ -1,4 +1,4 @@
-import { Box, Input, Text, VStack } from '@chakra-ui/react';
+import { Avatar, Box, Input, Text, VStack } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { getSideBarParticipants , fetchConversationsForSidebar } from '../../Api/Chats';
 
@@ -6,7 +6,8 @@ export default function SideChat({ handleSideBarClick, ownerIdDetails, userIdDet
   const [participants, setParticipants] = useState([]);
   const [owner, setOwner] = useState(null);
   const [searchChat, setSearchChat] = useState('');
-  const [filteredChat, setFilteredChat] = useState('');
+  // const [avatar,setAvatar] = useState(''); 
+
  
 
   // const [participantName , setParticipantName] = useState([]);
@@ -54,6 +55,8 @@ export default function SideChat({ handleSideBarClick, ownerIdDetails, userIdDet
         imageUrl: ownerIdDetails.imageUrl
          });
       console.log("Owner name in side chat:", ownerIdDetails.name);
+
+     
     }
   }, [ownerIdDetails]);
 
@@ -65,6 +68,7 @@ export default function SideChat({ handleSideBarClick, ownerIdDetails, userIdDet
 
   useEffect(()=>{
     console.log("combines", combinedList)
+    
   },[combinedList])
 
   return (
@@ -96,11 +100,13 @@ export default function SideChat({ handleSideBarClick, ownerIdDetails, userIdDet
               alignItems="center"
               cursor="pointer"
               p={2}
+              
               bg="gray.200"
               borderRadius="md"
-              onClick={() => handleSideBarClick(item._id, item.name, item)}
+              onClick={() => handleSideBarClick(item._id, item.name, item, item.imageUrl)}
             >
-              <Text>{item.name}</Text>
+              <Avatar mr={3} src={`${import.meta.env.VITE_BACK_END_URL}${item.imageUrl}`|| item.imageUrl} />
+              <Text  >{item.name}</Text>
             </Box>
           ))
         ) : (
