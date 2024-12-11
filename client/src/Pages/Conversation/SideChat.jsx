@@ -1,13 +1,16 @@
-import { Box, Text, VStack } from '@chakra-ui/react';
+import { Avatar, Box, Input, Text, VStack } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { getSideBarParticipants , fetchConversationsForSidebar } from '../../Api/Chats';
 
 export default function SideChat({ handleSideBarClick, ownerIdDetails, userIdDetails, listingIdDetails, listings,allData,setListings, setAllData }) {
   const [participants, setParticipants] = useState([]);
   const [owner, setOwner] = useState(null);
+  const [searchChat, setSearchChat] = useState('');
+  // const [avatar,setAvatar] = useState(''); 
+
  
 
-  const [participantName , setParticipantName] = useState([]);
+  // const [participantName , setParticipantName] = useState([]);
 
   // Fetch participants from the API
   useEffect(() => {
@@ -36,7 +39,7 @@ export default function SideChat({ handleSideBarClick, ownerIdDetails, userIdDet
         console.log("Listings are: ", listingData);
          setParticipants(participantData);
         setListings(listingData);
-        // setAllData(response.data.data[0]);
+       
         setAllData(response.data.data);
       } catch (error) {
         console.error("Error fetching participants:", error);
@@ -52,6 +55,8 @@ export default function SideChat({ handleSideBarClick, ownerIdDetails, userIdDet
         imageUrl: ownerIdDetails.imageUrl
          });
       console.log("Owner name in side chat:", ownerIdDetails.name);
+
+     
     }
   }, [ownerIdDetails]);
 
@@ -63,6 +68,7 @@ export default function SideChat({ handleSideBarClick, ownerIdDetails, userIdDet
 
   useEffect(()=>{
     console.log("combines", combinedList)
+    
   },[combinedList])
 
   return (
@@ -77,7 +83,37 @@ export default function SideChat({ handleSideBarClick, ownerIdDetails, userIdDet
       <VStack spacing={4} align="stretch">
         
         <Text color={'white'} fontWeight="bold">Chats</Text>
+
+
+        <Input type='text' placeholder='Search Chat' color={'white'} onChange={(e)=> setSearchChat(e.target.value)} />
+
+
         {combinedList && combinedList.length > 0 ? (
+          combinedList.filter((item)=> 
+            item.name.toLowerCase().includes(searchChat.toLowerCase())
+
+          ).map((item, i) => (
+            <Box
+            _active={{bg:'gray.500'}}
+              key={item._id || i}
+              display="flex"
+              alignItems="center"
+              cursor="pointer"
+              p={2}
+              
+              bg="gray.200"
+              borderRadius="md"
+              onClick={() => handleSideBarClick(item._id, item.name, item, item.imageUrl)}
+            >
+              <Avatar mr={3} src={`${import.meta.env.VITE_BACK_END_URL}${item.imageUrl}`|| item.imageUrl} />
+              <Text  >{item.name}</Text>
+            </Box>
+          ))
+        ) : (
+          <Text>No participants available</Text>
+        )}
+
+        {/* {combinedList && combinedList.length > 0 ? (
           combinedList.map((item, i) => (
             <Box
             _active={{bg:'gray.500'}}
@@ -95,7 +131,7 @@ export default function SideChat({ handleSideBarClick, ownerIdDetails, userIdDet
           ))
         ) : (
           <Text>No participants available</Text>
-        )}
+        )} */}
       </VStack>
     </Box>
   );

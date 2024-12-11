@@ -37,12 +37,12 @@ useEffect(() => {
 }, [Messages]);
 
 
-const handleSideBarClick = (receiver_id, receiver_name, selectedParticipant,) => {
+const handleSideBarClick = (receiver_id, receiver_name,  selectedParticipant,  receiver_imageUrl ) => {
   console.log("selected participant", selectedParticipant);
   console.log("receiver_id", receiver_id);
 
   // Update owner state with the selected participant
-  setOwner({ _id: receiver_id, name: receiver_name });
+  setOwner({ _id: receiver_id, name: receiver_name, imageUrl: receiver_imageUrl });
 
   // Filter data to find the relevant conversation for the selected participant
   const filteredData = allData.find(item =>
