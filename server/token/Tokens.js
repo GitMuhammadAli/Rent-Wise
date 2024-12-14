@@ -20,7 +20,7 @@ const GenerateToken = async (user, req, res, next) => {
     await res.clearCookie("jwt");
     const token = await makeToken(user._id);
     res.cookie("jwt", token, {
-      httpOnly: true,
+      httpOnly: BOOLEAN.TRUE,
       secure: process.env.NODE_ENV !== "development",
       maxAge: 30 * 24 * 60 * 60 * 1000,
       // sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
@@ -47,7 +47,7 @@ const CreateToken = async (payload) => {
 const decodingToken = async (token, key) => {
   try {
     const decoded = jsonwebtoken.verify(token, key);
-    return { success: true, decoded };
+    return { success: BOOLEAN.TRUE, decoded };
   } catch (error) {
     if (error.name === 'TokenExpiredError') {
       throw new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.TOKEN_EXPIRED, STATUS_CODE.UNAUTHORIZED);
@@ -111,7 +111,7 @@ const generatetokenForOtpForEncryption = async (
     res.cookie("resetPasswordOTP", tok, {
       sameSite: "strict",
       maxAge: 24 * 60 * 60 * 1000,
-      httpOnly: true,
+      httpOnly: BOOLEAN.TRUE,
     });
   }
 
@@ -133,7 +133,7 @@ const verifyEncryptedCookieForOtp = (req, res, next) => {
     console.log("cookie for otp after decryption", cookieData);
 
     // Proceed with password reset verification logic
-    return res.status(200).json({ success: true, data: cookieData });
+    return res.status(200).json({ success: BOOLEAN.TRUE, data: cookieData });
   } catch (error) {
     return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.DECRYPTION_ERROR, STATUS_CODE.NOT_FOUND));
   }

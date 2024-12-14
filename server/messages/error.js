@@ -9,7 +9,7 @@ const ERROR_MESSAGE = {
   SERVER_ERROR: "Server error",
   SECRET_KEY_NOT_DEFINED: "Secret key is not defined",
 
-
+  EMAIL_ALREADY_EXISTS: "Email already exists",
   CURRENT_PASSWORD_INVALID: "current password does not match",
   INVALID_EMAIL_OR_PASSWORD: "Invalid email or password",
   INVALID_PASSWORD: "Password Incorrect",

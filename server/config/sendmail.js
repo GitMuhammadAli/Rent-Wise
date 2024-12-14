@@ -1,4 +1,5 @@
 const nodemailer = require("nodemailer");
+const { BOOLEAN } = require("../utils/Roles");
 
 const sendMail = async (to, emailContent ,  next) => {
     try {
@@ -20,7 +21,7 @@ const sendMail = async (to, emailContent ,  next) => {
         });
 
         console.log("Message sent: %s", info.messageId);
-        return { success: true, messageId: info.messageId };
+        return { success: BOOLEAN.TRUE, messageId: info.messageId };
     } catch (error) {
         next(error);
     }

@@ -10,7 +10,7 @@ const Image = require("../../model/listings/ImagesModel");
 const Location = require("../../model/listings/LocationModel");
 const Bidding = require("../../model/listings/biddingModel");
 const AppError = require("../../utils/AppError");
-
+const { BOOLEAN } = require("../../utils/Roles");
 
 
 exports.uploadMedia = async (req, res, next) => {
@@ -93,7 +93,7 @@ exports.CreateListings = async (req, res, next) => {
                 const savedImages = await Promise.all(imagePromises);
                 images = savedImages.map(img => img._id);
             } catch (error) {
-                return next( new AppError(false , LISTINGS.ERROR_UPLOADING_IMAGES, STATUS.BAD_REQUEST));
+                return next( new AppError(BOOLEAN.FALSE , LISTINGS.ERROR_UPLOADING_IMAGES, STATUS.BAD_REQUEST));
             }
         }
 
@@ -110,7 +110,7 @@ exports.CreateListings = async (req, res, next) => {
                 const savedVideos = await Promise.all(videoPromises);
                 videos = savedVideos.map(vid => vid._id);
             } catch (error) {
-                return next( new AppError(false , LISTINGS.ERROR_UPLOADING_VIDEOS, STATUS.BAD_REQUEST));
+                return next( new AppError(BOOLEAN.FALSE , LISTINGS.ERROR_UPLOADING_VIDEOS, STATUS.BAD_REQUEST));
             }
         }
 
@@ -128,9 +128,9 @@ exports.CreateListings = async (req, res, next) => {
             // location: newLocation._id,
         });
 
-        if (biddingEnabled === true) {
+        if (biddingEnabled === BOOLEAN.TRUE) {
             if (!minimumBid || !bidEndDate) {
-                return next( new AppError(false , LISTINGS.BIDDING_ERROR_MISSING_REQUIRED_FIELDS, STATUS.BAD_REQUEST));
+                return next( new AppError(BOOLEAN.FALSE , LISTINGS.BIDDING_ERROR_MISSING_REQUIRED_FIELDS, STATUS.BAD_REQUEST));
             }
 
             const bidding = new Bidding({
@@ -166,12 +166,12 @@ exports.placeBid = async (req, res, next) => {
 
         const bidding = await bidding.findOne({ rentalItem: rentalItemId });
         if (!bidding || !bidding.enabled) {
-            return next (new AppError(false , LISTINGS.BIDDING_NOT_ENABLED, STATUS.BAD_REQUEST));
+            return next (new AppError(BOOLEAN.FALSE , LISTINGS.BIDDING_NOT_ENABLED, STATUS.BAD_REQUEST));
         }
 
         // Check if bidding is still open
         if (new Date() > bidding.bidEndDate) {
-            return next (new AppError(false , LISTINGS.BIDDING_ENDED, STATUS.BAD_REQUEST));
+            return next (new AppError(BOOLEAN.FALSE , LISTINGS.BIDDING_ENDED, STATUS.BAD_REQUEST));
         }
 
         const minimumAllowedBid = bidding.highestBid ? bidding.highestBid + bidding.bidIncrement : bidding.minimumBid;
@@ -222,7 +222,7 @@ const cleanUpUnreferencedMedia = async (listingId, next) => {
     try {
         // Fetch the updated listing's images and videos
         const listing = await RentalItem.findById(listingId).populate(['images', 'videos']);
-        if (!listing) return next(new AppError(false, LISTINGS.LISTING_NOT_FOUND, STATUS.NOT_FOUND));
+        if (!listing) return next(new AppError(BOOLEAN.FALSE, LISTINGS.LISTING_NOT_FOUND, STATUS.NOT_FOUND));
 
         // Paths from the database
         const referencedFiles = [
@@ -284,14 +284,14 @@ exports.UpdateListings = async (req, res, next) => {
     if (!priceUnit) missingFields.push("priceUnit");
 
     if (missingFields.length) {
-        return next(new AppError(false, `Missing required fields: ${missingFields.join(", ")}`, STATUS.BAD_REQUEST));
+        return next(new AppError(BOOLEAN.FALSE, `Missing required fields: ${missingFields.join(", ")}`, STATUS.BAD_REQUEST));
     }
     const uploadedFilePaths = [];
 
     try {
         const existingListing = await RentalItem.findById(id).populate("images").populate("videos");
         if (!existingListing) {
-            return next(new AppError(false, LISTINGS.LISTING_NOT_FOUND, STATUS.NOT_FOUND));
+            return next(new AppError(BOOLEAN.FALSE, LISTINGS.LISTING_NOT_FOUND, STATUS.NOT_FOUND));
         }
         console.log("Existing listing:", existingListing);
 
@@ -339,7 +339,7 @@ exports.UpdateListings = async (req, res, next) => {
         } catch (mediaError) {
             // If any media insertion fails, delete all uploaded files
             await Promise.all(uploadedFilePaths.map(filePath => removeFile(path.resolve(filePath))));
-            return next(new AppError(false, LISTINGS.MEDIA_UPLOAD_ERR, STATUS.INTERNAL_SERVER_ERROR));
+            return next(new AppError(BOOLEAN.FALSE, LISTINGS.MEDIA_UPLOAD_ERR, STATUS.INTERNAL_SERVER_ERROR));
         }
 
         // Update listing with all changes
@@ -361,7 +361,7 @@ exports.UpdateListings = async (req, res, next) => {
                 status,
                 updatedAt: Date.now(),
             },
-            { new: true, runValidators: true }
+            { new: BOOLEAN.TRUE, runValidators: BOOLEAN.TRUE }
         );
         await cleanUpUnreferencedMedia(id);
 
@@ -384,7 +384,7 @@ exports.DeleteListings = async (req, res, next) => {
         const rentalItem = await RentalItem.findById(id);
 
         if (!rentalItem) {
-            return next(new AppError(false, LISTINGS.LISTING_NOT_FOUND, STATUS.NOT_FOUND));
+            return next(new AppError(BOOLEAN.FALSE, LISTINGS.LISTING_NOT_FOUND, STATUS.NOT_FOUND));
         }
 
         // Delete images
@@ -430,7 +430,7 @@ exports.GetListingsById = async (req, res, next) => {
     try {
         const listing = await RentalItem.findById(id).populate("owner", "name email imageUrl").populate("images", "url caption ").populate("videos", "url caption").populate('bidding')
         if (!listing) {
-            return next(new AppError(false, LISTINGS.LISTING_NOT_FOUND, STATUS.NOT_FOUND));
+            return next(new AppError(BOOLEAN.FALSE, LISTINGS.LISTING_NOT_FOUND, STATUS.NOT_FOUND));
         }
         res.json(listing);
     } catch (error) {
@@ -449,7 +449,7 @@ exports.GetListingByUserId = async (req, res, next) => {
 
 
         if (!listing) {
-            return next(new AppError(false, LISTINGS.LISTING_NOT_FOUND, STATUS.NOT_FOUND));
+            return next(new AppError(BOOLEAN.FALSE, LISTINGS.LISTING_NOT_FOUND, STATUS.NOT_FOUND));
         }
         res.json({ listing, count });
         console.log("Count of this owner is:", count)
@@ -466,7 +466,7 @@ exports.GetALLListingByOwners = async (req, res, next) => {
 
         const listing = await RentalItem.find().populate("owner", "name email");
         if (!listing) {
-            return next(new AppError(false, LISTINGS.LISTING_NOT_FOUND, STATUS.NOT_FOUND));
+            return next(new AppError(BOOLEAN.FALSE, LISTINGS.LISTING_NOT_FOUND, STATUS.NOT_FOUND));
         }
         res.json(listing);
 
@@ -484,7 +484,7 @@ exports.GetALLListingByOwnersId = async (req, res, next) => {
 
         const listing = await RentalItem.find({ owner: id }).populate("owner", "name email");
         if (!listing) {
-            return next(new AppError(false, LISTINGS.LISTING_NOT_FOUND, STATUS.NOT_FOUND));
+            return next(new AppError(BOOLEAN.FALSE, LISTINGS.LISTING_NOT_FOUND, STATUS.NOT_FOUND));
         }
         res.json(listing);
 
@@ -499,7 +499,7 @@ exports.AllDetailWithMedia = async (req, res, next) => {
     try {
         const listing = await RentalItem.find().populate("owner", "name email").populate("images", "url caption ").populate("videos", "url caption");
         if (!listing) {
-            return next(new AppError(false, LISTINGS.LISTING_NOT_FOUND, STATUS.NOT_FOUND));
+            return next(new AppError(BOOLEAN.FALSE, LISTINGS.LISTING_NOT_FOUND, STATUS.NOT_FOUND));
         }
         res.json(listing);
 
@@ -519,7 +519,7 @@ exports.AllDetailWithMediaWithOwnerID = async (req, res, next) => {
             .populate("videos", "url caption");
 
         if (!listing) {
-            return next(new AppError(false, LISTINGS.LISTING_NOT_FOUND, STATUS.NOT_FOUND));
+            return next(new AppError(BOOLEAN.FALSE, LISTINGS.LISTING_NOT_FOUND, STATUS.NOT_FOUND));
         }
 
         console.log("Fetched Listing:", listing); // Log the fetched listing

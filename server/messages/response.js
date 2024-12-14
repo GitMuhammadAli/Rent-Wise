@@ -51,9 +51,34 @@ const LISTINGS = {
 }
 
 
+const AGGREEMENT = {
+    AGGREMENT_CREATED: "Aggrement created successfully",
+    AGGREMENT_FETCHED: "Aggrement fetched successfully",
+    AGGREMENT_UPDATED: "Aggrement updated successfully",
+    AGGREMENT_DELETED: "Aggrement deleted successfully",
+    AGGREMENT_NOT_FOUND: "Aggrement not found",
+    AGGREMENT_ALREADY_EXISTS: "Aggrement already exists",
+    AGGREMENT_NOT_AVAILABLE: "Aggrement not available",
+    AGGREMENT_NOT_AVAILABLE_FOR_RENT: "Aggrement not available for rent",
+    AGGREMENT_NOT_AVAILABLE_FOR_SALE: "Aggrement not available for sale",
+    AGGREMENT_NOT_AVAILABLE_FOR_RENT_OR_SALE: "Aggrement not available for rent or sale",
+    AGGREMENT_NOT_AVAILABLE_FOR_RENT_OR_SALE_OR_RENT_AND_SALE: "Aggrement not available for rent or sale or rent and sale",
+    ERROR_UPLOADING_IMAGES: "Error uploading images",
+    ERROR_UPLOADING_VIDEOS: "Error uploading videos",
+    TITLE_IS_REQUIRED: "Title is required",
+    DESCRIPTION_IS_REQUIRED: "Description is required",
+    PRICE_IS_REQUIRED: "Price is required",
+    CATEGORY_IS_REQUIRED: "Category is required",
+    PRICE_UNIT_IS_REQUIRED: "Price unit is required",
 
+    AMENITIES_IS_REQUIRED: "Amenities is required",
+    RULES_IS_REQUIRED: "Rules is required",
+    LOCATION_IS_REQUIRED: "Location is required",
+  
+}
 
 module.exports = {
     RESPONCE_MESSAGE,
-    LISTINGS
+    LISTINGS,
+    AGGREEMENT
 };

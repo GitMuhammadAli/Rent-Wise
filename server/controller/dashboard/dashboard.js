@@ -6,22 +6,24 @@ const { STATUS } = require("../../messages/status");
 const { GetAndDecodeToken } = require("../../token/Tokens");
 const bcrypt = require('bcrypt')
 const AppError = require("../../utils/AppError");
+const { ROLES , BOOLEAN} = require("../../utils/Roles");
+
 
 exports.GetUser = async (req, res, next) => {
   try {
     const decodedToken = await GetAndDecodeToken(req, res);
 
     if (!decodedToken) {
-      return next(new AppError(false , ERROR_MESSAGE.INVALID_TOKEN, STATUS.UNAUTHORIZED));
+      return next(new AppError(BOOLEAN.FALSE , ERROR_MESSAGE.INVALID_TOKEN, STATUS.UNAUTHORIZED));
     }
 
     const user = await User.findById(decodedToken.decoded._id);
     if (!user) {
-      return next(new AppError(false , ERROR_MESSAGE.USER_NOT_FOUND, STATUS.NOT_FOUND));
+      return next(new AppError(BOOLEAN.FALSE , ERROR_MESSAGE.USER_NOT_FOUND, STATUS.NOT_FOUND));
     }
 
     res.status(200).json({
-      success: true,
+      success: BOOLEAN.TRUE,
       message: "User Fetched Successfully",
       user,
     });
@@ -42,7 +44,7 @@ exports.updateUserDashboard = async (req, res , next) => {
   try {
     const user = await User.findById(id);
     if (!user) {
-      return next(new AppError(false , ERROR_MESSAGE.USER_NOT_FOUND, STATUS.NOT_FOUND));
+      return next(new AppError(BOOLEAN.FALSE , ERROR_MESSAGE.USER_NOT_FOUND, STATUS.NOT_FOUND));
     }
     console.log(req.file);
     if (req.file) {
@@ -57,7 +59,7 @@ exports.updateUserDashboard = async (req, res , next) => {
 
         const pass = bcrypt.compare(currentPassword, user.password);
         if (!pass) {
-          return next(new AppError(false , ERROR_MESSAGE.CURRENT_PASSWORD_INVALID, STATUS.UNAUTHORIZED));
+          return next(new AppError(BOOLEAN.FALSE , ERROR_MESSAGE.CURRENT_PASSWORD_INVALID, STATUS.UNAUTHORIZED));
         }
 
         const salt = await bcrypt.genSalt(10);
@@ -66,12 +68,12 @@ exports.updateUserDashboard = async (req, res , next) => {
     }
 
     const updatedUser = await User.findByIdAndUpdate(id, updateData, {
-      new: true,
-      runValidators: true,
+      new: BOOLEAN.TRUE,
+      runValidators: BOOLEAN.TRUE,
     });
 
     return res.status(STATUS.SUCCESS).json({
-      success: true,
+      success: BOOLEAN.TRUE,
       message: RESPONCE_MESSAGE.USER_UPDATED,
       user: updatedUser,
     });

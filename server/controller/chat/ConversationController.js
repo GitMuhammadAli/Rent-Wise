@@ -3,7 +3,7 @@ const Conversation = require("../../model/chat/ConversationModel");
 const Messsage = require("../../model/chat/MesssageModel");
 const { io } = require("../../utils/socket");
 const AppError = require("../../utils/AppError");
-
+const {BOOLEAN} = require("../../utils/Roles");
 
 
 
@@ -61,7 +61,7 @@ const createOrGetConversation = async (req, res) => {
         // const messages = await Messsage.find({ conversation: conversation._id }).sort({ createdAt: 1 });
 
         res.status(200).json({
-            success: true,
+            success: BOOLEAN.TRUE,
             message: "Conversation retrieved/created successfully",
             data: {
                 conversation,
@@ -115,7 +115,7 @@ const getChatParticipants = async (req, res) => {
             },
         ]);
 
-        res.status(200).json({ success: true, participants });
+        res.status(200).json({ success: BOOLEAN.TRUE, participants });
     } catch (error) {
         console.error("Error fetching participants:", error);
         return res.status(500).json({ error: "Internal server error" });
@@ -245,7 +245,7 @@ const createMessage = async (req, res) => {
             });
         }
 
-        res.status(201).json({ success: true, message: "Message sent successfully", data: newMessage });
+        res.status(201).json({ success: BOOLEAN.TRUE, message: "Message sent successfully", data: newMessage });
     } catch (error) {
         console.error("Error creating message:", error);
         return res.status(500).json({ error: "Internal server error" });
@@ -343,7 +343,7 @@ const fetchConversationsForSidebarOld = async (req, res) => {
               }
           ]);
 
-          res.status(200).json({ success: true, data: conversations });
+          res.status(200).json({ success: BOOLEAN.TRUE, data: conversations });
       } catch (error) {
           console.error("Error fetching sidebar conversations:", error);
           return res.status(500).json({ error: "Failed to fetch conversations." });
@@ -381,7 +381,7 @@ const fetchMessagesByConversation = async (req, res) => {
         }
 
         res.status(200).json({
-            success: true,
+            success: BOOLEAN.TRUE,
             data: messages,
         });
     } catch (error) {

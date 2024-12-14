@@ -1,5 +1,6 @@
 const Users = require("../model/user/userModel");
 const jsonwebtoken = require("jsonwebtoken");
+const {BOOLEAN} = require("../utils/Roles");
 
 
 function clearCookies(req, res) {
@@ -54,8 +55,8 @@ exports.FindUser = async (req, res, next) => {
 
     const { otpVerified, emailVerified } = decodedToken;
 
-    if (emailVerified === false) {
-      if (otpVerified === false) {
+    if (emailVerified === BOOLEAN.FALSE) {
+      if (otpVerified === BOOLEAN.FALSE) {
         console.log("Email verified but OTP not verified yet");
         return res.status(401).json({ message: "OTP not verified" });
       }

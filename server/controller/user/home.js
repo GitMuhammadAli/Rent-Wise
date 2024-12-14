@@ -10,12 +10,12 @@ exports.userHome = async (req, res, next) => {
     const user = await Users.findById(userId);
 
     if (!user) {
-      throw new AppError(ERROR_MESSAGE.USER_NOT_FOUND, STATUS_CODE.NOT_FOUND);
+      throw new AppError(BOOLEAN.FALSE,ERROR_MESSAGE.USER_NOT_FOUND, STATUS_CODE.NOT_FOUND);
     }
     console.log("Sending user to frontend:", user);
 
     res.status(200).json({
-      success: true,
+      success: BOOLEAN.TRUE,
       message: RESPONCE_MESSAGE.USER_FETCHED,
       user,
     });
@@ -32,7 +32,7 @@ exports.checkAuth = (req, res) => {
   try {
     console.log("User in checkAuth:", req.user);
     res.status(200).json({
-      success: true,
+      success: BOOLEAN.TRUE,
       user: req.user
     });
   } catch (error) {

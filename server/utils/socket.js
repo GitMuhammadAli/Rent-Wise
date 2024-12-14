@@ -43,7 +43,7 @@ const socketIo = require("socket.io");
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: "http://localhost:4000", // Adjust this based on your frontend's URL
+    origin: process.env.CLIENT_URL,  // Adjust this based on your frontend's URL
     methods: ["GET", "POST"],
   },
 });

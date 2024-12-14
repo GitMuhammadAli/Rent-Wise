@@ -6,6 +6,7 @@ const { ERROR_MESSAGE } = require("../../messages/error");
 const { RESPONCE_MESSAGE } = require("../../messages/response");
 const { STATUS } = require("../../messages/status");
 const AppError = require("../../utils/AppError");
+const { BOOLEAN } = require("../../utils/Roles");
 
 const initializeAdmin = async () => {
   try {
@@ -21,7 +22,7 @@ const initializeAdmin = async () => {
       console.log("Admin user created with username: admin and password: admin");
     }
   } catch (error) {
-    throw new AppError(false , ERROR_MESSAGE, STATUS.SERVER_ERROR);
+    throw new AppError(BOOLEAN.FALSE , ERROR_MESSAGE, STATUS.SERVER_ERROR);
   }
 };
 
@@ -30,30 +31,30 @@ const Register = async (req, res , next) => {
     const { name, email, password } = req.body;
 
     if (!name || !email || !password) {
-      return next(new AppError(ERROR_MESSAGE.INVALID_INPUT, STATUS.BAD_REQUEST))
+      return next(new AppError(BOOLEAN.FALSE,ERROR_MESSAGE.INVALID_INPUT, STATUS.BAD_REQUEST))
     }
 
     if (name.length < 5) {
-      return next(new AppError(ERROR_MESSAGE.NAME_VALIDATION_FAILED, STATUS.BAD_REQUEST))
+      return next(new AppError(BOOLEAN.FALSE,ERROR_MESSAGE.NAME_VALIDATION_FAILED, STATUS.BAD_REQUEST))
     }
   // if (!validator.isEmail(email)) {
     //   return res.status(400).json({ message: "Invalid email format" });
     // }
 
     if (password.length < 8) {
-      return next(new AppError(ERROR_MESSAGE.PASSWORD_VALIDATION_FAILED, STATUS.BAD_REQUEST))
+      return next(new AppError( BOOLEAN.FALSE ,ERROR_MESSAGE.PASSWORD_VALIDATION_FAILED, STATUS.BAD_REQUEST))
     }
     if (!email || !password) {
-      return next(new AppError(ERROR_MESSAGE.INVALID_INPUT, STATUS.BAD_REQUEST))
+      return next(new AppError(BOOLEAN.FALSE,ERROR_MESSAGE.INVALID_INPUT, STATUS.BAD_REQUEST))
     }
     
     if (await Users.findOne({ email })) {
-      return next(new AppError(ERROR_MESSAGE.EMAIL_ALREADY_EXISTS, STATUS.BAD_REQUEST))
+      return next(new AppError( BOOLEAN.FALSE , ERROR_MESSAGE.EMAIL_ALREADY_EXISTS, STATUS.BAD_REQUEST))
     }
 
   
     if (await Users.findOne({ email })) {
-      return next(new AppError(ERROR_MESSAGE.EMAIL_ALREADY_EXISTS, STATUS.BAD_REQUEST))
+      return next(new AppError(BOOLEAN.FALSE,ERROR_MESSAGE.EMAIL_ALREADY_EXISTS, STATUS.BAD_REQUEST))
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -83,12 +84,12 @@ const login = async (req, res ,next) => {
 
 
     if (!user) {
-      return next(new AppError(ERROR_MESSAGE.EMAIL_NOT_FOUND, STATUS.UNAUTHORIZED))
+      return next(new AppError(BOOLEAN.FALSE ,ERROR_MESSAGE.EMAIL_NOT_FOUND, STATUS.UNAUTHORIZED))
     }
     const isPasswordValid = await bcrypt.compare(your_pass, user.password);
 
     if (!isPasswordValid) {
-      return next(new AppError(ERROR_MESSAGE.INVALID_PASSWORD, STATUS.UNAUTHORIZED))
+      return next(new AppError(BOOLEAN.FALSE , ERROR_MESSAGE.INVALID_PASSWORD, STATUS.UNAUTHORIZED))
     }
     await GenerateToken(user, req, res ,next);
     return res.status(200).json({
