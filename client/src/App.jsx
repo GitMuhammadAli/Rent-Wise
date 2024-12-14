@@ -29,6 +29,7 @@ import MyAccount from "../src/Pages/Account/MyAccount";
 import DashboardUserContextProvider from "./hooks/DashboardUserContext";
 import UpdateListing from "./Pages/Listings/updateListing";
 import MainChat from "./Pages/Conversation/MainChat";
+import AgreementTemplate from "./Pages/Agreement/AgreementTemplate";
 
 
 
@@ -78,6 +79,7 @@ const router = createBrowserRouter(
         <Route path="/acc" element={<MyAccount />} />
         <Route path="/listings/:id" element={<UpdateListing />} />
         <Route path="/chat" element={<MainChat/>} />
+        <Route path="/agreement" element={<AgreementTemplate/>} />
         {/* <Route path="/chat" element={<MainChat/>} /> */}
 
         {/* <Route element={<ProtectedRoute requiredRole="user" />}>

@@ -1,16 +1,18 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { DollarSign, Users, Package, AlertCircle, BarChart2, Plus, Edit } from 'lucide-react';
+import { DollarSign, Users, Package, AlertCircle, BarChart2, Plus, Edit, Printer } from 'lucide-react';
 import { Box, Button, Card, CardBody, CardFooter, CardHeader, Divider, Flex, Heading, SimpleGrid, Stack, Table, Tbody, Td, Th, Thead, Tr, Text, TableContainer } from '@chakra-ui/react';
 import { useDasboardHook } from '../../hooks/DashboardUserContext';
 import { getAlListingsofSpecificUser } from '../../Api/ListingApi';
 import { Link } from 'react-router-dom';
 import { ListingsContext } from '../../hooks/ListingsContext';
+import UserPopover from './UserPopover';
 
 
 export default function OwnerDash() {
 const [count, setCount] = useState('');
 const {user} = useDasboardHook();
 const { state, dispatch} = useContext(ListingsContext); 
+
 // const [items, setItems] = useState([]);
 
 const { listings } = state; 
@@ -42,9 +44,32 @@ getOwnerListings();
 return (
 <Box minH="100vh" bg="whiteAlpha.800" p={{ base: 2, sm: 4, md: 8 }}>
 <Box maxW="7xl" mx="auto">
+
+
+<Flex justifyContent={'space-between'} mb={5}>
 <Heading as="h1" size={{ base: "md", sm: "lg", md: "xl" }} mb={{ base: 3, sm: 4, md: 8 }}>
 Owner Dashboard
 </Heading>
+{/* {
+    count && count > 0 && (
+    <Flex gap={3} alignItems={'center'}>
+
+        <Text fontWeight={'bold'} fontSize={'lg'} >Create Aggreement</Text>
+        <Printer onClick={ ()=> setPopover(prev => !prev) } size={40} color="#ff0000" />
+         
+    </Flex>
+    )
+} */}
+
+  
+   {
+    count && count > 0 && (
+        <UserPopover />
+    )
+   }
+        
+</Flex>
+
 
 <SimpleGrid  columns={{ base: 1, sm: 2, lg: 4 }} spacing={{ base: 3, sm: 4, md: 6 }} mb={{ base: 3, sm: 4, md: 8 }}>
 <Card boxShadow={'2xl'} >
