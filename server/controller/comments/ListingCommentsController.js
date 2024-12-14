@@ -4,15 +4,13 @@ const { RESPONCE_MESSAGE, LISTINGS } = require("../../messages/response");
 const { STATUS } = require("../../messages/status");
 const { ERROR_MESSAGE } = require("../../messages/error");
 const logger = require("../../utils/logger");
+const AppError = require("../../utils/AppError");
 
 
-
-exports.createComment = async (req, res) => {
+exports.createComment = async (req, res , next) => {
     try {
         const { rental, author, text } = req.body;
-        console.log("Data For Comments is", req.body);
         const comment = await Comment.create({ rental, author, text }); // Ensure all fields are included
-        console.log("Comment is", comment);
         res.status(STATUS.CREATED).json({ message: RESPONCE_MESSAGE.COMMENT_CREATED, comment });
     } catch (error) {
         console.error("Error in createComment:", error); // Log detailed error
@@ -22,7 +20,7 @@ exports.createComment = async (req, res) => {
 
 
 
-exports.Check = async(req, res)=>{
+exports.Check = async(req, res )=>{
     const Data = req.body;
 
 
@@ -30,7 +28,7 @@ exports.Check = async(req, res)=>{
 }
 
 
-exports.showSpecificListComments = async (req, res) => {
+exports.showSpecificListComments = async (req, res , next) => {
     try {
         const { id } = req.body;
         // const rental = '671aa58e6973118ab008c850'
@@ -47,7 +45,7 @@ exports.showSpecificListComments = async (req, res) => {
 
 
 
-exports.listingcommentReply = async (req, res) => {
+exports.listingcommentReply = async (req, res , next) => {
   try {
     const { commentId, parentReplyId, author, text, taggedUser } = req.body;
 
@@ -89,7 +87,7 @@ exports.listingcommentReply = async (req, res) => {
 
 
 
-exports.getCommentsWithReplies = async (req, res) => {
+exports.getCommentsWithReplies = async (req, res , next) => {
   try {
     const { id: rental } = req.params;
     console.log("Data For Comments is ", rental);
@@ -123,7 +121,7 @@ exports.getCommentsWithReplies = async (req, res) => {
 };
 
 
-  exports.deleteComments = async (req, res) => {
+  exports.deleteComments = async (req, res , next) => {
     try {
       const { id } = req.params;
       console.log("Data For Comments is " , id);
@@ -150,7 +148,7 @@ exports.getCommentsWithReplies = async (req, res) => {
 
 
   
-  exports.deleteCommentsReplies = async(req,res)=>{
+  exports.deleteCommentsReplies = async(req,res , next)=>{
     try {
       const { id } = req.params;
       console.log("Data For Comments is " , id);

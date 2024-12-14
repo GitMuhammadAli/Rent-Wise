@@ -5,24 +5,19 @@ const { RESPONCE_MESSAGE, LISTINGS } = require("../../messages/response");
 const { STATUS } = require("../../messages/status");
 const { GetAndDecodeToken } = require("../../token/Tokens");
 const bcrypt = require('bcrypt')
+const AppError = require("../../utils/AppError");
 
 exports.GetUser = async (req, res, next) => {
   try {
     const decodedToken = await GetAndDecodeToken(req, res);
 
     if (!decodedToken) {
-      return res.status(401).json({
-        success: false,
-        message: "Invalid token",
-      });
+      return next(new AppError(false , ERROR_MESSAGE.INVALID_TOKEN, STATUS.UNAUTHORIZED));
     }
 
     const user = await User.findById(decodedToken.decoded._id);
     if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
+      return next(new AppError(false , ERROR_MESSAGE.USER_NOT_FOUND, STATUS.NOT_FOUND));
     }
 
     res.status(200).json({
@@ -31,8 +26,6 @@ exports.GetUser = async (req, res, next) => {
       user,
     });
   } catch (error) {
-    logger.error(error);
-    console.log(error);
     next(error);
   }
 };
@@ -40,24 +33,16 @@ exports.GetUser = async (req, res, next) => {
 exports.updateUserDashboard = async (req, res , next) => {
   const { id } = req.params;
   const { name, email, bio, avatar } = req.body;
-  console.log("body is", req.body);
-  console.log("biooo is", bio);
-
 
   const { currentPassword, password, ...updateData } = req.body;
   if (bio === '' || bio === '\r\n') {
     delete updateData.bio;
   }
 
-  console.log("body after bio empty is", req.body);
-
   try {
     const user = await User.findById(id);
     if (!user) {
-      return res.status(STATUS.NOT_FOUND).json({
-        success: false,
-        message: ERROR_MESSAGE.USER_NOT_FOUND,
-      });
+      return next(new AppError(false , ERROR_MESSAGE.USER_NOT_FOUND, STATUS.NOT_FOUND));
     }
     console.log(req.file);
     if (req.file) {
@@ -72,14 +57,7 @@ exports.updateUserDashboard = async (req, res , next) => {
 
         const pass = bcrypt.compare(currentPassword, user.password);
         if (!pass) {
-          
-          logger.error("Current Password not matched in updateUserDashboard " + currentPassword);
-          return res.status(STATUS.INTERNAL_SERVER_ERROR).json({
-            success: false,
-            message: ERROR_MESSAGE.CURRENT_PASSWORD_INVALID,
-
-          });
-
+          return next(new AppError(false , ERROR_MESSAGE.CURRENT_PASSWORD_INVALID, STATUS.UNAUTHORIZED));
         }
 
         const salt = await bcrypt.genSalt(10);

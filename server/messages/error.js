@@ -34,9 +34,10 @@ const ERROR_MESSAGE = {
   TOKEN_EXPIRED: "Token Expired",
   OTP_EXPIRED: "OTP has expired Please request a new OTP",
   ERROR_IN_INITIALIZATION_ADMIN: " ERROR INIlization of Admin  ",
-  INVALID_TOKEN: "INvalid Token ",
+  INVALID_TOKEN: "Invalid Token ",
   TOKEN_NOT_FOUND:"No token provided",
   DECRYPTION_ERROR: "Decryption error",
+  CURRENT_PASSWORD_INVALID:"Current Password not matched in updateUserDashboard"
 
 
 };

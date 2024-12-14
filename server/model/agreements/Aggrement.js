@@ -1,0 +1,40 @@
+const mongoose = require("mongoose");
+
+const AggrementSchema = new mongoose.Schema({
+    listingId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "RentalItem",
+        required: true,
+    },
+    ownerId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+    },
+    renterId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+    },
+    agreementStatus: {
+        type: String,
+        enum: ["pending", "accepted", "rejected"],
+        default: "pending",
+    },
+    ownerConfirmed: { type: Boolean, default: false },
+    renterConfirmed: { type: Boolean, default: false },
+     agreementDetailsId: { type: mongoose.Schema.Types.ObjectId, ref: 'AgreementDetails', required: true },
+    qrId: { type: String },
+    agreementDate: {
+        type: Date,
+        default: Date.now,
+    },
+
+}, {
+    timestamps: true,
+});
+
+
+const Aggrement = mongoose.model("Aggrement", AggrementSchema);
+
+module.exports = Aggrement;

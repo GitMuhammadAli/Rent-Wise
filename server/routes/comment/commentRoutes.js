@@ -11,7 +11,7 @@ router.get("/showSpecificListComments/:id" , asyncHandler(Comments.showSpecificL
 
 // router.post("/reply" , Comments.listingcommentReply )
 
-router.get("/CommentWithReply/:id" ,  Comments.getCommentsWithReplies)
+router.get("/CommentWithReply/:id" ,  asyncHandler(Comments.getCommentsWithReplies))
 // router.get("/CommentWithReply" ,  Comments.getCommentsWithReplies)
 
 

@@ -176,7 +176,7 @@ exports.placeBid = async (req, res, next) => {
 
         const minimumAllowedBid = bidding.highestBid ? bidding.highestBid + bidding.bidIncrement : bidding.minimumBid;
         if (bidAmount < minimumAllowedBid) {
-            
+
             return res.status(400).json({
                 error: `Bid must be at least ${minimumAllowedBid}.`,
             });
@@ -222,7 +222,7 @@ const cleanUpUnreferencedMedia = async (listingId, next) => {
     try {
         // Fetch the updated listing's images and videos
         const listing = await RentalItem.findById(listingId).populate(['images', 'videos']);
-        if (!listing) throw new Error('Listing not found');
+        if (!listing) return next(new AppError(false, LISTINGS.LISTING_NOT_FOUND, STATUS.NOT_FOUND));
 
         // Paths from the database
         const referencedFiles = [
@@ -250,6 +250,9 @@ const cleanUpUnreferencedMedia = async (listingId, next) => {
         next(error);
     }
 };
+
+
+
 exports.UpdateListings = async (req, res, next) => {
     const { id } = req.params;
     const {
@@ -281,16 +284,14 @@ exports.UpdateListings = async (req, res, next) => {
     if (!priceUnit) missingFields.push("priceUnit");
 
     if (missingFields.length) {
-        return res.status(400).json({
-            error: `Missing required fields: ${missingFields.join(", ")}`
-        });
+        return next(new AppError(false, `Missing required fields: ${missingFields.join(", ")}`, STATUS.BAD_REQUEST));
     }
     const uploadedFilePaths = [];
 
     try {
         const existingListing = await RentalItem.findById(id).populate("images").populate("videos");
         if (!existingListing) {
-            return res.status(404).json({ error: "Listing not found" });
+            return next(new AppError(false, LISTINGS.LISTING_NOT_FOUND, STATUS.NOT_FOUND));
         }
         console.log("Existing listing:", existingListing);
 
@@ -337,9 +338,8 @@ exports.UpdateListings = async (req, res, next) => {
             }
         } catch (mediaError) {
             // If any media insertion fails, delete all uploaded files
-            console.error("Error processing media:", mediaError);
             await Promise.all(uploadedFilePaths.map(filePath => removeFile(path.resolve(filePath))));
-            return res.status(500).json({ error: "Failed to upload media files", details: mediaError.message });
+            return next(new AppError(false, LISTINGS.MEDIA_UPLOAD_ERR, STATUS.INTERNAL_SERVER_ERROR));
         }
 
         // Update listing with all changes
@@ -384,7 +384,7 @@ exports.DeleteListings = async (req, res, next) => {
         const rentalItem = await RentalItem.findById(id);
 
         if (!rentalItem) {
-            return res.status(404).json({ message: 'Rental item not found' });
+            return next(new AppError(false, LISTINGS.LISTING_NOT_FOUND, STATUS.NOT_FOUND));
         }
 
         // Delete images
@@ -428,11 +428,9 @@ exports.GetListings = async (req, res, next) => {
 exports.GetListingsById = async (req, res, next) => {
     const { id } = req.params;
     try {
-
-
         const listing = await RentalItem.findById(id).populate("owner", "name email imageUrl").populate("images", "url caption ").populate("videos", "url caption").populate('bidding')
         if (!listing) {
-            return res.status(404).json({ error: "Listing not found" });
+            return next(new AppError(false, LISTINGS.LISTING_NOT_FOUND, STATUS.NOT_FOUND));
         }
         res.json(listing);
     } catch (error) {
@@ -451,7 +449,7 @@ exports.GetListingByUserId = async (req, res, next) => {
 
 
         if (!listing) {
-            return res.status(404).json({ error: "Listing not found" });
+            return next(new AppError(false, LISTINGS.LISTING_NOT_FOUND, STATUS.NOT_FOUND));
         }
         res.json({ listing, count });
         console.log("Count of this owner is:", count)
@@ -468,7 +466,7 @@ exports.GetALLListingByOwners = async (req, res, next) => {
 
         const listing = await RentalItem.find().populate("owner", "name email");
         if (!listing) {
-            return res.status(404).json({ error: "Listing not found" });
+            return next(new AppError(false, LISTINGS.LISTING_NOT_FOUND, STATUS.NOT_FOUND));
         }
         res.json(listing);
 
@@ -486,7 +484,7 @@ exports.GetALLListingByOwnersId = async (req, res, next) => {
 
         const listing = await RentalItem.find({ owner: id }).populate("owner", "name email");
         if (!listing) {
-            return res.status(404).json({ error: "Listing not found" });
+            return next(new AppError(false, LISTINGS.LISTING_NOT_FOUND, STATUS.NOT_FOUND));
         }
         res.json(listing);
 
@@ -501,7 +499,7 @@ exports.AllDetailWithMedia = async (req, res, next) => {
     try {
         const listing = await RentalItem.find().populate("owner", "name email").populate("images", "url caption ").populate("videos", "url caption");
         if (!listing) {
-            return res.status(404).json({ error: "Listing not found" });
+            return next(new AppError(false, LISTINGS.LISTING_NOT_FOUND, STATUS.NOT_FOUND));
         }
         res.json(listing);
 
@@ -521,7 +519,7 @@ exports.AllDetailWithMediaWithOwnerID = async (req, res, next) => {
             .populate("videos", "url caption");
 
         if (!listing) {
-            return res.status(404).json({ error: "Listing not found" });
+            return next(new AppError(false, LISTINGS.LISTING_NOT_FOUND, STATUS.NOT_FOUND));
         }
 
         console.log("Fetched Listing:", listing); // Log the fetched listing

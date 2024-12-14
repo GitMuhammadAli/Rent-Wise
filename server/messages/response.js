@@ -47,6 +47,7 @@ const LISTINGS = {
     BIDDING_ERROR_MISSING_REQUIRED_FIELDS: "Bidding enabled but missing required fields: Minimum Bid and Bid End Date",
     BIDDING_NOT_ENABLED:"Bidding is not enabled for this item.",
     BIDDING_ENDED:"Bidding has ended for this item.",
+        MEDIA_UPLOAD_ERR: "Failed to upload media files",
 }
 
 

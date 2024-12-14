@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Conversation = require("../../model/chat/ConversationModel");
 const Messsage = require("../../model/chat/MesssageModel");
 const { io } = require("../../utils/socket");
+const AppError = require("../../utils/AppError");
 
 
 
