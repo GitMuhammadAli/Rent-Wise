@@ -72,6 +72,7 @@ exports.updateUserDashboard = async (req, res , next) => {
 
         const pass = bcrypt.compare(currentPassword, user.password);
         if (!pass) {
+          
           logger.error("Current Password not matched in updateUserDashboard " + currentPassword);
           return res.status(STATUS.INTERNAL_SERVER_ERROR).json({
             success: false,
@@ -97,8 +98,6 @@ exports.updateUserDashboard = async (req, res , next) => {
       user: updatedUser,
     });
   } catch (error) {
-    console.error("errrrror", error);
-    logger.error(error + " in updateUserDashboard");
     next(error);
   }
 };

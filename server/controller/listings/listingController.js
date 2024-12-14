@@ -9,10 +9,11 @@ const Video = require("../../model/listings/VediosModel");
 const Image = require("../../model/listings/ImagesModel");
 const Location = require("../../model/listings/LocationModel");
 const Bidding = require("../../model/listings/biddingModel");
+const AppError = require("../../utils/AppError");
 
 
 
-exports.uploadMedia = async (req, res , next) => {
+exports.uploadMedia = async (req, res, next) => {
     try {
         // Handle image uploads
         let images = [];
@@ -51,14 +52,12 @@ exports.uploadMedia = async (req, res , next) => {
             videos
         });
     } catch (error) {
-        console.error("Error uploading media:", error);
-        logger.error(error);
         next(error);
     }
 };
 
 // Updated_One-&-Latest
-exports.CreateListings = async (req, res , next) => {
+exports.CreateListings = async (req, res, next) => {
     try {
         const { owner, title, description, price, category, priceUnit, amenities = [],
             location, biddingEnabled, minimumBid, bidIncrement, bidEndDate
@@ -94,9 +93,7 @@ exports.CreateListings = async (req, res , next) => {
                 const savedImages = await Promise.all(imagePromises);
                 images = savedImages.map(img => img._id);
             } catch (error) {
-                console.error("Error uploading images:", error);
-                logger.error(error);
-                return res.status(500).json({ error: LISTINGS.ERROR_UPLOADING_IMAGES });
+                return next( new AppError(false , LISTINGS.ERROR_UPLOADING_IMAGES, STATUS.BAD_REQUEST));
             }
         }
 
@@ -113,8 +110,7 @@ exports.CreateListings = async (req, res , next) => {
                 const savedVideos = await Promise.all(videoPromises);
                 videos = savedVideos.map(vid => vid._id);
             } catch (error) {
-                console.error("Error uploading videos:", error);
-                return res.status(500).json({ error: LISTINGS.ERROR_UPLOADING_VIDEOS });
+                return next( new AppError(false , LISTINGS.ERROR_UPLOADING_VIDEOS, STATUS.BAD_REQUEST));
             }
         }
 
@@ -134,9 +130,7 @@ exports.CreateListings = async (req, res , next) => {
 
         if (biddingEnabled === true) {
             if (!minimumBid || !bidEndDate) {
-                return res.status(400).json({
-                    error: LISTINGS.BIDDING_ERROR_MISSING_REQUIRED_FIELDS,
-                });
+                return next( new AppError(false , LISTINGS.BIDDING_ERROR_MISSING_REQUIRED_FIELDS, STATUS.BAD_REQUEST));
             }
 
             const bidding = new Bidding({
@@ -161,29 +155,28 @@ exports.CreateListings = async (req, res , next) => {
         });
 
     } catch (error) {
-        console.error("Error creating rental listing:", error);
-        logger.error(error);
         next(error)
     }
 };
 
-exports.placeBid = async (req, res) => {
+exports.placeBid = async (req, res, next) => {
     try {
         const { rentalItemId, bidAmount } = req.body;
         const userId = req.user.id;
 
         const bidding = await bidding.findOne({ rentalItem: rentalItemId });
         if (!bidding || !bidding.enabled) {
-            return res.status(400).json({ error: "Bidding is not enabled for this item." });
+            return next (new AppError(false , LISTINGS.BIDDING_NOT_ENABLED, STATUS.BAD_REQUEST));
         }
 
         // Check if bidding is still open
         if (new Date() > bidding.bidEndDate) {
-            return res.status(400).json({ error: "Bidding has ended." });
+            return next (new AppError(false , LISTINGS.BIDDING_ENDED, STATUS.BAD_REQUEST));
         }
 
         const minimumAllowedBid = bidding.highestBid ? bidding.highestBid + bidding.bidIncrement : bidding.minimumBid;
         if (bidAmount < minimumAllowedBid) {
+            
             return res.status(400).json({
                 error: `Bid must be at least ${minimumAllowedBid}.`,
             });
@@ -201,8 +194,7 @@ exports.placeBid = async (req, res) => {
 
         return res.status(200).json({ message: "Bid placed successfully!" });
     } catch (error) {
-        console.error("Error placing bid:", error);
-        return res.status(500).json({ error: "Error placing bid." });
+        next(error);
     }
 };
 
@@ -226,7 +218,7 @@ const removeFile = (filePath) => {
     });
 };
 
-const cleanUpUnreferencedMedia = async (listingId , next) => {
+const cleanUpUnreferencedMedia = async (listingId, next) => {
     try {
         // Fetch the updated listing's images and videos
         const listing = await RentalItem.findById(listingId).populate(['images', 'videos']);
@@ -240,7 +232,7 @@ const cleanUpUnreferencedMedia = async (listingId , next) => {
 
         // Path to the directory containing the listing's media files
         const mediaDirPath = path.resolve(`uploads/media/${listing.owner}`);
-        
+
         // List all files in the directory
         const allFiles = await fs.promises.readdir(mediaDirPath);
 
@@ -253,14 +245,12 @@ const cleanUpUnreferencedMedia = async (listingId , next) => {
             await fs.promises.unlink(filePath);
             console.log(`Deleted unreferenced file: ${filePath}`);
         }
-        
+
     } catch (error) {
-        console.error('Error during cleanup:', error);
-        logger.error(error);
         next(error);
     }
 };
-exports.UpdateListings = async (req, res) => {
+exports.UpdateListings = async (req, res, next) => {
     const { id } = req.params;
     const {
         title,
@@ -379,16 +369,14 @@ exports.UpdateListings = async (req, res) => {
 
         res.json(updatedListing);
     } catch (error) {
-        console.error("Error updating listing:", error);
-        await Promise.all(uploadedFilePaths.map(filePath => removeFile(path.resolve(filePath))));
-        res.status(500).json({ error: "Failed to update listing", details: error.message });
+        next(error)
     }
 };
 
 
 
 
-exports.DeleteListings = async (req, res) => {
+exports.DeleteListings = async (req, res, next) => {
     const { id } = req.params;
 
     try {
@@ -422,60 +410,59 @@ exports.DeleteListings = async (req, res) => {
 
         res.status(200).json({ message: 'Rental item and associated files deleted successfully' });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Internal server error' });
+        next(error)
     }
 }
 
-exports.GetListings = async (req, res) => {
+exports.GetListings = async (req, res, next) => {
     try {
         const listings = await RentalItem.find().populate("owner").populate("images").populate("videos").populate("bidding");
         res.json(listings);
     } catch (error) {
-        res.status(500).json({ error: "Failed to fetch listings" });
+        next(error)
     }
 }
 
 
 // function to get a single listing by id
-exports.GetListingsById = async (req, res) => {
+exports.GetListingsById = async (req, res, next) => {
     const { id } = req.params;
     try {
 
-       
+
         const listing = await RentalItem.findById(id).populate("owner", "name email imageUrl").populate("images", "url caption ").populate("videos", "url caption").populate('bidding')
         if (!listing) {
             return res.status(404).json({ error: "Listing not found" });
         }
         res.json(listing);
     } catch (error) {
-        res.status(500).json({ error: "Fjadaddsad" });
+        next(error)
     }
 }
 
 
 // function to get all the listings by user id
-exports.GetListingByUserId = async (req, res) => {
+exports.GetListingByUserId = async (req, res, next) => {
     const { id } = req.params;
     try {
-       
+
         const listing = await RentalItem.find({ owner: id });
         const count = await RentalItem.countDocuments({ owner: id });
-      
+
 
         if (!listing) {
             return res.status(404).json({ error: "Listing not found" });
         }
-        res.json({listing,count});
+        res.json({ listing, count });
         console.log("Count of this owner is:", count)
-        
+
     } catch (error) {
-        res.status(500).json({ error: "Failed to fetch listing" });
+        next(error)
     }
 }
 
 
-exports.GetALLListingByOwners = async (req, res) => {
+exports.GetALLListingByOwners = async (req, res, next) => {
 
     try {
 
@@ -487,12 +474,12 @@ exports.GetALLListingByOwners = async (req, res) => {
 
 
     } catch (error) {
-        res.status(500).json({ error: "Failed to fetch listing" });
+        next(error)
 
     }
 
 }
-exports.GetALLListingByOwnersId = async (req, res) => {
+exports.GetALLListingByOwnersId = async (req, res, next) => {
 
     const { id } = req.params;
     try {
@@ -505,12 +492,12 @@ exports.GetALLListingByOwnersId = async (req, res) => {
 
 
     } catch (error) {
-        res.status(500).json({ error: "Failed to fetch listing" });
+        next(error)
 
     }
 
 }
-exports.AllDetailWithMedia = async (req, res) => {
+exports.AllDetailWithMedia = async (req, res, next) => {
     try {
         const listing = await RentalItem.find().populate("owner", "name email").populate("images", "url caption ").populate("videos", "url caption");
         if (!listing) {
@@ -520,12 +507,12 @@ exports.AllDetailWithMedia = async (req, res) => {
 
 
     } catch (error) {
-        res.status(500).json({ error: "Failed to fetch listing" });
+        next(error)
 
     }
 
 }
-exports.AllDetailWithMediaWithOwnerID = async (req, res) => {
+exports.AllDetailWithMediaWithOwnerID = async (req, res, next) => {
     try {
         const { id } = req.params;
         const listing = await RentalItem.find({ owner: id })
@@ -540,8 +527,7 @@ exports.AllDetailWithMediaWithOwnerID = async (req, res) => {
         console.log("Fetched Listing:", listing); // Log the fetched listing
         res.json(listing);
     } catch (error) {
-        console.error("Error fetching listing:", error); // Log the full error object
-        res.status(500).json({ error: "Failed to fetch listing", details: error }); // Include full error object in the response
+        next(error)
     }
 };
 
@@ -626,9 +612,9 @@ exports.AllDetailWithMediaWithOwnerID = async (req, res) => {
 //             updatedAt,
 //         });
 
-//         console.log("New Listing", newListing);    
+//         console.log("New Listing", newListing);
 //         await newListing.save();
-//         console.log("New Listing saved is :", newListing);    
+//         console.log("New Listing saved is :", newListing);
 
 //         return res.status(201).json(newListing);
 //     } catch (error) {
@@ -707,9 +693,9 @@ exports.AllDetailWithMediaWithOwnerID = async (req, res) => {
 //             updatedAt,
 //         });
 
-//         console.log("New Listing", newListing);    
+//         console.log("New Listing", newListing);
 //         await newListing.save();
-//         console.log("New Listing saved is :", newListing);    
+//         console.log("New Listing saved is :", newListing);
 
 //         return res.status(201).json(newListing);
 //     } catch (error) {

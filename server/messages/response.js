@@ -45,7 +45,8 @@ const LISTINGS = {
     FILL_FORM_AND_SUBMIT_AGAIN: "Please Fill the form Correctly and Submit again",
     PLEASE_PROVIDE_ALL_REQUIRED_FIELDS: "Please provide all required fields",
     BIDDING_ERROR_MISSING_REQUIRED_FIELDS: "Bidding enabled but missing required fields: Minimum Bid and Bid End Date",
-
+    BIDDING_NOT_ENABLED:"Bidding is not enabled for this item.",
+    BIDDING_ENDED:"Bidding has ended for this item.",
 }
 
 
