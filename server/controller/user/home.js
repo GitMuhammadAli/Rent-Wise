@@ -3,6 +3,7 @@ const { ERROR_MESSAGE  } = require("../../messages/error");
 const {STATUS_CODE} = require("../../messages/status");
 const { RESPONCE_MESSAGE } = require("../../messages/response");
 const AppError = require("../../utils/AppError");
+const { BOOLEAN } = require("../../utils/Roles");
 
 exports.userHome = async (req, res, next) => {
   try {
@@ -28,7 +29,7 @@ exports.userHome = async (req, res, next) => {
 exports.adminHome = async (req, res) => {};
 
 
-exports.checkAuth = (req, res) => {
+exports.checkAuth = (req, res,next) => {
   try {
     console.log("User in checkAuth:", req.user);
     res.status(200).json({
