@@ -9,6 +9,7 @@ const bcrypt = require('bcrypt')
 const AppError = require("../../utils/AppError");
 const { BOOLEAN } = require("../../utils/Roles");
 const QRCode = require('qrcode')
+const { io } = require("../../utils/socket");
 
 const CreateQrCode = async (data) =>{
     try {
@@ -68,6 +69,16 @@ exports.CreateAggrement = async (req, res ,  next) => {
 
 exports.verifyAggrement = async (req, res, next) => {
     try {
+        const { aggId } = req.params;
+        const agg = await Aggrement.findById(aggId);
+        if(!agg){
+            return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.USER_NOT_FOUND, STATUS.NOT_FOUND));
+        }
+        const {renterConfirmed } = req.body;
+        if(renterConfirmed == BOOLEAN.TRUE){
+            agg.renterConfirmed = renterConfirmed;
+            await agg.save();
+        }
         
       
     } catch (error) {
@@ -75,6 +86,30 @@ exports.verifyAggrement = async (req, res, next) => {
     }
 }
 
+exports.sentAggreement = async (req, res, next) => {
+    try {
+        const { aggId , conversationId} = req.body;
+        const agg = await Aggrement.findById(aggId);
+        if(!agg){
+            return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.USER_NOT_FOUND, STATUS.NOT_FOUND));
+        }
+        const aggDetails = await AggrementDetails.findById(agg.agreementDetailsId);
+        if(!aggDetails){
+            return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.USER_NOT_FOUND, STATUS.NOT_FOUND));
+        }
+        if(io){
+            io.to(conversationId.toString()).emit("receiveMessage", {
+            message:"aggrement for Renter confirmation",
+                status: "sent",
+                value : `${process.env.CLIENT_URL}/aggrement/${agg._id}`
+            });
+        }
+      
+        
+    }catch (error) {
+        next(error);
+    }
+}
 
 
 exports.GetAggrementByQr = async(req, res, next)=>{}

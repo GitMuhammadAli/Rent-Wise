@@ -1,7 +1,7 @@
 const conversation = require("../../controller/chat/ConversationController");
 const express = require("express");
 const router = express.Router();
-const { AuthorizeUser, FindUser } = require("../../middleware/auth");
+const { AuthorizeUser } = require("../../middleware/auth");
 const  asyncHandler = require('../../middleware/asyncWrapper');
 
 // Get or create a conversation
@@ -17,6 +17,7 @@ router.get("/GetAllConversationsAll", AuthorizeUser("user" , "admin") ,asyncHand
 
 // Fetch all messages for a specific conversation
 router.get("/FetchAllMessages/:conversationId/messages", AuthorizeUser("user" , "admin") , asyncHandler(conversation.fetchMessagesByConversation));
+
 // Fetch all messages for a specific conversation to the sidebar
 router.get("/sidebar", AuthorizeUser("user" , "admin") ,asyncHandler(conversation.getChatParticipants));
 
