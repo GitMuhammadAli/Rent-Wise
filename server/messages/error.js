@@ -37,9 +37,9 @@ const ERROR_MESSAGE = {
   INVALID_TOKEN: "Invalid Token ",
   TOKEN_NOT_FOUND:"No token provided",
   DECRYPTION_ERROR: "Decryption error",
-  CURRENT_PASSWORD_INVALID:"Current Password not matched in updateUserDashboard"
+  CURRENT_PASSWORD_INVALID:"Current Password not matched in updateUserDashboard",
 
-
+QR_ERROR :"Error Creating Qr"
 };
 
 module.exports = {
