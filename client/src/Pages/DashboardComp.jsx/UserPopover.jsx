@@ -30,7 +30,7 @@ export default function UserPopover ()  {
 
     const showAggrement =(names, list)=>{
       console.log("name", names, "list", list)
-        navigate('/agreement', { state: { tentantName: names, tenantListingId: list} });
+        navigate('/agreement', { state: { tenantName: names, tenantListing: list} });
         
     }
 
@@ -124,7 +124,7 @@ export default function UserPopover ()  {
           {p.name || ''}
         </Text>
         <SquareMousePointer  
-          onClick={() => showAggrement(p, group.listing.map(l => l._id))} 
+          onClick={() => showAggrement(p, group.listing.map(l => l))} 
           size={20} 
           color="#ff0000" 
         />
