@@ -24,7 +24,7 @@ export default function AgreementTemplate() {
     useEffect(()=>{
       if(!tentantName || !listingId){return} 
       console.log(listingId, tentantName)
-
+      setRenterId(tentantName._id);
     },[tentantName,listingId])
 
 
@@ -34,16 +34,16 @@ export default function AgreementTemplate() {
         {
           return
         }
-        setRenterId(tentantName._id);
         console.log("renterID", tentantName._id)
+        console.log("renterID", renterId)
         
         console.log("listingID", listingId)
         console.log("status",ownerConfirmed)
 
-
         console.log("details are: ", aggrementDetail);
 
          const data = await createAgreement({renterId, aggrementDetail, ownerConfirmed, listingId})
+         
         
       } catch (error) {
         console.log("errorInAgreement creation is: ", error);

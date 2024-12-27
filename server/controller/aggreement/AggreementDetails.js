@@ -57,10 +57,10 @@ console.log(aggrementDetails._id);
         agg.qrId = qrCode;
         
         await agg.save();
-        res.status(STATUS.OK).json({
-            status: STATUS.OK,
+        res.status(STATUS.SUCCESS).json({
+            status: STATUS.SUCCESS,
             message: RESPONCE_MESSAGE.AGGREGEMENT_CREATED,
-            data: aggrement
+            data: agg,
         })
 
         
