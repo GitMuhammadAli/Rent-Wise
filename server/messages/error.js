@@ -38,8 +38,11 @@ const ERROR_MESSAGE = {
   TOKEN_NOT_FOUND:"No token provided",
   DECRYPTION_ERROR: "Decryption error",
   CURRENT_PASSWORD_INVALID:"Current Password not matched in updateUserDashboard",
+  OwneAggrement:"Owner cannot create agreement with themselves",
 
-QR_ERROR :"Error Creating Qr"
+QR_ERROR :"Error Creating Qr",
+NOT_LISTING_OWNER:"You are not the owner of this listing",
+AGGREMENT_ALREADY_EXISTS:"Agreement already exists for this listing and renter",
 };
 
 module.exports = {
