@@ -88,7 +88,6 @@ export default function AgreementTemplate() {
         console.log("tenantListing", tenantListing)
         console.log("status",ownerConfirmed)
 
-
         console.log("details are: ", aggrementDetail);
 
          const data = await createAgreement({renterId, aggrementDetail, ownerConfirmed, listingId:listIdToSend})

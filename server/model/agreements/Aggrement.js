@@ -18,7 +18,7 @@ const AggrementSchema = new mongoose.Schema({
     },
     agreementStatus: {
         type: String,
-        enum: ["pending", "accepted", "rejected"],
+        enum: ["pending", "accepted", "rejected" , "active"],
         default: "pending",
     },
     ownerConfirmed: { type: Boolean, default: false },
