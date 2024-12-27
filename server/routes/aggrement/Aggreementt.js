@@ -6,3 +6,5 @@ const { AuthorizeUser } = require("../../middleware/auth");
 router.post('/createAggreement', AuthorizeUser("user", "admin"), asyncHandler(Aggreement.CreateAggrement));
 
 router.post("/sentaggreement", AuthorizeUser("user", "admin"), asyncHandler(Aggreement.sentAggreement));
+
+module.exports = router;

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Tabs, TabList, TabPanels, Tab, TabPanel, Box, Icon, Flex, Heading, Text, Button } from "@chakra-ui/react";
-import { LuCheckSquare, LuFolder, LuUser } from "react-icons/lu";
+import { LuFolder, LuUser } from "react-icons/lu";
 import OwnerDash from '../DashboardComp.jsx/OwnerDash';
 import UserDash from '../DashboardComp.jsx/UserDash';
 import { Link } from 'react-router-dom';
