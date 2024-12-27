@@ -251,7 +251,7 @@ export default function AgreementTemplate() {
                 <Text>This is a legally binding document. Both parties should read the terms carefully.</Text>
               </Box>
             </Box>
-            <Button bg={'black'} color={'white'} onClick={saveAgreement}> Save Aggrement</Button>
+            <Button bg={'black'} color={'white'}  onClick={saveAgreement}> Save Aggrement!</Button>
           </Card>
         </Box>
       );
