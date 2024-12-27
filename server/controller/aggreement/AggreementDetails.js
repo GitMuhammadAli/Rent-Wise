@@ -28,6 +28,13 @@ exports.CreateAggrement = async (req, res ,  next) => {
     try {
         const {listingId ,renterId ,aggrementDetail , ownerConfirmed }  = req.body;
         const ownerId = req.user._id; 
+        
+
+        if(!renterId)
+        {
+            console.log("renter id not found")
+            return;
+        }
 
         console.log(req.body);
         console.log(ownerId);

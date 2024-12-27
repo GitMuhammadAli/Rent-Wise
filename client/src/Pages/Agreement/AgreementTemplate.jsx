@@ -1,4 +1,12 @@
-import { Box, Card, Heading, Text, Divider, Stack, Input,Flex, VStack, Image, Button } from "@chakra-ui/react";
+import { Box, Card, Heading, Text, Divider, Stack, Input,Flex, VStack, Image, Button, Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  MenuItemOption,
+  MenuGroup,
+  MenuOptionGroup,
+  MenuDivider,
+useToast } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useLocation } from 'react-router-dom';
 import { useAuth } from "../../hooks/AuthContext";
@@ -6,6 +14,7 @@ import { createAgreement } from "../../Api/Agreement";
 
 
 export default function AgreementTemplate() {
+  const toast = useToast();
   const [aggrementDetail, setAggrementDetail] = useState({
     place: '',
     timeInDayCount: null,
@@ -13,37 +22,77 @@ export default function AgreementTemplate() {
   });
   const [ownerConfirmed, setOwnerConfirmed] = useState(false);
   const [renterId, setRenterId] = useState('');
+  const [listingDetail, setListingDetail] = useState([]);
+  const [listIdToSend, setListIdToSend] = useState('');
 
     const location = useLocation();
     
-    const { tentantName,tenantListingId: listingId  } = location.state || {}; 
+    const { tenantName,tenantListing  } = location.state || {}; 
+
     
     const {user} = useAuth();
   
   
     useEffect(()=>{
-      if(!tentantName || !listingId){return} 
-      console.log(listingId, tentantName)
+      if(!tenantName || !tenantListing){return} 
+      console.log(tenantListing, tenantName)
+      setListingDetail(tenantListing);
+      console.log("tentantIDD", tenantName._id)
+      setRenterId(tenantName._id)
 
-    },[tentantName,listingId])
+
+
+    },[tenantName,tenantListing])
+
+    const listingFucntion =(listID)=>{
+     
+      if(!listID)
+      {
+        toast({
+          title: "Select your listing again.",
+          description: "Listing not selected yet, select again.",
+          status: "warning",
+          duration: 3000,
+          isClosable: true,
+        })
+
+        return;
+      }
+      setListIdToSend(listID)
+      console.log("list id to send is", listIdToSend)
+
+    }
 
 
     const saveAgreement = async()=>{
       try {
-        if(!tentantName || !listingId)
+
+        if(!listIdToSend)
         {
+          toast({
+            title: "Select your listing again.",
+            description: "Listing not selected yet, select again.",
+            status: "warning",
+            duration: 3000,
+            isClosable: true,})
+            return
+        }
+        if(!tenantName || !tenantListing )
+        {
+          console.log("ids missing")
           return
         }
-        setRenterId(tentantName._id);
-        console.log("renterID", tentantName._id)
+        setRenterId(tenantName._id);
+        console.log("renterID", renterId)
         
-        console.log("listingID", listingId)
+        console.log("tenantListing", tenantListing)
         console.log("status",ownerConfirmed)
 
 
         console.log("details are: ", aggrementDetail);
 
-         const data = await createAgreement({renterId, aggrementDetail, ownerConfirmed, listingId})
+         const data = await createAgreement({renterId, aggrementDetail, ownerConfirmed, listingId:listIdToSend})
+         console.log("responseOFagreement", data)
         
       } catch (error) {
         console.log("errorInAgreement creation is: ", error);
@@ -123,11 +172,29 @@ export default function AgreementTemplate() {
                     <Flex gap={5}>
                     <Text fontWeight="semibold">Tenant:</Text>
                    
-                   <Text h={'fit-content'} borderBottom={'1px solid'}>{tentantName.name || ''}</Text>
+                   <Text h={'fit-content'} borderBottom={'1px solid'}>{tenantName.name || ''}</Text>
                     </Flex>
                     
                   </Box>
                 </Flex>
+
+<Flex alignItems={'center'} gap={4}>
+  <Text>The listing for which this agreement is being made is</Text>
+                <Menu>
+  <MenuButton as={Button} w={'fit-content'}>
+    Listings name
+  </MenuButton>
+  <MenuList>
+    { listingDetail && listingDetail.length> 0 && listingDetail.map((list,i)=>(
+      <MenuItem key={list._id || i} onClick={()=> listingFucntion(list._id)}>{list.title}</MenuItem>
+    ))
+}
+
+  </MenuList>
+</Menu>
+</Flex>
+
+                 
               </VStack>
     
               <VStack align="stretch" spacing={4} mb={8}>
