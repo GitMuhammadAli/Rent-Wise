@@ -22,13 +22,15 @@ import AgreementTemplate from '../Agreement/AgreementTemplate';
 import { useNavigate } from 'react-router-dom';
 
 export default function UserPopover ()  {
-    const [participantsName , setParticipantsName] = useState([]); 
+    const [participantsDetail , setParticipantsDetail] = useState([]); 
+    
     const navigate = useNavigate();
     
 
 
-    const showAggrement =(p)=>{
-        navigate('/agreement', { state: { tentantDetail: p} });
+    const showAggrement =(names, list)=>{
+      console.log("name", names, "list", list)
+        navigate('/agreement', { state: { tentantName: names, tenantListingId: list} });
         
     }
 
@@ -39,14 +41,35 @@ export default function UserPopover ()  {
 
             try{
                 const response = await fetchConversationsForSidebar();
-                console.log("response", response);
-                const data = response.data.data.map((d)=>{
-                   return d.participants.map((p)=>{
-                        return p
-                    })
-                })
-                console.log("names are", data)
-                setParticipantsName(data);
+                console.log("responseIS", response);
+                // const data = response.data.data.map((d)=>{
+                //    return d.participants.map((p)=>{
+                //         return p
+                //     })
+                // })
+                // const listing = response.data.data.map((d)=>{
+                //    return d.listing.map((l)=>{
+                //         return l
+                //     })
+                // })
+                // console.log("names are", data)
+                // setParticipantsName(data);
+                // console.log("listing are", listing)
+                // setParticipantListings(listing)
+
+
+
+
+                const mappedData = response.data.data.map((d) => {
+                  return {
+                    participants: d.participants.map((p) => p), // Extract participants
+                    listing: d.listing.map((l) => l), // Extract listings
+                  };
+                });
+                setParticipantsDetail(mappedData)
+                console.log("mapped", mappedData)
+               
+                
                 
     
             }
@@ -78,19 +101,38 @@ export default function UserPopover ()  {
       <PopoverCloseButton />
       <PopoverHeader>Renters to create aggreement with!</PopoverHeader>
       <PopoverBody>
-      {
-  participantsName && participantsName.length > 0 &&
-  participantsName.map((group, groupIndex) => (
-    group.map((p, pIndex) => (
+      {/* {
+  participantsDetail && participantsDetail.length > 0 &&
+  participantsDetail.map((group, groupIndex) => (
+    group.participants.map((p, pIndex) => (
       <Flex justifyContent={'space-between'} key={pIndex}>
         <Text mb={3} fontWeight={'semibold'}>
-          {p.name}
+          {p.name || ''}
         </Text>
         <SquareMousePointer  onClick={()=> showAggrement(p)} size={20} color="#ff0000" />
       </Flex>
     ))
   ))
+} */}
+
+{
+  participantsDetail && participantsDetail.length > 0 &&
+  participantsDetail.map((group, groupIndex) => (
+    group.participants.map((p, pIndex) => (
+      <Flex justifyContent={'space-between'} key={`participant-${groupIndex}-${pIndex}`}>
+        <Text mb={3} fontWeight={'semibold'}>
+          {p.name || ''}
+        </Text>
+        <SquareMousePointer  
+          onClick={() => showAggrement(p, group.listing.map(l => l._id))} 
+          size={20} 
+          color="#ff0000" 
+        />
+      </Flex>
+    ))
+  ))
 }
+
 
       </PopoverBody>
     </PopoverContent>

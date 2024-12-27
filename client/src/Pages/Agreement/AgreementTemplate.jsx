@@ -1,5 +1,5 @@
 import { Box, Card, Heading, Text, Divider, Stack, Input,Flex, VStack, Image, Button } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from 'react-router-dom';
 import { useAuth } from "../../hooks/AuthContext";
 import { createAgreement } from "../../Api/Agreement";
@@ -16,24 +16,34 @@ export default function AgreementTemplate() {
 
     const location = useLocation();
     
-    const { tentantDetail } = location.state || {}; 
+    const { tentantName,tenantListingId: listingId  } = location.state || {}; 
     
     const {user} = useAuth();
   
-    // const [tentName, setTenatName] = useState('');
+  
+    useEffect(()=>{
+      if(!tentantName || !listingId){return} 
+      console.log(listingId, tentantName)
+
+    },[tentantName,listingId])
 
 
     const saveAgreement = async()=>{
       try {
-        if(!tentantDetail)
+        if(!tentantName || !listingId)
         {
           return
         }
-        setRenterId(tentantDetail._id);
-        console.log("renterID", tentantDetail._id)
+        setRenterId(tentantName._id);
+        console.log("renterID", tentantName._id)
+        
+        console.log("listingID", listingId)
+        console.log("status",ownerConfirmed)
+
+
         console.log("details are: ", aggrementDetail);
 
-        const data = await createAgreement({renterId, aggrementDetail, ownerConfirmed})
+         const data = await createAgreement({renterId, aggrementDetail, ownerConfirmed, listingId})
         
       } catch (error) {
         console.log("errorInAgreement creation is: ", error);
@@ -113,7 +123,7 @@ export default function AgreementTemplate() {
                     <Flex gap={5}>
                     <Text fontWeight="semibold">Tenant:</Text>
                    
-                   <Text h={'fit-content'} borderBottom={'1px solid'}>{tentantDetail.name}</Text>
+                   <Text h={'fit-content'} borderBottom={'1px solid'}>{tentantName.name || ''}</Text>
                     </Flex>
                     
                   </Box>
