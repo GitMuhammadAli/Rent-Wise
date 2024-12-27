@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const AggrementDetailsSchema = new mongoose.Schema({
     aggrementDetail: {
-        type: mongoose.Schema.type.mixed,
+        type: mongoose.Schema.type.Mixed,
         required: true
     }
 }, {
