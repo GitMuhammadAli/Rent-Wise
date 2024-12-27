@@ -1,16 +1,46 @@
-import { Box, Card, Heading, Text, Divider, Stack, Input,Flex, VStack, Image } from "@chakra-ui/react";
+import { Box, Card, Heading, Text, Divider, Stack, Input,Flex, VStack, Image, Button } from "@chakra-ui/react";
 import { useState } from "react";
 import { useLocation } from 'react-router-dom';
 import { useAuth } from "../../hooks/AuthContext";
+import { createAgreement } from "../../Api/Agreement";
 
 
 export default function AgreementTemplate() {
+  const [aggrementDetail, setAggrementDetail] = useState({
+    place: '',
+    timeInDayCount: null,
+    rentAmount: '',
+  });
+  const [ownerConfirmed, setOwnerConfirmed] = useState(false);
+  const [renterId, setRenterId] = useState('');
+
     const location = useLocation();
     
     const { tentantDetail } = location.state || {}; 
+    
     const {user} = useAuth();
   
     // const [tentName, setTenatName] = useState('');
+
+
+    const saveAgreement = async()=>{
+      try {
+        if(!tentantDetail)
+        {
+          return
+        }
+        setRenterId(tentantDetail._id);
+        console.log("renterID", tentantDetail._id)
+        console.log("details are: ", aggrementDetail);
+
+        const data = await createAgreement({renterId, aggrementDetail, ownerConfirmed})
+        
+      } catch (error) {
+        console.log("errorInAgreement creation is: ", error);
+        
+      }
+
+    }
     
       return (
         <Box minH="100vh" display="flex" alignItems="center" justifyContent="center" p={4}>
@@ -100,7 +130,8 @@ export default function AgreementTemplate() {
                     <Input
                       border="none"
                       borderBottom="1px solid"
-                    
+                      onChange={(e)=> setAggrementDetail({ ...aggrementDetail, place: e.target.value })}
+                      value={aggrementDetail.place}
                       w="auto"
                       _focus={{boxShadow: 'none' }} 
                       textAlign="center"
@@ -113,7 +144,8 @@ export default function AgreementTemplate() {
                     <Input
                       border="none"
                       borderBottom="1px solid"
-                     
+                      onChange={(e)=> setAggrementDetail({ ...aggrementDetail, timeInDayCount: e.target.value })}
+                      value={aggrementDetail.timeInDayCount}
                       w="auto"
                       _focus={{boxShadow: 'none' }} 
                       textAlign="center"
@@ -146,7 +178,8 @@ export default function AgreementTemplate() {
                     <Input
                       border="none"
                       borderBottom="1px solid"
-                    
+                      value={aggrementDetail.rentAmount}
+                      onChange={(e)=> setAggrementDetail({ ...aggrementDetail, rentAmount: e.target.value })}
                       w="auto"
                       _focus={{boxShadow: 'none' }} 
                       textAlign="center"
@@ -208,6 +241,7 @@ export default function AgreementTemplate() {
                 <Text>This is a legally binding document. Both parties should read the terms carefully.</Text>
               </Box>
             </Box>
+            <Button bg={'black'} color={'white'} onClick={saveAgreement}> Save Aggrement</Button>
           </Card>
         </Box>
       );
