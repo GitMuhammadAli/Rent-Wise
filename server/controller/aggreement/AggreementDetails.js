@@ -13,7 +13,10 @@ const { io } = require("../../utils/socket");
 
 const CreateQrCode = async (data) =>{
     try {
-        const qrCode = await QRCode.toDataURL(data);
+        const QrData = JSON.stringify(data);
+        console.log("data for qr is" + QrData)
+        console.log(typeof QrData)
+        const qrCode = await QRCode.toDataURL(QrData);
         return qrCode;
     } catch (error) {
         logger.error(error);
@@ -26,7 +29,9 @@ exports.CreateAggrement = async (req, res ,  next) => {
         const {listingId ,renterId ,aggrementDetail , ownerConfirmed }  = req.body;
         const ownerId = req.user._id; 
 
-        if(!!ownerId){
+        console.log(req.body);
+        console.log(ownerId);
+        if(!ownerId){
             return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.USER_NOT_FOUND, STATUS.NOT_FOUND));
         }
 
@@ -34,11 +39,12 @@ exports.CreateAggrement = async (req, res ,  next) => {
             aggrementDetail: aggrementDetail
         })
         await aggrementDetails.save();
+        console.log(aggrementDetails);
 
-
+console.log(aggrementDetails._id);
         const agg = new Aggrement({
             listingId: listingId,
-            owner: ownerId,
+            ownerId: ownerId,
             renterId: renterId,
             agreementStatus: "pending",
             ownerConfirmed: ownerConfirmed || false,
@@ -48,11 +54,9 @@ exports.CreateAggrement = async (req, res ,  next) => {
         })
 
         const qrCode = await CreateQrCode(agg._id);
-        const aggrement = await agg({
-            qrId: qrCode
-        })
+        agg.qrId = qrCode;
         
-        await aggrement.save();
+        await agg.save();
         res.status(STATUS.OK).json({
             status: STATUS.OK,
             message: RESPONCE_MESSAGE.AGGREGEMENT_CREATED,
