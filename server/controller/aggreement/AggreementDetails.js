@@ -48,9 +48,10 @@ exports.getByOwnerId = async(req,res,next)=>{
 
 exports.CreateAggrement = async (req, res, next) => {
     try {
-        const { listingId, renterId, aggrementDetail, ownerConfirmed  , conversationId } = req.body;
+        const { listingId, renterId, aggrementDetail, ownerConfirmed  , conversationID } = req.body;
         const ownerId = req.user._id;
 
+        console.log(req.body);
         if (!ownerId) {
             return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.USER_NOT_FOUND, STATUS.NOT_FOUND));
         }
@@ -93,7 +94,7 @@ exports.CreateAggrement = async (req, res, next) => {
             listingId: listingId,
             ownerId: ownerId,
             renterId: renterId,
-            conversationID: conversationId,
+            conversationID: conversationID,
             agreementStatus: "pending",
             ownerConfirmed: ownerConfirmed || false,
             renterConfirmed: false,
