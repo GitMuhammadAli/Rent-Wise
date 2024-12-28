@@ -14,12 +14,10 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
-  MenuItemOption,
-  MenuGroup,
-  MenuOptionGroup,
-  MenuDivider,
   useToast,
 } from "@chakra-ui/react";
+
+
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useAuth } from "../../hooks/AuthContext";
@@ -61,7 +59,7 @@ export default function AgreementTemplate() {
     setConversationId(conversationID);
   }, [tenantName, tenantListing , conversationID]);
 
-  const listingFucntion = (listID) => {
+  const listingFucntion = (listID, title) => {
     if (!listID) {
       toast({
         title: "Select your listing again.",
@@ -73,6 +71,9 @@ export default function AgreementTemplate() {
 
       return;
     }
+    console.log("Title", title);
+    setListTitle(title);
+
     setListIdToSend(listID);
     console.log("list id to send is", listIdToSend);
 
@@ -203,8 +204,8 @@ console.log("Response from SentAggreement:", response.data);
           <Flex alignItems={"center"} gap={4}>
               <Text>The listing for which this agreement is being made is</Text>
               <Menu>
-                <MenuButton as={Button} w={"fit-content"}>
-                  Listings name
+                <MenuButton as={Button} w={"fit-content"} p={4}>
+                 {listTitle}
                 </MenuButton>
                 <MenuList>
                   {listingDetail &&
@@ -212,7 +213,7 @@ console.log("Response from SentAggreement:", response.data);
                     listingDetail.map((list, i) => (
                       <MenuItem
                         key={list._id || i}
-                        onClick={() => listingFucntion(list._id)}
+                        onClick={() => listingFucntion(list._id, list.title)}
                       >
                         {list.title}
                       </MenuItem>
@@ -220,6 +221,9 @@ console.log("Response from SentAggreement:", response.data);
                 </MenuList>
               </Menu>
             </Flex>
+
+
+
             <Heading as="h1" size="lg" mb={2}>
               RENTAL AGREEMENT
             </Heading>
@@ -417,6 +421,10 @@ console.log("Response from SentAggreement:", response.data);
                   </Box>
                 </Flex>
               </VStack> */}
+
+
+              
+          
 
           <Box>
             <Heading as="h2" size="lg">
