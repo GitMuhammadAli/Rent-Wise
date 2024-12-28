@@ -77,8 +77,8 @@ export default function OwnerDash() {
     const fetchAgreements = async () => {
       try {
         const response = await GetAggreements();
-        console.log("Agreements fetched:", response.data);
-        setAgreements(response.data);
+        console.log("Agreements fetched:", response.data.data);
+        setAgreements(response.data.data);
         console.log("Agreements:", agreements);
       } catch (error) {
         console.error("Failed to fetch agreements:", error);
