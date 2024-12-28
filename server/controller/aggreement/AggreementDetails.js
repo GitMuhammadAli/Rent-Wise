@@ -12,6 +12,7 @@ const { BOOLEAN } = require("../../utils/Roles");
 const QRCode = require('qrcode')
 const { io } = require("../../utils/socket");
 const Messsage = require("../../model/chat/MesssageModel");
+const Conversation = require("../../model/chat/ConversationModel");
 
 const CreateQrCode = async (data) => {
     try {
@@ -135,7 +136,65 @@ exports.verifyAggrement = async (req, res, next) => {
 }
 
 
-exports.sentAggreement = async (req, res, next) => {
+
+const createLinkMessage = async(listingId ,message ,senderId ,receiver ,conversationID , isLinkMessage) => {
+
+    // listingId: new ObjectId('674ee57c03100829c478d4f8'),
+    // ownerId: new ObjectId('670e21628426323ce4847a99'),
+    // renterId: new ObjectId('670ae3d75c58ad616e636e56'),
+    // agreementStatus: 'pending',
+    // conversationID: new ObjectId('67586d93a124c904c38c91be'),
+    // ownerConfirmed: false,
+    // renterConfirmed: false,
+    // agreementDetailsId: new ObjectId('677006e14332d87dc452776e'),
+    // _id: new ObjectId('677006e14332d87dc4527770'),
+    // agreementDate: 2024-12-28T14:10:41.839Z,
+
+
+    try{
+        const conversation = await Conversation.findById(conversationID);
+                if (!conversation) {
+                    return res.status(404).json({ error: "Conversation not found" });
+                }
+        
+     const newMessage = new Messsage({
+                 sender: senderId,
+                 receiver: receiver,
+                 conversation: conversationID,
+                 listing: listingId,
+                 message,
+                 status: 'sent',
+                 type: isLinkMessage ? 'link' : 'text',
+             });
+     
+             await newMessage.save();
+     
+             conversation.updatedAt = new Date();
+             await conversation.save();
+     
+             if (io) {
+                 io.to(conversationID.toString()).emit("receiveMessage", {
+                    conversationID,
+                     message,
+                     sender: senderId, 
+                     receiver,
+                     listing: listingArray,
+                 });
+             }
+     
+             res.status(201).json({ success: BOOLEAN.TRUE, message: "Message sent successfully", data: newMessage });
+    }catch(err){
+        console.log(err);
+
+    }
+ }
+ 
+ 
+
+
+
+
+     exports.sentAggreement = async (req, res, next) => {
     try {
         const { _id, conversationID, agreementDetailsId } = req.body;
         console.log("Request body:", req.body);
@@ -173,7 +232,7 @@ exports.GetAggrementByQr = async (req, res, next) => { }
 
 exports.GetByAggrementId = async(req, res, next ) =>{
     try {
-        const { aggId } = req.params;
+        const { aggId } = req.body;
         const agg = await Aggrement.findById(aggId);
         if (!agg) {
             return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.USER_NOT_FOUND, STATUS.NOT_FOUND));
