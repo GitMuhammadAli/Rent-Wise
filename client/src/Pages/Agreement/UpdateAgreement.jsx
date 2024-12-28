@@ -1,9 +1,44 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import AgreementTemplate from './AgreementTemplate'
 import { useParams } from 'react-router-dom';
 import { GetAggreementsByID } from '../../Api/Agreement';
+import {
+    Box,
+    Card,
+    Heading,
+    Text,
+    Divider,
+    Stack,
+    Input,
+    Flex,
+    VStack,
+    Image,
+    Button,
+    Menu,
+    MenuButton,
+    MenuList,
+    MenuItem,
+    useToast,
+  } from "@chakra-ui/react";
+import { useAuth } from '../../hooks/AuthContext';
+import { Circle } from 'lucide-react';
 
 export default function UpdateAgreement({}) {
+    const {user} = useAuth(); 
+
+    const [aggrementDetail, setAggrementDetail] = useState({
+        place: "",
+        timeInDayCount: '',
+        rentAmount: "",
+      });
+      const [ownerConfirmed, setOwnerConfirmed] = useState(false); //done
+      const [renterConfirmed, setRenterConfirmed] = useState(false); //done
+      const [renterDetails, setRenterDetails] = useState(""); // done
+      const [ownerDetail, setOwnerDetail] = useState(""); // done
+      const [listingDetail, setListingDetail] = useState([]); //done
+    //   const [conversationId, setConversationId] = useState("");
+    //   const [listIdToSend, setListIdToSend] = useState("");
+    //   const [aggrementFromResponce , setaggrementFromResponce] = useState([]);
 
    const { id } = useParams();
 
@@ -12,13 +47,39 @@ export default function UpdateAgreement({}) {
         const fetchSpecificAgreementDetail = async()=>{
 
             try {
+                if(!user)
+                {
+                    return;
+                }
                 if(!id)
                 {
                     return;
                 }
+                
                 console.log("id of agreement", id);
                 const response = await GetAggreementsByID(id);
                 console.log("resp in updateAgreement", response);
+
+                console.log("aggr detail", response.data.data.agreementDetailsId.aggrementDetail);
+                const aggrDetail = response.data?.data?.agreementDetailsId?.aggrementDetail
+                setAggrementDetail({...aggrementDetail, 
+                    place: aggrDetail.place,
+                    timeInDayCount:  aggrDetail.timeInDayCount ,
+                    rentAmount: aggrDetail.rentAmount
+
+                })
+                console.log("renter detail", response.data.data.renterId);
+                setRenterDetails(response.data.data.renterId);
+                setOwnerDetail(response.data.data.ownerId)
+
+                setOwnerConfirmed(response.data?.data?.ownerConfirmed)
+                setRenterConfirmed(response.data?.data?.renterConfirmed)
+
+
+
+                console.log("listing",response.data?.data?.listingId)
+                setListingDetail(response.data?.data?.listingId)
+
 
 
                 
@@ -31,10 +92,37 @@ export default function UpdateAgreement({}) {
         fetchSpecificAgreementDetail();
 
     },[id])
+
+    const OwnerConfirmed = async ()=>{
+
+        if(ownerConfirmed){
+          setOwnerConfirmed(false)
+        }
+        else{
+          setOwnerConfirmed(true)
+        }
+      } 
+    const RenterConfirmed = async ()=>{
+
+        if(renterConfirmed){
+          setRenterConfirmed(false)
+        }
+        else{
+            setRenterConfirmed(true)
+        }
+      } 
+
+      
   return (
+
+    // <>
+    // nn
+    // </>
+
+ 
     <div>
         agreement updating...
-        {/* <Box
+        <Box
               minH="100vh"
               display="flex"
               alignItems="center"
@@ -61,10 +149,11 @@ export default function UpdateAgreement({}) {
                   
                   <Box textAlign="center" mb={8}>
                   <Flex alignItems={"center"} gap={4}>
-                      <Text>The listing for which this agreement is being made is</Text>
-                      <Menu>
+                      <Text>The listing for which this agreement is being made is {listingDetail?.title || 'No listing Found'}</Text>
+                      
+                      {/* <Menu>
                         <MenuButton as={Button} w={"fit-content"} p={4}>
-                         {listTitle}
+                          list
                         </MenuButton>
                         <MenuList>
                           {listingDetail &&
@@ -78,7 +167,7 @@ export default function UpdateAgreement({}) {
                               </MenuItem>
                             ))}
                         </MenuList>
-                      </Menu>
+                      </Menu> */}
                     </Flex>
         
         
@@ -130,9 +219,9 @@ export default function UpdateAgreement({}) {
                     <Flex justifyContent="space-between">
                       <Flex gap={5}>
                         <Text fontWeight="semibold">Owner:</Text>
-                        {user && (
+                        {ownerDetail && (
                           <Text h={"fit-content"} borderBottom={"1px solid"}>
-                            {user.name}
+                            {ownerDetail.name}
                           </Text>
                         )}
                       </Flex>
@@ -141,7 +230,7 @@ export default function UpdateAgreement({}) {
                           <Text fontWeight="semibold">Tenant:</Text>
         
                           <Text h={"fit-content"} borderBottom={"1px solid"}>
-                            {tenantName.name || ""}
+                            {renterDetails.name || ""}
                           </Text>
                         </Flex>
                       </Box>
@@ -264,6 +353,27 @@ export default function UpdateAgreement({}) {
                       </Text>
                     </Box>
                   </VStack>
+
+                  <Flex justifyContent={'space-between'} flexDir={'column'}>
+                    {
+                        user._id === ownerDetail._id ? (
+                            <Flex alignItems={'center'} gap={4}>
+                            {
+                                ownerConfirmed ? (<><Circle size={16} color="#43f499" strokeWidth={8} absoluteStrokeWidth />  <Text color={'green.500'}>     Confirmed By {ownerDetail.name}</Text></>   ) : ( <><Circle size={16} color="#f44343" strokeWidth={8} absoluteStrokeWidth />  <Text color={'red'}>Not yet Confirmed By {ownerDetail.name}</Text> </>)
+                            }
+                            
+                        </Flex>
+                        ) : (
+                            <Flex>
+                            {
+                                   renterConfirmed ? (<><Circle size={16} color="#43f499" strokeWidth={8} absoluteStrokeWidth />  <Text color={'green.500'}>     Confirmed By {renterDetails.name}</Text></>   ) : ( <><Circle size={16} color="#f44343" strokeWidth={8} absoluteStrokeWidth />  <Text color={'red'}>Not yet Confirmed By {renterDetails.name}</Text> </>)
+                            }
+                            </Flex>
+                        )
+                    }
+
+                    
+                  </Flex>
             
                   <Box>
                     <Heading as="h2" size="lg">
@@ -285,24 +395,42 @@ export default function UpdateAgreement({}) {
                   </Box>
                 </Box>
                 
-                <Button bg={"black"} color={"white"} onClick={saveAgreement}>
+                <Button bg={"black"} color={"white"} 
+                // onClick={saveAgreement}
+                
+                >
                   {" "}
                   Save Aggrement!
                 </Button>
                 <br></br>
-                <Button onClick={OwnerConfirmed} bg={ ownerConfirmed ? "green" : "black"} color={"white"}  >
+
+                {
+                    user._id === ownerDetail._id ?  (
+                        <Button onClick={OwnerConfirmed} bg={ ownerConfirmed ? "green" : "black"} color={"white"}  >
+                        {" "}
+                       Click to Confirme Owner!
+                      </Button>
+                    ) : (
+                        <Button onClick={RenterConfirmed} bg={ renterConfirmed ? "green" : "black"} color={"white"}  >
                   {" "}
-                 Click to Confirme Owner!
+                 Click to Confirm Renter
                 </Button>
+                    )
+
+                }
+               
+                
                 <br />
-        <Button bg={"black"} color={"white"} onClick={SentToRenter} >
+        <Button bg={"black"} color={"white"}  
+        // onClick={SentToRenter}
+        >
           Sent to the Renter To Review the aggrement
         </Button>
         
         
               </Card>
               
-            </Box> */}
+            </Box>
       
     </div>
   )
