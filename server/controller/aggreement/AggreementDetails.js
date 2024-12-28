@@ -82,14 +82,14 @@ exports.CreateAggrement = async (req, res, next) => {
             $or: [{ agreementStatus: "pending" }, { agreementStatus: "active" }]
         });
 
+        console.log("existingAgreement:", existingAgreement);
+        
         if (existingAgreement) {
-            res.status(STATUS.BAD_REQUEST).json({
+            return res.status(STATUS.BAD_REQUEST).json({
                 status: STATUS.BAD_REQUEST,
-                message: AGGREEMENT.AGGREMENT_ALREADY
+                message: AGGREEMENT.AGGREMENT_ALREADY_EXISTS
             });
-            // return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.AGGREMENT_ALREADY_EXISTS, STATUS.BAD_REQUEST));
         }
-
         const aggrementDetails = new AggrementDetails({
             aggrementDetail: aggrementDetail
         })
@@ -239,7 +239,7 @@ exports.GetByAggrementId = async (req, res, next) => {
         console.log(req.body);
         console.log("aggrID", aggId);
         
-        const agg = await Aggrement.findById(aggId).populate('agreementDetailsId').populate("renterId").populate("listingId");
+        const agg = await Aggrement.findById(aggId).populate('agreementDetailsId').populate("renterId").populate("listingId").populate("ownerId");
 
         if (!agg) {
             return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.AGGREMENT_NOT_FOUND, STATUS.NOT_FOUND));
