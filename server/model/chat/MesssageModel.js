@@ -7,6 +7,7 @@ const MesssageSchema = new mongoose.Schema({
     listing:[ { type: mongoose.Schema.Types.ObjectId, ref: 'RentalItem', required: true }],
     message: { type: String, required: true },
     status: { type: String, enum: ['sent', 'read'], default: 'sent' },
+    type: { type: String, enum: ['text', 'image', 'audio', 'video' , "link"] },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
 });

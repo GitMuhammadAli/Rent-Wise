@@ -22,6 +22,8 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useAuth } from "../../hooks/AuthContext";
 import { createAgreement , SentAggreement } from "../../Api/Agreement";
+import { createMessage, fetchMessagesByConversation } from "../../Api/Chats";
+
 import { io } from "socket.io-client";
 
 const socket = io("http://localhost:3600");
@@ -37,7 +39,7 @@ export default function AgreementTemplate() {
   const [listingDetail, setListingDetail] = useState([]);
   const [conversationId, setConversationId] = useState("");
   const [listIdToSend, setListIdToSend] = useState("");
-  const[listTitle, setListTitle] = useState('Select Listing')
+  const [aggrementFromResponce , setaggrementFromResponce] = useState([]);
 
   const location = useLocation();
 
@@ -77,13 +79,52 @@ export default function AgreementTemplate() {
 
   };
 
-  const SentToRenter = async()=>{
-    console.log("Joining conversation ID:", conversationId);
-    socket.emit("join-conversation", conversationId);
+//   const SentToRenter = async()=>{
+//     console.log("aggrement detail", aggrementFromResponce);
+//     console.log("Joining conversation ID:", conversationId);
+//     socket.emit("join-conversation", conversationId);
+// try {
+  
+//   const response = await SentAggreement({
+//     _id: aggrementFromResponce._id,
+//     conversationID: conversationId,
+// });
+// console.log("Response from SentAggreement:", response.data);
+// } catch (error) {
+//   console.error("Error sending agreement notification:", error);
+  
+// }
+
+
 
    
 
+//   }
+
+
+const SentToRenter = async () => {
+  console.log("Agreement detail:", aggrementFromResponce);
+  console.log("Joining conversation ID:", conversationId);
+  socket.emit("join-conversation", conversationId);
+
+  try {
+      const link = `${import.meta.env.VITE_FRONT_END_URL}/agreement/${aggrementFromResponce._id}`;
+      const dataForSentMessageOfAgreement = {
+          message: `Agreement Link: ${link}`,
+          listing: [aggrementFromResponce.listingId], // Add appropriate listing ID(s)
+          receiver: aggrementFromResponce.receiverId, // Adjust as needed
+      };
+
+      console.log("Sending link as message:", dataForSentMessageOfAgreement);
+
+      const response = await createMessage(dataForSentMessageOfAgreement);
+      console.log("Response from message creation:", response);
+  } catch (error) {
+      console.error("Error sending message:", error);
   }
+};
+
+
   const OwnerConfirmed = async ()=>{
 
     if(ownerConfirmed){
@@ -94,6 +135,8 @@ export default function AgreementTemplate() {
     }
 
   } 
+
+
    const saveAgreement = async () => {
     try {
       if (!listIdToSend) {
@@ -123,8 +166,10 @@ export default function AgreementTemplate() {
         aggrementDetail,
         ownerConfirmed,
         listingId: listIdToSend,
+        conversationID: conversationId,
       });
       console.log("responseOFagreement", data);
+      setaggrementFromResponce(data.data.data);
     } catch (error) {
       console.log("errorInAgreement creation is: ", error);
     }

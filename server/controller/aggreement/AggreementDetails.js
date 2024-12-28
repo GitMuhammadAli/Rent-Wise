@@ -11,6 +11,7 @@ const AppError = require("../../utils/AppError");
 const { BOOLEAN } = require("../../utils/Roles");
 const QRCode = require('qrcode')
 const { io } = require("../../utils/socket");
+const Messsage = require("../../model/chat/MesssageModel");
 
 const CreateQrCode = async (data) => {
     try {
@@ -48,9 +49,10 @@ exports.getByOwnerId = async(req,res,next)=>{
 
 exports.CreateAggrement = async (req, res, next) => {
     try {
-        const { listingId, renterId, aggrementDetail, ownerConfirmed  , conversationId } = req.body;
+        const { listingId, renterId, aggrementDetail, ownerConfirmed  , conversationID } = req.body;
         const ownerId = req.user._id;
 
+        console.log(req.body);
         if (!ownerId) {
             return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.USER_NOT_FOUND, STATUS.NOT_FOUND));
         }
@@ -93,7 +95,7 @@ exports.CreateAggrement = async (req, res, next) => {
             listingId: listingId,
             ownerId: ownerId,
             renterId: renterId,
-            conversationID: conversationId,
+            conversationID: conversationID,
             agreementStatus: "pending",
             ownerConfirmed: ownerConfirmed || false,
             renterConfirmed: false,
@@ -132,32 +134,56 @@ exports.verifyAggrement = async (req, res, next) => {
     }
 }
 
+
 exports.sentAggreement = async (req, res, next) => {
     try {
-        const { aggId, conversationId } = req.body;
-        const agg = await Aggrement.findById(aggId);
+        const { _id, conversationID, agreementDetailsId } = req.body;
+        console.log("Request body:", req.body);
+
+        const agg = await Aggrement.findById(_id);
         if (!agg) {
-            return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.USER_NOT_FOUND, STATUS.NOT_FOUND));
+            return next(new AppError(false, "Agreement not found", 404));
         }
+
         const aggDetails = await AggrementDetails.findById(agg.agreementDetailsId);
         if (!aggDetails) {
-            return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.USER_NOT_FOUND, STATUS.NOT_FOUND));
+            return next(new AppError(false, "Agreement details not found", 404));
         }
+
         if (io) {
-            io.to(conversationId.toString()).emit("receiveMessage", {
-                message: "aggrement for Renter confirmation",
+            io.to(conversationID.toString()).emit("receiveMessage", {
+                message: "Agreement for renter confirmation",
                 status: "sent",
-                value: `${process.env.CLIENT_URL}/aggrement/${agg._id}`
-            });
+                value: `${process.env.CLIENT_URL}/aggrement/${agg._id}`,
+            });            
         }
 
-
+        res.status(200).json({
+            success: true,
+            message: "Agreement notification sent successfully",
+        });
     } catch (error) {
         next(error);
     }
-}
+};
 
 
 exports.GetAggrementByQr = async (req, res, next) => { }
 
 
+exports.GetByAggrementId = async(req, res, next ) =>{
+    try {
+        const { aggId } = req.params;
+        const agg = await Aggrement.findById(aggId);
+        if (!agg) {
+            return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.USER_NOT_FOUND, STATUS.NOT_FOUND));
+        }
+        res.status(STATUS.SUCCESS).json({
+            status: STATUS.SUCCESS,
+            message: RESPONCE_MESSAGE.AGGREGEMENT_CREATED,
+            data: agg,
+        })
+    } catch (error) {
+        next(error);
+    }
+}

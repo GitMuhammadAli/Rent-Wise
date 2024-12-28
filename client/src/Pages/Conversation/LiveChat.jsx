@@ -260,7 +260,8 @@ export default function LiveChat({
     socket.on("receiveMessage", (newMessage) => {
       console.log("New message received:", newMessage);
       setMessages((prevMessages) => [...prevMessages, newMessage]);
-    });
+  });
+  
 
     return () => {
       console.log("Leaving conversation ID:", convoID);

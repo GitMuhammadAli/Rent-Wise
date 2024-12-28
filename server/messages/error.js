@@ -40,6 +40,7 @@ const ERROR_MESSAGE = {
   CURRENT_PASSWORD_INVALID:"Current Password not matched in updateUserDashboard",
   OwneAggrement:"Owner cannot create agreement with themselves",
 
+  AGGREMENT_NOT_FOUND:"Agreement not found",
 QR_ERROR :"Error Creating Qr",
 NOT_LISTING_OWNER:"You are not the owner of this listing",
 AGGREMENT_ALREADY_EXISTS:"Agreement already exists for this listing and renter",

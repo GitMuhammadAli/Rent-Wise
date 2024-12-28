@@ -16,3 +16,6 @@ export const SentAggreement = (payload) =>
 
 export const GetAggreements = () => 
   axios.get(`${API_BASE_URL}/GetByOwnerId`, { withCredentials: true });
+
+export const GetAggreementsByID = () => 
+  axios.get(`${API_BASE_URL}/GetByAggrementId`, { withCredentials: true });
