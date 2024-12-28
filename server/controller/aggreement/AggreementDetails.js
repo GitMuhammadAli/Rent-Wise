@@ -25,6 +25,10 @@ const CreateQrCode = async (data) => {
     }
 }
 
+exports.getByListID = async(req,res)=>{
+    
+}
+
 exports.CreateAggrement = async (req, res, next) => {
     try {
         const { listingId, renterId, aggrementDetail, ownerConfirmed } = req.body;

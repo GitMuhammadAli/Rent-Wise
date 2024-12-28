@@ -151,8 +151,30 @@ export default function AgreementTemplate() {
           opacity={0.05}
           pointerEvents="none"
         />
+        
         <Box position="relative" zIndex={10} p={[8, 12]}>
+          
           <Box textAlign="center" mb={8}>
+          <Flex alignItems={"center"} gap={4}>
+              <Text>The listing for which this agreement is being made is</Text>
+              <Menu>
+                <MenuButton as={Button} w={"fit-content"}>
+                  Listings name
+                </MenuButton>
+                <MenuList>
+                  {listingDetail &&
+                    listingDetail.length > 0 &&
+                    listingDetail.map((list, i) => (
+                      <MenuItem
+                        key={list._id || i}
+                        onClick={() => listingFucntion(list._id)}
+                      >
+                        {list.title}
+                      </MenuItem>
+                    ))}
+                </MenuList>
+              </Menu>
+            </Flex>
             <Heading as="h1" size="lg" mb={2}>
               RENTAL AGREEMENT
             </Heading>
@@ -217,26 +239,7 @@ export default function AgreementTemplate() {
               </Box>
             </Flex>
 
-            <Flex alignItems={"center"} gap={4}>
-              <Text>The listing for which this agreement is being made is</Text>
-              <Menu>
-                <MenuButton as={Button} w={"fit-content"}>
-                  Listings name
-                </MenuButton>
-                <MenuList>
-                  {listingDetail &&
-                    listingDetail.length > 0 &&
-                    listingDetail.map((list, i) => (
-                      <MenuItem
-                        key={list._id || i}
-                        onClick={() => listingFucntion(list._id)}
-                      >
-                        {list.title}
-                      </MenuItem>
-                    ))}
-                </MenuList>
-              </Menu>
-            </Flex>
+           
           </VStack>
 
           <VStack align="stretch" spacing={4} mb={8}>
