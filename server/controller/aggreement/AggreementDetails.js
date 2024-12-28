@@ -30,7 +30,7 @@ exports.getByOwnerId = async(req,res,next)=>{
     try {
     
         const ownerId = req.user._id;
-        const agg = await Aggrement.find({ownerId});
+        const agg = await Aggrement.find({ownerId}).populate("listingId").populate("renterId");
         if(!agg){
             return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.USER_NOT_FOUND, STATUS.NOT_FOUND));
         }
