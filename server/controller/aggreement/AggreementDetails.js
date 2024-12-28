@@ -140,7 +140,7 @@ exports.verifyAggrement = async (req, res, next) => {
 
 
 
-exports.createLinkMessage = async (listingId, message, senderId, receiver, conversationID, isLinkMessage) => {
+const createLinkMessage = async (listingId, message, senderId, receiver, conversationID, isLinkMessage) => {
     try {
         const conversation = await Conversation.findById(conversationID);
         if (!conversation) {
@@ -190,9 +190,10 @@ exports.sentAggreement = async (req, res, next) => {
             return next(new AppError(false, "Agreement details not found", 404));
         }
 
-        const messageLink = await exports.createLinkMessage(
+        const messageLink = await createLinkMessage(
             agg.listingId,
-            ` Agreement for renter confirmation ${process.env.CLIENT_URL}/aggrement/${agg._id}`,
+            ` Agreement for renter confirmation 
+            ${process.env.CLIENT_URL}/agreements/${agg._id}`,
             agg.ownerId,
             agg.renterId,
             conversationID,
@@ -205,7 +206,8 @@ exports.sentAggreement = async (req, res, next) => {
             io.to(conversationID.toString()).emit("receiveMessage",
                 {
                     conversationID,
-                    message: ` Agreement for renter confirmation ${process.env.CLIENT_URL}/aggrement/${agg._id}`,
+                    message: `Agreement for renter confirmation
+                     ${process.env.CLIENT_URL}/agreements/${agg._id}`,
                     sender: ownerId,
                     receiver: renterId,
                     listing: listingId,
@@ -226,7 +228,7 @@ exports.sentAggreement = async (req, res, next) => {
 
 
 
-exports.GetAggrementByQr = async (req, res, next) => { }
+
 
 
 exports.GetByAggrementId = async (req, res, next) => {
@@ -249,3 +251,16 @@ exports.GetByAggrementId = async (req, res, next) => {
         next(error);
     }
 }
+
+
+
+
+
+exports.GetAggrementByQr = async (req, res, next) => { } 
+
+
+
+exports.ViewAggrement = async (req, res, next) => { }
+
+
+exports.UpdateAggrementByOwner = async(req, res , next) =>{ }
