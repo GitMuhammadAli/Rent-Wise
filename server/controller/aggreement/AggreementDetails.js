@@ -27,13 +27,13 @@ const CreateQrCode = async (data) => {
     }
 }
 
-exports.getByOwnerId = async(req,res,next)=>{
+exports.getByOwnerId = async (req, res, next) => {
 
     try {
-    
+
         const ownerId = req.user._id;
-        const agg = await Aggrement.find({ownerId}).populate("listingId").populate("renterId");
-        if(!agg){
+        const agg = await Aggrement.find({ ownerId }).populate("listingId").populate("renterId");
+        if (!agg) {
             return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.USER_NOT_FOUND, STATUS.NOT_FOUND));
         }
         res.status(STATUS.SUCCESS).json({
@@ -43,14 +43,14 @@ exports.getByOwnerId = async(req,res,next)=>{
         })
     } catch (error) {
         next(error);
-        
+
     }
 
 }
 
 exports.CreateAggrement = async (req, res, next) => {
     try {
-        const { listingId, renterId, aggrementDetail, ownerConfirmed  , conversationID } = req.body;
+        const { listingId, renterId, aggrementDetail, ownerConfirmed, conversationID } = req.body;
         const ownerId = req.user._id;
 
         console.log(req.body);
@@ -83,7 +83,7 @@ exports.CreateAggrement = async (req, res, next) => {
         });
 
         if (existingAgreement) {
-            
+
             return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.AGGREMENT_ALREADY_EXISTS, STATUS.BAD_REQUEST));
         }
 
@@ -137,7 +137,7 @@ exports.verifyAggrement = async (req, res, next) => {
 
 
 
-const createLinkMessage = async(listingId ,message ,senderId ,receiver ,conversationID , isLinkMessage) => {
+const createLinkMessage = async (listingId, message, senderId, receiver, conversationID, isLinkMessage) => {
 
     // listingId: new ObjectId('674ee57c03100829c478d4f8'),
     // ownerId: new ObjectId('670e21628426323ce4847a99'),
@@ -151,50 +151,50 @@ const createLinkMessage = async(listingId ,message ,senderId ,receiver ,conversa
     // agreementDate: 2024-12-28T14:10:41.839Z,
 
 
-    try{
+    try {
         const conversation = await Conversation.findById(conversationID);
-                if (!conversation) {
-                    return res.status(404).json({ error: "Conversation not found" });
-                }
-        
-     const newMessage = new Messsage({
-                 sender: senderId,
-                 receiver: receiver,
-                 conversation: conversationID,
-                 listing: listingId,
-                 message,
-                 status: 'sent',
-                 type: isLinkMessage ? 'link' : 'text',
-             });
-     
-             await newMessage.save();
-     
-             conversation.updatedAt = new Date();
-             await conversation.save();
-     
-             if (io) {
-                 io.to(conversationID.toString()).emit("receiveMessage", {
-                    conversationID,
-                     message,
-                     sender: senderId, 
-                     receiver,
-                     listing: listingArray,
-                 });
-             }
-     
-             res.status(201).json({ success: BOOLEAN.TRUE, message: "Message sent successfully", data: newMessage });
-    }catch(err){
+        if (!conversation) {
+            return res.status(404).json({ error: "Conversation not found" });
+        }
+
+        const newMessage = new Messsage({
+            sender: senderId,
+            receiver: receiver,
+            conversation: conversationID,
+            listing: listingId,
+            message,
+            status: 'sent',
+            type: isLinkMessage ? 'link' : 'text',
+        });
+
+        await newMessage.save();
+
+        conversation.updatedAt = new Date();
+        await conversation.save();
+
+        if (io) {
+            io.to(conversationID.toString()).emit("receiveMessage", {
+                conversationID,
+                message,
+                sender: senderId,
+                receiver,
+                listing: listingArray,
+            });
+        }
+
+        res.status(201).json({ success: BOOLEAN.TRUE, message: "Message sent successfully", data: newMessage });
+    } catch (err) {
         console.log(err);
 
     }
- }
- 
- 
+}
 
 
 
 
-     exports.sentAggreement = async (req, res, next) => {
+
+
+exports.sentAggreement = async (req, res, next) => {
     try {
         const { _id, conversationID, agreementDetailsId } = req.body;
         console.log("Request body:", req.body);
@@ -214,7 +214,7 @@ const createLinkMessage = async(listingId ,message ,senderId ,receiver ,conversa
                 message: "Agreement for renter confirmation",
                 status: "sent",
                 value: `${process.env.CLIENT_URL}/aggrement/${agg._id}`,
-            });            
+            });
         }
 
         res.status(200).json({
@@ -230,12 +230,17 @@ const createLinkMessage = async(listingId ,message ,senderId ,receiver ,conversa
 exports.GetAggrementByQr = async (req, res, next) => { }
 
 
-exports.GetByAggrementId = async(req, res, next ) =>{
+exports.GetByAggrementId = async (req, res, next) => {
     try {
         const { aggId } = req.body;
         console.log(req.body);
         console.log("aggrID", aggId);
-        const agg = await Aggrement.findById(aggId);
+        
+        const agg = await Aggrement.findById(aggId).populate({
+            path: "agreementDetailsId",
+            model: "AggrementDetails",
+        }).populate("renterId");
+
         if (!agg) {
             return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.AGGREMENT_NOT_FOUND, STATUS.NOT_FOUND));
         }
