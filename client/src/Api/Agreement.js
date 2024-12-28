@@ -13,3 +13,6 @@ export const createAgreement = (payload) =>
 
 export const SentAggreement = (payload) => 
   axios.post(`${API_BASE_URL}/sentaggreement`, payload, { withCredentials: true });
+
+export const GetAggreements = () => 
+  axios.get(`${API_BASE_URL}/GetByOwnerId`, { withCredentials: true });

@@ -25,8 +25,25 @@ const CreateQrCode = async (data) => {
     }
 }
 
-exports.getByListID = async(req,res)=>{
+exports.getByOwnerId = async(req,res,next)=>{
+
+    try {
     
+        const ownerId = req.user._id;
+        const agg = await Aggrement.find({ownerId});
+        if(!agg){
+            return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.USER_NOT_FOUND, STATUS.NOT_FOUND));
+        }
+        res.status(STATUS.SUCCESS).json({
+            status: STATUS.SUCCESS,
+            message: RESPONCE_MESSAGE.AGGREGEMENT_CREATED,
+            data: agg,
+        })
+    } catch (error) {
+        next(error);
+        
+    }
+
 }
 
 exports.CreateAggrement = async (req, res, next) => {

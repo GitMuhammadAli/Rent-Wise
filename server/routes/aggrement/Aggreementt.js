@@ -7,4 +7,7 @@ router.post('/createAggreement', AuthorizeUser("user", "admin"), asyncHandler(Ag
 
 router.post("/sentaggreement", AuthorizeUser("user", "admin"), asyncHandler(Aggreement.sentAggreement));
 
+router.get("/GetByOwnerId", AuthorizeUser("user", "admin"), asyncHandler(Aggreement.getByOwnerId));
+
+
 module.exports = router;
