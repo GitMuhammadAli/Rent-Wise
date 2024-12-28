@@ -400,7 +400,7 @@ export default function OwnerDash() {
                 <Td>
                   <Link to={`/agreements/${agreement._id}`}>
                     <Button
-                      onClick={ handleEditClick}
+                      // onClick={ handleEditClick}
                       variant="ghost"
                       size={{ base: "xs", sm: "sm" }}
                     >
