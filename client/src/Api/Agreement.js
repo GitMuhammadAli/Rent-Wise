@@ -17,5 +17,8 @@ export const SentAggreement = (payload) =>
 export const GetAggreements = () => 
   axios.get(`${API_BASE_URL}/GetByOwnerId`, { withCredentials: true });
 
-export const GetAggreementsByID = (aggId) => 
-  axios.get(`${API_BASE_URL}/getAggrementDetails`,{aggId}, { withCredentials: true });
+
+export const GetAggreementsByID = (aggId) => {
+  console.log("Payload:", aggId);
+  return axios.post(`${API_BASE_URL}/getAggrementDetails`, {aggId}, { withCredentials: true });
+};

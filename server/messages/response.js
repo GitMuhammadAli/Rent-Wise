@@ -74,6 +74,7 @@ const AGGREEMENT = {
     AMENITIES_IS_REQUIRED: "Amenities is required",
     RULES_IS_REQUIRED: "Rules is required",
     LOCATION_IS_REQUIRED: "Location is required",
+    AGGREMENT_FECTHED_BY_ID: "Aggrement fetched by id",
   
 }
 

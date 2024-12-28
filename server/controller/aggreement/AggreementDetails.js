@@ -3,7 +3,7 @@ const AggrementDetails = require("../../model/agreements/AggrementDetails");
 const RentalItem = require("../../model/listings/RentalItemModel");
 const logger = require("../../utils/logger");
 const { ERROR_MESSAGE } = require("../../messages/error");
-const { RESPONCE_MESSAGE, } = require("../../messages/response");
+const { RESPONCE_MESSAGE, AGGREEMENT } = require("../../messages/response");
 const { STATUS } = require("../../messages/status");
 const { GetAndDecodeToken } = require("../../token/Tokens");
 const bcrypt = require('bcrypt')
@@ -233,14 +233,15 @@ exports.GetAggrementByQr = async (req, res, next) => { }
 exports.GetByAggrementId = async(req, res, next ) =>{
     try {
         const { aggId } = req.body;
+        console.log(req.body);
         console.log("aggrID", aggId);
         const agg = await Aggrement.findById(aggId);
         if (!agg) {
-            return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.USER_NOT_FOUND, STATUS.NOT_FOUND));
+            return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.AGGREMENT_NOT_FOUND, STATUS.NOT_FOUND));
         }
         res.status(STATUS.SUCCESS).json({
             status: STATUS.SUCCESS,
-            message: RESPONCE_MESSAGE.AGGREGEMENT_CREATED,
+            message: AGGREEMENT.AGGREMENT_FECTHED_BY_ID,
             data: agg,
         })
     } catch (error) {
