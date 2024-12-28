@@ -48,7 +48,7 @@ exports.getByOwnerId = async(req,res,next)=>{
 
 exports.CreateAggrement = async (req, res, next) => {
     try {
-        const { listingId, renterId, aggrementDetail, ownerConfirmed } = req.body;
+        const { listingId, renterId, aggrementDetail, ownerConfirmed  , conversationId } = req.body;
         const ownerId = req.user._id;
 
         if (!ownerId) {
@@ -93,6 +93,7 @@ exports.CreateAggrement = async (req, res, next) => {
             listingId: listingId,
             ownerId: ownerId,
             renterId: renterId,
+            conversationID: conversationId,
             agreementStatus: "pending",
             ownerConfirmed: ownerConfirmed || false,
             renterConfirmed: false,

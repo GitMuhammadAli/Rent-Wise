@@ -21,6 +21,11 @@ const AggrementSchema = new mongoose.Schema({
         enum: ["pending", "accepted", "rejected" , "active"],
         default: "pending",
     },
+    conversationID:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Conversation",
+        required: true,
+    },
     ownerConfirmed: { type: Boolean, default: false },
     renterConfirmed: { type: Boolean, default: false },
      agreementDetailsId: { type: mongoose.Schema.Types.ObjectId, ref: 'AgreementDetails', required: true },
