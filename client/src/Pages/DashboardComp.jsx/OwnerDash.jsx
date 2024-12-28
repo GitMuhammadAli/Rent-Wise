@@ -36,11 +36,14 @@ import { Link } from "react-router-dom";
 import { ListingsContext } from "../../hooks/ListingsContext";
 import { GetAggreements } from "../../Api/Agreement";
 import UserPopover from "./UserPopover";
+import UpdateAgreement from "../Agreement/UpdateAgreement";
 
 export default function OwnerDash() {
   const [count, setCount] = useState("");
   const { user } = useDasboardHook();
   const [agreements, setAgreements] = useState([]);
+  // const [handleAgreementEditClick, setHandleAgreementEditClick] = useState(false);
+ 
   const { state, dispatch } = useContext(ListingsContext);
 
   // const [items, setItems] = useState([]);
@@ -88,6 +91,12 @@ export default function OwnerDash() {
 
     fetchAgreements();
   }, []);
+
+  // const handleEditClick = ()=>{
+
+  //   setHandleAgreementEditClick(true)
+
+  // }
 
   useEffect(() => {
     async function getOwnerListings() {
@@ -391,12 +400,18 @@ export default function OwnerDash() {
                 <Td>
                   <Link to={`/agreements/${agreement._id}`}>
                     <Button
+                      onClick={ handleEditClick}
                       variant="ghost"
                       size={{ base: "xs", sm: "sm" }}
                     >
                       <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
                     </Button>
                   </Link>
+
+                  {/* {
+                    handleAgreementEditClick &&  <UpdateAgreement agreement={agreement}/>
+                  }
+                   */}
                 </Td>
               </Tr>
             ))
