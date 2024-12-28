@@ -9,5 +9,7 @@ router.post("/sentaggreement", AuthorizeUser("user", "admin"), asyncHandler(Aggr
 
 router.get("/GetByOwnerId", AuthorizeUser("user", "admin"), asyncHandler(Aggreement.getByOwnerId));
 
+router.get("/getAggrementDetails", AuthorizeUser("user", "admin"), asyncHandler(Aggreement.GetByAggrementId));
+
 
 module.exports = router;
