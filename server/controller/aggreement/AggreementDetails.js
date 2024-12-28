@@ -59,6 +59,7 @@ exports.CreateAggrement = async (req, res, next) => {
         });
 
         if (existingAgreement) {
+            
             return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.AGGREMENT_ALREADY_EXISTS, STATUS.BAD_REQUEST));
         }
 
@@ -81,6 +82,7 @@ exports.CreateAggrement = async (req, res, next) => {
         agg.qrId = qrCode;
 
         await agg.save();
+        console.log("agg is: ", agg);
         res.status(STATUS.SUCCESS).json({
             status: STATUS.SUCCESS,
             message: RESPONCE_MESSAGE.AGGREGEMENT_CREATED,
