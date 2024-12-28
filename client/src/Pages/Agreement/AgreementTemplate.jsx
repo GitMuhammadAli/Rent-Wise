@@ -205,7 +205,7 @@ console.log("Response from SentAggreement:", response.data);
               <Text>The listing for which this agreement is being made is</Text>
               <Menu>
                 <MenuButton as={Button} w={"fit-content"} p={4}>
-                 {listTitle}
+                 {/* {listTitle} */}
                 </MenuButton>
                 <MenuList>
                   {listingDetail &&

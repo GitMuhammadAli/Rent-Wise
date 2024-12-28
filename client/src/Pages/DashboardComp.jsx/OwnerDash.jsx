@@ -92,11 +92,11 @@ export default function OwnerDash() {
     fetchAgreements();
   }, []);
 
-  // const handleEditClick = ()=>{
+  const handleEditClick = ()=>{
 
-  //   setHandleAgreementEditClick(true)
+    setHandleAgreementEditClick(true)
 
-  // }
+  }
 
   useEffect(() => {
     async function getOwnerListings() {
