@@ -233,6 +233,7 @@ exports.GetAggrementByQr = async (req, res, next) => { }
 exports.GetByAggrementId = async(req, res, next ) =>{
     try {
         const { aggId } = req.body;
+        console.log("aggrID", aggId);
         const agg = await Aggrement.findById(aggId);
         if (!agg) {
             return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.USER_NOT_FOUND, STATUS.NOT_FOUND));

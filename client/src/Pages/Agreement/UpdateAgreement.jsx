@@ -1,33 +1,36 @@
 import React, { useEffect } from 'react'
 import AgreementTemplate from './AgreementTemplate'
 import { useParams } from 'react-router-dom';
+import { GetAggreementsByID } from '../../Api/Agreement';
 
-export default function UpdateAgreement({agreement}) {
+export default function UpdateAgreement({}) {
 
-    // const { id } = useParams();
+   const { id } = useParams();
 
     useEffect(()=>{
 
         const fetchSpecificAgreementDetail = async()=>{
 
             try {
-                
-                console.log("detail of agreement", agreement);
+                if(!id)
+                {
+                    return;
+                }
+                console.log("id of agreement", id);
+                const response = await GetAggreementsByID(id);
+                console.log("resp in updateAgreement", response);
 
 
                 
             } catch (error) {
+                console.log('errr', error);
                 
             }
 
         }
         fetchSpecificAgreementDetail();
 
-        
-        
-
-
-    },[agreement])
+    },[id])
   return (
     <div>
         agreement updating...

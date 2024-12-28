@@ -81,8 +81,8 @@ const router = createBrowserRouter(
         <Route path="/listings/:id" element={<UpdateListing />} />
         <Route path="/chat" element={<MainChat/>} />
         <Route path="/agreement" element={<AgreementTemplate/>} />
-        {/* <Route path="/agreements/:id" element={<UpdateAgreement/>} /> */}
-        <Route path="/UpdateAgreement" element={<UpdateAgreement/>} />
+        <Route path="/agreements/:id" element={<UpdateAgreement/>} />
+        {/* <Route path="/UpdateAgreement" element={<UpdateAgreement/>} /> */}
         {/* <Route path="/chat" element={<MainChat/>} /> */}
 
         {/* <Route element={<ProtectedRoute requiredRole="user" />}>
