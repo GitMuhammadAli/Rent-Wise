@@ -236,10 +236,7 @@ exports.GetByAggrementId = async (req, res, next) => {
         console.log(req.body);
         console.log("aggrID", aggId);
         
-        const agg = await Aggrement.findById(aggId).populate({
-            path: "agreementDetailsId",
-            model: "AggrementDetails",
-        }).populate("renterId");
+        const agg = await Aggrement.findById(aggId).populate('agreementDetailsId').populate("renterId");
 
         if (!agg) {
             return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.AGGREMENT_NOT_FOUND, STATUS.NOT_FOUND));

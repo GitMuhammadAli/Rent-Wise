@@ -28,7 +28,7 @@ const AggrementSchema = new mongoose.Schema({
     },
     ownerConfirmed: { type: Boolean, default: false },
     renterConfirmed: { type: Boolean, default: false },
-     agreementDetailsId: { type: mongoose.Schema.Types.ObjectId, ref: 'AgreementDetails', required: true },
+     agreementDetailsId: { type: mongoose.Schema.Types.ObjectId, ref: 'AggrementDetails', required: true },
     qrId: { type: String },
     agreementDate: {
         type: Date,

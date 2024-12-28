@@ -72,7 +72,7 @@ export default function AgreementTemplate() {
       return;
     }
     console.log("Title", title);
-    setListTitle(title);
+    // setListTitle(title);
 
     setListIdToSend(listID);
     console.log("list id to send is", listIdToSend);
