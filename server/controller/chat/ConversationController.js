@@ -228,7 +228,7 @@ const createMessage = async (req, res) => {
             listing: listingArray,
             message,
             status: 'sent',
-            type: isLinkMessage ? 'link' : 'text',
+            type:  'text',
         });
 
         await newMessage.save();

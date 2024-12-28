@@ -258,7 +258,7 @@ export default function LiveChat({
     socket.emit("join-conversation", convoID);
 
     socket.on("receiveMessage", (newMessage) => {
-      console.log("New message received:", newMessage);
+      console.log("New message received on frontend:", newMessage);
       setMessages((prevMessages) => [...prevMessages, newMessage]);
   });
   
@@ -288,7 +288,6 @@ export default function LiveChat({
       };
 
       console.log("Sending message data:", data);
-      socket.emit("send-message", data); 
 
       const response = await createMessage(data);
      
@@ -350,7 +349,6 @@ export default function LiveChat({
            gap={4}
            
            >
-           {/* display messages her */}
 
            {
             Messages && Messages.length > 0 && Messages.map((Messages,i)=>(

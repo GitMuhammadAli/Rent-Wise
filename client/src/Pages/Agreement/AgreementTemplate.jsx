@@ -85,18 +85,13 @@ export default function AgreementTemplate() {
     console.log("aggrement detail", aggrementFromResponce);
     console.log("Joining conversation ID:", conversationId);
     socket.emit("join-conversation", conversationId);
-try {
-  
-  const response = await SentAggreement({
-    // _id: aggrementFromResponce._id,
-    // conversationID: conversationId,
-    aggrementFromResponce
-});
-console.log("Response from SentAggreement:", response.data);
-} catch (error) {
-  console.error("Error sending agreement notification:", error);
-  
-}
+
+    try {
+      const response = await SentAggreement({ aggrementFromResponce });
+      console.log("Response from SentAggreement:", response.data);
+  } catch (error) {
+      console.error("Error sending agreement notification:", error);
+  }
 
   }
 
@@ -167,7 +162,7 @@ console.log("Response from SentAggreement:", response.data);
         listingId: listIdToSend,
         conversationID: conversationId,
       });
-      
+
       console.log("responseOFagreement", data);
       setaggrementFromResponce(data.data.data);
     } catch (error) {

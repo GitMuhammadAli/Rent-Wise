@@ -83,10 +83,10 @@ exports.CreateAggrement = async (req, res, next) => {
         });
 
         console.log("existingAgreement:", existingAgreement);
-        
+
         if (existingAgreement) {
-            return res.status(STATUS.BAD_REQUEST).json({
-                status: STATUS.BAD_REQUEST,
+            return res.status(STATUS.FORBIDDEN).json({
+                status: STATUS.FORBIDDEN,
                 message: AGGREEMENT.AGGREMENT_ALREADY_EXISTS
             });
         }
@@ -140,34 +140,21 @@ exports.verifyAggrement = async (req, res, next) => {
 
 
 
-const createLinkMessage = async (listingId, message, senderId, receiver, conversationID, isLinkMessage) => {
-
-    // listingId: new ObjectId('674ee57c03100829c478d4f8'),
-    // ownerId: new ObjectId('670e21628426323ce4847a99'),
-    // renterId: new ObjectId('670ae3d75c58ad616e636e56'),
-    // agreementStatus: 'pending',
-    // conversationID: new ObjectId('67586d93a124c904c38c91be'),
-    // ownerConfirmed: false,
-    // renterConfirmed: false,
-    // agreementDetailsId: new ObjectId('677006e14332d87dc452776e'),
-    // _id: new ObjectId('677006e14332d87dc4527770'),
-    // agreementDate: 2024-12-28T14:10:41.839Z,
-
-
+exports.createLinkMessage = async (listingId, message, senderId, receiver, conversationID, isLinkMessage) => {
     try {
         const conversation = await Conversation.findById(conversationID);
         if (!conversation) {
-            return res.status(404).json({ error: "Conversation not found" });
+            throw new Error("Conversation not found");
         }
 
         const newMessage = new Messsage({
             sender: senderId,
-            receiver: receiver,
+            receiver,
             conversation: conversationID,
             listing: listingId,
             message,
-            status: 'sent',
-            type: isLinkMessage ? 'link' : 'text',
+            status: "sent",
+            type: "link",
         });
 
         await newMessage.save();
@@ -175,32 +162,23 @@ const createLinkMessage = async (listingId, message, senderId, receiver, convers
         conversation.updatedAt = new Date();
         await conversation.save();
 
-        if (io) {
-            io.to(conversationID.toString()).emit("receiveMessage", {
-                conversationID,
-                message,
-                sender: senderId,
-                receiver,
-                listing: listingArray,
-            });
-        }
-
-        res.status(201).json({ success: BOOLEAN.TRUE, message: "Message sent successfully", data: newMessage });
+        return newMessage; // Ensure this value is returned
     } catch (err) {
-        console.log(err);
-
+        console.error("Error in createLinkMessage:", err);
+        throw err;
     }
-}
-
-
-
-
+};
 
 
 exports.sentAggreement = async (req, res, next) => {
     try {
-        const { _id, conversationID, agreementDetailsId } = req.body;
+        const { aggrementFromResponce } = req.body;
+        if (!aggrementFromResponce) {
+            return next(new AppError(false, "Request body does not contain aggrementFromResponce", 400));
+        }
+        const { _id, conversationID, renterId, ownerId, listingId } = aggrementFromResponce;
         console.log("Request body:", req.body);
+        console.log("id:", _id);
 
         const agg = await Aggrement.findById(_id);
         if (!agg) {
@@ -212,22 +190,40 @@ exports.sentAggreement = async (req, res, next) => {
             return next(new AppError(false, "Agreement details not found", 404));
         }
 
+        const messageLink = await exports.createLinkMessage(
+            agg.listingId,
+            ` Agreement for renter confirmation ${process.env.CLIENT_URL}/aggrement/${agg._id}`,
+            agg.ownerId,
+            agg.renterId,
+            conversationID,
+            true
+        );
+
         if (io) {
-            io.to(conversationID.toString()).emit("receiveMessage", {
-                message: "Agreement for renter confirmation",
-                status: "sent",
-                value: `${process.env.CLIENT_URL}/aggrement/${agg._id}`,
-            });
+            console.log("sending message to conversationID:", conversationID);
+
+            io.to(conversationID.toString()).emit("receiveMessage",
+                {
+                    conversationID,
+                    message: ` Agreement for renter confirmation ${process.env.CLIENT_URL}/aggrement/${agg._id}`,
+                    sender: ownerId,
+                    receiver: renterId,
+                    listing: listingId,
+                });
         }
 
         res.status(200).json({
             success: true,
             message: "Agreement notification sent successfully",
+            data: messageLink,
         });
     } catch (error) {
+        console.error("Error in sentAggreement:", error);
         next(error);
     }
 };
+
+
 
 
 exports.GetAggrementByQr = async (req, res, next) => { }
@@ -238,7 +234,7 @@ exports.GetByAggrementId = async (req, res, next) => {
         const { aggId } = req.body;
         console.log(req.body);
         console.log("aggrID", aggId);
-        
+
         const agg = await Aggrement.findById(aggId).populate('agreementDetailsId').populate("renterId").populate("listingId").populate("ownerId");
 
         if (!agg) {
