@@ -22,3 +22,12 @@ export const GetAggreementsByID = (aggId) => {
   console.log("Payload:", aggId);
   return axios.post(`${API_BASE_URL}/getAggrementDetails`, {aggId}, { withCredentials: true });
 };
+
+
+// this is only for renter to view the aggrement and confirm the aggrement status
+export const ViewAggrementByRenter = (payload) => 
+  axios.post(`${API_BASE_URL}/viewAggrementByRenter`, payload, { withCredentials: true });
+
+// this is only for owner to update the aggrement status and update the aggrement details
+export const UpdateAggrementByOwner = (payload) => 
+  axios.post(`${API_BASE_URL}/updateAggreementByOwner`, payload, { withCredentials: true });

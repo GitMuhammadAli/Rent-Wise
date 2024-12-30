@@ -12,4 +12,13 @@ router.get("/GetByOwnerId", AuthorizeUser("user", "admin"), asyncHandler(Aggreem
 router.post("/getAggrementDetails", AuthorizeUser("user", "admin"), asyncHandler(Aggreement.GetByAggrementId));
 
 
+// this is only for renter to view the aggrement and confirm the aggrement status
+router.post("/viewAggrementByRenter", AuthorizeUser("user", "admin"), asyncHandler(Aggreement.ViewAggrementByRenter));
+
+
+// this is only for owner to update the aggrement status and update the aggrement details
+router.post("/updateAggreementByOwner", AuthorizeUser("user", "admin"), asyncHandler(Aggreement.UpdateAggrementByOwner));
+
+
+
 module.exports = router;

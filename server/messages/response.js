@@ -75,6 +75,11 @@ const AGGREEMENT = {
     RULES_IS_REQUIRED: "Rules is required",
     LOCATION_IS_REQUIRED: "Location is required",
     AGGREMENT_FECTHED_BY_ID: "Aggrement fetched by id",
+AGGREMENT_NOT_OWNER: "You are not the owner of this Aggrement",
+AFFGEMENT_NOT_CONFIRMED_BY_OWNER: "Aggrement not confirmed by owner . Make Sure Owner Created and Confirmed the Aggrement",
+AGGREMENT_IS_CONFIRMED: "Aggrement is confirmed",
+AGGREMENT_IS_CONFIRMED_BY_OWNER: "Aggrement is confirmed by owner",
+AGGREMENT_IS_NOT_CONFIRMED: "Aggrement is not confirmed",
   
 }
 
