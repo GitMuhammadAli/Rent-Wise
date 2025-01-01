@@ -2,10 +2,12 @@ import { Avatar, Box, Input, Text, VStack } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { getSideBarParticipants , fetchConversationsForSidebar } from '../../Api/Chats';
 
-export default function SideChat({ handleSideBarClick, ownerIdDetails, userIdDetails, listingIdDetails, listings,allData,setListings, setAllData }) {
+
+export default function SideChat({ handleSideBarClick, ownerIdDetails,setListings, setAllData }) {
   const [participants, setParticipants] = useState([]);
   const [owner, setOwner] = useState(null);
   const [searchChat, setSearchChat] = useState('');
+ 
   // const [avatar,setAvatar] = useState(''); 
 
  
@@ -16,6 +18,7 @@ export default function SideChat({ handleSideBarClick, ownerIdDetails, userIdDet
   useEffect(() => {
     const fetchParticipants = async () => {
       try {
+
         const response = await fetchConversationsForSidebar();
         console.log("response", response);
         
@@ -47,6 +50,10 @@ export default function SideChat({ handleSideBarClick, ownerIdDetails, userIdDet
     };
     fetchParticipants();
   }, []);
+
+
+
+
 
   // Set the owner details
   useEffect(() => {

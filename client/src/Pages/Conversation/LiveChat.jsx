@@ -245,11 +245,13 @@ export default function LiveChat({
 
 
   useEffect(() => {
+
+  
     if (listings) {
       const listing_id = listings.map((list) => list._id);
       setLocalListingId(listing_id);
     }
-  }, [listings]);
+  }, [listings]);  
 
   useEffect(() => {
     if (!convoID) return;
@@ -355,6 +357,7 @@ export default function LiveChat({
               
              
               <Box
+              key={Messages._id || i}
               color={'white'}
               borderRadius={'8px'}
               w={'fit-content'} p={2}  

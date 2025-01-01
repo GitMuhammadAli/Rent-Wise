@@ -22,7 +22,7 @@ useEffect(()=>{
   console.log("Owner",ownerIdDetails);
   console.log("useer",userIdDetails);
   console.log("listingggg",listingIdDetails);
-  console.log("listingggg",listingIdDetails);
+
   console.log("item",item);
   console.log("allData",allData);
 

@@ -37,10 +37,7 @@ const { user } = useAuth();
       { id: 6, text: 'That the Tenant will not be allowed to use the said property for any illegal activity or business.' }, 
       { id: 7, text: 'That the tenant will submit the due rent regularly for the tenancy period and shall be responsible for paying water, electricity, maintenance, and other bills. The photocopy of these bills shall be submitted to the landlord in due time.That the Tenant will not be allowed to use the said property for any illegal activity or business.' }, 
       { id: 8, text: 'Both the parties have finalised the contract by themselves after satisfaction and inspection of premises, including title documents and legal right of the landlord to rent as well as status and credentials of each other.' }, 
-   
-     
     ]
-  
   });
 
     useEffect(() => {
