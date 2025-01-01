@@ -5,10 +5,8 @@ const logger = require("../../utils/logger");
 const { ERROR_MESSAGE } = require("../../messages/error");
 const { RESPONCE_MESSAGE, AGGREEMENT } = require("../../messages/response");
 const { STATUS } = require("../../messages/status");
-const { GetAndDecodeToken } = require("../../token/Tokens");
-const bcrypt = require('bcrypt')
 const AppError = require("../../utils/AppError");
-const { BOOLEAN } = require("../../utils/Roles");
+const { ROLES, BOOLEAN } = require("../../utils/Roles");
 const QRCode = require('qrcode')
 const { io } = require("../../utils/socket");
 const Messsage = require("../../model/chat/MesssageModel");
@@ -278,7 +276,6 @@ exports.ViewAggrementByRenter = async (req, res, next) => {
             return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.AGGREMENT_NOT_FOUND, STATUS.NOT_FOUND));
         }
         const ownerId = aggrement.ownerId;
-
         if (user.toString() !== ownerId.toString()) {
             return res.status(STATUS.SUCCESS).json({
                 status: STATUS.SUCCESS,
@@ -293,9 +290,7 @@ exports.ViewAggrementByRenter = async (req, res, next) => {
                 message: AGGREEMENT.AFFGEMENT_NOT_CONFIRMED_BY_OWNER,
                 data: aggrement,
             })
-
         }
-
         if (agg.renterConfirmed === BOOLEAN.TRUE) {
             const agg = await Aggrement.findByIdAndUpdate(aggId, { renterConfirmed: BOOLEAN.TRUE }, { new: true });
             return res.status(STATUS.SUCCESS).json({
@@ -303,7 +298,6 @@ exports.ViewAggrementByRenter = async (req, res, next) => {
                 message: AGGREEMENT.AGGREMENT_IS_CONFIRMED,
                 data: agg,
             })
-
         } else {
             return res.status(STATUS.BAD_REQUEST).json({
                 status: STATUS.BAD_REQUEST,
@@ -311,9 +305,6 @@ exports.ViewAggrementByRenter = async (req, res, next) => {
                 data: agg,
             })
         }
-
-
-
     } catch (err) {
         next(err);
     }
@@ -342,27 +333,19 @@ exports.UpdateAggrementByOwner = async (req, res, next) => {
         if (!agreementDetails) {
             return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.AGGREMENT_DETAILS_NOT_FOUND, STATUS.NOT_FOUND));
         }
-
-
         const ownerConfirmed = data.ownerConfirmed;
         if (ownerConfirmed === BOOLEAN.TRUE) {
-
             const updatedDetailsofaggrement = await AggrementDetails.findByIdAndUpdate(agreementDetailsId, { aggrementDetail }, { new: true });
-
             if (!updatedDetailsofaggrement) {
                 return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.AGGREMENT_DETAILS_NOT_UPDATED, STATUS.NOT_FOUND));
             }
-
             const agg = await Aggrement.findByIdAndUpdate(aggId, { ownerConfirmed: BOOLEAN.TRUE }, { new: true });
             return res.status(STATUS.SUCCESS).json({
                 status: STATUS.SUCCESS,
                 message: AGGREEMENT.AGGREMENT_IS_CONFIRMED_BY_OWNER,
                 data: agg,
             })
-
         }
-
-
     } catch (err) {
         next(err);
     }

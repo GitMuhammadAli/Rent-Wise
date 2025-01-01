@@ -5,7 +5,7 @@ const { STATUS } = require("../../messages/status");
 const { ERROR_MESSAGE } = require("../../messages/error");
 const logger = require("../../utils/logger");
 const AppError = require("../../utils/AppError");
-
+const { ROLES , BOOLEAN} = require("../../utils/Roles");
 
 exports.createComment = async (req, res , next) => {
     try {
