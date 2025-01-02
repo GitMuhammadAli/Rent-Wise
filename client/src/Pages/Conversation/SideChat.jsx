@@ -3,15 +3,12 @@ import React, { useEffect, useState } from 'react';
 import { getSideBarParticipants , fetchConversationsForSidebar } from '../../Api/Chats';
 
 
-export default function SideChat({ handleSideBarClick, ownerIdDetails,setListings, setAllData }) {
+export default function SideChat({ handleSideBarClick, ownerIdDetails, setAllData }) {
   const [participants, setParticipants] = useState([]);
   const [owner, setOwner] = useState(null);
   const [searchChat, setSearchChat] = useState('');
  
   // const [avatar,setAvatar] = useState(''); 
-
- 
-
   // const [participantName , setParticipantName] = useState([]);
 
   // Fetch participants from the API
@@ -33,15 +30,15 @@ export default function SideChat({ handleSideBarClick, ownerIdDetails,setListing
         // console.log(participantNames);
         
 
-        const listingData = response?.data?.data.flatMap(item => item.listing);
+        // const listingData = response?.data?.data.flatMap(item => item.listing);
 
 
 
 
         console.log("Participants are: ", participantData);
-        console.log("Listings are: ", listingData);
+        // console.log("Listings are: ", listingData);
          setParticipants(participantData);
-        setListings(listingData);
+        // setListings(listingData);
        
         setAllData(response.data.data);
       } catch (error) {
@@ -120,25 +117,6 @@ export default function SideChat({ handleSideBarClick, ownerIdDetails,setListing
           <Text>No participants available</Text>
         )}
 
-        {/* {combinedList && combinedList.length > 0 ? (
-          combinedList.map((item, i) => (
-            <Box
-            _active={{bg:'gray.500'}}
-              key={item._id || i}
-              display="flex"
-              alignItems="center"
-              cursor="pointer"
-              p={2}
-              bg="gray.200"
-              borderRadius="md"
-              onClick={() => handleSideBarClick(item._id, item.name, item)}
-            >
-              <Text>{item.name}</Text>
-            </Box>
-          ))
-        ) : (
-          <Text>No participants available</Text>
-        )} */}
       </VStack>
     </Box>
   );

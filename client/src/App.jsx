@@ -31,6 +31,7 @@ import UpdateListing from "./Pages/Listings/updateListing";
 import MainChat from "./Pages/Conversation/MainChat";
 import AgreementTemplate from "./Pages/Agreement/AgreementTemplate";
 import UpdateAgreement from "./Pages/Agreement/UpdateAgreement";
+import CarAgreement from "./Pages/Agreement/Car/CarAgreement";
 
 
 

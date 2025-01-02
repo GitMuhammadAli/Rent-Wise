@@ -14,66 +14,98 @@ import {
   Box,
 } from "@chakra-ui/react";
 import { Printer, SquareMousePointer } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { fetchConversationsForSidebar } from "../../Api/Chats";
 import AgreementTemplate from "../Agreement/AgreementTemplate";
 import { useNavigate } from "react-router-dom";
+import { ListingsContext } from "../../hooks/ListingsContext";
 
-export default function UserPopover() {
-  const [participantsDetail, setParticipantsDetail] = useState([]);
+export default function UserPopover({tenant_name}) {
+  // const [participantsDetail, setParticipantsDetail] = useState([]);
+   const { state } = useContext(ListingsContext);
+    const { userListings } = state;
+
 
   const navigate = useNavigate();
 
-  const showAggrement = (names, list, conversationID) => {
-    console.log("name", names, "list", list, "conversationID", conversationID);
-    navigate("/agreement", {
-      state: { tenantName: names, tenantListing: list , conversationID: conversationID },
-    });
-  };
 
-  const fetchNameOfChatParticipants = async () => {
-    try {
-      const response = await fetchConversationsForSidebar();
-      console.log("response of Conversation Is", response);
-      // const data = response.data.data.map((d)=>{
-      //    return d.participants.map((p)=>{
-      //         return p
-      //     })
-      // })
-      // const listing = response.data.data.map((d)=>{
-      //    return d.listing.map((l)=>{
-      //         return l
-      //     })
-      // })
-      // console.log("names are", data)
-      // setParticipantsName(data);
-      // console.log("listing are", listing)
-      // setParticipantListings(listing)
+     useEffect(()=>{
+        console.log("user specific listing", userListings)
+      },[userListings])
 
-      const mappedData = response.data.data.map((d) => {
-        return {
-          participants: d.participants.map((p) => p), // Extract participants
-          listing: d.listing.map((l) => l), // Extract listings
-          conversationID: d._id,
-        };
-      });
-      setParticipantsDetail(mappedData);
-      console.log("mapped", mappedData);
-    } catch (error) {
-      console.log("error fetching names", error);
-    }
-  };
+
+      const handleClick = (listId, list_Title, list_category)=>{
+        console.log("lisrDeta", listId, list_Title, list_category)
+        if(!listId || !list_Title || !list_category )
+        {
+          console.log("list info required")
+          return;
+        }
+       
+        navigate("/agreement", {
+              state: { listId, list_Title , list_category, tenant_name },
+            });
+
+
+      }
+
+  // const showAggrement = (names, list, conversationID) => {
+  //   console.log("name", names, "list", list, "conversationID", conversationID);
+  //   navigate("/agreement", {
+  //     state: { tenantName: names, tenantListing: list , conversationID: conversationID },
+  //   });
+  // };
+
+ 
+  
+
+  // const fetchNameOfChatParticipants = async () => {
+  //   try {
+  //     const response = await fetchConversationsForSidebar();
+  //     console.log("response of Conversation Is", response);
+      
+  //     const data = response.data.data.map((d)=>{
+  //        return d.participants.map((p)=>{
+  //             return p
+  //         })
+  //     })
+  //     const listing = response.data.data.map((d)=>{
+  //        return d.listing.map((l)=>{
+  //             return l
+  //         })
+  //     })
+  //     console.log("names are", data)
+  //     setParticipantsName(data);
+  //     console.log("listing are", listing)
+  //     setParticipantListings(listing)
+
+  //     const mappedData = response.data.data.map((d) => {
+  //       return {
+  //         participants: d.participants.map((p) => p), // Extract participants
+  //         listing: d.listing.map((l) => l), // Extract listings
+  //         conversationID: d._id,
+  //       };
+  //     });
+  //     setParticipantsDetail(mappedData);
+  //     console.log("mapped", mappedData);
+  //   } catch (error) {
+  //     console.log("error fetching names", error);
+  //   }
+  // };
 
   return (
     <>
-      <Popover>
+    
+     {
+      userListings.length > 0 ? (
+        <Popover>
         <PopoverTrigger>
           <Flex gap={3} alignItems={"center"}>
             <Text fontWeight={"bold"} fontSize={"lg"}>
               Create Aggreement
             </Text>
             <Printer
-              onClick={fetchNameOfChatParticipants}
+              // onClick={fetchNameOfChatParticipants}
               size={40}
               color="#ff0000"
             />
@@ -82,23 +114,11 @@ export default function UserPopover() {
         <PopoverContent>
           <PopoverArrow />
           <PopoverCloseButton />
-          <PopoverHeader>Renters to create aggreement with!</PopoverHeader>
+          <PopoverHeader color={'black'}>Select on which listing you want to create agreement on</PopoverHeader>
           <PopoverBody>
-            {/* {
-  participantsDetail && participantsDetail.length > 0 &&
-  participantsDetail.map((group, groupIndex) => (
-    group.participants.map((p, pIndex) => (
-      <Flex justifyContent={'space-between'} key={pIndex}>
-        <Text mb={3} fontWeight={'semibold'}>
-          {p.name || ''}
-        </Text>
-        <SquareMousePointer  onClick={()=> showAggrement(p)} size={20} color="#ff0000" />
-      </Flex>
-    ))
-  ))
-} */}
+           
 
-            {participantsDetail &&
+            {/* {participantsDetail &&
               participantsDetail.length > 0 &&
               participantsDetail.map((group, groupIndex) =>
                 group.participants.map((p, pIndex) => (
@@ -106,7 +126,7 @@ export default function UserPopover() {
                     justifyContent={"space-between"}
                     key={`participant-${groupIndex}-${pIndex}`}
                   >
-                    <Text mb={3} fontWeight={"semibold"}>
+                    <Text mb={3} color={'black'} fontWeight={"semibold"}>
                       {p.name || ""}
                     </Text>
                     <SquareMousePointer
@@ -122,10 +142,36 @@ export default function UserPopover() {
                     />
                   </Flex>
                 ))
-              )}
+              )} */}
+
+            {userListings.length > 0 &&
+                userListings.map((p, pIndex) => (
+                  <Flex
+                  onClick={()=> handleClick(p._id, p.title, p.category)}
+                
+                  _hover={{bg:'gray.200', p:"10px", cursor:'pointer', borderRadius:'10px'}}
+                    key={ p._id || pIndex}
+                  >
+                    <Text width={'full'} mb={3} color={'black'} fontWeight={"semibold"}>
+                      {p.title || ""}
+                    </Text>
+                    <SquareMousePointer
+                
+                      size={20}
+                      color="#ff0000"
+                    />
+                  </Flex>
+                ))
+              }
           </PopoverBody>
         </PopoverContent>
       </Popover>
+
+      )  : ( <Text>Loading.....</Text>  )
+     }
+        
+      
+      
     </>
   );
 }

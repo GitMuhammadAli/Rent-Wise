@@ -30,55 +30,29 @@ import {
   Text,
   TableContainer,
 } from "@chakra-ui/react";
-import { useDasboardHook } from "../../hooks/DashboardUserContext";
-import { getAlListingsofSpecificUser } from "../../Api/ListingApi";
+
+// import { getAlListingsofSpecificUser } from "../../Api/ListingApi";
 import { Link } from "react-router-dom";
 import { ListingsContext } from "../../hooks/ListingsContext";
 import { GetAggreements } from "../../Api/Agreement";
-import UserPopover from "./UserPopover";
-import UpdateAgreement from "../Agreement/UpdateAgreement";
+// import UserPopover from "./UserPopover";
+// import UpdateAgreement from "../Agreement/UpdateAgreement";
 
 export default function OwnerDash() {
   const [count, setCount] = useState("");
-  const { user } = useDasboardHook();
   const [agreements, setAgreements] = useState([]);
-  // const [handleAgreementEditClick, setHandleAgreementEditClick] = useState(false);
+ 
  
   const { state, dispatch } = useContext(ListingsContext);
-
+  const { userListings } = state;
   // const [items, setItems] = useState([]);
 
-  const { listings } = state;
-  const recentBookings = [
-    {
-      id: 1,
-      item: "Luxury Sedan",
-      renter: "John Doe",
-      startDate: "2023-05-20",
-      endDate: "2023-05-23",
-      status: "Active",
-    },
-    {
-      id: 2,
-      item: "Mountain Bike",
-      renter: "Jane Smith",
-      startDate: "2023-05-25",
-      endDate: "2023-05-26",
-      status: "Upcoming",
-    },
-    {
-      id: 3,
-      item: "Apartment",
-      renter: "Bob Johnson",
-      startDate: "2023-06-01",
-      endDate: "2023-06-30",
-      status: "Upcoming",
-    },
-  ];
 
   useEffect(() => {
     const fetchAgreements = async () => {
       try {
+
+       
         const response = await GetAggreements();
         console.log("Agreements fetched:", response.data.data);
         setAgreements(response.data.data);
@@ -98,23 +72,32 @@ export default function OwnerDash() {
 
   }
 
-  useEffect(() => {
-    async function getOwnerListings() {
-      if (user && user._id) {
-        const user_id = user._id;
-        console.log("User id is:", user_id);
+  // useEffect(() => {
+  //   async function getOwnerListings() {
+  //     if (user && user._id) {
+  //       const user_id = user._id;
+  //       console.log("User id is:", user_id);
 
-        const response = await getAlListingsofSpecificUser(user_id);
-        console.log("Response of user in ownerdash is: ", response.data);
-        setCount(response.data.count);
+  //       const response = await getAlListingsofSpecificUser(user_id);
+  //       console.log("Response of user in ownerdash is: ", response.data);
+  //       setCount(response.data.count);
 
-        // setItems(response.data.listing);
-        dispatch({ type: "GET_LISTINGS", payload: response.data.listing });
-        console.log("listing in ownerdash are:", response.data.listing);
-      }
-    }
-    getOwnerListings();
-  }, [user]);
+  //       // setItems(response.data.listing);
+  //       dispatch({ type: "GET_USER_LISTINGS", payload: response.data.listing });
+  //       console.log("listing in ownerdash are:", response.data.listing);
+  //     }
+  //   }
+  //   getOwnerListings();
+  // }, [user]);
+
+
+  useEffect(()=>{
+
+    console.log("useListInOwner",userListings.length)
+    setCount(userListings.length)
+
+
+  },[userListings])
 
   return (
     <Box minH="100vh" bg="whiteAlpha.800" p={{ base: 2, sm: 4, md: 8 }}>
@@ -138,7 +121,7 @@ export default function OwnerDash() {
     )
 } */}
 
-          {count && count > 0 && <UserPopover />}
+          {/* {count && count > 0 && <UserPopover />} */}
         </Flex>
 
         <SimpleGrid
@@ -263,9 +246,9 @@ export default function OwnerDash() {
                     </Tr>
                   </Thead>
                   <Tbody>
-                    {listings &&
-                      listings.length > 0 &&
-                      listings.map((booking, index) => (
+                    {userListings &&
+                      userListings.length > 0 &&
+                      userListings.map((booking, index) => (
                         <Tr key={index}>
                           <Td
                             fontSize={{ base: "xs", sm: "sm" }}

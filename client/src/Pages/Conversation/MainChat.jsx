@@ -14,6 +14,7 @@ const [owner,setOwner] = useState('');
 const [item , setItem] = useState('');
 const [convoID, setConvoId] = useState('');
 const [Messages, setMessages] = useState([]);
+const [showPopOver, setShowPopOver] = useState(false);
 
 const [listings, setListings] = useState([]);
 const [allData, setAllData] = useState(null);
@@ -38,6 +39,7 @@ useEffect(() => {
 
 
 const handleSideBarClick = (receiver_id, receiver_name,  selectedParticipant,  receiver_imageUrl ) => {
+  setShowPopOver(true);
   console.log("selected participant", selectedParticipant);
   console.log("receiver_id", receiver_id);
 
@@ -87,7 +89,7 @@ return (
     <div>
         <Flex >
         <SideChat  listings={listings} allData={allData} setAllData={setAllData} setListings={setListings} handleSideBarClick={handleSideBarClick} ownerIdDetails={ownerIdDetails} userIdDetails={userIdDetails} listingIdDetails={listingIdDetails} />
-        <LiveChat scrollRef={scrollRef} convoID={convoID} setConvoId={setConvoId} Messages={Messages} setMessages={setMessages} owner={owner} ownerIdDetails={ownerIdDetails} userIdDetails={userIdDetails} listingIdDetails={listingIdDetails} listings={listings} item={item} />
+        <LiveChat showPopOver={showPopOver} scrollRef={scrollRef} convoID={convoID} setConvoId={setConvoId} Messages={Messages} setMessages={setMessages} owner={owner} ownerIdDetails={ownerIdDetails} userIdDetails={userIdDetails} listingIdDetails={listingIdDetails} listings={listings} item={item} />
         </Flex>
     </div>
 )

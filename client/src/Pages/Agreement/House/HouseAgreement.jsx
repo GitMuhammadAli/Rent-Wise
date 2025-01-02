@@ -8,11 +8,12 @@ import {
   VStack,
   ListItem,
   OrderedList,
+  Button,
 } from '@chakra-ui/react';
 import { useAuth } from '../../../hooks/AuthContext';
 
 
-export default function HouseAgreement({tenantName,tenantListing,conversationID}) {
+export default function HouseAgreement({tenant_name, listId, list_Title, list_category}) {
 //   const location = useLocation();
 //     const { tenantName, tenantListing , conversationID } = location.state || {};
 
@@ -40,17 +41,17 @@ const { user } = useAuth();
     ]
   });
 
-    useEffect(() => {
-    if (!tenantName || !tenantListing || !conversationID) {
-      return;
-    }
-    // console.log(tenantListing, tenantName , conversationID);
-    // console.log("COnversationID", conversationID);
-    // setListingDetail(tenantListing);
-    // console.log("tentantIDD", tenantName._id);
-    // setRenterId(tenantName._id);
-    // setConversationId(conversationID);
-  }, [tenantName, tenantListing , conversationID]);
+  //   useEffect(() => {
+  //   if (!tenantName || !tenantListing || !conversationID) {
+  //     return;
+  //   }
+  //   // console.log(tenantListing, tenantName , conversationID);
+  //   // console.log("COnversationID", conversationID);
+  //   // setListingDetail(tenantListing);
+  //   // console.log("tentantIDD", tenantName._id);
+  //   // setRenterId(tenantName._id);
+  //   // setConversationId(conversationID);
+  // }, [tenantName, tenantListing , conversationID]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -64,7 +65,7 @@ const { user } = useAuth();
   return (
     <Box maxW="4xl" mx="auto" p={6} bg="white" boxShadow="lg" borderRadius="lg">
       <Heading as="h1" size="xl" mb={6} textAlign="center">
-        Rental Agreement
+       House Rental Agreement
       </Heading>
       <VStack spacing={4} align="start" fontSize="sm">
         <Text>
@@ -96,7 +97,7 @@ const { user } = useAuth();
         <Text fontWeight="bold">AND</Text>
         
         
-            <Text borderBottom={'1px solid gray'}>{tenantName.name || ''}</Text>
+            <Text borderBottom={'1px solid gray'}>{tenant_name || ''}</Text>
           
         
 
@@ -277,6 +278,7 @@ const { user } = useAuth();
         <Text>
           In witness whereof, the parties named above have ascribed their hands hereto legitimise this agreement at _______ (city name) and the date mentioned
         </Text>
+         <Button bg={'black'} color={'white'}>Create Agreement</Button>
       </VStack>
     </Box>
   );

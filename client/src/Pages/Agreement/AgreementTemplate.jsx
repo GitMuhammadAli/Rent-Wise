@@ -26,40 +26,51 @@ import { createMessage, fetchMessagesByConversation } from "../../Api/Chats";
 
 import { io } from "socket.io-client";
 import HouseAgreement from "./House/HouseAgreement";
+import CarAgreement from "./Car/CarAgreement";
 
 const socket = io("http://localhost:3600");
 export default function AgreementTemplate() {
   const toast = useToast();
-  const [aggrementDetail, setAggrementDetail] = useState({
-    place: "",
-    timeInDayCount: null,
-    rentAmount: "",
-  });
-  const [ownerConfirmed, setOwnerConfirmed] = useState(false);
-  const [renterId, setRenterId] = useState("");
-  const [listingDetail, setListingDetail] = useState([]);
-  const [conversationId, setConversationId] = useState("");
-  const [listIdToSend, setListIdToSend] = useState("");
-  const [aggrementFromResponce , setaggrementFromResponce] = useState([]);
-  const [listTitle, setListTitle] = useState('Select Listing');
+  // const [aggrementDetail, setAggrementDetail] = useState({
+  //   place: "",
+  //   timeInDayCount: null,
+  //   rentAmount: "",
+  // });
+  // const [ownerConfirmed, setOwnerConfirmed] = useState(false);
+  // const [renterId, setRenterId] = useState("");
+  // const [listingDetail, setListingDetail] = useState([]);
+  // const [conversationId, setConversationId] = useState("");
+  // const [listIdToSend, setListIdToSend] = useState("");
+  // const [aggrementFromResponce , setaggrementFromResponce] = useState([]);
+  // const [listTitle, setListTitle] = useState('Select Listing');
 
   const location = useLocation();
 
-  const { tenantName, tenantListing , conversationID } = location.state || {};
+  // const { tenantName, tenantListing , conversationID } = location.state || {};
+  const { listId, list_Title , list_category, tenant_name } = location.state || {};
+
+
+  useEffect(()=>{
+    console.log("list category is:", list_category)
+  },[list_category])
+
+  
 
   // const { user } = useAuth();
 
-  useEffect(() => {
-    if (!tenantName || !tenantListing || !conversationID) {
-      return;
-    }
-    console.log(tenantListing, tenantName , conversationID);
-    console.log("COnversationID", conversationID);
-    setListingDetail(tenantListing);
-    console.log("tentantIDD", tenantName._id);
-    setRenterId(tenantName._id);
-    setConversationId(conversationID);
-  }, [tenantName, tenantListing , conversationID]);
+  // useEffect(() => {
+  //   if (!tenantName || !tenantListing || !conversationID) {
+  //     return;
+  //   }
+
+
+  //   console.log("tLL",tenantListing, tenantName , conversationID);
+  //   console.log("COnversationID", conversationID);
+  //   setListingDetail(tenantListing);
+  //   console.log("tentantIDD", tenantName._id);
+  //   setRenterId(tenantName._id);
+  //   setConversationId(conversationID);
+  // }, [tenantName, tenantListing , conversationID]);
 
   // const listingFucntion = (listID, title) => {
   //   if (!listID) {
@@ -173,6 +184,29 @@ export default function AgreementTemplate() {
   // };
 
   return (
+
+
+<>
+ 
+ {/* <HouseAgreement tenantName={tenantName} tenantListing={tenantListing} conversationID={conversationID}  /> */}
+{/* <CarAgreement tenantName={tenantName} tenantListing={tenantListing} conversationID={conversationID}  /> */}
+
+
+{
+  list_category === 'car' && ( <CarAgreement tenant_name={tenant_name} listId={listId} list_Title={list_Title} list_category={list_category}  />  ) 
+}
+
+{
+  list_category === 'house' && ( <HouseAgreement tenant_name={tenant_name} listId={listId} list_Title={list_Title} list_category={list_category}  />  )
+
+}
+ 
+ 
+
+
+</>
+
+
 //     <Box
 //       minH="100vh"
 //       display="flex"
@@ -470,11 +504,7 @@ export default function AgreementTemplate() {
       
 //     </Box>
 
-<>
 
-<HouseAgreement tenantName={tenantName} tenantListing={tenantListing} conversationID={conversationID}  />
-
-</>
   );
 } 
 
