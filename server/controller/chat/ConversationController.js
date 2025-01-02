@@ -326,7 +326,8 @@ const fetchConversationsForSidebarOld = async (req, res) => {
                       listing: {
                           _id: 1,
                           title: 1,
-                          image: 1
+                          image: 1,
+                          category:1
                       },
                       createdAt: 1,
                       updatedAt: 1
