@@ -134,8 +134,9 @@ export default function LiveChat({
               
             }
             {
+              // sending data to agreement
                owner && showPopOver && ( 
-                <UserPopover tenant_name={owner.name}/>
+                <UserPopover convoID={convoID} tenant={owner}/>
                  )
                 
 
