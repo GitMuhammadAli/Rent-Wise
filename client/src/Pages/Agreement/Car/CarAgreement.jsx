@@ -55,11 +55,11 @@ const { user } = useAuth();
     ]
   });
 
-  const handleCreateAggreement = async () => {
-    console.log("Create Aggrement", formData);
-    const response = await createAgreement(formData);
-    console.log("Response", response.data);
-  };
+  // const handleCreateAggreement = async () => {
+  //   console.log("Create Aggrement", formData);
+  //   const response = await createAgreement(formData);
+  //   console.log("Response", response.data);
+  // };
 
   useEffect(() => {
     if (!list_Title || !list_category || !listId) return;
