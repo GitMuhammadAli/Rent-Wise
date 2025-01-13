@@ -50,6 +50,7 @@ const handleSideBarClick = (receiver_id, receiver_name,  selectedParticipant,  r
   const filteredData = allData.find(item =>
     item.participants.some(participant => participant._id === receiver_id)
   );
+  console.log('fiiltered', filteredData);
 
   // Extract the specific listings for this participant
   const specificListings = filteredData?.listing || [];

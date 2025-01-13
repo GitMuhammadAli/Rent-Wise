@@ -20,7 +20,7 @@ import AgreementTemplate from "../Agreement/AgreementTemplate";
 import { useNavigate } from "react-router-dom";
 import { ListingsContext } from "../../hooks/ListingsContext";
 
-export default function UserPopover({tenant_name}) {
+export default function UserPopover({tenant,convoID}) {
   // const [participantsDetail, setParticipantsDetail] = useState([]);
    const { state } = useContext(ListingsContext);
     const { userListings } = state;
@@ -43,7 +43,7 @@ export default function UserPopover({tenant_name}) {
         }
        
         navigate("/agreement", {
-              state: { listId, list_Title , list_category, tenant_name },
+              state: { listId, list_Title , list_category, tenant ,convoID },
             });
 
 

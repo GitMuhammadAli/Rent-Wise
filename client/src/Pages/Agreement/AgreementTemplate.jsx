@@ -47,12 +47,18 @@ export default function AgreementTemplate() {
   const location = useLocation();
 
   // const { tenantName, tenantListing , conversationID } = location.state || {};
-  const { listId, list_Title , list_category, tenant_name } = location.state || {};
+  const { listId, list_Title , list_category, tenant, convoID } = location.state || {};
 
 
   useEffect(()=>{
+    if(!convoID)
+    {
+      console.log('no convo id found in agreement')
+    }
+    console.log("convo id in agreement", convoID)
     console.log("list category is:", list_category)
-  },[list_category])
+    console.log("tenant name", tenant)
+  },[list_category, convoID])
 
   
 
@@ -193,12 +199,15 @@ export default function AgreementTemplate() {
 
 
 {
-  list_category === 'car' && ( <CarAgreement tenant_name={tenant_name} listId={listId} list_Title={list_Title} list_category={list_category}  />  ) 
+  list_category === 'car' && ( <CarAgreement convoID={convoID} tenant={tenant} listId={listId} list_Title={list_Title} list_category={list_category}  />  ) 
 }
 
 {
-  list_category === 'house' && ( <HouseAgreement tenant_name={tenant_name} listId={listId} list_Title={list_Title} list_category={list_category}  />  )
+  list_category === 'house' && ( <HouseAgreement convoID={convoID} tenant={tenant} listId={listId} list_Title={list_Title} list_category={list_category}  />  )
 
+}
+{
+  list_category !== 'house' && list_category!== 'car' && (<Text>NO agreement created for this category yet</Text>)
 }
  
  

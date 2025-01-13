@@ -11,24 +11,29 @@ import {
   Button,
 } from '@chakra-ui/react';
 import { useAuth } from '../../../hooks/AuthContext';
+import { createAgreement } from '../../../Api/Agreement';
 
 
-export default function HouseAgreement({tenant_name, listId, list_Title, list_category}) {
+export default function HouseAgreement({tenant, listId, list_Title, list_category, convoID}) {
 //   const location = useLocation();
 //     const { tenantName, tenantListing , conversationID } = location.state || {};
 
 const { user } = useAuth();
-
+ const [ownerConfirmed, setOwnerConfirmed] = useState(true);
+  const [renterId, setRenterId] = useState("");
   const [formData, setFormData] = useState({
-    date: '',
+    createdDate: '',
     rentAmount: '',
     startDate: '',
     endDate: '',
+    duration: '',
+    timePeriod: '',
     advanceRent: '',
     advanceRentMonths: '',
     securityDeposit: '',
     securityDepositMonths: '',
     rentIncreasePercentage: '',
+    monthlyDueDate: '',
     agreementPoints: [
       { id: 1, text: 'That the Tenant will allow the landlord or their authorised person to visit the property to view the condition at a 24-hours prior notification.' }, 
       { id: 2, text: 'That the Tenant will be responsible for maintaining the property in good condition and will hand over the possession of the property to the rightful owner upon termination of the rental agreement.' }, 
@@ -53,6 +58,37 @@ const { user } = useAuth();
   //   // setConversationId(conversationID);
   // }, [tenantName, tenantListing , conversationID]);
 
+   const saveAgreement = async (e) => {
+    e.preventDefault();
+
+      try {
+        
+        if (!tenant || !listId) {
+          console.log("ids missing");
+          return;
+        }
+        setRenterId(tenant._id);
+        console.log("renterID", renterId);
+  
+    
+  
+        console.log("details are: ", formData);
+  
+        const data = await createAgreement({
+          aggrementDetail:formData,
+          renterId,
+          ownerConfirmed,
+          listingId: listId,
+          conversationID: convoID,
+        });
+  
+        console.log("responseOFagreement", data);
+        // setaggrementFromResponce(data.data.data);
+      } catch (error) {
+        console.log("errorInAgreement creation is: ", error);
+      }
+    };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
@@ -68,11 +104,12 @@ const { user } = useAuth();
        House Rental Agreement
       </Heading>
       <VStack spacing={4} align="start" fontSize="sm">
+        <form onSubmit={saveAgreement}>
         <Text>
           This rent agreement is being created, on this day of
           <Input
             type="date"
-            name="date"
+            name="createdDate"
             value={formData.date}
             onChange={handleChange}
             display="inline-block"
@@ -97,7 +134,9 @@ const { user } = useAuth();
         <Text fontWeight="bold">AND</Text>
         
         
-            <Text borderBottom={'1px solid gray'}>{tenant_name || ''}</Text>
+            <Text borderBottom={'1px solid gray'}>
+              {tenant.name|| ''}
+              </Text>
           
         
 
@@ -188,6 +227,7 @@ const { user } = useAuth();
             <Input
               type="number"
               name="advanceRentMonths"
+              placeholder='3'
               value={formData.advanceRentMonths}
               onChange={handleChange}
               display="inline-block"
@@ -198,6 +238,7 @@ const { user } = useAuth();
             <Input
               type="number"
               name="securityDeposit"
+              placeholder='40000'
               value={formData.securityDeposit}
               onChange={handleChange}
               display="inline-block"
@@ -208,6 +249,7 @@ const { user } = useAuth();
             <Input
               type="number"
               name="securityDepositMonths"
+              placeholder='3'
               value={formData.securityDepositMonths}
               onChange={handleChange}
               display="inline-block"
@@ -276,9 +318,10 @@ const { user } = useAuth();
         </OrderedList>
 
         <Text>
-          In witness whereof, the parties named above have ascribed their hands hereto legitimise this agreement at _______ (city name) and the date mentioned
+          In witness whereof, the parties named above have ascribed their hands hereto legitimise this agreement and the date mentioned
         </Text>
-         <Button bg={'black'} color={'white'}>Create Agreement</Button>
+         <Button type='submit' bg={'black'} color={'white'}>Create Agreement</Button>
+         </form>
       </VStack>
     </Box>
   );
