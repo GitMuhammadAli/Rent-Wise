@@ -424,7 +424,7 @@ export default function UpdateAgreement({}) {
           <Button
             bg={"black"}
             color={"white"}
-            // onClick={saveAgreement}
+            onClick={saveAgreement}
           >
             {" "}
             Save Aggrement!
@@ -454,7 +454,7 @@ export default function UpdateAgreement({}) {
           <Button
             bg={"black"}
             color={"white"}
-            // onClick={SentToRenter}
+            onClick={SentToRenter}
           >
             Sent to the Renter To Review the aggrement
           </Button>
