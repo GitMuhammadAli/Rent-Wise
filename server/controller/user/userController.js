@@ -86,7 +86,7 @@ const login = async (req, res ,next) => {
     if (!user) {
       return next(new AppError(BOOLEAN.FALSE ,ERROR_MESSAGE.EMAIL_NOT_FOUND, STATUS.UNAUTHORIZED))
     }
-    const isPasswordValid = await bcrypt.compare(your_pass, user.password);
+    const isPasswordValid =  bcrypt.compare(your_pass, user.password);
 
     if (!isPasswordValid) {
       return next(new AppError(BOOLEAN.FALSE , ERROR_MESSAGE.INVALID_PASSWORD, STATUS.UNAUTHORIZED))
