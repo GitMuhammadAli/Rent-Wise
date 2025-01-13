@@ -1,6 +1,4 @@
-
-
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import {
   Box,
@@ -57,11 +55,15 @@ const { user } = useAuth();
     ]
   });
 
-useEffect(()=>{
-  if(!list_Title || !list_category || !listId  ) return;
+  const handleCreateAggreement = async () => {
+    console.log("Create Aggrement", formData);
+    const response = await createAgreement(formData);
+    console.log("Response", response.data);
+  };
 
-},[list_category, listId, list_Title])
-
+  useEffect(() => {
+    if (!list_Title || !list_category || !listId) return;
+  }, [list_category, listId, list_Title]);
 
   //   useEffect(() => {
   //   if (!tenantName || !tenantListing || !conversationID) {
@@ -111,14 +113,14 @@ useEffect(()=>{
     setFormData((prevState) => ({
       ...prevState,
       [name]: value,
+      
     }));
   };
 
-  
   return (
     <Box maxW="4xl" mx="auto" p={6} bg="white" boxShadow="lg" borderRadius="lg">
       <Heading as="h1" size="xl" mb={6} textAlign="center">
-      Car Rental Agreement
+        Car Rental Agreement
       </Heading>
       <VStack spacing={4} align="start" fontSize="sm">
         <form  onSubmit={saveAgreement}>
@@ -135,25 +137,26 @@ useEffect(()=>{
           />
           date.
         </Text>
-  
+
         <Text fontWeight="bold">BETWEEN</Text>
         {user && <Text borderBottom="1px solid gray">{user.name}</Text>}
         <Text>Hereinafter known as the "owner" of the one part.</Text>
-  
+
         <Text fontWeight="bold">AND</Text>
         <Text borderBottom="1px solid gray">
           {tenant.name ||''}
           </Text>
         <Text>Hereinafter known as the 'tenant' of the other part.</Text>
-  
+
         <Text>
           Whereas the landlord confirms that he is legally competent to rent out
           ______________________________
-         
         </Text>
-  
-        <Text fontWeight="bold">NOW, THEREFORE, THIS AGREEMENT IS WITNESSETH AS UNDER:-</Text>
-  
+
+        <Text fontWeight="bold">
+          NOW, THEREFORE, THIS AGREEMENT IS WITNESSETH AS UNDER:-
+        </Text>
+
         <OrderedList spacing={2}>
           <ListItem>
             That the owner has agreed to rent out the car with the following details:
@@ -273,7 +276,7 @@ useEffect(()=>{
              installments to the owner.
           </ListItem>
           <ListItem>
-            The lessee will provide a crossed cheque of Rs. 
+            The lessee will provide a crossed cheque of Rs.
             <Input
             type="number"
             name="crossedChequeAmount"
@@ -287,7 +290,7 @@ useEffect(()=>{
             returned upon the agreement's termination, subject to deductions for dues or damages.
           </ListItem>
           <ListItem>
-            The lessee is responsible for oil changes every 
+            The lessee is responsible for oil changes every
             <Input
             type="number"
              name="oilChangeTime"
@@ -314,7 +317,7 @@ useEffect(()=>{
           
          
           <ListItem>
-            The lessee agrees to meet the owner along with the car on the 
+            The lessee agrees to meet the owner along with the car on the
             <Input
             type="text"
              name="meetingOwnerDate"
@@ -329,7 +332,7 @@ useEffect(()=>{
           </ListItem>
           
           <ListItem>
-            The lessee shall serve a 
+            The lessee shall serve a
             <Input
             type="number"
              name="noticePeriod"
@@ -373,7 +376,7 @@ useEffect(()=>{
           </ListItem>
            */}
         </OrderedList>
-  
+
         <Text>
           In witness whereof, the parties named above have ascribed their hands hereto legitimise this agreement
           at the date mentioned.
@@ -381,29 +384,6 @@ useEffect(()=>{
         <Button type='submit' bg={'black'} color={'white'}>Create Agreement</Button>
         </form>
       </VStack>
-
-      
     </Box>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  

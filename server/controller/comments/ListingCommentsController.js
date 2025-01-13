@@ -1,6 +1,6 @@
 const  Comment = require("../../model/comments/listingCommentModel");
 const Reply = require("../../model/comments/listingReplyModel");
-const { RESPONCE_MESSAGE, LISTINGS } = require("../../messages/response");
+const { RESPONCE_MESSAGE, LISTINGS , COMMENTS} = require("../../messages/response");
 const { STATUS } = require("../../messages/status");
 const { ERROR_MESSAGE } = require("../../messages/error");
 const logger = require("../../utils/logger");
@@ -10,11 +10,17 @@ const { ROLES , BOOLEAN} = require("../../utils/Roles");
 exports.createComment = async (req, res , next) => {
     try {
         const { rental, author, text } = req.body;
-        const comment = await Comment.create({ rental, author, text }); // Ensure all fields are included
+        if(!rental || !author || !text){
+        return next(new AppError (BOOLEAN.FALSE , ERROR_MESSAGE.INVALID_DATA , STATUS.BAD_REQUEST));
+        }
+        const comment = await Comment.create({ rental, author, text });
+        if (!comment) {
+            return next(new AppError(BOOLEAN.FALSE , COMMENTS.COMMENT_NOT_CREATED , STATUS.BAD_REQUEST));
+        }
+
         res.status(STATUS.CREATED).json({ message: RESPONCE_MESSAGE.COMMENT_CREATED, comment });
     } catch (error) {
-        console.error("Error in createComment:", error); // Log detailed error
-        res.status(STATUS.INTERNAL_SERVER_ERROR).json({ message: RESPONCE_MESSAGE.INTERNAL_SERVER_ERROR });
+        next(error);
     }
 };
 
@@ -31,57 +37,17 @@ exports.Check = async(req, res )=>{
 exports.showSpecificListComments = async (req, res , next) => {
     try {
         const { id } = req.body;
-        // const rental = '671aa58e6973118ab008c850'
         console.log("Data For Comments is " , id);
         const comments = await Comment.find({ id }).populate("author", "name email imageUrl").populate("rental", "title").sort({ createdAt: -1 });
+        if (!comments) {
+return next(new AppError(BOOLEAN.FALSE , COMMENTS.COMMENT_NOT_FOUND , STATUS.NOT_FOUND));
+        }
         console.log("Comments are ", comments);
-        res.status(STATUS.SUCCESS).json({ message: RESPONCE_MESSAGE.COMMENT_FETCHED, comments });
+        res.status(STATUS.SUCCESS).json({ message: COMMENTS.COMMENT_FETCHED, comments });
     } catch (error) {
-        console.error("Error in showSpecificListComments:", error); // Log detailed error
-        res.status(STATUS.INTERNAL_SERVER_ERROR).json({ message: RESPONCE_MESSAGE.INTERNAL_SERVER_ERROR });
+        next(error);
     }
 };
-
-
-
-
-exports.listingcommentReply = async (req, res , next) => {
-  try {
-    const { commentId, parentReplyId, author, text, taggedUser } = req.body;
-
-    console.log("Data For Comments is ", commentId, parentReplyId, author, text, taggedUser);
-    // Find the parent comment or reply
-    let parent;
-    if (parentReplyId) {
-      parent = await Reply.findById(parentReplyId);
-    } else {
-      parent = await Comment.findById(commentId);
-    }
-
-    if (!parent) {
-      return res.status(404).json({ message: "Parent comment or reply not found." });
-    }
-
-    // Create the reply
-    const reply = await Reply.create({
-      comment: commentId,
-      parentReply: parentReplyId || null,
-      author,
-      text,
-      taggedUser,
-    });
-
-    // Push reply to the parent's `replies` field
-    parent.replies.push(reply._id);
-    await parent.save();
-
-    res.status(201).json({ message: "Reply created successfully.", reply });
-  } catch (error) {
-    console.error("Error creating reply:", error);
-    res.status(500).json({ message: "Internal server error." });
-  }
-};
-
 
 
 
@@ -110,13 +76,13 @@ exports.getCommentsWithReplies = async (req, res , next) => {
         ],
       })
       .populate("author", "name imageUrl");
-
-    // console.log("Comments are ", comments);
+      if (!comments) {
+        return next(new AppError(BOOLEAN.FALSE , COMMENTS.COMMENT_NOT_FOUND , STATUS.NOT_FOUND));
+      }
 
     res.status(200).json({ comments });
   } catch (error) {
-    console.error("Error fetching comments with replies:", error);
-    res.status(500).json({ message: "Internal server error" });
+  next(error);
   }
 };
 
@@ -127,7 +93,7 @@ exports.getCommentsWithReplies = async (req, res , next) => {
       console.log("Data For Comments is " , id);
       const comment = await Comment.findById(id);
       if (!comment) {
-        return res.status(404).json({ message: "Comment not found." });
+        return next(new AppError(BOOLEAN.FALSE , COMMENTS.COMMENT_NOT_FOUND , STATUS.NOT_FOUND));
       }
 
       // if (comment.author.toString() !== req.user._id.toString() && 
@@ -139,9 +105,7 @@ exports.getCommentsWithReplies = async (req, res , next) => {
       res.status(200).json({ message: "Comment deleted successfully." });
 
     } catch (error) {
-      console.error("Error deleting comment:", error);
-      logger.error("Error deleting comment:", error);
-      res.status(500).json({ message: "Internal server error" });
+      next(error);
     }
   };
 
@@ -154,7 +118,7 @@ exports.getCommentsWithReplies = async (req, res , next) => {
       console.log("Data For Comments is " , id);
       const reply = await Reply.findById(id);
       if (!reply) {
-        return res.status(404).json({ message: "Comment not found." });
+      return next(new AppError(BOOLEAN.FALSE , COMMENTS.COMMENT_NOT_FOUND , STATUS.NOT_FOUND));
       }
 
       // if (reply.author.toString() !== req.user?._id?.toString()) {
@@ -165,9 +129,7 @@ exports.getCommentsWithReplies = async (req, res , next) => {
       res.status(200).json({ message: "Comment deleted successfully." });
 
     } catch (error) {
-      console.error("Error deleting comment:", error);
-      logger.error("Error deleting comment:", error);
-      res.status(500).json({ message: "Internal server error" });
+      next(error);
     }
   }
 
@@ -224,3 +186,42 @@ exports.getCommentsWithReplies = async (req, res , next) => {
 //     }
 
 // }
+
+
+
+// exports.listingcommentReply = async (req, res , next) => {
+  //   try {
+  //     const { commentId, parentReplyId, author, text, taggedUser } = req.body;
+  
+  //     console.log("Data For Comments is ", commentId, parentReplyId, author, text, taggedUser);
+  //     let parent;
+  //     if (parentReplyId) {
+  //       parent = await Reply.findById(parentReplyId);
+  //     } else {
+  //       parent = await Comment.findById(commentId);
+  //     }
+  
+  //     if (!parent) {
+  //       return res.status(404).json({ message: "Parent comment or reply not found." });
+  //     }
+  
+  //     // Create the reply
+  //     const reply = await Reply.create({
+  //       comment: commentId,
+  //       parentReply: parentReplyId || null,
+  //       author,
+  //       text,
+  //       taggedUser,
+  //     });
+  
+  //     // Push reply to the parent's `replies` field
+  //     parent.replies.push(reply._id);
+  //     await parent.save();
+  
+  //     res.status(201).json({ message: "Reply created successfully.", reply });
+  //   } catch (error) {
+  //     console.error("Error creating reply:", error);
+  //     res.status(500).json({ message: "Internal server error." });
+  //   }
+  // };
+  

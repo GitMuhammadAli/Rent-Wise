@@ -16,6 +16,16 @@ const RESPONCE_MESSAGE = {
 
 }
 
+
+const COMMENTS = {
+    COMMENT_CREATED: "Comment created successfully",
+    COMMENT_FETCHED: "Comment fetched successfully",
+    COMMENT_UPDATED: "Comment updated successfully",
+    COMMENT_DELETED: "Comment deleted successfully",
+    COMMENT_NOT_FOUND: "Comment not found",
+    COMMENT_NOT_CREATED: "Comment not created",
+}
+
 const LISTINGS = {
     LISTING_CREATED: "Listing created successfully",
     ERROR_CREATING_LISTING: "Error creating listing",
@@ -80,11 +90,33 @@ AFFGEMENT_NOT_CONFIRMED_BY_OWNER: "Aggrement not confirmed by owner . Make Sure 
 AGGREMENT_IS_CONFIRMED: "Aggrement is confirmed",
 AGGREMENT_IS_CONFIRMED_BY_OWNER: "Aggrement is confirmed by owner",
 AGGREMENT_IS_NOT_CONFIRMED: "Aggrement is not confirmed",
+AGGREMENT_FROM_REQUEST: "Request body does not contain aggrementFromResponce",
   
+}
+
+const CONVERSATION ={
+    CONVERSATION_CREATED: "Conversation created successfully",
+    CONVERSATION_FETCHED: "Conversation fetched successfully",
+    CONVERSATION_UPDATED: "Conversation updated successfully",
+    CONVERSATION_DELETED: "Conversation deleted successfully",
+    CONVERSATION_NOT_FOUND: "Conversation not found",
+    CONVERSATION_ALREADY_EXISTS: "Conversation already exists",
+    CONVERSATION_NOT_AVAILABLE: "Conversation not available",
+    CONVERSATION_NOT_AVAILABLE_FOR_RENT: "Conversation not available for rent",
+    CONVERSATION_NOT_AVAILABLE_FOR_SALE: "Conversation not available for sale",
+    CONVERSATION_NOT_AVAILABLE_FOR_RENT_OR_SALE: "Conversation not available for rent or sale",
+    CONVERSATION_NOT_AVAILABLE_FOR_RENT_OR_SALE_OR_RENT_AND_SALE: "Conversation not available for rent or sale or rent and sale",
+    INVALID_DATA: "Invalid Data",
+    PARTICIPANTS_NOT_FOUND: "Participants not found",
+    MESSAGE_NOT_CREATED: "Message not created",
+    SOCKET_ERROR: "Socket Error",
+
 }
 
 module.exports = {
     RESPONCE_MESSAGE,
     LISTINGS,
-    AGGREEMENT
+    AGGREEMENT,
+    COMMENTS,
+    CONVERSATION,
 };

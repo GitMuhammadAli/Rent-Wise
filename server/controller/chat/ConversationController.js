@@ -1,13 +1,15 @@
 const mongoose = require("mongoose");
 const Conversation = require("../../model/chat/ConversationModel");
 const Messsage = require("../../model/chat/MesssageModel");
+const {  CONVERSATION } = require("../../messages/response");
+
 const { io } = require("../../utils/socket");
 const AppError = require("../../utils/AppError");
 const { ROLES , BOOLEAN} = require("../../utils/Roles");
 
 
 
-const createOrGetConversation = async (req, res) => {
+const createOrGetConversation = async (req, res , next) => {
     try {
         const { receiver, listing } = req.body;
         const senderId = req.user._id;
@@ -15,7 +17,7 @@ const createOrGetConversation = async (req, res) => {
         console.log("sender id "  , senderId)
 
         if (!senderId || !receiver || !listing) {
-            return res.status(400).json({ error: "All fields are required" });
+            return next(new AppError(BOOLEAN.FALSE , CONVERSATION.INVALID_DATA , STATUS.BAD_REQUEST));
         }
 
         let conversation = await Conversation.findOne({
@@ -31,6 +33,10 @@ const createOrGetConversation = async (req, res) => {
         } else if (!conversation.listing.includes(listing)) {
             conversation.listing.push(listing);
             await conversation.save();
+        }
+
+        if(!conversation){
+            return next(new AppError(BOOLEAN.FALSE , CONVERSATION.CONVERSATION_NOT_FOUND , STATUS.NOT_FOUND));
         }
 
         const participants = await Conversation.aggregate([
@@ -57,6 +63,10 @@ const createOrGetConversation = async (req, res) => {
             },
         ]);
 
+        if(!participants){
+            return next(new AppError(BOOLEAN.FALSE , CONVERSATION.PARTICIPANTS_NOT_FOUND , STATUS.NOT_FOUND));
+        }
+
         // const messages = await Messsage.find({ conversation: conversation._id }).sort({ createdAt: 1 });
 
         res.status(200).json({
@@ -72,8 +82,7 @@ const createOrGetConversation = async (req, res) => {
         return conversation;
 
     } catch (error) {
-        console.error("Error creating/getting conversation:", error);
-        return res.status(500).json({ error: "Internal server error" });
+        next(error);
     }
 };
 
@@ -114,15 +123,18 @@ const getChatParticipants = async (req, res) => {
             },
         ]);
 
+        if(!participants){
+            return next(new AppError(BOOLEAN.FALSE , CONVERSATION.PARTICIPANTS_NOT_FOUND , STATUS.NOT_FOUND));
+        }
+
         res.status(200).json({ success: BOOLEAN.TRUE, participants });
     } catch (error) {
-        console.error("Error fetching participants:", error);
-        return res.status(500).json({ error: "Internal server error" });
+        next(error);
     }
 };
 
 
-const createOrGetConversations = async (receiver, listing, senderId) => {
+const createOrGetConversations = async (receiver, listing, senderId , next) => {
     try {
         console.log("listing", listing);
         console.log("receiver", receiver);
@@ -130,7 +142,8 @@ const createOrGetConversations = async (receiver, listing, senderId) => {
 
         // Validate required fields
         if (!senderId || !receiver || !listing) {
-            return { error: "All fields are required" };
+            return next(new AppError(BOOLEAN.FALSE , CONVERSATION.INVALID_DATA , STATUS.BAD_REQUEST));
+          
         }
 
         // Ensure listing is an array of ObjectIds
@@ -159,6 +172,8 @@ const createOrGetConversations = async (receiver, listing, senderId) => {
             }
         }
 
+
+
         // Fetch participants of the conversation
         const participants = await Conversation.aggregate([
             { $match: { _id: conversation._id } },
@@ -183,6 +198,9 @@ const createOrGetConversations = async (receiver, listing, senderId) => {
                 },
             },
         ]);
+        if(!participants){
+            return next(new AppError(BOOLEAN.FALSE , CONVERSATION.PARTICIPANTS_NOT_FOUND , STATUS.NOT_FOUND));
+        }
 
         // Return the conversation and participants
         return {
@@ -191,13 +209,12 @@ const createOrGetConversations = async (receiver, listing, senderId) => {
         };
         
     } catch (error) {
-        console.error("Error creating/getting conversation:", error);
-        throw new Error("Internal server error");
+       next(error);
     }
 };
 
 
-const createMessage = async (req, res) => {
+const createMessage = async (req, res , next) => {
     try {
         const { message, listing } = req.body;
         const senderId = req.user._id; 
@@ -212,12 +229,12 @@ const createMessage = async (req, res) => {
         console.log("conversationId", conversationId);
 
         if (!conversationId || !message || !listing || !senderId || !receiver) {
-            return res.status(400).json({ error: "All fields are required" });
+return next(new AppError(BOOLEAN.FALSE , CONVERSATION.INVALID_DATA , STATUS.BAD_REQUEST));
         }
 
         const conversation = await Conversation.findById(conversationId);
         if (!conversation) {
-            return res.status(404).json({ error: "Conversation not found" });
+            return next(new AppError(BOOLEAN.FALSE , CONVERSATION.CONVERSATION_NOT_FOUND , STATUS.NOT_FOUND));
         }
 
         const newMessage = new Messsage({
@@ -231,6 +248,9 @@ const createMessage = async (req, res) => {
         });
 
         await newMessage.save();
+        if(!newMessage) {
+            return next(new AppError(BOOLEAN.FALSE , CONVERSATION.MESSAGE_NOT_CREATED , STATUS.BAD_REQUEST));
+        }
 
         conversation.updatedAt = new Date();
         await conversation.save();
@@ -243,12 +263,13 @@ const createMessage = async (req, res) => {
                 receiver,
                 listing: listingArray,
             });
+        }else{
+            return next(new AppError(BOOLEAN.FALSE , CONVERSATION.SOCKET_ERROR , STATUS.BAD_REQUEST));
         }
 
         res.status(201).json({ success: BOOLEAN.TRUE, message: "Message sent successfully", data: newMessage });
     } catch (error) {
-        console.error("Error creating message:", error);
-        return res.status(500).json({ error: "Internal server error" });
+        next(error);
     }
 };
 
@@ -269,13 +290,12 @@ const fetchConversationsForSidebarOld = async (req, res) => {
             .populate("listing", "title image");
 
         if (!conversations.length) {
-            return res.status(200).json({ message: "No conversations found.", data: [] });
+            return next(new AppError(BOOLEAN.FALSE , CONVERSATION.CONVERSATION_NOT_FOUND , STATUS.NOT_FOUND));
         }
 
         res.status(200).json({ success: true, data: conversations });
     } catch (error) {
-        console.error("Error fetching sidebar conversations:", error);
-        return res.status(500).json({ error: "Failed to fetch conversations." });
+        next(error);
     }
 };
 
@@ -343,14 +363,18 @@ const fetchConversationsForSidebarOld = async (req, res) => {
                   }
               }
           ]);
+          if (!conversations) {
+            return next(new AppError(BOOLEAN.FALSE , CONVERSATION.CONVERSATION_NOT_FOUND , STATUS.NOT_FOUND));
+        }
+
 
           res.status(200).json({ success: BOOLEAN.TRUE, data: conversations });
       } catch (error) {
-          console.error("Error fetching sidebar conversations:", error);
-          return res.status(500).json({ error: "Failed to fetch conversations." });
+          next(error);
       }
   };
 
+  
 const fetchMessagesByConversation = async (req, res) => {
     try {
         const { conversationId } = req.params;
@@ -360,25 +384,24 @@ const fetchMessagesByConversation = async (req, res) => {
             return res.status(400).json({ error: "Conversation ID is required" });
         }
 
-        // Verify if the user is a participant in the conversation
         const conversation = await Conversation.findById(conversationId);
         if (!conversation) {
-            return res.status(404).json({ error: "Conversation not found" });
+            return next(new AppError(BOOLEAN.FALSE , CONVERSATION.CONVERSATION_NOT_FOUND , STATUS.NOT_FOUND));
         }
 
         if (!conversation.participants.includes(userId)) {
-            return res.status(403).json({ error: "You are not authorized to view this conversation" });
+            return next(new AppError(BOOLEAN.FALSE , CONVERSATION.CONVERSATION_NOT_FOUND , STATUS.NOT_FOUND));
         }
 
-        // Fetch all messages for this conversation
         const messages = await Messsage.find({ conversation: conversationId })
-            .sort({ createdAt: 1 }) // Sort messages in chronological order
-            .populate("sender", "name imageUrl") // Include sender details
-            .populate("receiver", "name imageUrl") // Include receiver details
-            .populate("listing", "title image"); // Include listing details if needed
-
+            .sort({ createdAt: 1 }) 
+            .populate("sender", "name imageUrl") 
+            .populate("receiver", "name imageUrl") 
+            .populate("listing", "title image");
         if (io) {
             io.emit("joinRoom", conversationId.toString());
+        }else{
+            return next(new AppError(BOOLEAN.FALSE , CONVERSATION.SOCKET_ERROR , STATUS.BAD_REQUEST));
         }
 
         res.status(200).json({
@@ -386,8 +409,7 @@ const fetchMessagesByConversation = async (req, res) => {
             data: messages,
         });
     } catch (error) {
-        console.error("Error fetching messages:", error);
-        return res.status(500).json({ error: "Failed to fetch messages." });
+        next(error);
     }
 };
 
@@ -401,9 +423,7 @@ module.exports = {
     fetchConversationsForSidebar,
     fetchConversationsForSidebarOld,
     fetchMessagesByConversation,
-    getChatParticipants
-
-
+    getChatParticipants,
 };
 
 

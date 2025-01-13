@@ -20,6 +20,8 @@ exports.protectRoute = async (req, res, next) => {
       return res.status(404).json({ message: "User not found" });
     }
 
+    // Attaching the authenticated user object to the request
+    // This makes the user data available to all subsequent middleware and route handlers
     req.user = user;
 
     next();
