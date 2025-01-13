@@ -73,6 +73,7 @@ export default function CarAgreement({
     setFormData((prevState) => ({
       ...prevState,
       [name]: value,
+      
     }));
   };
 
