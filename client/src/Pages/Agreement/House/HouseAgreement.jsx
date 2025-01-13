@@ -46,6 +46,11 @@ const { user } = useAuth();
     ]
   });
 
+  useEffect(() => {
+      if (!list_Title || !list_category || !listId) return;
+      setRenterId(tenant._id);
+
+    }, [list_category, listId, list_Title, tenant]);
   //   useEffect(() => {
   //   if (!tenantName || !tenantListing || !conversationID) {
   //     return;
@@ -69,11 +74,7 @@ const { user } = useAuth();
         }
         setRenterId(tenant._id);
         console.log("renterID", renterId);
-  
-    
-  
-        console.log("details are: ", formData);
-  
+        console.log("details are: ", formData);  
         const data = await createAgreement({
           aggrementDetail:formData,
           renterId,

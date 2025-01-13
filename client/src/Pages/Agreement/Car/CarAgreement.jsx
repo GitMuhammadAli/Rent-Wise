@@ -63,7 +63,8 @@ const { user } = useAuth();
 
   useEffect(() => {
     if (!list_Title || !list_category || !listId) return;
-  }, [list_category, listId, list_Title]);
+    setRenterId(tenant._id);
+  }, [list_category, listId, list_Title, tenant]);
 
   //   useEffect(() => {
   //   if (!tenantName || !tenantListing || !conversationID) {
@@ -86,6 +87,7 @@ const { user } = useAuth();
         console.log("ids missing");
         return;
       }
+      console.log("renterID", tenant._id)
       setRenterId(tenant._id);
       console.log("renterID", renterId);
 
@@ -100,6 +102,7 @@ const { user } = useAuth();
         listingId: listId,
         conversationID: convoID,
       });
+    
 
       console.log("responseOFagreement", data);
       // setaggrementFromResponce(data.data.data);
