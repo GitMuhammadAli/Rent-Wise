@@ -3,7 +3,7 @@ const AggrementDetails = require("../../model/agreements/AggrementDetails");
 const RentalItem = require("../../model/listings/RentalItemModel");
 const logger = require("../../utils/logger");
 const { ERROR_MESSAGE } = require("../../messages/error");
-const { RESPONCE_MESSAGE, AGGREEMENT } = require("../../messages/response");
+const { RESPONCE_MESSAGE, AGGREEMENT , CONVERSATION } = require("../../messages/response");
 const { STATUS } = require("../../messages/status");
 const AppError = require("../../utils/AppError");
 const { ROLES, BOOLEAN } = require("../../utils/Roles");
@@ -12,7 +12,7 @@ const { io } = require("../../utils/socket");
 const Messsage = require("../../model/chat/MesssageModel");
 const Conversation = require("../../model/chat/ConversationModel");
 
-const CreateQrCode = async (data) => {
+const CreateQrCode = async (data , next) => {
     try {
         const QrData = JSON.stringify(data);
         console.log("data for qr is" + QrData)
@@ -20,15 +20,12 @@ const CreateQrCode = async (data) => {
         const qrCode = await QRCode.toDataURL(QrData);
         return qrCode;
     } catch (error) {
-        logger.error(error);
-        throw new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.QR_ERROR, STATUS.INTERNAL_SERVER_ERROR);
+        next(error);
     }
 }
 
 exports.getByOwnerId = async (req, res, next) => {
-
     try {
-
         const ownerId = req.user._id;
         const agg = await Aggrement.find({ ownerId }).populate("listingId").populate("renterId");
         if (!agg) {
@@ -41,7 +38,6 @@ exports.getByOwnerId = async (req, res, next) => {
         })
     } catch (error) {
         next(error);
-
     }
 
 }
@@ -138,11 +134,12 @@ exports.verifyAggrement = async (req, res, next) => {
 
 
 
-const createLinkMessage = async (listingId, message, senderId, receiver, conversationID, isLinkMessage) => {
+
+const createLinkMessage = async (listingId, message, senderId, receiver, conversationID, isLinkMessage , next) => {
     try {
         const conversation = await Conversation.findById(conversationID);
-        if (!conversation) {
-            throw new Error("Conversation not found");
+        if(!conversation){
+            return next(new AppError(BOOLEAN.FALSE , CONVERSATION.CONVERSATION_NOT_FOUND , STATUS.NOT_FOUND));
         }
 
         const newMessage = new Messsage({
@@ -160,10 +157,9 @@ const createLinkMessage = async (listingId, message, senderId, receiver, convers
         conversation.updatedAt = new Date();
         await conversation.save();
 
-        return newMessage; // Ensure this value is returned
+        return newMessage;
     } catch (err) {
-        console.error("Error in createLinkMessage:", err);
-        throw err;
+       next(err);
     }
 };
 
@@ -172,7 +168,7 @@ exports.sentAggreement = async (req, res, next) => {
     try {
         const { aggrementFromResponce } = req.body;
         if (!aggrementFromResponce) {
-            return next(new AppError(false, "Request body does not contain aggrementFromResponce", 400));
+            return next(new AppError(BOOLEAN.FALSE, AGGREEMENT.AGGREMENT_FROM_REQUEST, STATUS.BAD_REQUEST));
         }
         const { _id, conversationID, renterId, ownerId, listingId } = aggrementFromResponce;
         console.log("Request body:", req.body);
@@ -180,12 +176,12 @@ exports.sentAggreement = async (req, res, next) => {
 
         const agg = await Aggrement.findById(_id);
         if (!agg) {
-            return next(new AppError(false, "Agreement not found", 404));
+            return next(new AppError(BOOLEAN.FALSE, AGGREMENT.AGGREMENT_NOT_FOUND,STATUS.NOT_FOUND));
         }
 
         const aggDetails = await AggrementDetails.findById(agg.agreementDetailsId);
         if (!aggDetails) {
-            return next(new AppError(false, "Agreement details not found", 404));
+            return next(new AppError(BOOLEAN.FALSE, AGGREMENT.AGGREMENT_NOT_FOUND,STATUS.NOT_FOUND));
         }
 
         if (!agg.ownerConfirmed === BOOLEAN.FALSE) {
@@ -217,6 +213,8 @@ exports.sentAggreement = async (req, res, next) => {
                     receiver: renterId,
                     listing: listingId,
                 });
+        }else{
+            return next(new AppError(BOOLEAN.FALSE, CONVERSATION.SOCKET_ERROR, STATUS.NOT_FOUND));
         }
 
         res.status(200).json({
@@ -225,7 +223,6 @@ exports.sentAggreement = async (req, res, next) => {
             data: messageLink,
         });
     } catch (error) {
-        console.error("Error in sentAggreement:", error);
         next(error);
     }
 };

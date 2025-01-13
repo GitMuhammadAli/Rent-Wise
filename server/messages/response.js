@@ -90,6 +90,7 @@ AFFGEMENT_NOT_CONFIRMED_BY_OWNER: "Aggrement not confirmed by owner . Make Sure 
 AGGREMENT_IS_CONFIRMED: "Aggrement is confirmed",
 AGGREMENT_IS_CONFIRMED_BY_OWNER: "Aggrement is confirmed by owner",
 AGGREMENT_IS_NOT_CONFIRMED: "Aggrement is not confirmed",
+AGGREMENT_FROM_REQUEST: "Request body does not contain aggrementFromResponce",
   
 }
 
