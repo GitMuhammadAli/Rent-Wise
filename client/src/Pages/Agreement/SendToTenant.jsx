@@ -49,7 +49,7 @@ export default function SendToTenant() {
 
      <Heading>Hello CHAUDHRY sahab, welcome to this component</Heading>
      <h4>Krdo socket wala kaam</h4>
-     <button onClick={SentToRenter} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Send Agreement</button>
+     <button onClick={SentToRenter} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">dubaoooo</button>
       
     </div>
   )
