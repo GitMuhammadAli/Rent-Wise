@@ -12,13 +12,21 @@ import {
 } from '@chakra-ui/react';
 import { useAuth } from '../../../hooks/AuthContext';
 
-export default function CarAgrTemplate({ formData, handleChange, saveAgreement,tenant
-    , checkCreateAgrr, OwnerConfirmedFunc, ownerConfirmed}) {
+
+export default function CarAgrTemplate({mainDetails,formData, handleChange, saveAgreement,tenant
+    , checkCreateAgrr, OwnerConfirmedFunc, ownerConfirmed, }) {
     const {user} = useAuth();
-
-
-
-
+      useEffect(()=>{
+             console.log("main details", mainDetails);
+                      
+            },[mainDetails])
+  
+            function sendAggrToRenter(){
+              navigate('/sendToTenant',
+                {
+                  state: {mainDetails }
+                })
+            }
  
   return (
     <div>
@@ -294,7 +302,7 @@ export default function CarAgrTemplate({ formData, handleChange, saveAgreement,t
         }
         {
             checkCreateAgrr && ownerConfirmed && (
-                <Button  bg={'black'} color={'white'}>Send Agreement To Renter</Button>
+                <Button onClick={sendAggrToRenter}  bg={'black'} color={'white'}>Send Agreement To Renter</Button>
                 
             )
         }

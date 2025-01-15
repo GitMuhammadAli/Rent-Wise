@@ -10,6 +10,7 @@ export default function CarAgreement({listId,list_Title,list_category, tenant, c
 //     const { tenantName, tenantListing , conversationID } = location.state || {};
 
 const navigate = useNavigate();
+
  const [ownerConfirmed, setOwnerConfirmed] = useState(true);
   const [renterId, setRenterId] = useState("");
   const [formData, setFormData] = useState({

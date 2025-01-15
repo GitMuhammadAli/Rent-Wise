@@ -11,13 +11,16 @@ import {
   Flex,
 } from '@chakra-ui/react';
 import { useAuth } from '../../../hooks/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
-export default function HouseAgrTemplate({formData, handleChange, saveAgreement,tenant
-    , checkCreateAgrr, OwnerConfirmedFunc, ownerConfirmed}) {
+
+
+export default function HouseAgrTemplate({mainDetails,formData, handleChange, saveAgreement,tenant
+    , checkCreateAgrr, OwnerConfirmedFunc, ownerConfirmed }) {
         const {user} = useAuth();
-
-
-        useEffect(()=>{
+        const navigate = useNavigate()
+   
+       useEffect(()=>{
            if(ownerConfirmed)
            {
             console.log("confirmed")
@@ -26,8 +29,19 @@ export default function HouseAgrTemplate({formData, handleChange, saveAgreement,
            {
             console.log("not confirmed")
            }
-           
-        },[])
+         console.log("main details", mainDetails);
+                  
+        },[mainDetails])
+
+        function sendAggrToRenter(){
+         
+          navigate('/sendToTenant',
+            {
+              state: {mainDetails }
+            })
+        }
+        
+      
   return (
     <div>
         <Box maxW="4xl" mx="auto" p={6} bg="white" boxShadow="lg" borderRadius="lg">
@@ -257,7 +271,7 @@ export default function HouseAgrTemplate({formData, handleChange, saveAgreement,
                  }
                  {
                      checkCreateAgrr && ownerConfirmed && (
-                         <Button  bg={'black'} color={'white'}>Send Agreement To Renter</Button>
+                         <Button  onClick={ ()=> {console.log("clicked"); sendAggrToRenter()}} bg={'black'} color={'white'}>Send Agreement To Renter</Button>
                          
                      )
                  }

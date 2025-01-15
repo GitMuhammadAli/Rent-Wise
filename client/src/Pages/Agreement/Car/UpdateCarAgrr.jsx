@@ -21,6 +21,7 @@ export default function UpdateCarAgrr() {
       const [ownerDetail, setOwnerDetail] = useState(""); // done
       const [listingDetail, setListingDetail] = useState([]); //done
       const [checkCreateAgrr, setCheckCreateAggr] = useState(true);
+      const [mainDetails, setMainDetails] = useState('');
       
     
       const { id } = useParams();
@@ -75,6 +76,7 @@ export default function UpdateCarAgrr() {
       }))
     : [],
  });
+ setMainDetails(response?.data?.data);
             console.log("renter detail", response.data.data.renterId);
             setRenterDetails(response.data.data.renterId);
             setOwnerDetail(response.data.data.ownerId);
@@ -108,6 +110,7 @@ export default function UpdateCarAgrr() {
   return (
     <div>
         <CarAgrTemplate 
+        mainDetails = {mainDetails}
         OwnerConfirmedFunc={OwnerConfirmedFunc} ownerConfirmed={ownerConfirmed}  
         setAggrementDetail={setAggrementDetail} formData={aggrementDetail} setRenterDetails={setRenterDetails}
          tenant={renterDetails} checkCreateAgrr={checkCreateAgrr}

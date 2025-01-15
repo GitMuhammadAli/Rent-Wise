@@ -44,6 +44,8 @@ const navigate = useNavigate();
       setRenterId(tenant._id);
 
     }, [list_category, listId, list_Title, tenant]);
+
+  
   //   useEffect(() => {
   //   if (!tenantName || !tenantListing || !conversationID) {
   //     return;
@@ -55,6 +57,7 @@ const navigate = useNavigate();
   //   // setRenterId(tenantName._id);
   //   // setConversationId(conversationID);
   // }, [tenantName, tenantListing , conversationID]);
+
 
    const saveAgreement = async (e) => {
     e.preventDefault();
@@ -79,12 +82,14 @@ const navigate = useNavigate();
         console.log("responseOFagreement", data);
         // setaggrementFromResponce(data.data.data);
         const agreementID = data?.data?.data?._id
+       
         navigate(`/agreementHouse/${agreementID}`)
       } catch (error) {
         console.log("errorInAgreement creation is: ", error);
       }
     };
-
+   
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
@@ -96,7 +101,9 @@ const navigate = useNavigate();
   
   return (
     <>
-    <HouseAgrTemplate ownerConfirmed={ownerConfirmed}  handleChange={handleChange} saveAgreement={saveAgreement} formData={formData}
+    {/* sendAggrToRenter={sendAggrToRenter} */}
+    <HouseAgrTemplate  
+     ownerConfirmed={ownerConfirmed}  handleChange={handleChange} saveAgreement={saveAgreement} formData={formData}
     listId={listId} list_Title= {list_Title} list_category={list_category} tenant={tenant} convoID = {convoID} />
     </>
   );

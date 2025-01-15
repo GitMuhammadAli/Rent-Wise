@@ -22,6 +22,7 @@ export default function UpdateHouseAgrr() {
       const [ownerDetail, setOwnerDetail] = useState(""); // done
       const [listingDetail, setListingDetail] = useState([]); //done
       const [checkCreateAgrr, setCheckCreateAggr] = useState(true);
+      const [mainDetails, setMainDetails] = useState('');
       
     
       const { id } = useParams();
@@ -44,6 +45,7 @@ export default function UpdateHouseAgrr() {
               "aggr detail",
               response.data.data.agreementDetailsId.aggrementDetail
             );
+            setMainDetails(response?.data?.data);
             const aggrDetail =
               response.data?.data?.agreementDetailsId?.aggrementDetail;
             setAggrementDetail({
@@ -98,9 +100,12 @@ export default function UpdateHouseAgrr() {
     //     }
     //   };
 
+
+    
   return (
     <div>
         <HouseAgrTemplate 
+        mainDetails = {mainDetails}
         OwnerConfirmedFunc={OwnerConfirmedFunc} ownerConfirmed={ownerConfirmed} 
         setAggrementDetail={setAggrementDetail} formData={aggrementDetail} setRenterDetails={setRenterDetails}
          tenant={renterDetails} checkCreateAgrr={checkCreateAgrr}

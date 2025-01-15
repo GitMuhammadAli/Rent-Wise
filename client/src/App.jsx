@@ -30,10 +30,11 @@ import DashboardUserContextProvider from "./hooks/DashboardUserContext";
 import UpdateListing from "./Pages/Listings/updateListing";
 import MainChat from "./Pages/Conversation/MainChat";
 import AgreementTemplate from "./Pages/Agreement/AgreementTemplate";
-import UpdateAgreement from "./Pages/Agreement/UpdateAgreement";
+// import UpdateAgreement from "./Pages/Agreement/UpdateAgreement";
 import CarAgreement from "./Pages/Agreement/Car/CarAgreement";
 import UpdateCarAgrr from "./Pages/Agreement/Car/UpdateCarAgrr";
 import UpdateHouseAgrr from "./Pages/Agreement/House/UpdateHouseAgrr";
+import SendToTenant from "./Pages/Agreement/SendToTenant";
 
 
 
@@ -84,6 +85,7 @@ const router = createBrowserRouter(
         <Route path="/listings/:id" element={<UpdateListing />} />
         <Route path="/chat" element={<MainChat/>} />
         <Route path="/agreement" element={<AgreementTemplate/>} />
+        <Route path="/sendToTenant" element={<SendToTenant/>} />
         {/* <Route path="/agreements/:id" element={<UpdateAgreement/>} /> */}
         <Route path="/agreementCar/:id" element={<UpdateCarAgrr/>} />
         <Route path="/agreementHouse/:id" element={<UpdateHouseAgrr/>} />
