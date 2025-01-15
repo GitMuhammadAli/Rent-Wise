@@ -3,7 +3,7 @@ const crypto = require('crypto');
 require("dotenv").config();
 const AppError = require("../utils/AppError");
 const { ERROR_MESSAGE } = require("../messages/error");
-const { STATUS_CODE } = require("../messages/status");
+const { STATUS } = require("../messages/status");
 const { RESPONCE_MESSAGE } = require("../messages/response");
 const { BOOLEAN } = require("../utils/Roles");
 
@@ -50,9 +50,9 @@ const decodingToken = async (token, key) => {
     return { success: BOOLEAN.TRUE, decoded };
   } catch (error) {
     if (error.name === 'TokenExpiredError') {
-      throw new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.TOKEN_EXPIRED, STATUS_CODE.UNAUTHORIZED);
+      throw new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.TOKEN_EXPIRED, STATUS.UNAUTHORIZED);
     }
-    throw new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.INVALID_TOKEN, STATUS_CODE.UNAUTHORIZED);
+    throw new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.INVALID_TOKEN, STATUS.UNAUTHORIZED);
   }
 };
 
@@ -60,7 +60,7 @@ const GetAndDecodeToken = async (req, res, next) => {
   const token = req.cookies.jwt; // Ensure req is passed
 
   if (!token) {
-    return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.TOKEN_NOT_FOUND, STATUS_CODE.NOT_FOUND));
+    return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.TOKEN_NOT_FOUND, STATUS.NOT_FOUND));
   }
 
   try {

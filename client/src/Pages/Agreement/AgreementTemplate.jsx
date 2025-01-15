@@ -31,6 +31,7 @@ import CarAgreement from "./Car/CarAgreement";
 const socket = io("http://localhost:3600");
 export default function AgreementTemplate() {
   const toast = useToast();
+  
   // const [aggrementDetail, setAggrementDetail] = useState({
   //   place: "",
   //   timeInDayCount: null,
@@ -115,27 +116,27 @@ export default function AgreementTemplate() {
   // }
 
 
-// const SentToRenter = async () => {
-//   console.log("Agreement detail:", aggrementFromResponce);
-//   console.log("Joining conversation ID:", conversationId);
-//   socket.emit("join-conversation", conversationId);
+const SentToRenter = async () => {
+  console.log("Agreement detail:", aggrementFromResponce);
+  console.log("Joining conversation ID:", conversationId);
+  socket.emit("join-conversation", conversationId);
 
-//   try {
-//       const link = `${import.meta.env.VITE_FRONT_END_URL}/agreement/${aggrementFromResponce._id}`;
-//       const dataForSentMessageOfAgreement = {
-//           message: `Agreement Link: ${link}`,
-//           listing: [aggrementFromResponce.listingId], // Add appropriate listing ID(s)
-//           receiver: aggrementFromResponce.receiverId, // Adjust as needed
-//       };
+  try {
+      const link = `${import.meta.env.VITE_FRONT_END_URL}/agreement/${aggrementFromResponce._id}`;
+      const dataForSentMessageOfAgreement = {
+          message: `Agreement Link: ${link}`,
+          listing: [aggrementFromResponce.listingId], // Add appropriate listing ID(s)
+          receiver: aggrementFromResponce.receiverId, // Adjust as needed
+      };
 
-//       console.log("Sending link as message:", dataForSentMessageOfAgreement);
+      console.log("Sending link as message:", dataForSentMessageOfAgreement);
 
-//       const response = await createMessage(dataForSentMessageOfAgreement);
-//       console.log("Response from message creation:", response);
-//   } catch (error) {
-//       console.error("Error sending message:", error);
-//   }
-// };
+      const response = await createMessage(dataForSentMessageOfAgreement);
+      console.log("Response from message creation:", response);
+  } catch (error) {
+      console.error("Error sending message:", error);
+  }
+};
 
 
   // const OwnerConfirmed = async ()=>{
@@ -210,6 +211,8 @@ export default function AgreementTemplate() {
   list_category !== 'house' && list_category!== 'car' && (<Text>NO agreement created for this category yet</Text>)
 }
  
+
+<button>ok pir</button>
  
 
 

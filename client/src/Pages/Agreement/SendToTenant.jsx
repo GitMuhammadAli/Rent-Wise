@@ -1,7 +1,9 @@
 import { Heading } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom';
-
+const socket = io("http://localhost:3600");
+import { io } from "socket.io-client";
+import { createMessage, fetchMessagesByConversation } from "../../Api/Chats";
 export default function SendToTenant() {
     const location = useLocation();
  const { mainDetails} = location.state || {};
@@ -19,11 +21,35 @@ export default function SendToTenant() {
     setListingId(mainDetails.listingId._id)
 
   },[mainDetails])
+
+  const SentToRenter = async () => {
+    // console.log("Agreement detail:", aggrementFromResponce);
+    console.log("Joining conversation ID:", conversationID);
+    socket.emit("join-conversation", conversationID);
+  
+    try {
+        const link = `${import.meta.env.VITE_FRONT_END_URL}/agreement/${_id}`;
+        const dataForSentMessageOfAgreement = {
+            message: `Agreement Link: ${link}`,
+            listing: [listingId], // Add appropriate listing ID(s)
+            receiver: renterId, // Adjust as needed
+        };
+  
+        console.log("Sending link as message:", dataForSentMessageOfAgreement);
+  
+        const response = await createMessage(dataForSentMessageOfAgreement);
+        console.log("Response from message creation:", response);
+    } catch (error) {
+        console.error("Error sending message:", error);
+    }
+  };
+  
   return (
     <div>
 
-     <Heading>Hello arain sahab, welcome to this component</Heading>
+     <Heading>Hello CHAUDHRY sahab, welcome to this component</Heading>
      <h4>Krdo socket wala kaam</h4>
+     <button onClick={SentToRenter} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Send Agreement</button>
       
     </div>
   )
