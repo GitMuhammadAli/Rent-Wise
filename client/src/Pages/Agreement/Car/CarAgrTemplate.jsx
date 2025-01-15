@@ -11,11 +11,13 @@ import {
   Flex,
 } from '@chakra-ui/react';
 import { useAuth } from '../../../hooks/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 
 export default function CarAgrTemplate({mainDetails,formData, handleChange, saveAgreement,tenant
     , checkCreateAgrr, OwnerConfirmedFunc, ownerConfirmed, }) {
     const {user} = useAuth();
+    const navigate = useNavigate()
       useEffect(()=>{
              console.log("main details", mainDetails);
                       

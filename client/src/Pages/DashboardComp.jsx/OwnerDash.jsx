@@ -339,7 +339,8 @@ export default function OwnerDash() {
         <Thead>
           <Tr>
             <Th fontSize={{ base: "xs", sm: "sm" }}>Agreement ID</Th>
-            <Th fontSize={{ base: "xs", sm: "sm" }}>category</Th>
+            <Th fontSize={{ base: "xs", sm: "sm" }}>Title</Th>
+            <Th fontSize={{ base: "xs", sm: "sm" }}>Category</Th>
             <Th fontSize={{ base: "xs", sm: "sm" }}>Status</Th>
             <Th fontSize={{ base: "xs", sm: "sm" }}>Owner Confirmed</Th>
             <Th fontSize={{ base: "xs", sm: "sm" }}>Renter Confirmed</Th>
@@ -354,9 +355,12 @@ export default function OwnerDash() {
                 <Td fontSize={{ base: "xs", sm: "sm" }} fontWeight="medium">
                   {agreement.agreementDetailsId}
                 </Td>
-                {/* <Td fontSize={{ base: "xs", sm: "sm" }} fontWeight="medium">
-                  {agreement.category}
-                </Td> */}
+                <Td fontSize={{ base: "xs", sm: "sm" }} fontWeight="medium">
+                  {agreement.listingId.title}
+                </Td>
+                <Td fontSize={{ base: "xs", sm: "sm" }} fontWeight="medium">
+                  {agreement.listingId.category}
+                </Td>
                 <Td fontSize={{ base: "xs", sm: "sm" }}>
                   <Text
                     display="inline-flex"
@@ -386,7 +390,7 @@ export default function OwnerDash() {
                 </Td>
                 <Td>
                 
-                  <Link to={agreement.category === 'car' ?  `/agreementCar/${agreement._id}` : `/agreementHouse/${agreement._id}`}>
+                  <Link to={agreement.listingId.category === 'car' ?  `/agreementCar/${agreement._id}` : `/agreementHouse/${agreement._id}`}>
                     <Button
                       // onClick={ handleEditClick}
                       variant="ghost"

@@ -1,3 +1,4 @@
+import { Heading } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom';
 
@@ -21,6 +22,8 @@ export default function SendToTenant() {
   return (
     <div>
 
+     <Heading>Hello arain sahab, welcome to this component</Heading>
+     <h4>Krdo socket wala kaam</h4>
       
     </div>
   )
