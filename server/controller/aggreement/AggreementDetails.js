@@ -291,16 +291,14 @@ exports.ViewAggrementByRenter = async (req, res, next) => {
                 data: aggrement,
             })
         }
-        if (renterConfirmed === BOOLEAN.TRUE) {
-            if (aggrement.renterConfirmed === BOOLEAN.FALSE) {
+        if (renterConfirmed === BOOLEAN.TRUE || aggrement.renterConfirmed === BOOLEAN.FALSE )  {
                 const agg = await Aggrement.findByIdAndUpdate(aggId, { renterConfirmed: BOOLEAN.TRUE }, { new: true });
                 return res.status(STATUS.SUCCESS).json({
                     status: STATUS.SUCCESS,
                     message: AGGREEMENT.AGGREMENT_IS_CONFIRMED,
                     data: agg,
                 })
-            }
-        } else {
+            } else {
             return res.status(STATUS.BAD_REQUEST).json({
                 status: STATUS.BAD_REQUEST,
                 message: AGGREEMENT.AGGREMENT_IS_NOT_CONFIRMED,
