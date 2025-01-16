@@ -271,10 +271,11 @@ exports.ViewAggrementByRenter = async (req, res, next) => {
         const { aggId, renterConfirmed } = req.body;
         console.log("res body", res.body)
 
-        const aggrement = await Aggrement.findById(aggId);
+        const aggrement = await Aggrement.findById(aggId).populate('agreementDetailsId');
         if (!aggrement) {
             return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.AGGREMENT_NOT_FOUND, STATUS.NOT_FOUND));
         }
+        console.log("aggrement", aggrement);
         const ownerId = aggrement.ownerId;
         if (user.toString() !== ownerId.toString()) {
             return res.status(STATUS.SUCCESS).json({
@@ -284,6 +285,13 @@ exports.ViewAggrementByRenter = async (req, res, next) => {
             })
             // return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.UNAUTHORIZED, STATUS.UNAUTHORIZED));
         }
+        if (aggrement.ownerConfirmed === BOOLEAN.TRUE && aggrement.renterConfirmed === BOOLEAN.TRUE) {
+            return res.status(STATUS.SUCCESS).json({
+                status: STATUS.SUCCESS,
+                message: AGGREEMENT.AGGREMENT_IS_ALREADY_CONFIRMED_ACTIVE,
+                data: agg,
+            })
+        }
         if (aggrement.ownerConfirmed === BOOLEAN.FALSE) {
             return res.status(STATUS.SUCCESS).json({
                 status: STATUS.UNAUTHORIZED,
@@ -291,14 +299,22 @@ exports.ViewAggrementByRenter = async (req, res, next) => {
                 data: aggrement,
             })
         }
-        if (renterConfirmed === BOOLEAN.TRUE && aggrement.renterConfirmed === BOOLEAN.FALSE )  {
-                const agg = await Aggrement.findByIdAndUpdate(aggId, { renterConfirmed: BOOLEAN.TRUE }, { new: true });
-                return res.status(STATUS.SUCCESS).json({
-                    status: STATUS.SUCCESS,
-                    message: AGGREEMENT.AGGREMENT_IS_CONFIRMED,
-                    data: agg,
-                })
-            } else {
+        if (user.toString() !== aggrement.renterId.toString()) {
+            return res.status(STATUS.SUCCESS).json({
+                status: STATUS.UNAUTHORIZED,
+                message: AGGREEMENT.AFFGEMENT_CAN_ONLY_BE_CONFIRMED_BY_RENTER,
+                data: aggrement,
+            })
+        }
+        if (renterConfirmed === BOOLEAN.TRUE && aggrement.renterConfirmed === BOOLEAN.FALSE && user.toString() === aggrement.renterId.toString()) {
+            const agg = await Aggrement.findByIdAndUpdate(aggId, { renterConfirmed: BOOLEAN.TRUE, agreementStatus: "active" }, { new: true });
+            return res.status(STATUS.SUCCESS).json({
+                status: STATUS.SUCCESS,
+                message: AGGREEMENT.AGGREMENT_IS_CONFIRMED,
+                data: agg,
+            })
+        }
+        else {
             return res.status(STATUS.BAD_REQUEST).json({
                 status: STATUS.BAD_REQUEST,
                 message: AGGREEMENT.AGGREMENT_IS_NOT_CONFIRMED,
