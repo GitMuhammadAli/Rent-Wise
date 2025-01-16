@@ -8,7 +8,7 @@ const { STATUS } = require("../../messages/status");
 const AppError = require("../../utils/AppError");
 const { BOOLEAN } = require("../../utils/Roles");
 
-const initializeAdmin = async () => {
+const initializeAdmin = async (next) => {
   try {
     const adminExists = await Users.findOne({ role: "admin" });
     if (!adminExists) {
@@ -22,7 +22,7 @@ const initializeAdmin = async () => {
       console.log("Admin user created with username: admin and password: admin");
     }
   } catch (error) {
-    throw new AppError(BOOLEAN.FALSE , ERROR_MESSAGE, STATUS.SERVER_ERROR);
+    next(error);
   }
 };
 
@@ -92,8 +92,8 @@ const login = async (req, res ,next) => {
       return next(new AppError(BOOLEAN.FALSE , ERROR_MESSAGE.INVALID_PASSWORD, STATUS.UNAUTHORIZED))
     }
     await GenerateToken(user, req, res ,next);
-    return res.status(200).json({
-      message: "Login successful",
+    return res.status(STATUS.SUCCESS).json({
+      message: RESPONCE_MESSAGE.LOGIN_SUCCESS,
       user: { id: user._id, role: user.role },
     }); 
     
@@ -104,7 +104,7 @@ const login = async (req, res ,next) => {
 
 const handleGoogleCallback = async (req, res ,next) => {
   try {
-    console.log("Callback URL: ", "http://localhost:3600/auth/google/callback");
+    console.log("Callback URL: ", process.env.GOOGLE_CALLBACK_URL);
     await GenerateToken(req.user, req, res);
     res.redirect(process.env.CLIENT_URL || "http://localhost:4000/" );
   } catch (error) {

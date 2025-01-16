@@ -22,9 +22,9 @@ exports.GetUser = async (req, res, next) => {
       return next(new AppError(BOOLEAN.FALSE , ERROR_MESSAGE.USER_NOT_FOUND, STATUS.NOT_FOUND));
     }
 
-    res.status(200).json({
+    res.status(STATUS.SUCCESS).json({
       success: BOOLEAN.TRUE,
-      message: "User Fetched Successfully",
+      message: RESPONCE_MESSAGE.USER_FETCHED,
       user,
     });
   } catch (error) {

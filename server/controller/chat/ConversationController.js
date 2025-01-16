@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Conversation = require("../../model/chat/ConversationModel");
 const Messsage = require("../../model/chat/MesssageModel");
 const {  CONVERSATION } = require("../../messages/response");
-
+const { STATUS } = require("../../messages/status");
 const { io } = require("../../utils/socket");
 const AppError = require("../../utils/AppError");
 const { ROLES , BOOLEAN} = require("../../utils/Roles");
@@ -69,9 +69,9 @@ const createOrGetConversation = async (req, res , next) => {
 
         // const messages = await Messsage.find({ conversation: conversation._id }).sort({ createdAt: 1 });
 
-        res.status(200).json({
+        res.status(STATUS.SUCCESS).json({
             success: BOOLEAN.TRUE,
-            message: "Conversation retrieved/created successfully",
+            message: CONVERSATION.CONVERSATION_RETRIEVED,
             data: {
                 conversation,
                 participants: participants.map((p) => p.user),
@@ -127,7 +127,7 @@ const getChatParticipants = async (req, res) => {
             return next(new AppError(BOOLEAN.FALSE , CONVERSATION.PARTICIPANTS_NOT_FOUND , STATUS.NOT_FOUND));
         }
 
-        res.status(200).json({ success: BOOLEAN.TRUE, participants });
+        res.status(STATUS.SUCCESS).json({ success: BOOLEAN.TRUE, participants });
     } catch (error) {
         next(error);
     }
@@ -267,7 +267,7 @@ return next(new AppError(BOOLEAN.FALSE , CONVERSATION.INVALID_DATA , STATUS.BAD_
             return next(new AppError(BOOLEAN.FALSE , CONVERSATION.SOCKET_ERROR , STATUS.BAD_REQUEST));
         }
 
-        res.status(201).json({ success: BOOLEAN.TRUE, message: "Message sent successfully", data: newMessage });
+        res.status(STATUS.SUCCESS).json({ success: BOOLEAN.TRUE, message: CONVERSATION.MESSAGE_SENT, data: newMessage });
     } catch (error) {
         next(error);
     }
@@ -278,7 +278,7 @@ return next(new AppError(BOOLEAN.FALSE , CONVERSATION.INVALID_DATA , STATUS.BAD_
 
 
 
-const fetchConversationsForSidebarOld = async (req, res) => {
+const fetchConversationsForSidebarOld = async (req, res ,next) => {
     try {
         const userId = req.user._id;
 
@@ -293,7 +293,7 @@ const fetchConversationsForSidebarOld = async (req, res) => {
             return next(new AppError(BOOLEAN.FALSE , CONVERSATION.CONVERSATION_NOT_FOUND , STATUS.NOT_FOUND));
         }
 
-        res.status(200).json({ success: true, data: conversations });
+        res.status(STATUS.SUCCESS).json({ success: BOOLEAN.TRUE, data: conversations });
     } catch (error) {
         next(error);
     }
@@ -302,7 +302,7 @@ const fetchConversationsForSidebarOld = async (req, res) => {
 
 
 
-  const fetchConversationsForSidebar = async (req, res) => {
+  const fetchConversationsForSidebar = async (req, res , next) => {
       try {
           const userId = req.user._id;
 
@@ -368,20 +368,20 @@ const fetchConversationsForSidebarOld = async (req, res) => {
         }
 
 
-          res.status(200).json({ success: BOOLEAN.TRUE, data: conversations });
+          res.status(STATUS.SUCCESS).json({ success: BOOLEAN.TRUE, data: conversations });
       } catch (error) {
           next(error);
       }
   };
 
   
-const fetchMessagesByConversation = async (req, res) => {
+const fetchMessagesByConversation = async (req, res ,  next) => {
     try {
         const { conversationId } = req.params;
         const userId = req.user._id; 
 
         if (!conversationId) {
-            return res.status(400).json({ error: "Conversation ID is required" });
+            return res.status(STATUS.BAD_REQUEST).json({ message: CONVERSATION.CONVERSTAION_ID_REQUIRED });
         }
 
         const conversation = await Conversation.findById(conversationId);
@@ -404,7 +404,7 @@ const fetchMessagesByConversation = async (req, res) => {
             return next(new AppError(BOOLEAN.FALSE , CONVERSATION.SOCKET_ERROR , STATUS.BAD_REQUEST));
         }
 
-        res.status(200).json({
+        res.status(STATUS.SUCCESS).json({
             success: BOOLEAN.TRUE,
             data: messages,
         });

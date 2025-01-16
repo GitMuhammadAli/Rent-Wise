@@ -80,7 +80,7 @@ exports.getCommentsWithReplies = async (req, res , next) => {
         return next(new AppError(BOOLEAN.FALSE , COMMENTS.COMMENT_NOT_FOUND , STATUS.NOT_FOUND));
       }
 
-    res.status(200).json({ comments });
+    res.status(STATUS.SUCCESS).json({ comments });
   } catch (error) {
   next(error);
   }
@@ -102,7 +102,7 @@ exports.getCommentsWithReplies = async (req, res , next) => {
       // }
 
       await Comment.findByIdAndDelete(id);
-      res.status(200).json({ message: "Comment deleted successfully." });
+      res.status(STATUS.SUCCESS).json({ message: COMMENTS.COMMENT_DELETED });
 
     } catch (error) {
       next(error);
@@ -126,7 +126,7 @@ exports.getCommentsWithReplies = async (req, res , next) => {
       // }
 
       await Reply.findByIdAndDelete(id);
-      res.status(200).json({ message: "Comment deleted successfully." });
+      res.status(STATUS.SUCCESS).json({ message: COMMENTS.COMMENT_DELETED });
 
     } catch (error) {
       next(error);

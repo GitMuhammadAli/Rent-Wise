@@ -59,7 +59,8 @@ const LISTINGS = {
     BIDDING_ENDED: "Bidding has ended for this item.",
     MEDIA_UPLOAD_ERR: "Failed to upload media files",
     MEDIA_UPLOAD_SUCCESS: "Media files uploaded successfully",
-}
+    BID_PLACED: "Bid placed successfully",
+    RENTAL_ITEM_AND_ASSOCIATED_FILES_DELETED_SUCCESSFULLY: "Rental item and associated files deleted successfully",}
 
 
 const AGGREEMENT = {
@@ -114,7 +115,9 @@ const CONVERSATION = {
     PARTICIPANTS_NOT_FOUND: "Participants not found",
     MESSAGE_NOT_CREATED: "Message not created",
     SOCKET_ERROR: "Socket Error",
-
+    CONVERSATION_RETRIEVED: "Conversation retrieved",
+    MESSAGE_SENT:"Message sent Successfully",
+    CONVERSTAION_ID_REQUIRED: "Conversation Id is required",
 }
 
 module.exports = {

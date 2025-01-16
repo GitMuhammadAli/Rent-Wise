@@ -177,7 +177,7 @@ exports.placeBid = async (req, res, next) => {
         const minimumAllowedBid = bidding.highestBid ? bidding.highestBid + bidding.bidIncrement : bidding.minimumBid;
         if (bidAmount < minimumAllowedBid) {
 
-            return res.status(400).json({
+            return res.status(STATUS.BAD_GATEWAY).json({
                 error: `Bid must be at least ${minimumAllowedBid}.`,
             });
         }
@@ -192,7 +192,7 @@ exports.placeBid = async (req, res, next) => {
 
         await bidding.save();
 
-        return res.status(200).json({ message: "Bid placed successfully!" });
+        return res.status(STATUS.SUCCESS).json({ message: LISTINGS.BID_PLACED });
     } catch (error) {
         next(error);
     }
@@ -408,7 +408,7 @@ exports.DeleteListings = async (req, res, next) => {
         // Delete the rental item from the database
         await RentalItem.findByIdAndDelete(id);
 
-        res.status(200).json({ message: 'Rental item and associated files deleted successfully' });
+        res.status(STATUS.SUCCESS).json({ message: LISTINGS.RENTAL_ITEM_AND_ASSOCIATED_FILES_DELETED_SUCCESSFULLY });
     } catch (error) {
         next(error)
     }
