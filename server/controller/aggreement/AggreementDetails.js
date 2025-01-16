@@ -275,7 +275,7 @@ exports.ViewAggrementByRenter = async (req, res, next) => {
     try {
         const user = req.user._id;
         const { aggId, renterConfirmed } = req.body;
-        console.log("res body", res.body)
+        console.log("req body", req.body)
 
         const aggrement = await Aggrement.findById(aggId).populate('agreementDetailsId');
         if (!aggrement) {
@@ -283,19 +283,19 @@ exports.ViewAggrementByRenter = async (req, res, next) => {
         }
         console.log("aggrement", aggrement);
         const ownerId = aggrement.ownerId;
-        if (user.toString() !== ownerId.toString()) {
-            return res.status(STATUS.SUCCESS).json({
-                status: STATUS.SUCCESS,
-                message: AGGREEMENT.AGGREMENT_NOT_OWNER,
-                data: aggrement,
-            })
-            // return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.UNAUTHORIZED, STATUS.UNAUTHORIZED));
-        }
+        // if (user.toString() !== ownerId.toString()) {
+        //     return res.status(STATUS.SUCCESS).json({
+        //         status: STATUS.SUCCESS,
+        //         message: AGGREEMENT.AGGREMENT_NOT_OWNER,
+        //         data: aggrement,
+        //     })
+        //     // return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.UNAUTHORIZED, STATUS.UNAUTHORIZED));
+        // }
         if (aggrement.ownerConfirmed === BOOLEAN.TRUE && aggrement.renterConfirmed === BOOLEAN.TRUE) {
             return res.status(STATUS.SUCCESS).json({
                 status: STATUS.SUCCESS,
                 message: AGGREEMENT.AGGREMENT_IS_ALREADY_CONFIRMED_ACTIVE,
-                data: agg,
+                data: aggrement,
             })
         }
         if (aggrement.ownerConfirmed === BOOLEAN.FALSE) {
@@ -317,7 +317,7 @@ exports.ViewAggrementByRenter = async (req, res, next) => {
             return res.status(STATUS.SUCCESS).json({
                 status: STATUS.SUCCESS,
                 message: AGGREEMENT.AGGREMENT_IS_CONFIRMED,
-                data: agg,
+                data: aggrement,
             })
         }
         else {
