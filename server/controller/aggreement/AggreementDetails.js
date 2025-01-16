@@ -176,12 +176,12 @@ exports.sentAggreement = async (req, res, next) => {
 
         const agg = await Aggrement.findById(_id);
         if (!agg) {
-            return next(new AppError(BOOLEAN.FALSE, AGGREMENT.AGGREMENT_NOT_FOUND,STATUS.NOT_FOUND));
+            return next(new AppError(BOOLEAN.FALSE, AGGREEMENT.AGGREMENT_NOT_FOUND,STATUS.NOT_FOUND));
         }
 
         const aggDetails = await AggrementDetails.findById(agg.agreementDetailsId);
         if (!aggDetails) {
-            return next(new AppError(BOOLEAN.FALSE, AGGREMENT.AGGREMENT_NOT_FOUND,STATUS.NOT_FOUND));
+            return next(new AppError(BOOLEAN.FALSE, AGGREEMENT.AGGREMENT_NOT_FOUND,STATUS.NOT_FOUND));
         }
 
         if (!agg.ownerConfirmed === BOOLEAN.FALSE) {
@@ -194,7 +194,7 @@ exports.sentAggreement = async (req, res, next) => {
         const messageLink = await createLinkMessage(
             agg.listingId,
             ` Agreement for renter confirmation 
-            ${process.env.CLIENT_URL}/agreements/${agg._id}`,
+            <a href="${process.env.CLIENT_URL}/agreements/${agg._id}">Click here to view agreement</a>`,
             agg.ownerId,
             agg.renterId,
             conversationID,
@@ -262,6 +262,8 @@ exports.GetAggrementByQr = async (req, res, next) => { }
 
 
 
+
+
 // To View the aggrement Only for The Renter and Update the Aggrement For Owner To Make the Aggrement As Complete
 exports.ViewAggrementByRenter = async (req, res, next) => {
     try {
@@ -281,14 +283,14 @@ exports.ViewAggrementByRenter = async (req, res, next) => {
             })
             // return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.UNAUTHORIZED, STATUS.UNAUTHORIZED));
         }
-        if (agg.ownerConfirmed === BOOLEAN.FALSE) {
+        if (aggrement.ownerConfirmed === BOOLEAN.FALSE) {
             return res.status(STATUS.SUCCESS).json({
                 status: STATUS.UNAUTHORIZED,
                 message: AGGREEMENT.AFFGEMENT_NOT_CONFIRMED_BY_OWNER,
                 data: aggrement,
             })
         }
-        if (agg.renterConfirmed === BOOLEAN.TRUE) {
+        if (aggrement.renterConfirmed === BOOLEAN.TRUE) {
             const agg = await Aggrement.findByIdAndUpdate(aggId, { renterConfirmed: BOOLEAN.TRUE }, { new: true });
             return res.status(STATUS.SUCCESS).json({
                 status: STATUS.SUCCESS,
@@ -306,6 +308,8 @@ exports.ViewAggrementByRenter = async (req, res, next) => {
         next(err);
     }
 }
+
+
 
 
 exports.UpdateAggrementByOwner = async (req, res, next) => {
