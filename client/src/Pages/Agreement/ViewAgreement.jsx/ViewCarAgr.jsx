@@ -151,12 +151,12 @@ export default function ViewCarAgr() {
            </Text>
    
            <Text fontWeight="bold">BETWEEN</Text>
-           {user && <Text borderBottom="1px solid gray">{user.name}</Text>}
+           {ownerDetail?.name && <Text borderBottom="1px solid gray">{ownerDetail?.name}</Text>}
            <Text>Hereinafter known as the "owner" of the one part.</Text>
    
            <Text fontWeight="bold">AND</Text>
            <Text borderBottom="1px solid gray">
-             {renterDetails.name ||''}
+             {renterDetails?.name ||''}
              </Text>
            <Text>Hereinafter known as the 'tenant' of the other part.</Text>
    
@@ -407,18 +407,6 @@ export default function ViewCarAgr() {
            
            <Flex gap={4} mt={4} flexDir={'column'} >
        
-           {/* {
-               checkCreateAgrr && (
-                   <>
-                   <Button  bg={'black'} color={'white'}>Update Agreement</Button>
-                   <Button onClick={OwnerConfirmedFunc}  bg={'black'} color={'white'}>
-                       {
-                           ownerConfirmed ? (<Text>I dont agree to this agreemnt</Text>) : (<Text>I agree to this agreement</Text>)
-                       }
-                   </Button>
-                   </>
-               )
-           } */}
            { 
                renterConfirmed ? (
                    <Text color={'green.600'} fontWeight={'bold'} fontSize={'lg'}>{`${renterDetails?.name} confirmed this agreement` }</Text>
