@@ -39,8 +39,8 @@ const LISTINGS = {
     LISTING_NOT_AVAILABLE_FOR_SALE: "Listing not available for sale",
     LISTING_NOT_AVAILABLE_FOR_RENT_OR_SALE: "Listing not available for rent or sale",
     LISTING_NOT_AVAILABLE_FOR_RENT_OR_SALE_OR_RENT_AND_SALE: "Listing not available for rent or sale or rent and sale",
-    ERROR_UPLOADING_IMAGES:"Error uploading images",
-    ERROR_UPLOADING_VIDEOS:"Error uploading videos",
+    ERROR_UPLOADING_IMAGES: "Error uploading images",
+    ERROR_UPLOADING_VIDEOS: "Error uploading videos",
     TITLE_IS_REQUIRED: "Title is required",
     DESCRIPTION_IS_REQUIRED: "Description is required",
     PRICE_IS_REQUIRED: "Price is required",
@@ -55,9 +55,9 @@ const LISTINGS = {
     FILL_FORM_AND_SUBMIT_AGAIN: "Please Fill the form Correctly and Submit again",
     PLEASE_PROVIDE_ALL_REQUIRED_FIELDS: "Please provide all required fields",
     BIDDING_ERROR_MISSING_REQUIRED_FIELDS: "Bidding enabled but missing required fields: Minimum Bid and Bid End Date",
-    BIDDING_NOT_ENABLED:"Bidding is not enabled for this item.",
-    BIDDING_ENDED:"Bidding has ended for this item.",
-        MEDIA_UPLOAD_ERR: "Failed to upload media files",
+    BIDDING_NOT_ENABLED: "Bidding is not enabled for this item.",
+    BIDDING_ENDED: "Bidding has ended for this item.",
+    MEDIA_UPLOAD_ERR: "Failed to upload media files",
 }
 
 
@@ -85,18 +85,19 @@ const AGGREEMENT = {
     RULES_IS_REQUIRED: "Rules is required",
     LOCATION_IS_REQUIRED: "Location is required",
     AGGREMENT_FECTHED_BY_ID: "Aggrement fetched by id",
-AGGREMENT_NOT_OWNER: "You are not the owner of this Aggrement",
-AFFGEMENT_NOT_CONFIRMED_BY_OWNER: "Aggrement not confirmed by owner . Make Sure Owner Created and Confirmed the Aggrement",
-AGGREMENT_IS_CONFIRMED: "Aggrement is confirmed",
-AGGREMENT_IS_CONFIRMED_BY_OWNER: "Aggrement is confirmed by owner",
-AGGREMENT_IS_NOT_CONFIRMED: "Aggrement is not confirmed",
-AGGREMENT_FROM_REQUEST: "Request body does not contain aggrementFromResponce",
-AFFGEMENT_CAN_ONLY_BE_CONFIRMED_BY_RENTER: "Aggrement can only be confirmed by renter",
-AGGREMENT_IS_ALREADY_CONFIRMED_ACTIVE: "Aggrement is already confirmed and active",
-  
+    AGGREMENT_NOT_OWNER: "You are not the owner of this Aggrement",
+    AFFGEMENT_NOT_CONFIRMED_BY_OWNER: "Aggrement not confirmed by owner . Make Sure Owner Created and Confirmed the Aggrement",
+    AGGREMENT_IS_CONFIRMED: "Aggrement is confirmed",
+    AGGREMENT_IS_CONFIRMED_BY_OWNER: "Aggrement is confirmed by owner",
+    AGGREMENT_IS_NOT_CONFIRMED: "Aggrement is not confirmed",
+    AGGREMENT_FROM_REQUEST: "Request body does not contain aggrementFromResponce",
+    AFFGEMENT_CAN_ONLY_BE_CONFIRMED_BY_RENTER: "Aggrement can only be confirmed by renter",
+    AGGREMENT_IS_ALREADY_CONFIRMED_ACTIVE: "Aggrement is already confirmed and active",
+    AGGREMENT_ALREADY_EXISTS_WITH_OTHER_PARTY: "Aggrement already exists with other party cannot create new aggrement",
+
 }
 
-const CONVERSATION ={
+const CONVERSATION = {
     CONVERSATION_CREATED: "Conversation created successfully",
     CONVERSATION_FETCHED: "Conversation fetched successfully",
     CONVERSATION_UPDATED: "Conversation updated successfully",
