@@ -149,7 +149,7 @@ exports.CreateListings = async (req, res, next) => {
         console.log("Rental item created:", newRentalItem);
 
 
-        return res.status(201).json({
+        return res.status(STATUS.SUCCESS).json({
             rentalItem: newRentalItem,
             message: LISTINGS.LISTING_CREATED,
         });
