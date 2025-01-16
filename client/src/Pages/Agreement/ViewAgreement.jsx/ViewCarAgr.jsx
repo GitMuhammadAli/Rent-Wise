@@ -23,6 +23,7 @@ export default function ViewCarAgr() {
 
            const [renterDetails, setRenterDetails] = useState(""); // done
                 const [ownerDetail, setOwnerDetail] = useState(""); // done
+                const [popOver, SetPopOver ] = useState(false);
 
      const [formData, setFormData] = useState({
         createdDate: '',
@@ -119,6 +120,14 @@ export default function ViewCarAgr() {
           };
           fetchSingleAgreement();
         }, [_id, user]);
+
+
+        const SetRenterStatus=()=>{
+            setRenterConfirmed(prev => !prev)
+            SetPopOver(true);
+
+
+        }
   return (
     <div>
            <Box maxW="4xl" mx="auto" p={6} bg="white" boxShadow="lg" borderRadius="lg">
@@ -147,7 +156,7 @@ export default function ViewCarAgr() {
    
            <Text fontWeight="bold">AND</Text>
            <Text borderBottom="1px solid gray">
-             {/* {tenant.name ||''} */}
+             {renterDetails.name ||''}
              </Text>
            <Text>Hereinafter known as the 'tenant' of the other part.</Text>
    
@@ -418,17 +427,18 @@ export default function ViewCarAgr() {
                )
            }
 
-           {
-            <Button w={'fit-content'} onClick={(prev)=> setRenterConfirmed(prev => !prev)}  bg={'black'} color={'white'}>
+           {  renterDetails?._id === user?._id && !renterConfirmed && (
+            <Button w={'fit-content'} onClick={SetRenterStatus }  bg={'black'} color={'white'}>
             {
                 renterConfirmed ? (<Text>I dont agree to this agreemnt</Text>) : (<Text>I agree to this agreement</Text>)
             }
         </Button>
-           }
+
+           )}
 
                    
    {
-    renterConfirmed && ( <PopOverRenterConfirm aggId={_id} renterConfirmed={renterConfirmed} setRenterConfirmed={setRenterConfirmed} /> )
+   renterDetails?._id === user?._id && renterConfirmed && popOver && ( <PopOverRenterConfirm aggId={_id} renterConfirmed={renterConfirmed} setRenterConfirmed={setRenterConfirmed} /> )
    }
 
            </Flex>

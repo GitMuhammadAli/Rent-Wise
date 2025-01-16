@@ -167,7 +167,7 @@ export default function UserPopover({tenant,convoID}) {
         </PopoverContent>
       </Popover>
 
-      )  : ( <Text>Loading.....</Text>  )
+      )  : ( <Text></Text>  )
      }
         
       
