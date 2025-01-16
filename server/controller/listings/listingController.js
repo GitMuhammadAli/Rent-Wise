@@ -46,8 +46,8 @@ exports.uploadMedia = async (req, res, next) => {
         console.log("Images:", images);
         console.log("Videos:", videos);
 
-        return res.status(200).json({
-            message: "Media uploaded successfully",
+        return res.status(STATUS.SUCCESS).json({
+        message: LISTINGS.MEDIA_UPLOAD_SUCCESS,
             images,
             videos
         });

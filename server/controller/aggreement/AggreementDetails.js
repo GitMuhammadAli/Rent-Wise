@@ -293,7 +293,7 @@ exports.VerifyAggrementByRenter = async (req, res, next) => {
         // }
         if (aggrement.ownerConfirmed === BOOLEAN.TRUE && aggrement.renterConfirmed === BOOLEAN.TRUE) {
             return res.status(STATUS.SUCCESS).json({
-                status: STATUS.SUCCESS,
+                status: STATUS.FORBIDDEN,
                 message: AGGREEMENT.AGGREMENT_IS_ALREADY_CONFIRMED_ACTIVE,
                 // data: aggrement,
             })

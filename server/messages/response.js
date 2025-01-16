@@ -58,6 +58,7 @@ const LISTINGS = {
     BIDDING_NOT_ENABLED: "Bidding is not enabled for this item.",
     BIDDING_ENDED: "Bidding has ended for this item.",
     MEDIA_UPLOAD_ERR: "Failed to upload media files",
+    MEDIA_UPLOAD_SUCCESS: "Media files uploaded successfully",
 }
 
 
