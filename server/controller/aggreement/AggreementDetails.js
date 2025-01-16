@@ -271,7 +271,7 @@ exports.GetAggrementByQr = async (req, res, next) => { }
 
 
 // To View the aggrement Only for The Renter and Update the Aggrement For Owner To Make the Aggrement As Complete
-exports.ViewAggrementByRenter = async (req, res, next) => {
+exports.VerifyAggrementByRenter = async (req, res, next) => {
     try {
         const user = req.user._id;
         const { aggId, renterConfirmed } = req.body;

@@ -13,7 +13,7 @@ router.post("/getAggrementDetails", AuthorizeUser("user", "admin"), asyncHandler
 
 
 // this is only for renter to view the aggrement and confirm the aggrement status
-router.post("/viewAggrementByRenter", AuthorizeUser("user", "admin"), asyncHandler(Aggreement.ViewAggrementByRenter));
+router.post("/VerifyAggrementByRenter", AuthorizeUser("user", "admin"), asyncHandler(Aggreement.VerifyAggrementByRenter));
 
 
 // this is only for owner to update the aggrement status and update the aggrement details

@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Popover, PopoverTrigger, PopoverArrow , PopoverCloseButton ,PopoverContent, PopoverHeader, PopoverBody, Button, PopoverFooter, ButtonGroup, Text, Flex } from '@chakra-ui/react';
-import { ViewAggrementByRenter } from '../../../Api/Agreement';
+import { VerifyAggrementByRenter } from '../../../Api/Agreement';
 export default function PopOverRenterConfirm({aggId,renterConfirmed, setRenterConfirmed}) {
     const [isOpen, setIsOpen] = React.useState(false)
  const open = () => setIsOpen(!isOpen)
@@ -21,7 +21,7 @@ export default function PopOverRenterConfirm({aggId,renterConfirmed, setRenterCo
     try{
         if(renterConfirmed && aggId)
             {
-                const response  = await ViewAggrementByRenter({aggId ,renterConfirmed});
+                const response  = await VerifyAggrementByRenter({aggId ,renterConfirmed});
                 console.log('response is view', response);
         
         
