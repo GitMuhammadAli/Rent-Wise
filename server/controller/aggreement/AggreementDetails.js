@@ -3,7 +3,7 @@ const AggrementDetails = require("../../model/agreements/AggrementDetails");
 const RentalItem = require("../../model/listings/RentalItemModel");
 const logger = require("../../utils/logger");
 const { ERROR_MESSAGE } = require("../../messages/error");
-const { RESPONCE_MESSAGE, AGGREEMENT , CONVERSATION } = require("../../messages/response");
+const { RESPONCE_MESSAGE, AGGREEMENT, CONVERSATION } = require("../../messages/response");
 const { STATUS } = require("../../messages/status");
 const AppError = require("../../utils/AppError");
 const { ROLES, BOOLEAN } = require("../../utils/Roles");
@@ -12,7 +12,7 @@ const { io } = require("../../utils/socket");
 const Messsage = require("../../model/chat/MesssageModel");
 const Conversation = require("../../model/chat/ConversationModel");
 
-const CreateQrCode = async (data , next) => {
+const CreateQrCode = async (data, next) => {
     try {
         const QrData = JSON.stringify(data);
         console.log("data for qr is" + QrData)
@@ -135,11 +135,11 @@ exports.verifyAggrement = async (req, res, next) => {
 
 
 
-const createLinkMessage = async (listingId, message, senderId, receiver, conversationID, isLinkMessage , next) => {
+const createLinkMessage = async (listingId, message, senderId, receiver, conversationID, isLinkMessage, next) => {
     try {
         const conversation = await Conversation.findById(conversationID);
-        if(!conversation){
-            return next(new AppError(BOOLEAN.FALSE , CONVERSATION.CONVERSATION_NOT_FOUND , STATUS.NOT_FOUND));
+        if (!conversation) {
+            return next(new AppError(BOOLEAN.FALSE, CONVERSATION.CONVERSATION_NOT_FOUND, STATUS.NOT_FOUND));
         }
 
         const newMessage = new Messsage({
@@ -159,7 +159,7 @@ const createLinkMessage = async (listingId, message, senderId, receiver, convers
 
         return newMessage;
     } catch (err) {
-       next(err);
+        next(err);
     }
 };
 
@@ -176,12 +176,12 @@ exports.sentAggreement = async (req, res, next) => {
 
         const agg = await Aggrement.findById(_id);
         if (!agg) {
-            return next(new AppError(BOOLEAN.FALSE, AGGREEMENT.AGGREMENT_NOT_FOUND,STATUS.NOT_FOUND));
+            return next(new AppError(BOOLEAN.FALSE, AGGREEMENT.AGGREMENT_NOT_FOUND, STATUS.NOT_FOUND));
         }
 
         const aggDetails = await AggrementDetails.findById(agg.agreementDetailsId);
         if (!aggDetails) {
-            return next(new AppError(BOOLEAN.FALSE, AGGREEMENT.AGGREMENT_NOT_FOUND,STATUS.NOT_FOUND));
+            return next(new AppError(BOOLEAN.FALSE, AGGREEMENT.AGGREMENT_NOT_FOUND, STATUS.NOT_FOUND));
         }
 
         if (!agg.ownerConfirmed === BOOLEAN.FALSE) {
@@ -213,7 +213,7 @@ exports.sentAggreement = async (req, res, next) => {
                     receiver: renterId,
                     listing: listingId,
                 });
-        }else{
+        } else {
             return next(new AppError(BOOLEAN.FALSE, CONVERSATION.SOCKET_ERROR, STATUS.NOT_FOUND));
         }
 
@@ -291,13 +291,15 @@ exports.ViewAggrementByRenter = async (req, res, next) => {
                 data: aggrement,
             })
         }
-        if (aggrement.renterConfirmed === BOOLEAN.FALSE) {
-            const agg = await Aggrement.findByIdAndUpdate(aggId, { renterConfirmed: BOOLEAN.TRUE }, { new: true });
-            return res.status(STATUS.SUCCESS).json({
-                status: STATUS.SUCCESS,
-                message: AGGREEMENT.AGGREMENT_IS_CONFIRMED,
-                data: agg,
-            })
+        if (renterConfirmed === boolean.TRUE) {
+            if (aggrement.renterConfirmed === BOOLEAN.FALSE) {
+                const agg = await Aggrement.findByIdAndUpdate(aggId, { renterConfirmed: BOOLEAN.TRUE }, { new: true });
+                return res.status(STATUS.SUCCESS).json({
+                    status: STATUS.SUCCESS,
+                    message: AGGREEMENT.AGGREMENT_IS_CONFIRMED,
+                    data: agg,
+                })
+            }
         } else {
             return res.status(STATUS.BAD_REQUEST).json({
                 status: STATUS.BAD_REQUEST,
