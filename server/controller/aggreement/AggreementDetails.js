@@ -269,6 +269,7 @@ exports.ViewAggrementByRenter = async (req, res, next) => {
     try {
         const user = req.user._id;
         const { aggId, renterConfirmed } = req.body;
+        console.log("res body", res.body)
 
         const aggrement = await Aggrement.findById(aggId);
         if (!aggrement) {
