@@ -295,21 +295,21 @@ exports.ViewAggrementByRenter = async (req, res, next) => {
             return res.status(STATUS.SUCCESS).json({
                 status: STATUS.SUCCESS,
                 message: AGGREEMENT.AGGREMENT_IS_ALREADY_CONFIRMED_ACTIVE,
-                data: aggrement,
+                // data: aggrement,
             })
         }
         if (aggrement.ownerConfirmed === BOOLEAN.FALSE) {
             return res.status(STATUS.SUCCESS).json({
                 status: STATUS.UNAUTHORIZED,
                 message: AGGREEMENT.AFFGEMENT_NOT_CONFIRMED_BY_OWNER,
-                data: aggrement,
+                // data: aggrement,
             })
         }
         if (user.toString() !== aggrement.renterId.toString()) {
             return res.status(STATUS.SUCCESS).json({
                 status: STATUS.UNAUTHORIZED,
                 message: AGGREEMENT.AFFGEMENT_CAN_ONLY_BE_CONFIRMED_BY_RENTER,
-                data: aggrement,
+                // data: aggrement,
             })
         }
         if (renterConfirmed === BOOLEAN.TRUE && aggrement.renterConfirmed === BOOLEAN.FALSE && user.toString() === aggrement.renterId.toString()) {
@@ -317,7 +317,7 @@ exports.ViewAggrementByRenter = async (req, res, next) => {
             return res.status(STATUS.SUCCESS).json({
                 status: STATUS.SUCCESS,
                 message: AGGREEMENT.AGGREMENT_IS_CONFIRMED,
-                data: aggrement,
+                // data: agg,
             })
         }
         else {
