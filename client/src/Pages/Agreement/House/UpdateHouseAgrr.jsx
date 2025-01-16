@@ -99,12 +99,19 @@ export default function UpdateHouseAgrr() {
     //       setRenterConfirmed(true);
     //     }
     //   };
-
-
+    const handleChange = (e) => {
+      const { name, value } = e.target;
+      setAggrementDetail((prev) => ({
+          ...prev,
+          [name]: value,
+      }));
+  };
     
+  
   return (
     <div>
         <HouseAgrTemplate 
+         handleChange={handleChange}
         mainDetails = {mainDetails}
         OwnerConfirmedFunc={OwnerConfirmedFunc} ownerConfirmed={ownerConfirmed} 
         setAggrementDetail={setAggrementDetail} formData={aggrementDetail} setRenterDetails={setRenterDetails}

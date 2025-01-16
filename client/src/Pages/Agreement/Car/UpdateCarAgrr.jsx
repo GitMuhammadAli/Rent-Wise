@@ -107,9 +107,18 @@ export default function UpdateCarAgrr() {
     //       setRenterConfirmed(true);
     //     }
     //   };
+
+    const handleChange = (e) => {
+      const { name, value } = e.target;
+      setAggrementDetail((prev) => ({
+          ...prev,
+          [name]: value,
+      }));
+  };
   return (
     <div>
         <CarAgrTemplate 
+        handleChange={handleChange}
         mainDetails = {mainDetails}
         OwnerConfirmedFunc={OwnerConfirmedFunc} ownerConfirmed={ownerConfirmed}  
         setAggrementDetail={setAggrementDetail} formData={aggrementDetail} setRenterDetails={setRenterDetails}

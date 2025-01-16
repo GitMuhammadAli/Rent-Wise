@@ -12,22 +12,27 @@ import {
 } from '@chakra-ui/react';
 import { useAuth } from '../../../hooks/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import SendToTenant from '../SendToTenant';
 
 
 export default function CarAgrTemplate({mainDetails,formData, handleChange, saveAgreement,tenant
     , checkCreateAgrr, OwnerConfirmedFunc, ownerConfirmed, }) {
     const {user} = useAuth();
     const navigate = useNavigate()
+    const [isOpen, setIsOpen] = React.useState(false)
+    const open = () => setIsOpen(!isOpen)
+    const close = () => setIsOpen(false)
       useEffect(()=>{
              console.log("main details", mainDetails);
                       
             },[mainDetails])
   
             function sendAggrToRenter(){
-              navigate('/sendToTenant',
-                {
-                  state: {mainDetails }
-                })
+              // navigate('/sendToTenant',
+              //   {
+              //     state: {mainDetails }
+              //   })
+              setIsOpen(!isOpen)
             }
  
   return (
@@ -308,6 +313,9 @@ export default function CarAgrTemplate({mainDetails,formData, handleChange, save
                 
             )
         }
+         {
+            isOpen && ( <Box display={'flex'} justifyContent={'center'}> <SendToTenant mainDetails={mainDetails} setIsOpen={setIsOpen} open={open} close={close} isOpen={isOpen}   /> </Box>)
+         }
         </Flex>
         
 

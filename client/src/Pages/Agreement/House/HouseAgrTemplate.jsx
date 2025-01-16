@@ -12,6 +12,7 @@ import {
 } from '@chakra-ui/react';
 import { useAuth } from '../../../hooks/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import SendToTenant from '../SendToTenant';
 
 
 
@@ -19,6 +20,11 @@ export default function HouseAgrTemplate({mainDetails,formData, handleChange, sa
     , checkCreateAgrr, OwnerConfirmedFunc, ownerConfirmed }) {
         const {user} = useAuth();
         const navigate = useNavigate()
+         const [isOpen, setIsOpen] = React.useState(false)
+         const open = () => setIsOpen(!isOpen)
+         const close = () => setIsOpen(false)
+        
+      
    
        useEffect(()=>{
            if(ownerConfirmed)
@@ -34,12 +40,16 @@ export default function HouseAgrTemplate({mainDetails,formData, handleChange, sa
         },[mainDetails])
 
         function sendAggrToRenter(){
-         
-          navigate('/sendToTenant',
-            {
-              state: {mainDetails }
-            })
+          setIsOpen(!isOpen)
+        //  console.log("runninf")
+        //   return(
+        //     <SendToTenant setIsOpen={setIsOpen} open={open} close={close} isOpen={isOpen}   />
+        //   )
+      
         }
+
+
+        
         
       
   return (
@@ -271,12 +281,16 @@ export default function HouseAgrTemplate({mainDetails,formData, handleChange, sa
                  }
                  {
                      checkCreateAgrr && ownerConfirmed && (
-                         <Button  onClick={ ()=> {console.log("clicked"); sendAggrToRenter()}} bg={'black'} color={'white'}>Send Agreement To Renter</Button>
+                         <Button   bg={'black'}  onClick={ ()=> {console.log("clicked"); sendAggrToRenter()}} color={'white'}>Send Agreement To Renter</Button>
+                        
                          
                      )
                  }
+                 {
+                  isOpen && ( <Box display={'flex'} justifyContent={'center'}> <SendToTenant mainDetails={mainDetails} setIsOpen={setIsOpen} open={open} close={close} isOpen={isOpen}   /> </Box>)
+                 }
                  </Flex>
-         </form>
+         </form>  
       </VStack>
     </Box>
       

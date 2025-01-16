@@ -35,6 +35,8 @@ import CarAgreement from "./Pages/Agreement/Car/CarAgreement";
 import UpdateCarAgrr from "./Pages/Agreement/Car/UpdateCarAgrr";
 import UpdateHouseAgrr from "./Pages/Agreement/House/UpdateHouseAgrr";
 import SendToTenant from "./Pages/Agreement/SendToTenant";
+import ViewHouseAgr from "./Pages/Agreement/ViewAgreement.jsx/ViewHouseAgr";
+import ViewCarAgr from "./Pages/Agreement/ViewAgreement.jsx/ViewCarAgr";
 
 
 
@@ -89,6 +91,10 @@ const router = createBrowserRouter(
         {/* <Route path="/agreements/:id" element={<UpdateAgreement/>} /> */}
         <Route path="/agreementCar/:id" element={<UpdateCarAgrr/>} />
         <Route path="/agreementHouse/:id" element={<UpdateHouseAgrr/>} />
+
+        {/* view of agreement */}
+        <Route path="/viewHouseAgreement/:_id" element={<ViewHouseAgr/>} />
+        <Route path="/viewCarAgreement/:_id" element={<ViewCarAgr/>} />
 
         {/* <Route path="/UpdateAgreement" element={<UpdateAgreement/>} /> */}
         {/* <Route path="/chat" element={<MainChat/>} /> */}
