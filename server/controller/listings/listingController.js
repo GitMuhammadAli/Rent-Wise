@@ -264,7 +264,7 @@ exports.UpdateListings = async (req, res, next) => {
         location,
         availability,
         averageRating,
-        status
+        listingStatus
     } = req.body;
 
     console.log("Received request to update listing", req.body);
@@ -358,7 +358,7 @@ exports.UpdateListings = async (req, res, next) => {
                 images: finalImageIds,
                 videos: finalVideoIds,
                 averageRating,
-                status,
+                listingStatus,
                 updatedAt: Date.now(),
             },
             { new: BOOLEAN.TRUE, runValidators: BOOLEAN.TRUE }
