@@ -13,10 +13,16 @@ import {
     Flex,
   } from '@chakra-ui/react';
 import { useAuth } from '../../../hooks/AuthContext';
+import PopOverRenterConfirm from './PopOverRenterConfirm';
 
 export default function ViewCarAgr() {
 
     const {user} = useAuth();
+     const [ownerConfirmed, setOwnerConfirmed] = useState(true); //done
+          const [renterConfirmed, setRenterConfirmed] = useState(false); //done
+
+           const [renterDetails, setRenterDetails] = useState(""); // done
+                const [ownerDetail, setOwnerDetail] = useState(""); // done
 
      const [formData, setFormData] = useState({
         createdDate: '',
@@ -98,14 +104,14 @@ export default function ViewCarAgr() {
       : [],
    });
   
-            //   console.log("renter detail", response.data.data.renterId);
-            //   setRenterDetails(response.data.data.renterId);
-            //   setOwnerDetail(response.data.data.ownerId);
+              console.log("renter detail", response.data.data.renterId);
+              setRenterDetails(response.data.data.renterId);
+              setOwnerDetail(response.data.data.ownerId);
       
-            // setOwnerConfirmed(response.data?.data?.ownerConfirmed);
-            //   setRenterConfirmed(response.data?.data?.renterConfirmed);
+            setOwnerConfirmed(response.data?.data?.ownerConfirmed);
+              setRenterConfirmed(response.data?.data?.renterConfirmed);
       
-            //   console.log("listing", response.data?.data?.listingId);
+              console.log("listing", response.data?.data?.listingId);
             //   setListingDetail(response.data?.data?.listingId);
             } catch (error) {
               console.log("errr", error);
@@ -168,16 +174,25 @@ export default function ViewCarAgr() {
                w="40"
                mx={2}
              />, <br/> Make:
-              <Input
-              isDisabled
+              <input
+               disabled
                type="text"
                 name="make"
                placeholder='Suzuki / Wagon R'
                 value={formData.make}
-               
-               display="inline-block"
-               w="40"
+            //    display="inline-block"
+            //    w="40"
                mx={2}
+               style={{
+                display: "inline-block",
+               
+                padding:'10px',
+                margin: "0 8px",
+                color: "red", // Make sure the text is black even when disabled
+                backgroundColor: "white", // Optional: Customize background color when disabled
+                border:'1px solid red',
+                borderRadius:'5px'
+              }}
              />
               , Model: 
               <Input
@@ -373,15 +388,15 @@ export default function ViewCarAgr() {
              at the date mentioned.
            </Text>
    
-           {/* { ayr gi user ki lakin
+           { 
                ownerConfirmed ? (
-                   <Text color={'green.600'} fontWeight={'bold'} fontSize={'lg'}>{`${user?.name} confirmed this agreement` }</Text>
+                   <Text color={'green.600'} fontWeight={'bold'} fontSize={'lg'}>{`${ownerDetail?.name} confirmed this agreement` }</Text>
                ) : (
-                   <Text color={'red.600'} fontWeight={'bold'} fontSize={'lg'}>{`${user?.name} not confirmed this agreement` }</Text>
+                   <Text color={'red.600'} fontWeight={'bold'} fontSize={'lg'}>{`${ownerDetail?.name} not confirmed this agreement` }</Text>
                )
-           } */}
+           }
            
-           <Flex gap={4} mt={4} >
+           <Flex gap={4} mt={4} flexDir={'column'} >
        
            {/* {
                checkCreateAgrr && (
@@ -395,9 +410,28 @@ export default function ViewCarAgr() {
                    </>
                )
            } */}
+           { 
+               renterConfirmed ? (
+                   <Text color={'green.600'} fontWeight={'bold'} fontSize={'lg'}>{`${renterDetails?.name} confirmed this agreement` }</Text>
+               ) : (
+                   <Text color={'red.600'} fontWeight={'bold'} fontSize={'lg'}>{`${renterDetails?.name} not confirmed this agreement` }</Text>
+               )
+           }
+
+           {
+            <Button w={'fit-content'} onClick={(prev)=> setRenterConfirmed(prev => !prev)}  bg={'black'} color={'white'}>
+            {
+                renterConfirmed ? (<Text>I dont agree to this agreemnt</Text>) : (<Text>I agree to this agreement</Text>)
+            }
+        </Button>
+           }
+
+                   
+   {
+    renterConfirmed && ( <PopOverRenterConfirm aggId={_id} renterConfirmed={renterConfirmed} setRenterConfirmed={setRenterConfirmed} /> )
+   }
 
            </Flex>
-           
    
         
          </VStack>
