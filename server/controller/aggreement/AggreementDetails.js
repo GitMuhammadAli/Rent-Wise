@@ -84,12 +84,12 @@ exports.CreateAggrement = async (req, res, next) => {
                 message: AGGREEMENT.AGGREMENT_ALREADY_EXISTS
             });
         }
-        if(existingAgreement.agreementStatus === "active"){
-            return res.status(STATUS.FORBIDDEN).json({
-                status: STATUS.FORBIDDEN,
-                message: AGGREEMENT.AGGREMENT_ALREADY_EXISTS_WITH_OTHER_PARTY
-            });
-        }
+        // if(existingAgreement.agreementStatus === "active"){
+        //     return res.status(STATUS.FORBIDDEN).json({
+        //         status: STATUS.FORBIDDEN,
+        //         message: AGGREEMENT.AGGREMENT_ALREADY_EXISTS_WITH_OTHER_PARTY
+        //     });
+        // }
         const aggrementDetails = new AggrementDetails({
             aggrementDetail: aggrementDetail
         })
