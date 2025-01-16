@@ -302,7 +302,6 @@ exports.ViewAggrementByRenter = async (req, res, next) => {
             return res.status(STATUS.BAD_REQUEST).json({
                 status: STATUS.BAD_REQUEST,
                 message: AGGREEMENT.AGGREMENT_IS_NOT_CONFIRMED,
-                data: agg,
             })
         }
     } catch (err) {
