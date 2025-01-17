@@ -96,7 +96,7 @@ const AGGREEMENT = {
     AFFGEMENT_CAN_ONLY_BE_CONFIRMED_BY_RENTER: "Aggrement can only be confirmed by renter",
     AGGREMENT_IS_ALREADY_CONFIRMED_ACTIVE: "Aggrement is already confirmed and active",
     AGGREMENT_ALREADY_EXISTS_WITH_OTHER_PARTY: "Aggrement already exists with other party cannot create new aggrement",
-
+CANNOT_UPDATE_AGREEMENT_RENTER_AGGREED_TO_IT: "Cannot update agreement as renter has agreed to it",
 }
 
 const CONVERSATION = {

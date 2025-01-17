@@ -336,42 +336,59 @@ exports.VerifyAggrementByRenter = async (req, res, next) => {
 
 exports.UpdateAggrementByOwner = async (req, res, next) => {
     try {
-        const user = req.user._id;
         const { aggId, data, aggrementDetail } = req.body;
+        const user = req.user._id;
 
-        console.log("update aggrement request body is" , req.body)
 
-        const agg = await Aggrement.findById(aggId).populate("agreementDetailsId").populate("listingId");
-        console.log("aggrement for update is " , agg)
+        const agg = await Aggrement.findById(aggId)
+            .populate("agreementDetailsId")
+            .populate("listingId", "category owner");
+
         if (!agg) {
             return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.AGGREMENT_NOT_FOUND, STATUS.NOT_FOUND));
         }
-        const ownerId = agg.ownerId;
-        if (user.toString() !== ownerId.toString()) {
+
+        if (user.toString() !== agg.ownerId.toString()) {
             return res.status(STATUS.SUCCESS).json({
                 status: STATUS.SUCCESS,
                 message: AGGREEMENT.AGGREMENT_NOT_OWNER,
                 data: agg,
-            })
+            });
         }
-        const agreementDetailsId = agg.agreementDetailsId;
-        const agreementDetails = await AggrementDetails.findById(agreementDetailsId);
+
+        const agreementDetails = await AggrementDetails.findById(agg.agreementDetailsId);
         if (!agreementDetails) {
             return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.AGGREMENT_DETAILS_NOT_FOUND, STATUS.NOT_FOUND));
         }
-        const ownerConfirmed = data.ownerConfirmed;
-        if (ownerConfirmed === BOOLEAN.TRUE) {
-            const updatedDetailsofaggrement = await AggrementDetails.findByIdAndUpdate(agreementDetailsId, { aggrementDetail }, { new: true });
+
+        if (agg.ownerConfirmed === BOOLEAN.TRUE && agg.renterConfirmed === BOOLEAN.FALSE) {
+            const updatedDetailsofaggrement = await AggrementDetails.findByIdAndUpdate(
+                agg.agreementDetailsId,
+                {
+                    "aggrementDetail": {
+                        ...agreementDetails.aggrementDetail,
+                        ...aggrementDetail
+                    }
+                },
+                { new: true }
+            );
+
             if (!updatedDetailsofaggrement) {
                 return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.AGGREMENT_DETAILS_NOT_UPDATED, STATUS.NOT_FOUND));
             }
-            const agg = await Aggrement.findByIdAndUpdate(aggId, { ownerConfirmed: BOOLEAN.TRUE }, { new: true });
+
             return res.status(STATUS.SUCCESS).json({
                 status: STATUS.SUCCESS,
                 message: AGGREEMENT.AGGREMENT_IS_CONFIRMED_BY_OWNER,
-                data: agg,
-            })
+                data: updatedDetailsofaggrement,
+            });
+        } else {
+            return res.status(STATUS.BAD_REQUEST).json({
+                status: STATUS.BAD_REQUEST,
+                message: AGGREEMENT.CANNOT_UPDATE_AGREEMENT_RENTER_AGGREED_TO_IT,
+            });
         }
+
     } catch (err) {
         next(err);
     }
