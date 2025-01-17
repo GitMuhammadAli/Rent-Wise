@@ -37,6 +37,7 @@ exports.getByOwnerId = async (req, res, next) => {
             return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.USER_NOT_FOUND, STATUS.NOT_FOUND));
         }
 
+
         for (let i = 0; i < agreements.length; i++) {
             const aggId = agreements[i]._id;
             const agreementDetail = await AggrementDetails.find({ _id: agreements[i].agreementDetailsId });
@@ -48,17 +49,21 @@ exports.getByOwnerId = async (req, res, next) => {
             const agreementEndDate = new Date(endDate);
 
             if (agreements[i].renterConfirmed === BOOLEAN.FALSE) {
+                // If renter has not confirmed, the status is pending, unless the date has passed.
                 if (currentDate >= agreementStartDate && currentDate <= agreementEndDate) {
                     await Aggrement.findByIdAndUpdate(aggId, { agreementStatus: "pending" }, { new: true });
                 } else if (currentDate > agreementEndDate) {
                     await Aggrement.findByIdAndUpdate(aggId, { agreementStatus: "Inactive" }, { new: true });
                 }
             } else if (agreements[i].renterConfirmed === BOOLEAN.TRUE) {
+                // If renter has confirmed, check the date. If the date is not started, the status is pending.
                 if (currentDate < agreementStartDate) {
                     await Aggrement.findByIdAndUpdate(aggId, { agreementStatus: "pending" }, { new: true });
                 } else if (currentDate >= agreementStartDate && currentDate <= agreementEndDate) {
+                    // Date is within range
                     await Aggrement.findByIdAndUpdate(aggId, { agreementStatus: "active" }, { new: true });
                 } else if (currentDate > agreementEndDate) {
+                    // Date has passed
                     await Aggrement.findByIdAndUpdate(aggId, { agreementStatus: "Inactive" }, { new: true });
                 }
             }
