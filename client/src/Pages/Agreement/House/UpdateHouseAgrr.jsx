@@ -106,11 +106,16 @@ export default function UpdateHouseAgrr() {
           [name]: value,
       }));
   };
+  
+  const updateAgreement = async()=>{
+    console.log("Updated form data is::: ",aggrementDetail)
+  }
     
   
   return (
     <div>
         <HouseAgrTemplate 
+        updateAgreement={updateAgreement}
          handleChange={handleChange}
         mainDetails = {mainDetails}
         OwnerConfirmedFunc={OwnerConfirmedFunc} ownerConfirmed={ownerConfirmed} 

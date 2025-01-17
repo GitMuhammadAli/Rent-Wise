@@ -16,7 +16,7 @@ import SendToTenant from '../SendToTenant';
 
 
 
-export default function HouseAgrTemplate({mainDetails,formData, handleChange, saveAgreement,tenant
+export default function HouseAgrTemplate({updateAgreement,mainDetails,formData, handleChange, saveAgreement,tenant
     , checkCreateAgrr, OwnerConfirmedFunc, ownerConfirmed }) {
         const {user} = useAuth();
         const navigate = useNavigate()
@@ -270,7 +270,10 @@ export default function HouseAgrTemplate({mainDetails,formData, handleChange, sa
                  {
                      checkCreateAgrr && (
                          <>
-                         <Button  bg={'black'} color={'white'}>Update Agreement</Button>
+                         { ownerConfirmed && 
+                          (  <Button  bg={'black'} onClick={updateAgreement} color={'white'}>Update Agreement</Button> )
+                         }
+                        
                          <Button onClick={OwnerConfirmedFunc}  bg={'black'} color={'white'}>
                              {
                                  ownerConfirmed ? (<Text>I dont agree to this agreemnt</Text>) : (<Text>I agree to this agreement</Text>)

@@ -15,7 +15,7 @@ import { useNavigate } from 'react-router-dom';
 import SendToTenant from '../SendToTenant';
 
 
-export default function CarAgrTemplate({mainDetails,formData, handleChange, saveAgreement,tenant
+export default function CarAgrTemplate({updateAgreement,mainDetails,formData, handleChange, saveAgreement,tenant
     , checkCreateAgrr, OwnerConfirmedFunc, ownerConfirmed, }) {
     const {user} = useAuth();
     const navigate = useNavigate()
@@ -298,7 +298,7 @@ export default function CarAgrTemplate({mainDetails,formData, handleChange, save
         {
             checkCreateAgrr && (
                 <>
-                <Button  bg={'black'} color={'white'}>Update Agreement</Button>
+                <Button  bg={'black'} onClick={updateAgreement} color={'white'}>Update Agreement</Button>
                 <Button onClick={OwnerConfirmedFunc}  bg={'black'} color={'white'}>
                     {
                         ownerConfirmed ? (<Text>I dont agree to this agreemnt</Text>) : (<Text>I agree to this agreement</Text>)
