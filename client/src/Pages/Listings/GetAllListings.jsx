@@ -32,10 +32,10 @@ export default function GetAllListings() {
   },[listings])
 
   const categories = [
+    { name: 'House', icon: FaBuilding, description: 'Explore on two wheels with our bike rentals' },
     { name: 'Cars', icon: FaCar, description: 'Rent a wide variety of cars for any occasion' },
-    { name: 'Bikes', icon: FaBicycle, description: 'Explore on two wheels with our bike rentals' },
-    { name: 'Apartments', icon: FaBuilding, description: 'Find your perfect temporary home' },
-    { name: 'Hotels', icon: FaHotel, description: 'Book luxurious stays for your travels' },
+    // { name: 'Apartments', icon: FaBuilding, description: 'Find your perfect temporary home' },
+    { name: 'Hostels', icon: FaHotel, description: 'Book luxurious stays for your travels' },
   ];
 
   return (
@@ -60,10 +60,11 @@ export default function GetAllListings() {
 
         {/* Categories Section */}
         <Box mb={12}>
-          <Heading as="h2" size="lg" fontWeight="bold" mb={6} color="gray.800">
+          <Heading  as="h2" size="lg" fontWeight="bold" mb={6} color="gray.800">
             Popular Categories
           </Heading>
-          <Grid templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' }} gap={6}>
+          <Flex display={'flex'} justifyContent={'center'}  gap={{base:"4",md:'10'}} flexDir={{base:"column",md:'row'}}>
+          {/* templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' }} */}
             {categories.map((category) => (
               <Card key={category.name} _hover={{ boxShadow: 'lg' }} transition="box-shadow 0.3s">
                 <CardHeader>
@@ -76,13 +77,13 @@ export default function GetAllListings() {
                   <Text>{category.description}</Text>
                 </CardBody>
                 <CardFooter>
-                  <Button variant="link" as={Link} to={`/category/${category.name.toLowerCase()}`} colorScheme="blue" rightIcon={<ArrowForwardIcon />}>
+                  <Button variant="link" as={Link} to={`/categories/${category.name.toLowerCase()}`} colorScheme="blue" rightIcon={<ArrowForwardIcon />}>
                     Browse {category.name}
                   </Button>
                 </CardFooter>
               </Card>
             ))}
-          </Grid>
+          </Flex>
         </Box>
 
         {/* Featured Listings Section */}

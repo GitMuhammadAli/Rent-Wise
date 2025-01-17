@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useAuth } from '../../../hooks/AuthContext';
-import { GetAggreementsByID } from '../../../Api/Agreement';
+import { GetAggreementsByID, UpdateAggrementByOwner } from '../../../Api/Agreement';
 import HouseAgrTemplate from './HouseAgrTemplate';
 
 export default function UpdateHouseAgrr() {
@@ -108,8 +108,22 @@ export default function UpdateHouseAgrr() {
   };
   
   const updateAgreement = async()=>{
-    console.log("Updated form data is::: ",aggrementDetail)
-  }
+      console.log("Updated form data is::: ",aggrementDetail)
+      if(!aggrementDetail && !id)
+      {
+        return;
+      }
+      try {
+        const data = ownerConfirmed
+        const response =  await UpdateAggrementByOwner({aggrementDetail,data,aggId:id}); 
+        console.log("res after update is", response)
+      } catch (error) {
+        console.log("error")
+        
+      }
+  
+      
+    }
     
   
   return (
