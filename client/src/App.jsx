@@ -37,6 +37,9 @@ import UpdateHouseAgrr from "./Pages/Agreement/House/UpdateHouseAgrr";
 import SendToTenant from "./Pages/Agreement/SendToTenant";
 import ViewHouseAgr from "./Pages/Agreement/ViewAgreement.jsx/ViewHouseAgr";
 import ViewCarAgr from "./Pages/Agreement/ViewAgreement.jsx/ViewCarAgr";
+import HostelListing from "./Pages/Listings/CategoryBased/HostelListing";
+import HouseListing from "./Pages/Listings/CategoryBased/HouseListing";
+import CarListing from "./Pages/Listings/CategoryBased/CarListing";
 
 
 
@@ -76,6 +79,12 @@ const router = createBrowserRouter(
         <Route element={<ProtectedRoute requiredRole="user" />}>
           <Route path="/" element={<Home />} />
         </Route>
+
+        {/* listing on basis of catagories */}
+
+        <Route path="/categories/hostels" element={<HostelListing />} />
+        <Route path="/categories/house" element={<HouseListing />} />
+        <Route path="/categories/car" element={<CarListing />} />
 
         <Route path="/getAll" element={<GetAllListings />} />
         {/* <Route path="/createListings" element={<MakeListing />} /> */}

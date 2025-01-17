@@ -39,8 +39,10 @@ import { GetAggreements } from "../../Api/Agreement";
 // import UpdateAgreement from "../Agreement/UpdateAgreement";
 
 export default function OwnerDash() {
-  const [count, setCount] = useState("");
+  const [listingCount, setListingCount] = useState("");
   const [agreements, setAgreements] = useState([]);
+  const [agreementCount, setAgreementCount] = useState('');
+  const [agreementStatusCount, setAgreementStatusCount] = useState(null);
  
  
   const { state, dispatch } = useContext(ListingsContext);
@@ -56,6 +58,12 @@ export default function OwnerDash() {
         const response = await GetAggreements();
         console.log("Agreements fetched:", response.data.data);
         setAgreements(response.data.data);
+        // agreement count
+        setAgreementCount(response?.data?.data?.length);
+       const AgrrStatus =  response?.data?.data?.map((item)=> item.agreementStatus )
+       console.log("agreeSTtt", AgrrStatus)
+       const activeCount = AgrrStatus?.filter(status => status === 'active').length;
+       setAgreementStatusCount(activeCount);
         console.log("Agreements:", agreements);
       } catch (error) {
         console.error("Failed to fetch agreements:", error);
@@ -80,7 +88,7 @@ export default function OwnerDash() {
 
   //       const response = await getAlListingsofSpecificUser(user_id);
   //       console.log("Response of user in ownerdash is: ", response.data);
-  //       setCount(response.data.count);
+  //       setListingCount(response.data.listingCount);
 
   //       // setItems(response.data.listing);
   //       dispatch({ type: "GET_USER_LISTINGS", payload: response.data.listing });
@@ -94,9 +102,7 @@ export default function OwnerDash() {
   useEffect(()=>{
 
     console.log("useListInOwner",userListings.length)
-    setCount(userListings.length)
-
-
+    setListingCount(userListings.length)
   },[userListings])
 
   return (
@@ -111,7 +117,7 @@ export default function OwnerDash() {
             Owner Dashboard
           </Heading>
           {/* {
-    count && count > 0 && (
+    listingCount && listingCount > 0 && (
     <Flex gap={3} alignItems={'center'}>
 
         <Text fontWeight={'bold'} fontSize={'lg'} >Create Aggreement</Text>
@@ -121,7 +127,7 @@ export default function OwnerDash() {
     )
 } */}
 
-          {/* {count && count > 0 && <UserPopover />} */}
+          {/* {listingCount && listingCount > 0 && <UserPopover />} */}
         </Flex>
 
         <SimpleGrid
@@ -181,12 +187,12 @@ export default function OwnerDash() {
               </Flex>
             </CardHeader>
             <CardBody p={{ base: 2, sm: 3, md: 4 }}>
-              {count && count > 0 ? (
+              {listingCount && listingCount > 0 ? (
                 <Text
                   fontSize={{ base: "lg", sm: "xl", md: "2xl" }}
                   fontWeight="bold"
                 >
-                  {count}
+                  {listingCount}
                 </Text>
               ) : (
                 <Text
@@ -205,21 +211,23 @@ export default function OwnerDash() {
             <CardHeader p={{ base: 2, sm: 3, md: 4 }}>
               <Flex justify="space-between" align="center">
                 <Heading as="h2" size={{ base: "xs", sm: "sm" }}>
-                  Pending Reviews
+                  Agreements Created
                 </Heading>
                 <AlertCircle className="h-3 w-3 sm:h-4 sm:w-4" />
               </Flex>
             </CardHeader>
             <CardBody p={{ base: 2, sm: 3, md: 4 }}>
-              <Text
+              <Box
                 fontSize={{ base: "lg", sm: "xl", md: "2xl" }}
                 fontWeight="bold"
               >
-                7
-              </Text>
-              <Text fontSize={{ base: "xs", sm: "sm" }} color="gray.500">
-                +3 this week
-              </Text>
+                {agreementCount &&  agreementCount > 0 ? ( <Text>{agreementCount}</Text>) : ( <Text>No agreements created yet</Text>) }
+              </Box>
+              <Box fontSize={{ base: "xs", sm: "sm" }} color="gray.500">
+                {
+                  agreementStatusCount && agreementStatusCount > 0 ? (<Text>{agreementStatusCount} active agreements</Text> ) : (<Text>No active agreements </Text> )
+                }
+              </Box>
             </CardBody>
           </Card>
         </SimpleGrid>
@@ -242,7 +250,7 @@ export default function OwnerDash() {
                       <Th fontSize={{ base: "xs", sm: "sm" }}>Status</Th>
                       <Th fontSize={{ base: "xs", sm: "sm" }}>Price</Th>
 
-                      <Th fontSize={{ base: "xs", sm: "sm" }}>Action</Th>
+                      <Th fontSize={{ base: "xs", sm: "sm" }}>Update</Th>
                     </Tr>
                   </Thead>
                   <Tbody>
@@ -335,26 +343,26 @@ export default function OwnerDash() {
   </CardHeader>
   <CardBody p={{ base: 2, sm: 3, md: 4 }}>
     <TableContainer overflowX="auto">
-      <Table variant="simple" size={{ base: "sm", md: "md" }}>
+      <Table variant="simple" size={{ base: "xs", md: "sm" }}>
         <Thead>
           <Tr>
-            <Th fontSize={{ base: "xs", sm: "sm" }}>Agreement ID</Th>
+            {/* <Th fontSize={{ base: "xs", sm: "sm" }}>Agreement ID</Th> */}
             <Th fontSize={{ base: "xs", sm: "sm" }}>Title</Th>
             <Th fontSize={{ base: "xs", sm: "sm" }}>Category</Th>
             <Th fontSize={{ base: "xs", sm: "sm" }}>Status</Th>
             <Th fontSize={{ base: "xs", sm: "sm" }}>Owner Confirmed</Th>
             <Th fontSize={{ base: "xs", sm: "sm" }}>Renter Confirmed</Th>
             <Th fontSize={{ base: "xs", sm: "sm" }}>Agreement Date</Th>
-            <Th fontSize={{ base: "xs", sm: "sm" }}>Action</Th>
+            <Th fontSize={{ base: "xs", sm: "sm" }}>Update</Th>
           </Tr>
         </Thead>
         <Tbody>
           {agreements && agreements.length > 0 ? (
             agreements.map((agreement) => (
               <Tr key={agreement._id}>
-                <Td fontSize={{ base: "xs", sm: "sm" }} fontWeight="medium">
+                {/* <Td fontSize={{ base: "xs", sm: "sm" }} fontWeight="medium">
                   {agreement.agreementDetailsId}
-                </Td>
+                </Td> */}
                 <Td fontSize={{ base: "xs", sm: "sm" }} fontWeight="medium">
                   {agreement.listingId.title}
                 </Td>
