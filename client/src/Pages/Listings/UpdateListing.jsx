@@ -165,6 +165,12 @@ const { listings,currentListing } = state;
         updateData.append(key, formData[key]);
       }
     });
+
+    for (let [key, value] of updateData.entries()) {
+      console.log(`${key}: ${value}`);
+    }
+    
+    // updateData.append('listingStatus', formData.listingStatus);
     updateData.append('owner', user._id);
     // Append media files and data
     newImages.forEach(image => updateData.append('images', image));
@@ -207,21 +213,10 @@ const { listings,currentListing } = state;
   };
 
   const changeListingStatus=()=>{
-    if(formData.listingStatus === 'pending')
-    {
-      setFormData({
-        ...formData,
-        listingStatus: 'active'
-      })
-    }
-    else
-    {
-      setFormData({
-        ...formData,
-        listingStatus: 'pending'
-      })
-
-    }
+    setFormData((prevData) => ({
+      ...prevData,
+      listingStatus: prevData.listingStatus === 'pending' ? 'active' : 'pending',
+    }));
    
   }
   useEffect(()=>{

@@ -43,6 +43,7 @@ export default function OwnerDash() {
   const [agreements, setAgreements] = useState([]);
   const [agreementCount, setAgreementCount] = useState('');
   const [agreementStatusCount, setAgreementStatusCount] = useState(null);
+  
  
  
   const { state, dispatch } = useContext(ListingsContext);
@@ -103,7 +104,7 @@ export default function OwnerDash() {
 
     console.log("useListInOwner",userListings.length)
     setListingCount(userListings.length)
-  },[userListings])
+  },[userListings, userListings.listingStatus])
 
   return (
     <Box minH="100vh" bg="whiteAlpha.800" p={{ base: 2, sm: 4, md: 8 }}>
@@ -221,7 +222,7 @@ export default function OwnerDash() {
                 fontSize={{ base: "lg", sm: "xl", md: "2xl" }}
                 fontWeight="bold"
               >
-                {agreementCount &&  agreementCount > 0 ? ( <Text>{agreementCount}</Text>) : ( <Text>No agreements created yet</Text>) }
+                {agreementCount &&  agreementCount > 0 ? ( <Text>{agreementCount}</Text>) : ( <Text fontSize={'20px'}>No agreements created yet</Text>) }
               </Box>
               <Box fontSize={{ base: "xs", sm: "sm" }} color="gray.500">
                 {
@@ -288,7 +289,7 @@ export default function OwnerDash() {
                                 booking.listingStatus === "Inactive" ? "red.100" :
                                 booking.listingStatus === "pending" ? "yellow.100" :
                                 booking.listingStatus === "Rented" ? "blue.100" : "gray.100"
-                              }                            >
+                              }>
                               {booking.listingStatus}
                             </Text>
                           </Td>

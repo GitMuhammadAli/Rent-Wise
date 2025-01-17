@@ -248,7 +248,8 @@ const cleanUpUnreferencedMedia = async (listingId, next) => {
         }
 
     } catch (error) {
-        next(error);
+        //  next(error);
+        console.log("error is ", error)
     }
 };
 
