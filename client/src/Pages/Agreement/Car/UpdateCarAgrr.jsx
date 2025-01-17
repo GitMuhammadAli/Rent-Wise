@@ -127,7 +127,7 @@ export default function UpdateCarAgrr() {
       const response =  await UpdateAggrementByOwner({aggrementDetail,data,aggId:id}); 
       console.log("res after update is", response)
     } catch (error) {
-      console.log("error")
+      console.log("error", error)
       
     }
 
