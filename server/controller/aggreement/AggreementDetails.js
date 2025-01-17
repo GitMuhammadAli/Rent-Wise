@@ -1,7 +1,6 @@
 const Aggrement = require("../../model/agreements/Aggrement");
 const AggrementDetails = require("../../model/agreements/AggrementDetails");
 const RentalItem = require("../../model/listings/RentalItemModel");
-const logger = require("../../utils/logger");
 const { ERROR_MESSAGE } = require("../../messages/error");
 const { RESPONCE_MESSAGE, AGGREEMENT, CONVERSATION } = require("../../messages/response");
 const { STATUS } = require("../../messages/status");
@@ -24,23 +23,57 @@ const CreateQrCode = async (data, next) => {
     }
 }
 
+
+
 exports.getByOwnerId = async (req, res, next) => {
     try {
         const ownerId = req.user._id;
-        const agg = await Aggrement.find({ ownerId }).populate("listingId").populate("renterId");
-        if (!agg) {
+        const agreements = await Aggrement.find({ ownerId })
+            .populate("listingId")
+            .populate("renterId")
+            .populate("agreementDetailsId");
+
+        if (!agreements || agreements.length === 0) {
             return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.USER_NOT_FOUND, STATUS.NOT_FOUND));
         }
+
+        for (let i = 0; i < agreements.length; i++) {
+            const aggId = agreements[i]._id;
+            const agreementDetail = await AggrementDetails.find({ _id: agreements[i].agreementDetailsId });
+            const startDate = agreementDetail[0].aggrementDetail.startDate;
+            const endDate = agreementDetail[0].aggrementDetail.endDate;
+                 
+            const currentDate = new Date();
+            const agreementStartDate = new Date(startDate);
+            const agreementEndDate = new Date(endDate);
+
+            if (agreements[i].renterConfirmed === BOOLEAN.FALSE) {
+                if (currentDate >= agreementStartDate && currentDate <= agreementEndDate) {
+                    await Aggrement.findByIdAndUpdate(aggId, { agreementStatus: "pending" }, { new: true });
+                } else if (currentDate > agreementEndDate) {
+                    await Aggrement.findByIdAndUpdate(aggId, { agreementStatus: "Inactive" }, { new: true });
+                }
+            } else if (agreements[i].renterConfirmed === BOOLEAN.TRUE) {
+                if (currentDate < agreementStartDate) {
+                    await Aggrement.findByIdAndUpdate(aggId, { agreementStatus: "pending" }, { new: true });
+                } else if (currentDate >= agreementStartDate && currentDate <= agreementEndDate) {
+                    await Aggrement.findByIdAndUpdate(aggId, { agreementStatus: "active" }, { new: true });
+                } else if (currentDate > agreementEndDate) {
+                    await Aggrement.findByIdAndUpdate(aggId, { agreementStatus: "Inactive" }, { new: true });
+                }
+            }
+        }
+
         res.status(STATUS.SUCCESS).json({
             status: STATUS.SUCCESS,
             message: RESPONCE_MESSAGE.AGGREGEMENT_CREATED,
-            data: agg,
-        })
+            data: agreements,
+        });
     } catch (error) {
         next(error);
     }
+};
 
-}
 
 exports.CreateAggrement = async (req, res, next) => {
     try {
@@ -321,6 +354,7 @@ exports.VerifyAggrementByRenter = async (req, res, next) => {
             })
         }
         else {
+            const agg = await Aggrement.findByIdAndUpdate(aggId, { renterConfirmed: BOOLEAN.TRUE, agreementStatus: "pending" }, { new: true });
             return res.status(STATUS.BAD_REQUEST).json({
                 status: STATUS.BAD_REQUEST,
                 message: AGGREEMENT.AGGREMENT_IS_NOT_CONFIRMED,
@@ -357,6 +391,7 @@ exports.UpdateAggrementByOwner = async (req, res, next) => {
         }
 
         const agreementDetails = await AggrementDetails.findById(agg.agreementDetailsId);
+        console.log("agreementDetails", agreementDetails);
         if (!agreementDetails) {
             return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.AGGREMENT_DETAILS_NOT_FOUND, STATUS.NOT_FOUND));
         }

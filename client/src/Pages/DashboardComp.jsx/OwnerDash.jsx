@@ -278,14 +278,17 @@ export default function OwnerDash() {
                               fontSize={{ base: "xs", sm: "sm" }}
                               fontWeight="medium"
                               colorScheme={
-                                booking.listingStatus === "active" ? "green" : "blue"
+                                booking.listingStatus === "active" ? "green" : 
+                                booking.listingStatus === "Inactive" ? "red" :
+                                booking.listingStatus === "pending" ? "yellow" :
+                                booking.listingStatus === "Rented" ? "blue" : "gray"
                               }
                               bg={
-                                booking.listingStatus === "active"
-                                  ? "green.100"
-                                  : "blue.100"
-                              }
-                            >
+                                booking.listingStatus === "active" ? "green.100" :
+                                booking.listingStatus === "Inactive" ? "red.100" :
+                                booking.listingStatus === "pending" ? "yellow.100" :
+                                booking.listingStatus === "Rented" ? "blue.100" : "gray.100"
+                              }                            >
                               {booking.listingStatus}
                             </Text>
                           </Td>
@@ -378,12 +381,28 @@ export default function OwnerDash() {
                     rounded="full"
                     fontSize={{ base: "xs", sm: "sm" }}
                     fontWeight="medium"
-                    color={
+                    colorScheme={
                       agreement.agreementStatus === "pending"
-                        ? "orange.500"
-                        : "green.500"
+                        ? "orange"
+                        : agreement.agreementStatus === "rejected"
+                        ? "red"
+                        : agreement.agreementStatus === "active"
+                        ? "green"
+                        : agreement.agreementStatus === "Inactive"
+                        ? "gray"
+                        : "blue"
                     }
-                  >
+                    bg={
+                      agreement.agreementStatus === "pending"
+                        ? "orange.100"
+                        : agreement.agreementStatus === "rejected"
+                        ? "red.100"
+                        : agreement.agreementStatus === "active"
+                        ? "green.100"
+                        : agreement.agreementStatus === "Inactive"
+                        ? "gray.100"
+                        : "blue.100"
+                    }                  >
                     {agreement.agreementStatus}
                   </Text>
                 </Td>

@@ -18,7 +18,7 @@ const AggrementSchema = new mongoose.Schema({
     },
     agreementStatus: {
         type: String,
-        enum: ["pending", "accepted", "rejected" , "active"],
+        enum: ["pending", "accepted", "rejected" , "active" , "Inactive"],
         default: "pending",
     },
     conversationID:{

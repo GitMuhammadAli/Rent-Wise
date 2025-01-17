@@ -112,7 +112,7 @@ const RentalSchema = new mongoose.Schema({
 
   listingStatus: {
     type: String,
-    enum: ["active", "inactive", "pending"],
+    enum: ["active", "Inactive", "pending" , "Rented"],
     default: "pending",
   },
   createdAt: { type: Date, default: Date.now },
