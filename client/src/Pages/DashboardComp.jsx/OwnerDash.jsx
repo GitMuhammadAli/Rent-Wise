@@ -278,15 +278,15 @@ export default function OwnerDash() {
                               fontSize={{ base: "xs", sm: "sm" }}
                               fontWeight="medium"
                               colorScheme={
-                                booking.status === "Active" ? "green" : "blue"
+                                booking.listingStatus === "active" ? "green" : "blue"
                               }
                               bg={
-                                booking.status === "Active"
+                                booking.listingStatus === "active"
                                   ? "green.100"
                                   : "blue.100"
                               }
                             >
-                              {booking.status}
+                              {booking.listingStatus}
                             </Text>
                           </Td>
                           <Td fontSize={{ base: "xs", sm: "sm" }}>
