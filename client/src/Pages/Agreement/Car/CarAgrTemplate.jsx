@@ -298,7 +298,10 @@ export default function CarAgrTemplate({updateAgreement,mainDetails,formData, ha
         {
             checkCreateAgrr && (
                 <>
-                <Button  bg={'black'} onClick={updateAgreement} color={'white'}>Update Agreement</Button>
+               { ownerConfirmed && 
+                (  <Button  bg={'black'} onClick={updateAgreement} color={'white'}>Update Agreement</Button> )
+               }
+               
                 <Button onClick={OwnerConfirmedFunc}  bg={'black'} color={'white'}>
                     {
                         ownerConfirmed ? (<Text>I dont agree to this agreemnt</Text>) : (<Text>I agree to this agreement</Text>)

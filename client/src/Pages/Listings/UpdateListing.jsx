@@ -35,6 +35,7 @@ const { listings,currentListing } = state;
     priceUnit: '',
     amenities: [],
     rules: [],
+    listingStatus: 'active'
   });
 
   // Media states
@@ -74,6 +75,7 @@ const { listings,currentListing } = state;
           priceUnit: listing.priceUnit,
           amenities: listing.amenities || [],
           rules: listing.rules || [],
+          listingStatus: listing.listingStatus
         });
 
         setExistingImages(listing.images || []);
@@ -173,9 +175,10 @@ const { listings,currentListing } = state;
     updateData.append('removedVideos', JSON.stringify(removedVideos));
 
     try {
-    
+       console.log("updated status", updateData)
       const response =  await Updatelistings(id, updateData);
      dispatch({type:'UPDATE_LISTING', payload:response.data})
+     console.log("res up", response.data)
      console.log("Listingggs are",listings)
       
 
@@ -197,14 +200,44 @@ const { listings,currentListing } = state;
         isClosable: true,
       });
       console.log('errrrrrr', error.response.data.details);
+      console.log('errrrrrrHA', error);
+      
       
     }
   };
+
+  const changeListingStatus=()=>{
+    if(formData.listingStatus === 'pending')
+    {
+      setFormData({
+        ...formData,
+        listingStatus: 'active'
+      })
+    }
+    else
+    {
+      setFormData({
+        ...formData,
+        listingStatus: 'pending'
+      })
+
+    }
+   
+  }
+  useEffect(()=>{
+    console.log("listing status: ", formData.listingStatus)
+
+
+  },[formData.listingStatus])
 
   return (
     <Box p={6} bg={'white'} borderRadius={'10px'}>
      
       <Heading mb={6}>Update Listing</Heading>
+      
+         
+
+
       {
         currentListing && <Box>
           {
@@ -396,10 +429,28 @@ const { listings,currentListing } = state;
               ))}
             </Flex>
           </FormControl>
-
-          <Button alignSelf={'flex-end'} w={'fit-content'} type="submit" colorScheme="teal" size="lg">
+          <Heading  fontSize={"24px"}>Listing Status:</Heading>
+          {
+            formData.listingStatus === 'active' ? (<Text w={'fit-content'}   p={'5px'}
+              borderRadius={'5px'} color={'white'} bg={'green.400'}>{formData.listingStatus}</Text>) :
+             (<Text w={'fit-content'}
+               bg={'blue.700'} 
+               color={'white'}
+               p={'5px'}
+               borderRadius={'5px'}
+               >{formData.listingStatus}</Text>)
+          }
+          
+         <Flex justifyContent={'space-between'}>
+          <Button onClick={changeListingStatus} alignSelf={'flex-end'} w={'fit-content'} colorScheme={formData.listingStatus ==='pending'? "teal": "blue"} size="md">
+            Set listing status to {
+              formData.listingStatus === 'active' ? ( 'Inactive') : ('Active')
+            }
+          </Button>
+          <Button alignSelf={'flex-end'} w={'fit-content'} type="submit" colorScheme="teal" size="md">
             Update Listing
           </Button>
+          </Flex>
         </Stack>
       </form>
     </Box>
