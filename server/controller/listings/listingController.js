@@ -125,6 +125,7 @@ exports.CreateListings = async (req, res, next) => {
             amenities,
             images,
             videos,
+            listingStatus:"active",
             // location: newLocation._id,
         });
 
@@ -416,7 +417,7 @@ exports.DeleteListings = async (req, res, next) => {
 
 exports.GetListings = async (req, res, next) => {
     try {
-        const listings = await RentalItem.find().populate("owner").populate("images").populate("videos").populate("bidding");
+        const listings = await RentalItem.find({ listingStatus : "active" }).populate("owner").populate("images").populate("videos").populate("bidding");
         res.json(listings);
     } catch (error) {
         next(error)
