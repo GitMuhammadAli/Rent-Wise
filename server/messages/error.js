@@ -46,6 +46,7 @@ NOT_LISTING_OWNER:"You are not the owner of this listing",
 AGGREMENT_ALREADY_EXISTS:"Agreement already exists for this listing and renter",
 AGGREMENT_DETAILS_NOT_FOUND:"Agreement details not found",
 AGGREMENT_DETAILS_NOT_UPDATED:"Agreement details not updated",
+ADMIN_INITLIAZED_ERROR:"Error in Admin Initialization",
 };
 
 module.exports = {

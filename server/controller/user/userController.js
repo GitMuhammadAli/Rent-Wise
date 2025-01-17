@@ -22,7 +22,8 @@ const initializeAdmin = async (next) => {
       console.log("Admin user created with username: admin and password: admin");
     }
   } catch (error) {
-    next(error);
+    // next(error);
+    throw new AppError(BOOLEAN.FALSE,ERROR_MESSAGE.ADMIN_INITLIAZED_ERROR, STATUS.INTERNAL_SERVER_ERROR)
   }
 };
 
