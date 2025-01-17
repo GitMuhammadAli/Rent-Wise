@@ -41,45 +41,41 @@ import { GetAggreements } from "../../Api/Agreement";
 export default function OwnerDash() {
   const [listingCount, setListingCount] = useState("");
   const [agreements, setAgreements] = useState([]);
-  const [agreementCount, setAgreementCount] = useState('');
+  const [agreementCount, setAgreementCount] = useState("");
   const [agreementStatusCount, setAgreementStatusCount] = useState(null);
-  
- 
- 
+
   const { state, dispatch } = useContext(ListingsContext);
   const { userListings } = state;
   // const [items, setItems] = useState([]);
 
-
   useEffect(() => {
     const fetchAgreements = async () => {
       try {
-
-       
         const response = await GetAggreements();
         console.log("Agreements fetched:", response.data.data);
         setAgreements(response.data.data);
         // agreement count
         setAgreementCount(response?.data?.data?.length);
-       const AgrrStatus =  response?.data?.data?.map((item)=> item.agreementStatus )
-       console.log("agreeSTtt", AgrrStatus)
-       const activeCount = AgrrStatus?.filter(status => status === 'active').length;
-       setAgreementStatusCount(activeCount);
+        const AgrrStatus = response?.data?.data?.map(
+          (item) => item.agreementStatus
+        );
+        console.log("agreeSTtt", AgrrStatus);
+        const activeCount = AgrrStatus?.filter(
+          (status) => status === "active"
+        ).length;
+        setAgreementStatusCount(activeCount);
         console.log("Agreements:", agreements);
       } catch (error) {
         console.error("Failed to fetch agreements:", error);
       }
     };
 
-
     fetchAgreements();
   }, []);
 
-  const handleEditClick = ()=>{
-
-    setHandleAgreementEditClick(true)
-
-  }
+  const handleEditClick = () => {
+    setHandleAgreementEditClick(true);
+  };
 
   // useEffect(() => {
   //   async function getOwnerListings() {
@@ -99,12 +95,10 @@ export default function OwnerDash() {
   //   getOwnerListings();
   // }, [user]);
 
-
-  useEffect(()=>{
-
-    console.log("useListInOwner",userListings.length)
-    setListingCount(userListings.length)
-  },[userListings, userListings.listingStatus])
+  useEffect(() => {
+    console.log("useListInOwner", userListings.length);
+    setListingCount(userListings.length);
+  }, [userListings, userListings.listingStatus]);
 
   return (
     <Box minH="100vh" bg="whiteAlpha.800" p={{ base: 2, sm: 4, md: 8 }}>
@@ -222,12 +216,18 @@ export default function OwnerDash() {
                 fontSize={{ base: "lg", sm: "xl", md: "2xl" }}
                 fontWeight="bold"
               >
-                {agreementCount &&  agreementCount > 0 ? ( <Text>{agreementCount}</Text>) : ( <Text fontSize={'20px'}>No agreements created yet</Text>) }
+                {agreementCount && agreementCount > 0 ? (
+                  <Text>{agreementCount}</Text>
+                ) : (
+                  <Text fontSize={"20px"}>No agreements created yet</Text>
+                )}
               </Box>
               <Box fontSize={{ base: "xs", sm: "sm" }} color="gray.500">
-                {
-                  agreementStatusCount && agreementStatusCount > 0 ? (<Text>{agreementStatusCount} active agreements</Text> ) : (<Text>No active agreements </Text> )
-                }
+                {agreementStatusCount && agreementStatusCount > 0 ? (
+                  <Text>{agreementStatusCount} active agreements</Text>
+                ) : (
+                  <Text>No active agreements </Text>
+                )}
               </Box>
             </CardBody>
           </Card>
@@ -279,17 +279,28 @@ export default function OwnerDash() {
                               fontSize={{ base: "xs", sm: "sm" }}
                               fontWeight="medium"
                               colorScheme={
-                                booking.listingStatus === "active" ? "green" : 
-                                booking.listingStatus === "Inactive" ? "red" :
-                                booking.listingStatus === "pending" ? "yellow" :
-                                booking.listingStatus === "Rented" ? "blue" : "gray"
+                                booking.listingStatus === "active"
+                                  ? "green"
+                                  : booking.listingStatus === "Inactive"
+                                  ? "red"
+                                  : booking.listingStatus === "pending"
+                                  ? "yellow"
+                                  : booking.listingStatus === "Rented"
+                                  ? "blue"
+                                  : "gray"
                               }
                               bg={
-                                booking.listingStatus === "active" ? "green.100" :
-                                booking.listingStatus === "Inactive" ? "red.100" :
-                                booking.listingStatus === "pending" ? "yellow.100" :
-                                booking.listingStatus === "Rented" ? "blue.100" : "gray.100"
-                              }>
+                                booking.listingStatus === "active"
+                                  ? "green.100"
+                                  : booking.listingStatus === "Inactive"
+                                  ? "red.100"
+                                  : booking.listingStatus === "pending"
+                                  ? "yellow.100"
+                                  : booking.listingStatus === "Rented"
+                                  ? "blue.100"
+                                  : "gray.100"
+                              }
+                            >
                               {booking.listingStatus}
                             </Text>
                           </Td>
@@ -331,146 +342,151 @@ export default function OwnerDash() {
             </CardFooter>
           </Card>
 
+          <Card>
+            <CardHeader p={{ base: 2, sm: 3, md: 4 }}>
+              <Heading as="h2" size={{ base: "xs", sm: "sm", md: "md" }}>
+                Agreement
+              </Heading>
+            </CardHeader>
+            <CardBody p={{ base: 2, sm: 3, md: 4 }}>
+              <TableContainer overflowX="auto">
+                <Table variant="simple" size={{ base: "xs", md: "sm" }}>
+                  <Thead>
+                    <Tr>
+                      {/* <Th fontSize={{ base: "xs", sm: "sm" }}>Agreement ID</Th> */}
+                      <Th fontSize={{ base: "xs", sm: "sm" }}>Title</Th>
+                      <Th fontSize={{ base: "xs", sm: "sm" }}>Category</Th>
+                      <Th fontSize={{ base: "xs", sm: "sm" }}>Status</Th>
+                      <Th fontSize={{ base: "xs", sm: "sm" }}>
+                        Owner Confirmed
+                      </Th>
+                      <Th fontSize={{ base: "xs", sm: "sm" }}>
+                        Renter Confirmed
+                      </Th>
+                      <Th fontSize={{ base: "xs", sm: "sm" }}>
+                        Start Date - End Date
+                      </Th>
 
-
-
-
-
-
-
-
-<Card>
-  <CardHeader p={{ base: 2, sm: 3, md: 4 }}>
-    <Heading as="h2" size={{ base: "xs", sm: "sm", md: "md" }}>
-      Agreement
-    </Heading>
-  </CardHeader>
-  <CardBody p={{ base: 2, sm: 3, md: 4 }}>
-    <TableContainer overflowX="auto">
-      <Table variant="simple" size={{ base: "xs", md: "sm" }}>
-        <Thead>
-          <Tr>
-            {/* <Th fontSize={{ base: "xs", sm: "sm" }}>Agreement ID</Th> */}
-            <Th fontSize={{ base: "xs", sm: "sm" }}>Title</Th>
-            <Th fontSize={{ base: "xs", sm: "sm" }}>Category</Th>
-            <Th fontSize={{ base: "xs", sm: "sm" }}>Status</Th>
-            <Th fontSize={{ base: "xs", sm: "sm" }}>Owner Confirmed</Th>
-            <Th fontSize={{ base: "xs", sm: "sm" }}>Renter Confirmed</Th>
-            <Th fontSize={{ base: "xs", sm: "sm" }}>Agreement Date</Th>
-            <Th fontSize={{ base: "xs", sm: "sm" }}>Update</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {agreements && agreements.length > 0 ? (
-            agreements.map((agreement) => (
-              <Tr key={agreement._id}>
-                {/* <Td fontSize={{ base: "xs", sm: "sm" }} fontWeight="medium">
+                      <Th fontSize={{ base: "xs", sm: "sm" }}>Update</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    {agreements && agreements.length > 0 ? (
+                      agreements.map((agreement) => (
+                        <Tr key={agreement._id}>
+                          {/* <Td fontSize={{ base: "xs", sm: "sm" }} fontWeight="medium">
                   {agreement.agreementDetailsId}
                 </Td> */}
-                <Td fontSize={{ base: "xs", sm: "sm" }} fontWeight="medium">
-                  {agreement.listingId.title}
-                </Td>
-                <Td fontSize={{ base: "xs", sm: "sm" }} fontWeight="medium">
-                  {agreement.listingId.category}
-                </Td>
-                <Td fontSize={{ base: "xs", sm: "sm" }}>
-                  <Text
-                    display="inline-flex"
-                    alignItems="center"
-                    px={2}
-                    py={0.5}
-                    rounded="full"
-                    fontSize={{ base: "xs", sm: "sm" }}
-                    fontWeight="medium"
-                    colorScheme={
-                      agreement.agreementStatus === "pending"
-                        ? "orange"
-                        : agreement.agreementStatus === "rejected"
-                        ? "red"
-                        : agreement.agreementStatus === "active"
-                        ? "green"
-                        : agreement.agreementStatus === "Inactive"
-                        ? "gray"
-                        : "blue"
-                    }
-                    bg={
-                      agreement.agreementStatus === "pending"
-                        ? "orange.100"
-                        : agreement.agreementStatus === "rejected"
-                        ? "red.100"
-                        : agreement.agreementStatus === "active"
-                        ? "green.100"
-                        : agreement.agreementStatus === "Inactive"
-                        ? "gray.100"
-                        : "blue.100"
-                    }                  >
-                    {agreement.agreementStatus}
-                  </Text>
-                </Td>
-                <Td fontSize={{ base: "xs", sm: "sm" }}>
-                  {agreement.ownerConfirmed ? "Yes" : "No"}
-                </Td>
-                <Td fontSize={{ base: "xs", sm: "sm" }}>
-                  {agreement.renterConfirmed ? "Yes" : "No"}
-                </Td>
-                <Td fontSize={{ base: "xs", sm: "sm" }}>
-                  {new Date(agreement.agreementDate).toLocaleDateString()}
-                </Td>
-                <Td>
-                
-                  <Link to={agreement.listingId.category === 'car' ?  `/agreementCar/${agreement._id}` : `/agreementHouse/${agreement._id}`}>
-                    <Button
-                      // onClick={ handleEditClick}
-                      variant="ghost"
-                      size={{ base: "xs", sm: "sm" }}
-                    >
-                      <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
-                    </Button>
-                  </Link>
+                          <Td
+                            fontSize={{ base: "xs", sm: "sm" }}
+                            fontWeight="medium"
+                          >
+                            {agreement.listingId.title}
+                          </Td>
+                          <Td
+                            fontSize={{ base: "xs", sm: "sm" }}
+                            fontWeight="medium"
+                          >
+                            {agreement.listingId.category}
+                          </Td>
+                          <Td fontSize={{ base: "xs", sm: "sm" }}>
+                            <Text
+                              display="inline-flex"
+                              alignItems="center"
+                              px={2}
+                              py={0.5}
+                              rounded="full"
+                              fontSize={{ base: "xs", sm: "sm" }}
+                              fontWeight="medium"
+                              colorScheme={
+                                agreement.agreementStatus === "pending"
+                                  ? "orange"
+                                  : agreement.agreementStatus === "rejected"
+                                  ? "red"
+                                  : agreement.agreementStatus === "active"
+                                  ? "green"
+                                  : agreement.agreementStatus === "Inactive"
+                                  ? "gray"
+                                  : "blue"
+                              }
+                              bg={
+                                agreement.agreementStatus === "pending"
+                                  ? "orange.100"
+                                  : agreement.agreementStatus === "rejected"
+                                  ? "red.100"
+                                  : agreement.agreementStatus === "active"
+                                  ? "green.100"
+                                  : agreement.agreementStatus === "Inactive"
+                                  ? "gray.100"
+                                  : "blue.100"
+                              }
+                            >
+                              {agreement.agreementStatus}
+                            </Text>
+                          </Td>
+                          <Td fontSize={{ base: "xs", sm: "sm" }}>
+                            {agreement.ownerConfirmed ? "Yes" : "No"}
+                          </Td>
+                          <Td fontSize={{ base: "xs", sm: "sm" }}>
+                            {agreement.renterConfirmed ? "Yes" : "No"}
+                          </Td>
+                          <Td fontSize={{ base: "xs", sm: "sm" }}>
+                            {agreement.agreementDetailsId?.aggrementDetail?.startDate ? new Date(agreement.agreementDetailsId.aggrementDetail.startDate).toLocaleDateString() : ""} 
+                            {" - "} 
+                            {agreement.agreementDetailsId?.aggrementDetail?.endDate ? new Date(agreement.agreementDetailsId.aggrementDetail.endDate).toLocaleDateString() : ""}
+                          </Td>
+                          <Td>
+                            <Link
+                              to={
+                                agreement.listingId.category === "car"
+                                  ? `/agreementCar/${agreement._id}`
+                                  : `/agreementHouse/${agreement._id}`
+                              }
+                            >
+                              <Button
+                                // onClick={ handleEditClick}
+                                variant="ghost"
+                                size={{ base: "xs", sm: "sm" }}
+                              >
+                                <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
+                              </Button>
+                            </Link>
 
-                  {/* {
+                            {/* {
                     handleAgreementEditClick &&  <UpdateAgreement agreement={agreement}/>
                   }
                    */}
-                </Td>
-              </Tr>
-            ))
-          ) : (
-            <Tr>
-              <Td colSpan={6} textAlign="center">
-                No agreements found
-              </Td>
-            </Tr>
-          )}
-        </Tbody>
-      </Table>
-    </TableContainer>
-  </CardBody>
-  <CardFooter p={{ base: 2, sm: 3, md: 4 }}>
-    <Button
-      bg={"rgb(41, 39, 39)"}
-      color={"white"}
-      _hover={{
-        color: "black",
-        background: "none",
-        border: "1px solid black",
-      }}
-      variant="outline"
-      width="full"
-      size={{ base: "xs", sm: "sm", md: "md" }}
-    >
-      View All Agreements
-    </Button>
-  </CardFooter>
-</Card>
-
-
-
-
-
-
-
-
+                          </Td>
+                        </Tr>
+                      ))
+                    ) : (
+                      <Tr>
+                        <Td colSpan={6} textAlign="center">
+                          No agreements found
+                        </Td>
+                      </Tr>
+                    )}
+                  </Tbody>
+                </Table>
+              </TableContainer>
+            </CardBody>
+            <CardFooter p={{ base: 2, sm: 3, md: 4 }}>
+              <Button
+                bg={"rgb(41, 39, 39)"}
+                color={"white"}
+                _hover={{
+                  color: "black",
+                  background: "none",
+                  border: "1px solid black",
+                }}
+                variant="outline"
+                width="full"
+                size={{ base: "xs", sm: "sm", md: "md" }}
+              >
+                View All Agreements
+              </Button>
+            </CardFooter>
+          </Card>
 
           <Card>
             <CardHeader p={{ base: 2, sm: 3, md: 4 }}>
