@@ -339,7 +339,10 @@ exports.UpdateAggrementByOwner = async (req, res, next) => {
         const user = req.user._id;
         const { aggId, data, aggrementDetail } = req.body;
 
-        const agg = await Aggrement.findById(aggId);
+        console.log("update aggrement request body is" , req.body)
+
+        const agg = await Aggrement.findById(aggId).populate("agreementDetailsId");
+        console.log("aggrement for update is " , agg)
         if (!agg) {
             return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.AGGREMENT_NOT_FOUND, STATUS.NOT_FOUND));
         }
