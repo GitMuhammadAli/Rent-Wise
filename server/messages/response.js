@@ -64,6 +64,7 @@ const LISTINGS = {
 
 
 const AGGREEMENT = {
+    AGGREMENT_FETCHED_THAT_ARE_NOT_BLOCKCHAINED:"Aggrement fetched successfully Whose are not on BLockChain",
     AGGREMENT_CREATED: "Aggrement created successfully",
     AGGREMENT_FETCHED: "Aggrement fetched successfully",
     AGGREMENT_UPDATED: "Aggrement updated successfully",

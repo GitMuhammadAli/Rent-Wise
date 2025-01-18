@@ -31,7 +31,7 @@ exports.getAggrementForAdminByOwnerIDs = async(req, res , next ) =>{
         
         res.status(STATUS.SUCCESS).json({
             status: STATUS.SUCCESS,
-            message: AGGREEMENT.AGGREMENT_FETCHED,
+            message: AGGREEMENT.AGGREMENT_FETCHED_THAT_ARE_NOT_BLOCKCHAINED,
             data: agreements,
         });
     } catch (error) {
