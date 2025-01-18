@@ -12,3 +12,29 @@ const QRCode = require('qrcode')
 const { io } = require("../../utils/socket");
 const Messsage = require("../../model/chat/MesssageModel");
 const Conversation = require("../../model/chat/ConversationModel");
+
+
+exports.getAggrementForAdminByOwnerIDs = async(req, res , next ) =>{
+    try {
+        const agreements = await Aggrement.find({ blockchainStatus: false }, { _id: 1 , blockchainStatus:1  })
+
+
+        if(!agreements) {
+            res.status(STATUS.NOT_FOUND).json({
+                status: STATUS.BAD_REQUEST,
+                message: AGGREEMENT.AGGREMENT_NOT_FOUND ,
+            })
+            return next(new AppError(BOOLEAN.FALSE , AGGREEMENT.AGGREMENT_NOT_FOUND , STATUS.NOT_FOUND))
+
+        }
+        
+        
+        res.status(STATUS.SUCCESS).json({
+            status: STATUS.SUCCESS,
+            message: AGGREEMENT.AGGREMENT_FETCHED,
+            data: agreements,
+        });
+    } catch (error) {
+        next(error);
+    }
+}

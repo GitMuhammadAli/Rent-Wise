@@ -21,6 +21,8 @@ const dashboardRoutes = require("./routes/dashboard/dashboardRoute");
 const commentRoutes = require("./routes/comment/commentRoutes");
 const ConversationRoutes = require ("./routes/chats/ConversationRoutes")
 const AgreementRoutes = require("./routes/aggrement/Aggreementt");
+const BlockChainRoutes = require("./routes/blockchain/blockchain")
+
 
 const logger = require("./utils/logger");
 const path = require('path');
@@ -133,9 +135,9 @@ app.use("/listings", listingRoutes);
 app.use("/dashboard", dashboardRoutes);
 app.use("/comments", commentRoutes);
 app.use("/agreement", AgreementRoutes);
-
 app.use("/conversations" , ConversationRoutes)
 app.use("/auth/user" , loggedUser )
+app.use("/auth/blockchain" , BlockChainRoutes)
 
 
 

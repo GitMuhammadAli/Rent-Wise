@@ -282,23 +282,23 @@ export default function OwnerDash() {
                                 booking.listingStatus === "active"
                                   ? "green"
                                   : booking.listingStatus === "Inactive"
-                                  ? "red"
-                                  : booking.listingStatus === "pending"
-                                  ? "yellow"
-                                  : booking.listingStatus === "Rented"
-                                  ? "blue"
-                                  : "gray"
+                                    ? "red"
+                                    : booking.listingStatus === "pending"
+                                      ? "yellow"
+                                      : booking.listingStatus === "Rented"
+                                        ? "blue"
+                                        : "gray"
                               }
                               bg={
                                 booking.listingStatus === "active"
                                   ? "green.100"
                                   : booking.listingStatus === "Inactive"
-                                  ? "red.100"
-                                  : booking.listingStatus === "pending"
-                                  ? "yellow.100"
-                                  : booking.listingStatus === "Rented"
-                                  ? "blue.100"
-                                  : "gray.100"
+                                    ? "red.100"
+                                    : booking.listingStatus === "pending"
+                                      ? "yellow.100"
+                                      : booking.listingStatus === "Rented"
+                                        ? "blue.100"
+                                        : "gray.100"
                               }
                             >
                               {booking.listingStatus}
@@ -402,23 +402,23 @@ export default function OwnerDash() {
                                 agreement.agreementStatus === "pending"
                                   ? "orange"
                                   : agreement.agreementStatus === "rejected"
-                                  ? "red"
-                                  : agreement.agreementStatus === "active"
-                                  ? "green"
-                                  : agreement.agreementStatus === "Inactive"
-                                  ? "gray"
-                                  : "blue"
+                                    ? "red"
+                                    : agreement.agreementStatus === "active"
+                                      ? "green"
+                                      : agreement.agreementStatus === "Inactive"
+                                        ? "gray"
+                                        : "blue"
                               }
                               bg={
                                 agreement.agreementStatus === "pending"
                                   ? "orange.100"
                                   : agreement.agreementStatus === "rejected"
-                                  ? "red.100"
-                                  : agreement.agreementStatus === "active"
-                                  ? "green.100"
-                                  : agreement.agreementStatus === "Inactive"
-                                  ? "gray.100"
-                                  : "blue.100"
+                                    ? "red.100"
+                                    : agreement.agreementStatus === "active"
+                                      ? "green.100"
+                                      : agreement.agreementStatus === "Inactive"
+                                        ? "gray.100"
+                                        : "blue.100"
                               }
                             >
                               {agreement.agreementStatus}
@@ -431,9 +431,19 @@ export default function OwnerDash() {
                             {agreement.renterConfirmed ? "Yes" : "No"}
                           </Td>
                           <Td fontSize={{ base: "xs", sm: "sm" }}>
-                            {agreement.agreementDetailsId?.aggrementDetail?.startDate ? new Date(agreement.agreementDetailsId.aggrementDetail.startDate).toLocaleDateString() : ""} 
-                            {" - "} 
-                            {agreement.agreementDetailsId?.aggrementDetail?.endDate ? new Date(agreement.agreementDetailsId.aggrementDetail.endDate).toLocaleDateString() : ""}
+                            {agreement.agreementDetailsId?.aggrementDetail
+                              ?.startDate
+                              ? new Date(
+                                agreement.agreementDetailsId.aggrementDetail.startDate
+                              ).toLocaleDateString()
+                              : ""}
+                            {" - "}
+                            {agreement.agreementDetailsId?.aggrementDetail
+                              ?.endDate
+                              ? new Date(
+                                agreement.agreementDetailsId.aggrementDetail.endDate
+                              ).toLocaleDateString()
+                              : ""}
                           </Td>
                           <Td>
                             <Link

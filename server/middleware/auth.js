@@ -13,7 +13,7 @@ function clearCookies(req, res) {
 exports.AuthorizeUser = (RequiredRole) => {
   return async (req, res, next) => {
     const token = req.cookies.jwt;
-    console.log("JWT Cookie:", token); // Debugging
+    console.log("JWT Cookie:", token);
 
     if (!token) {
       return res.status(STATUS.UNAUTHORIZED).json({ message: "No token provided" });
@@ -26,6 +26,11 @@ exports.AuthorizeUser = (RequiredRole) => {
       if (!user) {
         clearCookies(req, res);
         return res.status(STATUS.UNAUTHORIZED).json({ message: "User not found" });
+      }
+
+      if (user.role !== ROLES.USER && user.role !== ROLES.ADMIN) {
+        clearCookies(req, res);
+        return res.status(STATUS.UNAUTHORIZED).json({ message: "Access denied - Only users and admins allowed" });
       }
 
       if (user.role === RequiredRole || (RequiredRole === ROLES.USER && user.role === ROLES.ADMIN)) {
@@ -41,6 +46,7 @@ exports.AuthorizeUser = (RequiredRole) => {
     }
   };
 };
+
 
 
 exports.FindUser = async (req, res, next) => {
