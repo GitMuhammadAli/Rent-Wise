@@ -40,6 +40,8 @@ import ViewCarAgr from "./Pages/Agreement/ViewAgreement.jsx/ViewCarAgr";
 import HostelListing from "./Pages/Listings/CategoryBased/HostelListing";
 import HouseListing from "./Pages/Listings/CategoryBased/HouseListing";
 import CarListing from "./Pages/Listings/CategoryBased/CarListing";
+import DisplayAgreements from "./Pages/Agreement/Admin/DisplayAgreements";
+import Integration from "./Pages/Agreement/Admin/Integration";
 
 
 
@@ -118,6 +120,13 @@ const router = createBrowserRouter(
 
         <Route element={<ProtectedRoute requiredRole="admin" />}>
           <Route path="/category/*" element={<Home />} />
+        </Route>
+        <Route element={<ProtectedRoute requiredRole="admin" />}>
+          <Route path="/agreements-protected" element={<DisplayAgreements />} />
+        </Route>
+
+        <Route element={<ProtectedRoute requiredRole="admin" />}>
+          <Route path="/integration" element={<Integration/>} />
         </Route>
       </Route>
     </>
