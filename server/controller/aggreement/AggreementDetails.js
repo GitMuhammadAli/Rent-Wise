@@ -80,6 +80,7 @@ exports.getByOwnerId = async (req, res, next) => {
     }
 };
 
+// if listing any other agrement with in date cannot make new
 
 exports.CreateAggrement = async (req, res, next) => {
     try {

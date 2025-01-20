@@ -15,6 +15,9 @@ const Conversation = require("../../model/chat/ConversationModel");
 // const BlockChainAggrement = require("../../model/agreements/BlockChainAggrements");
 
 
+
+// checks for both user true
+// 
 exports.getAggrementForAdminByOwnerIDs = async(req, res , next ) =>{
     try {
         const agreements = await Aggrement.find({ blockchainStatus: false }, { _id: 1 , blockchainStatus:1  })
