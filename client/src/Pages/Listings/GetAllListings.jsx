@@ -9,6 +9,26 @@ import { ListingsContext } from '../../hooks/ListingsContext';
 export default function GetAllListings() {
   const { state, dispatch } = useContext(ListingsContext); 
   const { listings } = state; 
+  const itemsPerPage = 5 // Number of listings per page
+    const [currentPage, setCurrentPage] = useState(1);
+    const totalPages = Math.ceil(listings.length / itemsPerPage);
+
+    // Get the listings for the current page
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const curentListing = listings.slice(startIndex, endIndex);
+
+    const goToNextPage = () => {
+      if (currentPage < totalPages) {
+          setCurrentPage(currentPage + 1);
+      }
+  };
+
+  const goToPrevPage = () => {
+      if (currentPage > 1) {
+          setCurrentPage(currentPage - 1);
+      }
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -61,7 +81,7 @@ export default function GetAllListings() {
         {/* Categories Section */}
         <Box mb={12}>
           <Heading  as="h2" size="lg" fontWeight="bold" mb={6} color="gray.800">
-            Popular Categories
+           Categories
           </Heading>
           <Flex display={'flex'} justifyContent={'center'}  gap={{base:"4",md:'10'}} flexDir={{base:"column",md:'row'}}>
           {/* templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' }} */}
@@ -92,9 +112,10 @@ export default function GetAllListings() {
             Featured Rentals
           </Heading>
           
-          {listings && listings.length > 0 ? (
+          {curentListing && curentListing.length > 0 ? (
+            <>
             <Grid templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' }} gap={6}>
-              {listings.map((rental) => (
+              {curentListing.map((rental) => (
                 <Card key={rental._id} _hover={{ boxShadow: 'lg' }} transition="box-shadow 0.3s">
                   <CardHeader p={0}>
                     {rental.images && rental.images.length > 0 ? (
@@ -138,10 +159,11 @@ export default function GetAllListings() {
                     <Button
                       as={Link}
                       to={`/rental/${rental._id}`}
-                      bg={'black'}
-                      color={'white'}
-                      _hover={{ color: 'black', background: 'white', border: '1px solid black' }}
+                      // bg={'black'}
+                      // color={'white'}
+                      // _hover={{ color: 'black', background: 'white', border: '1px solid black' }}
                       w="full"
+                      variant={'customButton'}
                     >
                       View Details
                     </Button>
@@ -149,6 +171,18 @@ export default function GetAllListings() {
                 </Card>
               ))}
             </Grid>
+             <Flex mt={10} alignItems={'center'}  justifyContent={'space-between'}>
+             <Button onClick={goToPrevPage} isDisabled={currentPage === 1}>
+             Previous
+            </Button>
+              <Text>
+                Page {currentPage} of {totalPages}
+              </Text>
+            <Button onClick={goToNextPage} isDisabled={currentPage === totalPages}>
+            Next
+            </Button>
+         </Flex>
+         </>
           ) : (
             <Text>Loading...</Text> 
           )}
