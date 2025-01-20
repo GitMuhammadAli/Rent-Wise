@@ -12,6 +12,7 @@ const QRCode = require('qrcode')
 const { io } = require("../../utils/socket");
 const Messsage = require("../../model/chat/MesssageModel");
 const Conversation = require("../../model/chat/ConversationModel");
+const BlockChainAggrement = require("../../model/agreements/BlockChainAggrements");
 
 
 exports.getAggrementForAdminByOwnerIDs = async(req, res , next ) =>{
@@ -36,5 +37,30 @@ exports.getAggrementForAdminByOwnerIDs = async(req, res , next ) =>{
         });
     } catch (error) {
         next(error);
+    }
+}
+
+
+
+exports.MakeAggrementForAdminByOwnerIDs = async(req, res , next)=>{
+    try {
+        const { agreementId  , transactionHash  } = req.body
+        const BlockChainAggrement =  await BlockChainAggrement.create({
+            AggrementId: agreementId,
+            transactionHash: transactionHash,
+            BlockChainstatus: "active"
+        })
+
+        if(!BlockChainAggrement) {
+            return next(new AppError(false, "Failed to create blockchain agreement", 400))
+        }
+
+        res.status(200).json({
+            status: "success",
+            message: "Blockchain agreement created successfully",
+            data: BlockChainAggrement
+        })
+    } catch (error) {
+        next(error)
     }
 }

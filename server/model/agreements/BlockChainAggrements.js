@@ -7,12 +7,16 @@ const BlockChainAggrementSchema = new mongoose.Schema({
         ref: "Aggrement",
         required: true,
     },
-    status:{
+    BlockChainstatus:{
         enum:["pending", "accepted", "rejected" , "active"],
         type:String,
         required:true,
         default:"pending"
-    }
+    },
+    transactionHash:{
+        type: mongoose.Schema.Types.Mixed,
+        required:true,
+    },
 });
 
 
