@@ -7,6 +7,7 @@ const blockchain = require("../../controller/aggreement/BlockChain");
 
 
 router.get("/admin/allAggremments", AuthorizeUser("admin"), asyncHandler(blockchain.getAggrementForAdminByOwnerIDs));
+router.post("/admin/changeStatusOnBlockchain", AuthorizeUser("admin"), asyncHandler(blockchain.MakeAggrementForAdminByOwnerIDs));
 
 
 

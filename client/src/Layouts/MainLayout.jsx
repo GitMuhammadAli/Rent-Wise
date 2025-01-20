@@ -10,13 +10,20 @@ function MainLayout() {
   const location = useLocation();
   const navigate = useNavigate();
   const [successMessage, setSuccessMessage] = useState("");
+  // const Admin_ID = import.meta.env.ADMIN_ID;
+
 
   useEffect(() => {
     if (location.state && location.state.successMessage) {
       setSuccessMessage(location.state.successMessage);
       navigate(location.pathname, { replace: true, state: {} });
     }
+    
   }, [location]);
+
+// useEffect(()=>{
+//   console.log("userID", user._id, "import", Admin_ID)
+// },[user, Admin_ID])
 
   useEffect(() => {
     if (successMessage) {
@@ -100,6 +107,11 @@ function MainLayout() {
                   <Text as={Link} to="/media" _hover={{ color: "gray.300" }} mr={4}>
                     Create lisitng
                   </Text>
+                  {
+            user?._id === '670ba87a096754e9bda6658f' && (  // store in .evn later on
+                  <Text mr={3} cursor={'pointer'} as={Link} to="/agreements-protected" _hover={{ color: "gray.300" }}>View Agreements</Text>
+                )
+              }
 
                   <Button
                     onClick={handleLogout}
@@ -126,6 +138,7 @@ function MainLayout() {
                   Login
                 </Button>
               )}
+              
             </Flex>
           </Flex>
         </Container>

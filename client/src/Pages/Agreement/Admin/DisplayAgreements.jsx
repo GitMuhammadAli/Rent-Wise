@@ -18,6 +18,7 @@ export default function DisplayAgreements() {
       try {
         // Replace this URL with your actual API endpoint
         const response = await getAggrementForAdminByOwnerIDs();
+        console.log("res", response?.data?.data);
       setAgreements(response?.data?.data);
        
       } catch (error) {
@@ -43,7 +44,7 @@ export default function DisplayAgreements() {
     <Container maxW="container.lg" py={10}>
       <Box overflowX="auto">
         <Heading color={'blue.500'} mb={10} display={'flex'} justifySelf={'center'}>Non Blochchain Agreements</Heading>
-        <Table variant="striped">
+        <Table variant="striped" mb={'20px'}>
           <Thead>
             <Tr bg={'gray.300'}  >
               <Th>Agreement ID</Th>
