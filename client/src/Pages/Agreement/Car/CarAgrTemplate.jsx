@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Box,
   Heading,
@@ -18,12 +18,14 @@ import SendToTenant from '../SendToTenant';
 export default function CarAgrTemplate({updateAgreement,mainDetails,formData, handleChange, saveAgreement,tenant
     , checkCreateAgrr, OwnerConfirmedFunc, ownerConfirmed, }) {
     const {user} = useAuth();
+    const [renterConfirmed, setRenterConfirmed] = useState(false);
     const navigate = useNavigate()
     const [isOpen, setIsOpen] = React.useState(false)
     const open = () => setIsOpen(!isOpen)
     const close = () => setIsOpen(false)
       useEffect(()=>{
              console.log("main details", mainDetails);
+             setRenterConfirmed(mainDetails?.renterConfirmed)
                       
             },[mainDetails])
   
@@ -298,15 +300,21 @@ export default function CarAgrTemplate({updateAgreement,mainDetails,formData, ha
         {
             checkCreateAgrr && (
                 <>
-               { ownerConfirmed && 
+               { ownerConfirmed && !renterConfirmed &&
                 (  <Button  bg={'black'} onClick={updateAgreement} color={'white'}>Update Agreement</Button> )
                }
                
-                <Button onClick={OwnerConfirmedFunc}  bg={'black'} color={'white'}>
+               {
+                !renterConfirmed && (
+                  <Button onClick={OwnerConfirmedFunc}  bg={'black'} color={'white'}>
                     {
                         ownerConfirmed ? (<Text>I dont agree to this agreemnt</Text>) : (<Text>I agree to this agreement</Text>)
                     }
                 </Button>
+
+                )
+               }
+                
                 </>
             )
         }

@@ -23,6 +23,7 @@ export default function HouseAgrTemplate({updateAgreement,mainDetails,formData, 
          const [isOpen, setIsOpen] = React.useState(false)
          const open = () => setIsOpen(!isOpen)
          const close = () => setIsOpen(false)
+         const [renterConfirmed, setRenterConfirmed] = useState(false);
         
       
    
@@ -36,6 +37,7 @@ export default function HouseAgrTemplate({updateAgreement,mainDetails,formData, 
             console.log("not confirmed")
            }
          console.log("main details", mainDetails);
+        setRenterConfirmed(mainDetails?.renterConfirmed)
                   
         },[mainDetails])
 
@@ -270,15 +272,20 @@ export default function HouseAgrTemplate({updateAgreement,mainDetails,formData, 
                  {
                      checkCreateAgrr && (
                          <>
-                         { ownerConfirmed && 
+                         { ownerConfirmed && !renterConfirmed &&
                           (  <Button  bg={'black'} onClick={updateAgreement} color={'white'}>Update Agreement</Button> )
                          }
                         
-                         <Button onClick={OwnerConfirmedFunc}  bg={'black'} color={'white'}>
-                             {
-                                 ownerConfirmed ? (<Text>I dont agree to this agreemnt</Text>) : (<Text>I agree to this agreement</Text>)
-                             }
-                         </Button>
+                        {
+                           !renterConfirmed && (
+                            <Button onClick={OwnerConfirmedFunc}  bg={'black'} color={'white'}>
+                            {
+                                ownerConfirmed ? (<Text>I dont agree to this agreemnt</Text>) : (<Text>I agree to this agreement</Text>)
+                            }
+                        </Button>
+                           )
+                        }
+                        
                          </>
                      )
                  }
