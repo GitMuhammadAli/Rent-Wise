@@ -31,7 +31,8 @@ exports.getByOwnerId = async (req, res, next) => {
         const agreements = await Aggrement.find({ ownerId })
             .populate("listingId")
             .populate("renterId")
-            .populate("agreementDetailsId");
+            .populate("agreementDetailsId")
+            .populate("blockChain");
 
         if (!agreements || agreements.length === 0) {
             return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.USER_NOT_FOUND, STATUS.NOT_FOUND));
