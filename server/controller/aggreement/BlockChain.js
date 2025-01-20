@@ -12,7 +12,7 @@ const QRCode = require('qrcode')
 const { io } = require("../../utils/socket");
 const Messsage = require("../../model/chat/MesssageModel");
 const Conversation = require("../../model/chat/ConversationModel");
-const BlockChainAggrement = require("../../model/agreements/BlockChainAggrements");
+// const BlockChainAggrement = require("../../model/agreements/BlockChainAggrements");
 
 
 exports.getAggrementForAdminByOwnerIDs = async(req, res , next ) =>{
@@ -44,11 +44,13 @@ exports.getAggrementForAdminByOwnerIDs = async(req, res , next ) =>{
 
 exports.MakeAggrementForAdminByOwnerIDs = async(req, res , next)=>{
     try {
-        const { agreementId  , transactionHash  } = req.body
+        const { agreementId  , transactionHash  } = req.body;
+        console.log("req, body:", req.body)
         const blockChainAgreement =  await BlockChainAggrement.create({
             AggrementId: agreementId,
             transactionHash: transactionHash,
             BlockChainstatus: "active"
+           
         })
 
         const agreement = await Aggrement.findByIdAndUpdate(

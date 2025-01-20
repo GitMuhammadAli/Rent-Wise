@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Web3 from 'web3';
+import { MakeAggrementForAdminByOwnerIDs } from '../../../Api/Blockchain';
 
 const Integration = ({agreementId}) => {
   const [currentAccount, setCurrentAccount] = useState('');
   const [agreementDetails, setAgreementDetails] = useState(null);
+  const [transactionHash, setTransactionHash] = useState('');
+  
+
 //   const { agreementId } = useParams();
 
   useEffect(() => {
@@ -115,9 +119,11 @@ const Integration = ({agreementId}) => {
           // Send transaction
           const tx = await rentalContract.methods.createAgreement(agreementId).send({ from: currentAccount });
           console.log('Agreement created successfully:', tx);
+           console.log("thash", tx.transactionHash)
 
           // Fetch contract details
           const owner = await rentalContract.methods.owner().call();
+           setTransactionHash(tx.transactionHash)
 
           setAgreementDetails({ owner, agreementId });
         } catch (error) {
@@ -133,8 +139,38 @@ const Integration = ({agreementId}) => {
     }
   }, [currentAccount, agreementId]);
 
+  useEffect(()=>{
+
+    const ChangeStatus = async()=>{
+      try{
+
+        if(agreementId && transactionHash !== '')
+          {
+            console.log("now running")
+            console.log("tranHash", transactionHash)
+            console.log("agreementID",agreementId )
+            const response = await MakeAggrementForAdminByOwnerIDs({agreementId,transactionHash});
+            console.log("response", response)
+          }
+      }
+      catch(error)
+      {
+        console.log('error', error);
+      }
+    }
+
+    ChangeStatus();
+   
+    
+  },[agreementId,transactionHash])
+
   return (
     <div>
+      {
+        agreementId && transactionHash!=='' && (
+           <a target="_blank" style={{fontSize:'24px', color:'blue', fontWeight:'bold'}} href={`https://sepolia.etherscan.io/tx/${transactionHash}`}>CLick Here to track Transaction </a> 
+        )
+      }
       {currentAccount ? (
         <h4>Connected Account: {currentAccount}</h4>
       ) : (
@@ -150,6 +186,7 @@ const Integration = ({agreementId}) => {
           <p>
             <strong>Agreement ID:</strong> {agreementDetails.agreementId}
           </p>
+         
         </div>
       )}
     </div>
