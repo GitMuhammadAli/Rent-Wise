@@ -47,7 +47,7 @@ exports.MakeAggrementForAdminByOwnerIDs = async(req, res , next)=>{
         const { agreementId  , transactionHash  } = req.body;
         console.log("req, body:", req.body)
         const blockChainAgreement =  await BlockChainAggrement.create({
-            AggrementId: agreementId,
+            agreementId: agreementId,
             transactionHash: transactionHash,
             BlockChainstatus: "active"
            
