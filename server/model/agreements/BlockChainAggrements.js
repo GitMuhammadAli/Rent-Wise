@@ -1,26 +1,27 @@
 const mongoose = require("mongoose");
 
-
-const BlockChainAggrementSchema = new mongoose.Schema({
-    AggrementId:{
+const BlockchainAgreementSchema = new mongoose.Schema({
+    agreementId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Aggrement",
+        ref: "Agreement",
         required: true,
+        index: true
     },
-    BlockChainstatus:{
-        enum:["pending", "accepted", "rejected" , "active"],
-        type:String,
-        required:true,
-        default:"pending"
+    blockchainStatus: {
+        type: String,
+        enum: ["pending", "accepted", "rejected", "active"],
+        required: true,
+        default: "pending",
+        index: true
     },
-    transactionHash:{
-        type: mongoose.Schema.Types.Mixed,
-        required:true,
-    },
+    transactionHash: {
+        type: String,
+        required: true,
+        index: true
+    }
+}, {
+    timestamps: true
 });
 
-
-
-const BlockChainAggrement = mongoose.model("BlockChainAggrement", BlockChainAggrementSchema);
-
-module.exports = BlockChainAggrement;
+const BlockchainAgreement = mongoose.model("BlockchainAgreement", BlockchainAgreementSchema);
+module.exports = BlockchainAgreement;

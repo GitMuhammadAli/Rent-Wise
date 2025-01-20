@@ -45,20 +45,29 @@ exports.getAggrementForAdminByOwnerIDs = async(req, res , next ) =>{
 exports.MakeAggrementForAdminByOwnerIDs = async(req, res , next)=>{
     try {
         const { agreementId  , transactionHash  } = req.body
-        const BlockChainAggrement =  await BlockChainAggrement.create({
+        const blockChainAgreement =  await BlockChainAggrement.create({
             AggrementId: agreementId,
             transactionHash: transactionHash,
             BlockChainstatus: "active"
         })
 
-        if(!BlockChainAggrement) {
+        const agreement = await Aggrement.findByIdAndUpdate(
+            agreementId,
+            { 
+                blockChain: blockChainAgreement._id,
+                blockchainStatus: true 
+            },
+            { new: true }
+        )
+
+        if(!blockChainAgreement || !agreement) {
             return next(new AppError(false, "Failed to create blockchain agreement", 400))
         }
 
         res.status(200).json({
             status: "success",
             message: "Blockchain agreement created successfully",
-            data: BlockChainAggrement
+            data: blockChainAgreement
         })
     } catch (error) {
         next(error)

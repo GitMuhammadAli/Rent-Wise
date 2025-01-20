@@ -26,6 +26,11 @@ const AggrementSchema = new mongoose.Schema({
         ref: "Conversation",
         required: true,
     },
+    blockChain :{
+        type: mongoose.Schema.Types.ObjectId,
+        ref:"BlockChainAggrement",
+        
+    },
     blockchainStatus :{
         type:Boolean,
         default:false,
