@@ -15,6 +15,7 @@ dist/
 
 # Environment variables
 .env
+.csv
 
 # IDE and editor files
 .vscode/*
