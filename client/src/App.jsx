@@ -42,6 +42,7 @@ import HouseListing from "./Pages/Listings/CategoryBased/HouseListing";
 import CarListing from "./Pages/Listings/CategoryBased/CarListing";
 import DisplayAgreements from "./Pages/Agreement/Admin/DisplayAgreements";
 import Integration from "./Pages/Agreement/Admin/Integration";
+import ListingDet from "./components/Test/ListingDET";
 
 
 
@@ -89,6 +90,7 @@ const router = createBrowserRouter(
         <Route path="/categories/car" element={<CarListing />} />
 
         <Route path="/getAll" element={<GetAllListings />} />
+        <Route path="/ListingDet" element={<ListingDet />} />
         {/* <Route path="/createListings" element={<MakeListing />} /> */}
         <Route path="/createNewListings" element={<NewListings />} />
         <Route path="/media" element={<Media />} />

@@ -28,6 +28,7 @@ export default function DisplayListingComments({ currentID }) {
         if (currentID) {
           const response = await getCommentswithReplies(currentID);
           setComments(response.data.comments || []);
+          console.log("comment", response)
         }
       } catch (error) {
         console.error("Error fetching comments:", error);
@@ -299,15 +300,14 @@ export default function DisplayListingComments({ currentID }) {
   // };
 
   return (
-    <VStack spacing={4} align="stretch">
+    <VStack spacing={4} align="stretch" >
       {comments.length > 0 ? (
         comments.map((comment) => (
-          <Box key={comment._id} borderWidth={1} borderRadius="md" p={4}>
+          <Box bg={'white'} key={comment._id} borderWidth={1} borderRadius="md" p={4} boxShadow={'lg'} >
             <HStack justify="space-between">
               <HStack>
                 <Avatar
-                  src={
-                    comment.author?.imageUrl ||
+                  src={ `${import.meta.env.VITE_BACK_END_URL}${ comment.author?.imageUrl}`||
                     "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
                   }
                   name={comment.author?.name}

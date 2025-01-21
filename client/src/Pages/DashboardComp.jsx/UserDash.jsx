@@ -15,7 +15,7 @@ export default function UserDash() {
   ]
 
   return (
-    <Box minH="100vh" bg="gray.100" p={8}>
+    <Box  minH="100vh" bg="whiteAlpha.800" p={8}>
       <Box maxW="6xl" mx="auto">
         <Heading as="h1" size="lg" mb={8}>
           Renter Dashboard
@@ -23,7 +23,7 @@ export default function UserDash() {
         
         {/* Cards for Summary Info */}
         <Flex wrap="wrap" gap={6} mb={8}>
-          <Card flex="1" minW="200px">
+          <Card boxShadow={"2xl"} flex="1" minW="200px">
             <CardHeader>
               <Flex justify="space-between" align="center">
                 <Heading size="sm">Upcoming Rentals</Heading>
@@ -36,7 +36,7 @@ export default function UserDash() {
             </CardBody>
           </Card>
 
-          <Card flex="1" minW="200px">
+          <Card boxShadow={"2xl"} flex="1" minW="200px">
             <CardHeader>
               <Flex justify="space-between" align="center">
                 <Heading size="sm">Total Spent</Heading>
@@ -49,7 +49,7 @@ export default function UserDash() {
             </CardBody>
           </Card>
 
-          <Card flex="1" minW="200px">
+          <Card boxShadow={"2xl"} flex="1" minW="200px">
             <CardHeader>
               <Flex justify="space-between" align="center">
                 <Heading size="sm">Messages</Heading>
@@ -62,7 +62,7 @@ export default function UserDash() {
             </CardBody>
           </Card>
 
-          <Card flex="1" minW="200px">
+          <Card boxShadow={"2xl"} flex="1" minW="200px">
             <CardHeader>
               <Flex justify="space-between" align="center">
                 <Heading size="sm">Saved Searches</Heading>

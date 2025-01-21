@@ -86,7 +86,10 @@ export default function GetAllListings() {
           <Flex display={'flex'} justifyContent={'center'}  gap={{base:"4",md:'10'}} flexDir={{base:"column",md:'row'}}>
           {/* templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' }} */}
             {categories.map((category) => (
-              <Card key={category.name} _hover={{ boxShadow: 'lg' }} transition="box-shadow 0.3s">
+              <Card key={category.name}
+                _hover={{ boxShadow: 'lg' }} transition="box-shadow 0.3s"
+              // variant="normalCard" // not working yet
+               >
                 <CardHeader>
                   <Flex align="center">
                     <Icon as={category.icon} boxSize={6} color="blue.500" mr={3} />
