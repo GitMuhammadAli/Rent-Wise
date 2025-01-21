@@ -319,25 +319,26 @@ export default function OwnerDash() {
                             </Link>
                           </Td>
                         </Tr>
-                      ))}
+                      ))} 
                   </Tbody>
                 </Table>
               </TableContainer>
             </CardBody>
             <CardFooter p={{ base: 2, sm: 3, md: 4 }}>
               <Button
-                bg={"rgb(41, 39, 39)"}
-                color={"white"}
-                _hover={{
-                  color: "black",
-                  background: "none",
-                  border: "1px solid black",
-                }}
-                variant="outline"
+              variant={'dashboardButton'}
+                // bg={"rgb(41, 39, 39)"}
+                // color={"white"}
+                // _hover={{
+                //   color: "black",
+                //   background: "none",
+                //   border: "1px solid black",
+                // }}
+                // variant="outline"
                 width="full"
                 size={{ base: "xs", sm: "sm", md: "md" }}
               >
-                View All Bookings
+                View All Listings
               </Button>
             </CardFooter>
           </Card>
@@ -482,14 +483,15 @@ export default function OwnerDash() {
             </CardBody>
             <CardFooter p={{ base: 2, sm: 3, md: 4 }}>
               <Button
-                bg={"rgb(41, 39, 39)"}
-                color={"white"}
-                _hover={{
-                  color: "black",
-                  background: "none",
-                  border: "1px solid black",
-                }}
-                variant="outline"
+               variant={'dashboardButton'}
+                // bg={"rgb(41, 39, 39)"}
+                // color={"white"}
+                // _hover={{
+                //   color: "black",
+                //   background: "none",
+                //   border: "1px solid black",
+                // }}
+                // variant="outline"
                 width="full"
                 size={{ base: "xs", sm: "sm", md: "md" }}
               >
@@ -523,14 +525,15 @@ export default function OwnerDash() {
             </CardBody>
             <CardFooter p={{ base: 2, sm: 3, md: 4 }}>
               <Button
-                bg={"rgb(41, 39, 39)"}
-                color={"white"}
-                _hover={{
-                  color: "black",
-                  background: "none",
-                  border: "1px solid black",
-                }}
-                variant="outline"
+               variant={'dashboardButton'}
+                // bg={"rgb(41, 39, 39)"}
+                // color={"white"}
+                // _hover={{
+                //   color: "black",
+                //   background: "none",
+                //   border: "1px solid black",
+                // }}
+                // variant="outline"
                 width="full"
                 size={{ base: "xs", sm: "sm", md: "md" }}
               >
@@ -547,15 +550,16 @@ export default function OwnerDash() {
         >
           <Link to={"/media"}>
             <Button
-              bg={"rgb(41, 39, 39)"}
-              color={"white"}
-              _hover={{
-                color: "black",
-                background: "none",
-                border: "1px solid black",
-              }}
+             variant={'dashboardButton'}
+              // bg={"rgb(41, 39, 39)"}
+              // color={"white"}
+              // _hover={{
+              //   color: "black",
+              //   background: "none",
+              //   border: "1px solid black",
+              // }}
               leftIcon={<Plus className="h-3 w-3 sm:h-4 sm:w-4" />}
-              colorScheme="teal"
+              // colorScheme="teal"
               size={{ base: "xs", sm: "sm", md: "md" }}
             >
               Add New Listing
