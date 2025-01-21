@@ -8,7 +8,7 @@ import { ListingsContext } from '../../hooks/ListingsContext';
 
 export default function Media() {
   const [formData, setFormData] = useState({
-    amenities: [""],  // Start with one empty amenity
+    amenities: [],  // Start with one empty amenity
     rules: [""],      // Start with one empty rule
     biddingEnabled: false,
     minimumBid: '',
