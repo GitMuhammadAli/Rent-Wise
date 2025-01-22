@@ -18,7 +18,6 @@ exports.fetchRenterAggreements = async (req, res, next)=>{
     try {
         const renter = req.user._id;
         const aggreements = await Aggrement.find({renterId:renter}).populate("agreementDetailsId")
-        console.log(aggreements);
         if(aggreements){
             res.status(STATUS.SUCCESS).json({
                 status: BOOLEAN.TRUE,

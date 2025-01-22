@@ -102,6 +102,8 @@ const AGGREEMENT = {
     AGGREMENT_IS_ALREADY_CONFIRMED_ACTIVE: "Aggrement is already confirmed and active",
     AGGREMENT_ALREADY_EXISTS_WITH_OTHER_PARTY: "Aggrement already exists with other party cannot create new aggrement",
 CANNOT_UPDATE_AGREEMENT_RENTER_AGGREED_TO_IT: "Cannot update agreement as renter has agreed to it Create a New Agreement",
+AGGREMENT_NOT_AVAILABLE_BLOCKCAHIN:"No Aggrement Is Avaliable For BlockChain",
+
 }
 
 const CONVERSATION = {
