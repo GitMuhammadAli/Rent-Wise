@@ -18,5 +18,7 @@ export const updateUserDashboard = async (id, formData) => {
 };
 
 
-
+export const ToGetReview =async ()=>{
+  axios.get(`${API_BASE_URL}/reviews`, { withCredentials: true });
+}
   
