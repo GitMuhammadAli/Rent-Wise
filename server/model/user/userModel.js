@@ -47,6 +47,9 @@ const userSchema = new UserSchema({
     trim: true,
     default: "",
   },
+  userReview:[{
+    type :mongoose.Schema.type.ObjectId , ref:"ProfileReview"
+  }],
   createdAt: {
     type: Date,
     default: Date.now,

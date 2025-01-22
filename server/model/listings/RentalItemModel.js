@@ -75,7 +75,7 @@ const RentalSchema = new mongoose.Schema({
   owner: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   category: {
     type: String,
-    enum: ["car",  "apartment", "house"],
+    enum: ["car", "apartment", "house"],
     required: true,
   },
   title: { type: String, required: true },
@@ -86,13 +86,13 @@ const RentalSchema = new mongoose.Schema({
     enum: ["hour", "day", "week", "month"],
     required: true,
   },
-  location: { type: mongoose.Schema.Types.ObjectId, ref: "Location", 
+  location: {
+    type: mongoose.Schema.Types.ObjectId, ref: "Location",
     //required: true 
   },
-  amenities: [{ type: String }], // Embedding Amenities as an array
-  rules: [{ type: String }], // Embedding Rules as an array
+  amenities: [{ type: String }], 
+  rules: [{ type: String }],
 
-  // Referencing images and videos
   images: [{ type: mongoose.Schema.Types.ObjectId, ref: "Image" }],
   videos: [{ type: mongoose.Schema.Types.ObjectId, ref: "Video" }],
 
@@ -103,23 +103,24 @@ const RentalSchema = new mongoose.Schema({
       review: { type: String },
     },
   ],
+  listingReview: [{
+    type: mongoose.Schema.type.ObjectId, ref: "ListingReview"
+  }],
   averageRating: { type: Number, default: 0 },
 
-  // Referencing bids
   bidding: { type: mongoose.Schema.Types.ObjectId, ref: "Bidding" },
 
   comment: { type: mongoose.Schema.Types.ObjectId, ref: "Comment" },
 
   listingStatus: {
     type: String,
-    enum: ["active", "Inactive", "pending" , "Rented"],
+    enum: ["active", "Inactive", "pending", "Rented"],
     default: "pending",
   },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });
 
-// Add a pre-save hook to update the updatedAt timestamp
 RentalSchema.pre('save', function (next) {
   this.updatedAt = Date.now();
   next();
