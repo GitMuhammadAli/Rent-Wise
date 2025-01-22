@@ -27,6 +27,12 @@ exports.fetchRenterAggreements = async (req, res, next)=>{
                     aggreements
                 }
             });
+        }else{
+            res.status(STATUS.FORBIDDEN).json({
+                status: BOOLEAN.FALSE,
+                message: AGGREEMENT.AGGREMENT_NOT_AVAILABLE,
+
+            });
         }
     } catch (error) {
         next(error)
