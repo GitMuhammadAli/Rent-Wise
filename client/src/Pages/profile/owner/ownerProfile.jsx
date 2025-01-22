@@ -12,7 +12,7 @@ import { Link } from 'react-router-dom';
 
 const UserProfile = () => {
   const { _id } = useParams();
-  const [user, setUser] = useState(null);
+  const [owner, setOwner] = useState(null);
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("listings");
@@ -21,11 +21,12 @@ const UserProfile = () => {
     const fetchProfileData = async () => {
       try {
         const response = await getOwnerProfileData(_id); // Use _id from route params
+        console.log("owner data", response)
         const { user, listings } = response.data.data;
-        setUser(user);
+        setOwner(user);
         setListings(listings);
       } catch (error) {
-        console.error("Error fetching user profile:", error);
+        console.error("Error fetching users profile:", error);
       } finally {
         setLoading(false);
       }
@@ -42,7 +43,7 @@ const UserProfile = () => {
     );
   }
 
-  if (!user) {
+  if (!owner) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <p>User not found.</p>
@@ -58,29 +59,29 @@ const UserProfile = () => {
           <img
             className="h-16 w-16 rounded-full mr-4"
             src={
-                `${import.meta.env.VITE_BACK_END_URL}${user.imageUrl}` ||
-                user.imageUrl
+                `${import.meta.env.VITE_BACK_END_URL}${owner.imageUrl}` ||
+                owner.imageUrl
               }
-            alt={user.name}
-            onError={(e) => (e.currentTarget.src = "/default-profile.png")} // Fallback image
+            alt={owner.name}
+            onError={(e) => (e.currentTarget.src = "/images/randomUser.png")} // Fallback image
           />
           <div>
-            <h1 className="text-2xl font-bold">{user.name}</h1>
-            <p className="text-gray-500 capitalize">{user.role}</p>
+            <h1 className="text-2xl font-bold">{owner.name}</h1>
+            <p className="text-gray-500 capitalize">{owner.role}</p>
           </div>
         </div>
-        <p className="mt-4 text-gray-700">{user.bio || "No bio provided."}</p>
+        <p className="mt-4 text-gray-700">{owner.bio || "No bio provided."}</p>
         <div className="mt-4 flex gap-4 text-gray-600">
-          {user.email && (
+          {owner.email && (
             <span>
               <MailIcon className="inline h-5 w-5 mr-2" />
-              {user.email}
+              {owner.email}
             </span>
           )}
-          {user.phoneNumber && (
+          {owner.phoneNumber && (
             <span>
               <PhoneIcon className="inline h-5 w-5 mr-2" />
-              {user.phoneNumber}
+              {owner.phoneNumber}
             </span>
           )}
         </div>
@@ -156,8 +157,8 @@ const UserProfile = () => {
         {/* Reviews Tab */}
         {activeTab === "reviews" && (
           <div className="mt-6 space-y-4">
-            {user.userReview.length > 0 ? (
-              user.userReview.map((review) => (
+            {owner.userReview.length > 0 ? (
+              owner.userReview.map((review) => (
                 <div
                   key={review._id}
                   className="bg-gray-50 p-4 rounded-lg shadow-sm"
@@ -189,7 +190,7 @@ const UserProfile = () => {
         <div className="mt-8 flex justify-center">
           <button className="bg-indigo-500 text-white px-6 py-2 rounded-full font-medium hover:bg-indigo-600 transition duration-300 flex items-center">
             <MessageCircleIcon className="h-5 w-5 mr-2" />
-            Contact {user.name}
+            Contact {owner.name}
           </button>
         </div>
       </div>

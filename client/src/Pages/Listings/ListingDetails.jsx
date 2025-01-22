@@ -229,24 +229,31 @@ const ListingDetails = () => {
                 {/* <Text color="gray.700" _dark={{ color: 'gray.300' }}>{carData.location}</Text> */}
               </Flex>
             </Box>
+
             {
               user?._id !== currentListing?.owner?._id && (
                 <Box bg="white" _dark={{ bg: 'gray.800' }} p={6} borderRadius="lg" shadow="md" w="full">
               <Heading as="h3" size="md" color="gray.900" _dark={{ color: 'white' }} mb={4}>Owner</Heading>
               {/* <Text color="gray.700" _dark={{ color: 'gray.300' }} mb={4}>{carData.owner}</Text> */}
-              <Avatar
-                              src={
-                                `${import.meta.env.VITE_BACK_END_URL}${currentListing?.owner?.imageUrl}` ||
-                                owner.imageUrl
-                              }
-                            />
+              <Avatar src={ `${import.meta.env.VITE_BACK_END_URL}${currentListing?.owner?.imageUrl}` ||
+                                currentListing?.owner?.imageUrl
+                           }/>
               <Text color="gray.700" _dark={{ color: 'gray.300' }} mb={4}>{currentListing?.owner?.name}</Text>
-              <Button  onClick={handleChatButtonClick}  leftIcon={<MessageCircleIcon size={20} /> } variant={"customButton"} w="full">Chat with Owner</Button>
+
+              <HStack alignItems={'center'}>
+              <Button  onClick={handleChatButtonClick}  leftIcon={<MessageCircleIcon size={20} /> } variant={"customButton"} w="full">
+              Chat with Owner
+              </Button>
+
               <Link to={`/profile/${currentListing?.owner?._id}`}>
-        <Button variant={"outline"} w="full" mt={2}>
-          View Owner Profile
-        </Button>
-      </Link>
+                 <Button bg={'white'} color={'black'} border={'1px solid black'}
+                 _hover={{bg:'black', color:'white'}}
+                  w="full" >
+                     View Owner Profile
+                  </Button>
+               </Link>
+              </HStack>
+             
             </Box>
               )
 

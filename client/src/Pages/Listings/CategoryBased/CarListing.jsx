@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { getAllCar } from '../../../Api/Home'
-import { Box, Button, Input, Select, Slider, Text, VStack, HStack, Grid, GridItem, Card, CardHeader, CardBody, CardFooter, Image, SliderTrack, SliderFilledTrack, SliderThumb } from '@chakra-ui/react';
+import { Box, Button,Flex, Link ,Input, Select, Slider, Text, VStack, HStack, Grid, GridItem, Card, CardHeader, CardBody, CardFooter, Image, SliderTrack, SliderFilledTrack, SliderThumb, Heading } from '@chakra-ui/react';
 import { SearchIcon, StarIcon } from '@chakra-ui/icons';
 
 export default function CarListing() {
@@ -36,16 +36,15 @@ export default function CarListing() {
       (category === "All" || car.category === category),
   )
 
-  
   return (
     <Box bg="background" minHeight="100vh" py={8}>
-      <Box maxW="7xl" mx="auto" px={4}>
+      <Box maxW="7xl" mx="auto" px={{ base: 4, lg: 8 }}>
         <VStack spacing={8}>
-          <Text fontSize="4xl" fontWeight="bold">
+          <Text fontSize="4xl" fontWeight="bold" textAlign="center">
             Find Your Perfect Ride
           </Text>
-
-          <HStack spacing={4}>
+  
+          <HStack spacing={4} justify="center" w={'70%'} >
             <Input
               type="text"
               placeholder="Search cars..."
@@ -57,9 +56,15 @@ export default function CarListing() {
               Search
             </Button>
           </HStack>
-
-          <HStack spacing={6} align="start" direction={{ base: 'column', lg: 'row' }}>
-            <Card width={{ base: '100%', lg: '25%' }}>
+  
+          <HStack
+            spacing={6}
+            align="start"
+            direction={{ base: 'column', lg: 'row' }}
+            justify="space-between"
+            width="100%"
+          >
+            <Card width={{ base: '100%', lg: '25%' }} p={4}>
               <CardHeader>
                 <Text fontSize="lg" fontWeight="bold">
                   Filters
@@ -73,8 +78,8 @@ export default function CarListing() {
                     </Text>
                     <Slider
                       min={0}
-                      max={200}
-                      step={10}
+                      max={500000}
+                      step={1000}
                       value={[priceRange[1]]}
                       onChange={(value) => setPriceRange([priceRange[0], value[0]])}
                     >
@@ -99,33 +104,54 @@ export default function CarListing() {
                 </VStack>
               </CardBody>
             </Card>
-
+  
             <Grid templateColumns="repeat(auto-fill, minmax(300px, 1fr))" gap={6} width="100%">
-              {carsData.map((car) => (
-                <Card key={car._id} borderWidth={1} borderRadius="lg" boxShadow="md">
-                  <Image src={car.image || '/placeholder.svg'} alt={car.title} boxSize="full" objectFit="cover" />
-                  <CardHeader>
-                    <Text fontSize="lg" fontWeight="bold">{car.title}</Text>
+              {carsData.map((rental) => (
+                <Card key={rental._id} _hover={{ boxShadow: 'lg' }} transition="box-shadow 0.3s">
+                  <CardHeader p={0}>
+                    {rental.images && rental.images.length > 0 ? (
+                      <Image
+                        src={`${import.meta.env.VITE_BACK_END_URL}${rental.images[0].url}`}
+                        alt ={rental.title}
+                        width="100%"
+                        height="200px"
+                        objectFit="cover"
+                        borderRadius="md"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = 'images/make_listing/random.png';
+                        }}
+                      />
+                    ) : (
+                      <Image
+                        src="/images/make_listing/random.png"
+                        alt="No Image Available"
+                        width="100%"
+                        height="200px"
+                        objectFit="cover"
+                        borderRadius="md"
+                      />
+                    )}
                   </CardHeader>
                   <CardBody>
-                    <Text noOfLines={2} color="gray.500" mb={2}>
-                      {car.description}
-                    </Text>
-                    <HStack justify="space-between" align="center" mb={2}>
-                      <Text bg="teal.500" color="white" px={2} py={1} borderRadius="full" fontSize="sm" fontWeight="semibold">
-                        ${car.price}/day
-                      </Text>
-                      <HStack spacing={1} align="center">
-                        <StarIcon boxSize={4} color="yellow.400" />
-                        <Text fontSize="sm" color="gray.500">
-                          {car.rating} ({car.reviews})
-                        </Text>
-                      </HStack>
-                    </HStack>
-                    <Text fontSize="sm" color="gray.500">{car.location}</Text>
+                    <Heading as="h3" size="md" mb={2}>
+                      {rental.title}
+                    </Heading>
+                    <Text>{rental.category}</Text>
+                    <Flex justify="space-between" align="center" mt={2}>
+                      <Text fontWeight="bold">{rental.price} PKR</Text>
+                      <Flex align="center">
+                        <StarIcon color="yellow.400" mr={1} />
+                        <Text>{rental.averageRating}</Text>
+                      </Flex>
+                    </Flex>
                   </CardBody>
                   <CardFooter>
-                    <Button width="full" colorScheme="teal">
+                    <Button
+                      as={Link}
+                      w="full"
+                      variant="customButton"
+                    >
                       View Details
                     </Button>
                   </CardFooter>
@@ -136,6 +162,11 @@ export default function CarListing() {
         </VStack>
       </Box>
     </Box>
-  
   );
+  
+  
 }
+
+
+
+ 
