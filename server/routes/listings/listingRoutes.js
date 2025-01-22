@@ -47,17 +47,23 @@ router.delete("/delete/:id", asyncHandler(rentalController.DeleteListings));
 // Route to get all listings
 router.get("/all", asyncHandler(rentalController.GetListings));
 
+
+
 // Route to get a single listing by listing ID
 router.get(
   "/GetListingsById/:id",
   asyncHandler(rentalController.GetListingsById)
+
 );
+
+
 
 // Route to get all listings by a specific user (by user ID)
 router.get("/user/:id", asyncHandler(rentalController.GetListingByUserId));
 
 // Route to get all listings with populated owner details (name and email)
 router.get("/all/owners", asyncHandler(rentalController.GetALLListingByOwners));
+
 
 // Route to get all listings by a specific owner with populated owner details (name and email)
 router.get(

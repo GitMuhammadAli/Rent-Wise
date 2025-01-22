@@ -10,6 +10,7 @@ const RESPONCE_MESSAGE = {
     EMAIL_ALREADY_EXISTS: "Email already exists",
     USER_REGISTERED: "User registered successfully",
     USER_NOT_FOUND_PLEASE_LOGIN: " User not found. Please login",
+    USER_NOT_FOUND_PLEASE_REGISTER: " User not found. Please Create Account",
 
     LOGIN_SUCCESS: "Login successful",
     LOGOUT_SUCCESS: "Logout successful",

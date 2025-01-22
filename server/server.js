@@ -23,6 +23,8 @@ const ConversationRoutes = require ("./routes/chats/ConversationRoutes")
 const AgreementRoutes = require("./routes/aggrement/Aggreementt");
 const BlockChainRoutes = require("./routes/blockchain/blockchain")
 const HomeListings = require("./routes/home/HomelistingRoutes")
+const Owner = require("./routes/owner/owner")
+
 
 
 const logger = require("./utils/logger");
@@ -140,6 +142,8 @@ app.use("/conversations" , ConversationRoutes)
 app.use("/auth/user" , loggedUser )
 app.use("/auth/blockchain" , BlockChainRoutes)
 app.use("/Specificlistings" , HomeListings )
+app.use("/owner", Owner )
+
 
 
 
