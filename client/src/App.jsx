@@ -42,6 +42,8 @@ import HouseListing from "./Pages/Listings/CategoryBased/HouseListing";
 import CarListing from "./Pages/Listings/CategoryBased/CarListing";
 import DisplayAgreements from "./Pages/Agreement/Admin/DisplayAgreements";
 import Integration from "./Pages/Agreement/Admin/Integration";
+import UserProfile from "./Pages/profile/owner/ownerProfile";
+
 
 
 
@@ -80,7 +82,7 @@ const router = createBrowserRouter(
       {/* Main Application Routes */}
       <Route element={<MainLayout />}>
         <Route element={<ProtectedRoute requiredRole="user" />}>
-          <Route path="/" element={<Home />} />
+          <Route path="/getAll" element={<Home />} />
         </Route>
 
         {/* listing on basis of catagories */}
@@ -89,7 +91,7 @@ const router = createBrowserRouter(
         <Route path="/categories/house" element={<HouseListing />} />
         <Route path="/categories/cars" element={<CarListing />} />
 
-        <Route path="/getAll" element={<GetAllListings />} />
+        <Route path="/" element={<GetAllListings />} />
         
         {/* <Route path="/createListings" element={<MakeListing />} /> */}
         <Route path="/createNewListings" element={<NewListings />} />
@@ -104,6 +106,15 @@ const router = createBrowserRouter(
         {/* <Route path="/agreements/:id" element={<UpdateAgreement/>} /> */}
         <Route path="/agreementCar/:id" element={<UpdateCarAgrr/>} />
         <Route path="/agreementHouse/:id" element={<UpdateHouseAgrr/>} />
+
+
+
+        {/* profile Views */}
+
+        <Route path="/profile/:_id" element={<UserProfile/>} />
+
+
+
 
         {/* view of agreement */}
         <Route path="/viewHouseAgreement/:_id" element={<ViewHouseAgr/>} />

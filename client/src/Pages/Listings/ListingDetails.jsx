@@ -27,6 +27,8 @@ import {
 import { StarIcon, MapPinIcon, MessageCircleIcon, CarIcon, FuelIcon as GasPumpIcon, UsersIcon } from 'lucide-react';
 import { ChevronLeftIcon, ChevronRightIcon, ChatIcon, CheckCircleIcon } from '@chakra-ui/icons';
 import { useAuth } from '../../hooks/AuthContext';
+import { Link } from 'react-router-dom';
+
 
 import DisplayListingComments from './Comments/DisplayListingComments';
 import AddCommentsInListing from './Comments/AddCommentsInListing';
@@ -120,7 +122,7 @@ const ListingDetails = () => {
     src={
       currentListing?.images && currentListing?.images?.length > 0 
         ? `${baseUrl}${currentListing.images[currentImageIndex].url}` 
-        :'images/make_listing/random.png'  // Default image path
+        :'/images/make_listing/random.png'  // Default image path
     }
     // alt={
     //   currentListing?.images && currentListing?.images?.length > 0 
@@ -232,8 +234,19 @@ const ListingDetails = () => {
                 <Box bg="white" _dark={{ bg: 'gray.800' }} p={6} borderRadius="lg" shadow="md" w="full">
               <Heading as="h3" size="md" color="gray.900" _dark={{ color: 'white' }} mb={4}>Owner</Heading>
               {/* <Text color="gray.700" _dark={{ color: 'gray.300' }} mb={4}>{carData.owner}</Text> */}
+              <Avatar
+                              src={
+                                `${import.meta.env.VITE_BACK_END_URL}${currentListing?.owner?.imageUrl}` ||
+                                owner.imageUrl
+                              }
+                            />
               <Text color="gray.700" _dark={{ color: 'gray.300' }} mb={4}>{currentListing?.owner?.name}</Text>
               <Button  onClick={handleChatButtonClick}  leftIcon={<MessageCircleIcon size={20} /> } variant={"customButton"} w="full">Chat with Owner</Button>
+              <Link to={`/profile/${currentListing?.owner?._id}`}>
+        <Button variant={"outline"} w="full" mt={2}>
+          View Owner Profile
+        </Button>
+      </Link>
             </Box>
               )
 

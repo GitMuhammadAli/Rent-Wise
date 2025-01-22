@@ -109,6 +109,7 @@ export default function SideChat({ handleSideBarClick, ownerIdDetails, setAllDat
               borderRadius="md"
               onClick={() => handleSideBarClick(item._id, item.name, item, item.imageUrl)}
             >
+     
               <Avatar mr={3} src={`${import.meta.env.VITE_BACK_END_URL}${item.imageUrl}`|| item.imageUrl} />
               <Text  >{item.name}</Text>
             </Box>
