@@ -8,8 +8,8 @@ import { ListingsContext } from '../../hooks/ListingsContext';
 
 export default function Media() {
   const [formData, setFormData] = useState({
-    amenities: [""],  // Start with one empty amenity
-    rules: [""],      // Start with one empty rule
+    amenities: [],  // Start with one empty amenity
+    rules: [],      // Start with one empty rule
     biddingEnabled: false,
     minimumBid: '',
     bidIncrement: '',
@@ -165,8 +165,8 @@ const handleSubmit = async (e) => {
     setCategory('');
     setPriceUnit('');
     setFormData({
-      amenities: [""],
-      rules: [""],
+      amenities: [],
+      rules: [],
       biddingEnabled: false,
       minimumBid: '',
       bidIncrement: '',
