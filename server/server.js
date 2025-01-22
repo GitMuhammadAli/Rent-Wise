@@ -24,6 +24,7 @@ const AgreementRoutes = require("./routes/aggrement/Aggreementt");
 const BlockChainRoutes = require("./routes/blockchain/blockchain")
 const HomeListings = require("./routes/home/HomelistingRoutes")
 const Owner = require("./routes/owner/owner")
+const Renter =require("./routes/renter/renter")
 
 
 
@@ -143,6 +144,7 @@ app.use("/auth/user" , loggedUser )
 app.use("/auth/blockchain" , BlockChainRoutes)
 app.use("/Specificlistings" , HomeListings )
 app.use("/owner", Owner )
+app.use("/renter", Renter )
 
 
 

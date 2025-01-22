@@ -11,3 +11,25 @@ const QRCode = require('qrcode')
 const { io } = require("../../utils/socket");
 const Messsage = require("../../model/chat/MesssageModel");
 const Conversation = require("../../model/chat/ConversationModel");
+
+
+
+exports.fetchRenterAggreements = async (req, res, next)=>{
+    try {
+        const renter = req.user._id;
+        const aggreements = await Aggrement.find({renterId:renter})
+        console.log(aggreements);
+        if(aggreements){
+            res.status(STATUS.SUCCESS).json({
+                status: BOOLEAN.TRUE,
+                message: RESPONCE_MESSAGE.USER_FETCHED,
+                data: {
+                    aggreements
+                }
+            });
+        }
+    } catch (error) {
+        next(error)
+    }
+
+}
