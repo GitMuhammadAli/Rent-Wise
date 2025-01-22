@@ -7,8 +7,8 @@ import {
   PhoneIcon,
 } from "lucide-react";
 import { getOwnerProfileData } from "../../../Api/owner";
+import { Link } from 'react-router-dom';
 
-const API_BASE_URL = "YOUR_API_BASE_URL"; // Replace with your actual API base URL
 
 const UserProfile = () => {
   const { _id } = useParams();
@@ -111,38 +111,47 @@ const UserProfile = () => {
 
         {/* Listings Tab */}
         {activeTab === "listings" && (
-          <div className="mt-6 grid gap-6">
-            {listings.length > 0 ? (
-              listings.map((listing) => (
-                <div
-                  key={listing._id}
-                  className="flex items-center bg-gray-50 p-4 rounded-lg shadow-sm"
-                >
-                  <img
-                    className="h-16 w-16 object-cover rounded-lg mr-4"
-                    src={`${import.meta.env.VITE_BACK_END_URL}${listing.images[0]?.url || ""}`}
-                    alt={listing.title}
-                    onError={(e) => (e.currentTarget.src = "/images/make_listing/random.png")} // Fallback image
-                  />
-                  <div>
-                    <h2 className="font-bold">{listing.title}</h2>
-                    <p>
-                      ${listing.price} / {listing.priceUnit}
-                    </p>
-                    <div className="flex items-center text-yellow-500 mt-2">
-                      <StarIcon className="h-5 w-5" />
-                      <span className="ml-1">
-                        {listing.averageRating.toFixed(1) || "0.0"}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <p>No listings available.</p>
-            )}
+  <div className="mt-6 grid gap-6">
+    {listings.length > 0 ? (
+      listings.map((listing) => (
+        <Link
+          to={`/rental/${listing._id}`}
+          key={listing._id}
+          className="block"
+        >
+          <div
+            className="flex items-center bg-gray-50 p-4 rounded-lg shadow-sm transition-transform transform hover:scale-110  hover:shadow-lg 
+            cursor-pointer hover:bg-slate-300"
+          >
+            <img
+              className="h-16 w-16 object-cover rounded-lg mr-4"
+              src={`${import.meta.env.VITE_BACK_END_URL}${listing.images[0]?.url || ""}`}
+              alt={listing.title}
+              onError={(e) =>
+                (e.currentTarget.src = "/images/make_listing/random.png")
+              } // Fallback image
+            />
+            <div>
+              <h2 className="font-bold">{listing.title}</h2>
+              <p>
+                ${listing.price} / {listing.priceUnit}
+              </p>
+              <div className="flex items-center text-yellow-500 mt-2">
+                <StarIcon className="h-5 w-5" />
+                <span className="ml-1">
+                  {listing.averageRating.toFixed(1) || "0.0"}
+                </span>
+              </div>
+            </div>
           </div>
-        )}
+        </Link>
+      ))
+    ) : (
+      <p>No listings available.</p>
+    )}
+  </div>
+)}
+
 
         {/* Reviews Tab */}
         {activeTab === "reviews" && (
