@@ -17,6 +17,8 @@ exports.getAllCarsListings = async (req, res, next) => {
         const CarListings = await listings.find({
             category: "car"
         })
+        .populate("images")
+        .populate("videos")
 
         res.status(STATUS.SUCCESS).json({
             status: STATUS.SUCCESS,
@@ -34,6 +36,8 @@ exports.getAllHouseListings = async (req, res, next) => {
         const HouseListings = await listings.find({
             category: "house"
         })
+        .populate("images")
+        .populate("videos")
 
         res.status(STATUS.SUCCESS).json({
             status: STATUS.SUCCESS,
@@ -53,6 +57,8 @@ exports.getAllApartmentsListings = async (req, res, next) => {
         const ApartmentListings = await listings.find({
             category: "apartment"
         })
+        .populate("images")
+        .populate("videos")
 
         res.status(STATUS.SUCCESS).json({
             status: STATUS.SUCCESS,

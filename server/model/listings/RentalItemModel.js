@@ -104,7 +104,7 @@ const RentalSchema = new mongoose.Schema({
     },
   ],
   listingReview: [{
-    type: mongoose.Schema.type.ObjectId, ref: "ListingReview"
+    type: mongoose.Schema.Types.ObjectId, ref: "ListingReview"
   }],
   averageRating: { type: Number, default: 0 },
 
