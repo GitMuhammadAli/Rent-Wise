@@ -59,7 +59,15 @@ exports.uploadMedia = async (req, res, next) => {
 // Updated_One-&-Latest
 exports.CreateListings = async (req, res, next) => {
     try {
-        const { owner, title, description, price, category, priceUnit, amenities = [],
+        const amenities = Array.isArray(req.body.amenities)
+  ? req.body.amenities
+  : JSON.parse(req.body.amenities);
+
+  const rules = Array.isArray(req.body.rules)
+  ? req.body.rules
+  : JSON.parse(req.body.rules);
+  
+        const { owner, title, description, price, category, priceUnit,
             location, biddingEnabled, minimumBid, bidIncrement, bidEndDate
         } = req.body;
 
@@ -123,6 +131,7 @@ exports.CreateListings = async (req, res, next) => {
             category,
             priceUnit,
             amenities,
+            rules,
             images,
             videos,
             listingStatus:"active",

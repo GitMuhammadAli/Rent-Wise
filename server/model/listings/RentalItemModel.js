@@ -75,7 +75,7 @@ const RentalSchema = new mongoose.Schema({
   owner: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   category: {
     type: String,
-    enum: ["car",  "apartment", "house"],
+    enum: ["car",  "hostel", "house"],
     required: true,
   },
   title: { type: String, required: true },
