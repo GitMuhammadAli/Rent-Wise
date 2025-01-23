@@ -30,6 +30,8 @@ export default function GetAllListings() {
       }
   };
 
+  
+
   useEffect(() => {
     async function fetchData() {
       try {

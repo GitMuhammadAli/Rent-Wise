@@ -145,9 +145,9 @@ function MainLayout() {
       </Box>
 
       <Flex as="main" flexGrow={1} py={4} >
-        <Container maxW="container.xl">
+        <Box w={'100%'}>
           <Outlet />
-        </Container>
+        </Box>
       </Flex>
 
       <Box bg="gray.800" color="white" py={4}>
