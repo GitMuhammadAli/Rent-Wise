@@ -53,8 +53,12 @@ exports.updateUserDashboard = async (req, res , next) => {
 
     if (password) {
       if (user.googleId || user.facebookId) {
-        const salt = await bcrypt.genSalt(10);
-        updateData.password = await bcrypt.hash(password, salt);
+        // const salt = await bcrypt.genSalt(10);
+        // updateData.password = await bcrypt.hash(password, salt);
+        return res.status(STATUS.FORBIDDEN).json({
+          success: BOOLEAN.FALSE,
+          message: RESPONCE_MESSAGE.CANNOT_CREATE_PASSWORD_IN_GOOGLE_OR_FACEBOOK_ACCOUNTS,
+        });
       } else {
 
         const pass = bcrypt.compare(currentPassword, user.password);

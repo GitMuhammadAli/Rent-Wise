@@ -11,6 +11,7 @@ const RESPONCE_MESSAGE = {
     USER_REGISTERED: "User registered successfully",
     USER_NOT_FOUND_PLEASE_LOGIN: " User not found. Please login",
     USER_NOT_FOUND_PLEASE_REGISTER: " User not found. Please Create Account",
+    CANNOT_CREATE_PASSWORD_IN_GOOGLE_OR_FACEBOOK_ACCOUNTS:"Google or Facebook logins Cannot have Passwords",
 
     LOGIN_SUCCESS: "Login successful",
     LOGOUT_SUCCESS: "Logout successful",

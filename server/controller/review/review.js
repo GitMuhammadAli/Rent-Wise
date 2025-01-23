@@ -25,9 +25,9 @@ exports.ToGetReview = async(req,res,next)=>{
           ownerConfirmed: BOOLEAN.TRUE,
           renterConfirmed: BOOLEAN.TRUE
         })
-          .populate("listingId", "title description") // Populate listing details
-          .populate("ownerId", "name email imageUrl") // Populate owner details
-          .populate("renterId", "name email imageUrl") // Populate renter details
+          .populate("listingId", "title description") 
+          .populate("ownerId", "name email imageUrl") 
+          .populate("renterId", "name email imageUrl")
           .exec();
 
         console.log(agreements)
