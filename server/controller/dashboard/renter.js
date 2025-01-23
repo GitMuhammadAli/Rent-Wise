@@ -17,7 +17,7 @@ const Conversation = require("../../model/chat/ConversationModel");
 exports.fetchRenterAggreements = async (req, res, next)=>{
     try {
         const renter = req.user._id;
-        const aggreements = await Aggrement.find({renterId:renter}).populate("agreementDetailsId")
+        const aggreements = await Aggrement.find({renterId:renter}).populate("agreementDetailsId").populate("ownerId").populate("listingId")
         if(aggreements){
             res.status(STATUS.SUCCESS).json({
                 status: BOOLEAN.TRUE,
