@@ -22,11 +22,15 @@ exports.ToGetReview = async(req,res,next)=>{
         // Fetch agreements where the logged-in user is either the owner or renter
         const agreements = await Aggrement.find({
           $or: [{ ownerId: userId }, { renterId: userId }],
+          ownerConfirmed: BOOLEAN.TRUE,
+          renterConfirmed: BOOLEAN.TRUE
         })
           .populate("listingId", "title description") // Populate listing details
           .populate("ownerId", "name email imageUrl") // Populate owner details
           .populate("renterId", "name email imageUrl") // Populate renter details
           .exec();
+
+        console.log(agreements)
     
         // Prepare the response with the counterpart user
         const counterparts = agreements.map((agreement) => {
@@ -55,6 +59,7 @@ exports.ToGetReview = async(req,res,next)=>{
           message: "  to be given review  users fetched successfully",
           data: counterparts,
         });
+
       } catch (error) {
         console.error("Error fetching counterpart users:", error);
         return res.status(500).json({
