@@ -37,12 +37,15 @@ export default function UserDash() {
       try {
         const response = await ToGetReview();
         console.log("review peoples", response);
+        const reviewData = response?.data || [];
+        setAgreementDetail(reviewData);
         
       } catch (error) {
         console.log(error)
         
       }
     }
+
     funcToGetReview()
   },[])
 
