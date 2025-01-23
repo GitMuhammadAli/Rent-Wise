@@ -31,23 +31,33 @@ export default function UserDash() {
   ]
 
 
-  useEffect(()=>{
-
-    const funcToGetReview = async()=>{
+  useEffect(() => {
+    const funcToGetReview = async () => {
       try {
         const response = await ToGetReview();
-        console.log("review peoples", response);
-        const reviewData = response?.data || [];
-        setAgreementDetail(reviewData);
-        
+  
+        console.log("Full response:", response);  // Check entire response structure
+  
+        if (response && response.data) {
+          console.log("Response data:", response.data);
+          console.log("Fetched data:", response.data.data);
+  
+          const reviewData = response.data.data || [];  
+          console.log("Processed review data:", reviewData);
+          
+         
+        } else {
+          console.warn("No data found in response");
+        }
       } catch (error) {
-        console.log(error)
-        
+        console.error("Error fetching review data:", error);
       }
-    }
-
-    funcToGetReview()
-  },[])
+    };
+  
+    funcToGetReview();
+  }, []);
+  
+  
 
   useEffect(()=>{
 

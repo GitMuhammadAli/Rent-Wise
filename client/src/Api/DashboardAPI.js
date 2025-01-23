@@ -18,7 +18,14 @@ export const updateUserDashboard = async (id, formData) => {
 };
 
 
-export const ToGetReview =async ()=>{
-  axios.get(`${API_BASE_URL}/reviews`, { withCredentials: true });
-}
+export const ToGetReview = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/reviews`, { withCredentials: true });
+    return response;  // Ensure the function returns the response properly
+  } catch (error) {
+    console.error("API request failed:", error);
+    throw error;
+  }
+};
+
   
