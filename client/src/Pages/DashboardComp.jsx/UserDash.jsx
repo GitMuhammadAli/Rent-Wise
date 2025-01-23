@@ -148,14 +148,20 @@
 //   )
 // }
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import {  Text, VStack, Flex, Icon, Button, Box, Badge , Table, Thead, Tbody, Tr, Th, Td,} from '@chakra-ui/react';
+import { StarIcon } from '@chakra-ui/icons';
 import { Calendar, CreditCard, MessageSquare, SearchIcon, FileText, Star, User } from 'lucide-react'
+import { fetchAllRenterAggreements } from '../../Api/renter';
+import { ToGetReview } from '../../Api/DashboardAPI';
+import { Link } from 'react-router-dom';
 
 
 
 
 export default function UserDash() {
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [agreementDetail, setAgreementDetail] = useState([]);
 
 
   const upcomingRentals = [
@@ -169,16 +175,59 @@ export default function UserDash() {
     { id: 3, action: 'Cancelled Hotel Booking', date: '2023-04-30' },
   ]
 
-  const agreements= [
-    { id: 1, item: 'Luxury Sedan', owner: 'Car Rentals Inc.', startDate: '2023-05-20', endDate: '2023-05-23', status: 'Active', documentUrl: '#' },
-    { id: 2, item: 'Beachfront Apartment', owner: 'Coastal Properties', startDate: '2023-06-15', endDate: '2023-06-22', status: 'Upcoming', documentUrl: '#' },
-    { id: 3, item: 'Mountain Bike', owner: 'Adventure Rentals', startDate: '2023-04-10', endDate: '2023-04-12', status: 'Completed', documentUrl: '#' },
-  ]
-
   const reviews= [
     { id: 1, item: 'Luxury Sedan', owner: 'Car Rentals Inc.', rating: 4, comment: 'Great car, smooth ride!', date: '2023-05-24' },
     { id: 2, item: 'Mountain Bike', owner: 'Adventure Rentals', rating: 5, comment: 'Excellent bike and service!', date: '2023-04-13' },
   ]
+
+
+  useEffect(()=>{
+
+    const funcToGetReview = async()=>{
+      try {
+        const response = await ToGetReview();
+        console.log("review peoples", response);
+        
+      } catch (error) {
+        console.log(error)
+        
+      }
+
+    }
+    funcToGetReview()
+
+  },[])
+
+  useEffect(()=>{
+
+    const fetchAggreements = async() =>{
+      try {
+        const response = await fetchAllRenterAggreements()
+        console.log("res aggr", response)
+      
+        const listingName = response.data.data.aggreements.map((aggr)=> aggr.listingId);
+        const OwnerName = response.data.data.aggreements.map((aggr)=> aggr.ownerId);
+        const startDate = response.data.data.aggreements.map((aggr)=> aggr.agreementDetailsId.aggrementDetail.startDate);
+        const endDate = response.data.data.aggreements.map((aggr)=> aggr.agreementDetailsId.aggrementDetail.endDate);
+        const status = response.data.data.aggreements.map((aggr)=> aggr.agreementDetailsId.aggrementDetail.agreementStatus);
+        setAgreementDetail(response?.data?.data?.aggreements)
+        
+        
+      } catch (error) {
+        console.log(error)
+        
+      }
+
+    }
+
+    fetchAggreements();
+
+    },[])
+
+    useEffect(()=>{
+      console.log("aggrDetaii", agreementDetail)
+
+    },[agreementDetail])
 
   const renderDashboard = () => (
     <>
@@ -252,101 +301,207 @@ export default function UserDash() {
         </div>
       </div>
 
-      <div className="mt-8 flex justify-center">
+      {/* <div className="mt-8 flex justify-center">
         <button className="px-6 py-3 bg-teal-600 text-white rounded-full hover:bg-teal-700 transition-colors flex items-center">
           <SearchIcon size={16} className="mr-2" />
           Start New Search
         </button>
-      </div>
+      </div> */}
     </>
   )
 
-  const renderAgreements = () => (
-    <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-      <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
-        <h3 className="text-lg font-semibold text-gray-900">Rental Agreements</h3>
-      </div>
-      <div className="p-6">
-        <table className="w-full">
-          <thead>
-            <tr className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              <th className="pb-2">Item</th>
-              <th className="pb-2">Owner</th>
-              <th className="pb-2">Dates</th>
-              <th className="pb-2">Status</th>
-              <th className="pb-2">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {agreements.map((agreement) => (
-              <tr key={agreement.id} className="border-t border-gray-200">
-                <td className="py-3 font-medium">{agreement.item}</td>
-                <td className="py-3">{agreement.owner}</td>
-                <td className="py-3">{`${agreement.startDate} - ${agreement.endDate}`}</td>
-                <td className="py-3">
-                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                    agreement.status === 'Active' ? 'bg-green-100 text-green-800' : 
-                    agreement.status === 'Upcoming' ? 'bg-yellow-100 text-yellow-800' : 
-                    'bg-gray-100 text-gray-800'
-                  }`}>
-                    {agreement.status}
-                  </span>
-                </td>
-                <td className="py-3">
-                  <a 
-                    href={agreement.documentUrl} 
-                    className="text-blue-600 hover:text-blue-800 transition-colors"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    View Agreement
-                  </a>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  )
+  const renderAgreements = () => {
+
+   
+
+    return (
+      <Box bg="white" borderRadius="lg" shadow="lg" overflow="hidden">
+        <Box px={6} py={4} bg="gray.50" borderBottomWidth="1px" borderColor="gray.200">
+          <Text fontSize="lg" fontWeight="semibold" color="gray.900">
+            Rental Agreements
+          </Text>
+        </Box>
+  
+        <Box p={6}>
+          <Table width="full">
+            <Thead>
+              <Tr>
+                <Th pb={2} textTransform="uppercase" fontSize="xs" fontWeight="medium" color="gray.500">
+                  List Title
+                </Th>
+                <Th pb={2} textTransform="uppercase" fontSize="xs" fontWeight="medium" color="gray.500">
+                  Owner
+                </Th>
+                <Th pb={2} textTransform="uppercase" fontSize="xs" fontWeight="medium" color="gray.500">
+                  Dates
+                </Th>
+                <Th pb={2} textTransform="uppercase" fontSize="xs" fontWeight="medium" color="gray.500">
+                  Status
+                </Th>
+                <Th pb={2} textTransform="uppercase" fontSize="xs" fontWeight="medium" color="gray.500">
+                  Action
+                </Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              { agreementDetail && agreementDetail.length > 0 ? ( 
+                agreementDetail?.map((agreement) => (
+                  <Tr key={agreement._id} borderTopWidth="1px" borderColor="gray.200">
+                    <Td py={3} fontWeight="medium">
+                      {agreement?.listingId?.title}
+                    </Td>
+                    <Td py={3}>{agreement.ownerId.name}</Td>
+                    <Td py={3}>{`${agreement?.agreementDetailsId?.aggrementDetail.startDate} - 
+                    ${agreement?.agreementDetailsId?.aggrementDetail.endDate}`}</Td>
+                    <Td py={3}>
+                      <Badge
+                        px={2}
+                        fontSize="xs"
+                        fontWeight="semibold"
+                        borderRadius="full"
+                        colorScheme={
+                          agreement.agreementStatus === 'active'
+                            ? 'green'
+                            : agreement.status === 'pending'
+                            ? 'yellow'
+                            : 'gray'
+                        }
+                      >
+                        {agreement?.agreementStatus}
+                    
+                      </Badge>
+                    </Td>
+                    <Td py={3}>
+                      <Link
+                        to={agreement?.listingId?.category === 'house' ? 
+                          `/viewHouseAgreement/${agreement._id}` :
+                        agreement?.listingId?.category === 'car' ? 
+                        `/viewCarAgreement/${agreement._id}` : 
+                        `/viewHostelAgreement/${agreement._id}`
+                         }
+                        color="blue.600"
+                        _hover={{ color: 'blue.800' }}
+                        // isExternal
+                      >
+                        View Agreement
+                      </Link>
+                      
+                    </Td>
+                  </Tr>
+                ))
+              ) : (<Text>No agreement created yet</Text>) }
+            </Tbody>
+          </Table>
+        </Box>
+      </Box>
+  
+    )
+
+  } 
+
 
   const renderReviews = () => (
-    <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-      <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
-        <h3 className="text-lg font-semibold text-gray-900">Your Reviews</h3>
-      </div>
-      <div className="p-6">
-        <ul className="space-y-6">
-          {reviews.map((review) => (
-            <li key={review.id} className="border-b border-gray-200 pb-6 last:border-b-0 last:pb-0">
-              <div className="flex justify-between items-start mb-2">
-                <div>
-                  <h4 className="font-semibold text-lg">{review.item}</h4>
-                  <p className="text-sm text-gray-600">Owner: {review.owner}</p>
-                </div>
-                <div className="flex items-center">
-                  {[...Array(5)].map((_, i) => (
-                    <Star 
-                      key={i} 
-                      size={16} 
-                      className={i < review.rating ? 'text-yellow-400' : 'text-gray-300'} 
-                      fill={i < review.rating ? 'currentColor' : 'none'}
-                    />
-                  ))}
-                </div>
-              </div>
-              <p className="text-gray-700 mb-2">{review.comment}</p>
-              <p className="text-sm text-gray-500">Reviewed on {review.date}</p>
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
-        <button className="w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
-          Write a New Review
-        </button>
-      </div>
-    </div>
+    // <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+    //   <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
+    //     <h3 className="text-lg font-semibold text-gray-900">Your Reviews</h3>
+    //   </div>
+    //   <div className="p-6">
+    //     <ul className="space-y-6">
+    //       {reviews.map((review) => (
+    //         <li key={review.id} className="border-b border-gray-200 pb-6 last:border-b-0 last:pb-0">
+    //           <div className="flex justify-between items-start mb-2">
+    //             <div>
+    //               <h4 className="font-semibold text-lg">{review.item}</h4>
+    //               <p className="text-sm text-gray-600">Owner: {review.owner}</p>
+    //             </div>
+    //             <div className="flex items-center">
+    //               {[...Array(5)].map((_, i) => (
+    //                 <Star 
+    //                   key={i} 
+    //                   size={16} 
+    //                   className={i < review.rating ? 'text-yellow-400' : 'text-gray-300'} 
+    //                   fill={i < review.rating ? 'currentColor' : 'none'}
+    //                 />
+    //               ))}
+    //             </div>
+    //           </div>
+    //           <p className="text-gray-700 mb-2">{review.comment}</p>
+    //           <p className="text-sm text-gray-500">Reviewed on {review.date}</p>
+    //         </li>
+    //       ))}
+    //     </ul>
+    //   </div>
+    //   <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
+    //     <button className="w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
+    //       Write a New Review
+    //     </button>
+    //   </div>
+    // </div>
+
+    <Box bg="white" rounded="lg" shadow="lg" overflow="hidden">
+    <Box px={6} py={4} bg="gray.50" borderBottom="1px" borderColor="gray.200">
+      <Text fontSize="lg" fontWeight="semibold" color="gray.900">
+        Your Reviews
+      </Text>
+    </Box>
+  
+    <Box p={6}>
+      <VStack spacing={6} align="stretch">
+        {reviews.map((review) => (
+          <Box
+            key={review.id}
+            borderBottom="1px"
+            borderColor="gray.200"
+            pb={6}
+            _last={{ borderBottom: 'none', pb: 0 }}
+          >
+            <Flex justify="space-between" align="start" mb={2}>
+              <Box>
+                <Text fontWeight="semibold" fontSize="lg">
+                  {review.item}
+                </Text>
+                <Text fontSize="sm" color="gray.600">
+                  Owner: {review.owner}
+                </Text>
+              </Box>
+  
+              <Flex align="center">
+                {[...Array(5)].map((_, i) => (
+                  <Icon
+                    as={StarIcon}
+                    key={i}
+                    boxSize={4}
+                    color={i < review.rating ? 'yellow.400' : 'gray.300'}
+                  />
+                ))}
+              </Flex>
+            </Flex>
+  
+            <Text color="gray.700" mb={2}>
+              {review.comment}
+            </Text>
+            <Text fontSize="sm" color="gray.500">
+              Reviewed on {review.date}
+            </Text>
+          </Box>
+        ))}
+      </VStack>
+    </Box>
+  
+    <Box px={6} py={4} bg="gray.50" borderTop="1px" borderColor="gray.200">
+      <Button
+        w="full"
+        px={4}
+        py={2}
+        bg="blue.600"
+        color="white"
+        _hover={{ bg: 'blue.700' }}
+        transition="background-color 0.2s"
+      >
+        Write a New Review
+      </Button>
+    </Box>
+  </Box>
   )
 
   return (

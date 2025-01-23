@@ -53,12 +53,15 @@ exports.ToGetReview = async(req,res,next)=>{
             agreementDate: agreement.agreementDate,
           };
         });
+        console.log("rev", counterparts)
     
         return res.status(200).json({
           success: true,
           message: "  to be given review  users fetched successfully",
           data: counterparts,
         });
+
+        
 
       } catch (error) {
         console.error("Error fetching counterpart users:", error);

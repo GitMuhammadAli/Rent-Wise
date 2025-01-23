@@ -144,7 +144,7 @@ function MainLayout() {
         </Container>
       </Box>
 
-      <Flex as="main" flexGrow={1} p={8}>
+      <Flex as="main" flexGrow={1} py={4} >
         <Container maxW="container.xl">
           <Outlet />
         </Container>
