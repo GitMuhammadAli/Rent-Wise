@@ -1,118 +1,132 @@
-import React, { useEffect, useState } from "react";
-import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../hooks/AuthContext";
-import { ToastContainer, toast } from "react-toastify";
-import { Box, Flex, Text, Button, Container } from "@chakra-ui/react";
-import "react-toastify/dist/ReactToastify.css";
+import React, { useEffect, useState } from "react"
+import { Outlet, Link, useLocation, useNavigate } from "react-router-dom"
+import { useAuth } from "../hooks/AuthContext"
+import { ToastContainer, toast } from "react-toastify"
+import { Box, Flex, Text, Button, Container, useColorModeValue, Icon, VStack } from "@chakra-ui/react"
+import { FaUser, FaComments, FaList, FaTachometerAlt, FaPlus, FaFileContract, FaSignOutAlt } from "react-icons/fa"
+import "react-toastify/dist/ReactToastify.css"
 
 function MainLayout() {
-  const { user, handleLogout } = useAuth();
-  const location = useLocation();
-  const navigate = useNavigate();
-  const [successMessage, setSuccessMessage] = useState("");
-  // const Admin_ID = import.meta.env.ADMIN_ID;
+  const { user, handleLogout } = useAuth()
+  const location = useLocation()
+  const navigate = useNavigate()
+  const [successMessage, setSuccessMessage] = useState("")
 
+  const bgColor = useColorModeValue("orange.500", "orange.600")
+  const hoverBgColor = useColorModeValue("orange.600", "orange.800")
+  const textColor = useColorModeValue("white", "gray.100")
+  const buttonBgColor = useColorModeValue("white", "gray.700")
+  const buttonTextColor = useColorModeValue("orange.500", "orange.300")
+  const buttonHoverBgColor = useColorModeValue("gray.100", "gray.600")
 
   useEffect(() => {
     if (location.state && location.state.successMessage) {
-      setSuccessMessage(location.state.successMessage);
-      navigate(location.pathname, { replace: true, state: {} });
+      setSuccessMessage(location.state.successMessage)
+      navigate(location.pathname, { replace: true, state: {} })
     }
-    
-  }, [location]);
-
-// useEffect(()=>{
-//   console.log("userID", user._id, "import", Admin_ID)
-// },[user, Admin_ID])
+  }, [location, navigate])
 
   useEffect(() => {
     if (successMessage) {
-      toast.success(successMessage);
-      setSuccessMessage("");
+      toast.success(successMessage)
+      setSuccessMessage("")
     }
-  }, [successMessage]);
+  }, [successMessage])
 
   return (
     <Flex direction="column" minH="100vh">
       <ToastContainer />
-      
-      <Box bg="gray.800" color="white">
-        <Container maxW="container.xl" py={2}>
+
+      <Box bg={bgColor} color={textColor} boxShadow="md">
+        <Container maxW="container.xl" py={4}>
           <Flex justify="space-between" align="center">
-            <Text as={Link} to="/" _hover={{ color: "gray.300" }}>
-              Home
+            <Text as={Link} to="/" fontSize="2xl" fontFamily= "'Playwrite CU', cursive"  fontWeight="bold" _hover={{ color: "orange.200" }}>
+              RentWise
             </Text>
 
-            <Flex align="center">
+            <Flex align="center" spacing={4}>
               {user ? (
                 <>
                   <Button
                     as={Link}
                     to="/acc"
-                    bg="green.500"
-                    _hover={{ bg: "green.600" }}
-                    color="white"
+                    bg={buttonBgColor}
+                    color={buttonTextColor}
+                    _hover={{ bg: buttonHoverBgColor }}
                     fontWeight="bold"
                     px={4}
                     mr={2}
-                    leftIcon={
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    }
+                    leftIcon={<Icon as={FaUser} />}
                   >
                     User
                   </Button>
                   <Button
                     as={Link}
                     to="/chat"
-                    bg="purple.500"
-                    _hover={{ bg: "purple.600" }}
-                    color="white"
+                    bg={buttonBgColor}
+                    color={buttonTextColor}
+                    _hover={{ bg: buttonHoverBgColor }}
                     fontWeight="bold"
                     px={4}
                     mr={2}
-                    leftIcon={
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    }
+                    leftIcon={<Icon as={FaComments} />}
                   >
                     Chats
                   </Button>
-                  <Text as={Link} to="/getAll" _hover={{ color: "gray.300" }} mr={4}>
-                    Get Listings
-                  </Text>
-                  <Text as={Link} to="/dashboard" _hover={{ color: "gray.300" }} mr={4}>
+                  {/* <Button
+                    as={Link}
+                    to="/getAll"
+                    bg={buttonBgColor}
+                    color={buttonTextColor}
+                    _hover={{ bg: buttonHoverBgColor }}
+                    fontWeight="bold"
+                    px={4}
+                    mr={2}
+                    leftIcon={<Icon as={FaList} />}
+                  >
+                    Listings
+                  </Button> */}
+                  <Button
+                    as={Link}
+                    to="/dashboard"
+                    bg={buttonBgColor}
+                    color={buttonTextColor}
+                    _hover={{ bg: buttonHoverBgColor }}
+                    fontWeight="bold"
+                    px={4}
+                    mr={2}
+                    leftIcon={<Icon as={FaTachometerAlt} />}
+                  >
                     Dashboard
-                  </Text>
-                  <Text as={Link} to="/media" _hover={{ color: "gray.300" }} mr={4}>
-                    Create lisitng
-                  </Text>
-                  {
-            user?._id === '670ba87a096754e9bda6658f' && (  // store in .evn later on
-                  <Text mr={3} cursor={'pointer'} as={Link} to="/agreements-protected" _hover={{ color: "gray.300" }}>View Agreements</Text>
-                )
-              }
-
+                  </Button>
+                  <Button
+                    as={Link}
+                    to="/media"
+                    bg={buttonBgColor}
+                    color={buttonTextColor}
+                    _hover={{ bg: buttonHoverBgColor }}
+                    fontWeight="bold"
+                    px={4}
+                    mr={2}
+                    leftIcon={<Icon as={FaPlus} />}
+                  >
+                    Create Listing
+                  </Button>
+                  {user?._id === "670ba87a096754e9bda6658f" && (
+                    <Button
+                      as={Link}
+                      to="/agreements-protected"
+                      bg={buttonBgColor}
+                      color={buttonTextColor}
+                      _hover={{ bg: buttonHoverBgColor }}
+                      fontWeight="bold"
+                      px={4}
+                      mr={2}
+                      leftIcon={<Icon as={FaFileContract} />}
+                    >
+                      View Agreements
+                    </Button>
+                  )}
                   <Button
                     onClick={handleLogout}
                     bg="red.500"
@@ -120,45 +134,53 @@ function MainLayout() {
                     color="white"
                     fontWeight="bold"
                     px={4}
+                    leftIcon={<Icon as={FaSignOutAlt} />}
                   >
                     Logout
                   </Button>
                 </>
-                
               ) : (
                 <Button
-                  as="a"
-                  href="/auth/signIn"
-                  bg="blue.500"
-                  _hover={{ bg: "blue.600" }}
-                  color="white"
+                  as={Link}
+                  to="/auth/signIn"
+                  bg={buttonBgColor}
+                  color={buttonTextColor}
+                  _hover={{ bg: buttonHoverBgColor }}
                   fontWeight="bold"
-                  px={4}
+                  px={6}
+                  py={2}
+                  borderRadius="full"
                 >
                   Login
                 </Button>
               )}
-              
             </Flex>
           </Flex>
         </Container>
       </Box>
 
-      <Flex as="main" flexGrow={1} py={4} >
-        <Box w={'100%'}>
+      <Flex as="main" flexGrow={1} bg={useColorModeValue("orange.50", "gray.900")}>
+        <Box w="100%">
           <Outlet />
         </Box>
       </Flex>
 
-      <Box bg="gray.800" color="white" py={4}>
+      <Box as="footer" bg={bgColor} color={textColor} py={4}>
         <Container maxW="container.xl">
-          <Text textAlign="center">
-            © 2023 Your Company Name. All rights reserved.
-          </Text>
+          <VStack spacing={2} align="center">
+            <Text>&copy; 2023 RentWise. All rights reserved.</Text>
+            <Flex gap={4}>
+              <Link to="/about">About</Link>
+              <Link to="/contact">Contact</Link>
+              <Link to="/privacy">Privacy Policy</Link>
+              <Link to="/terms">Terms of Service</Link>
+            </Flex>
+          </VStack>
         </Container>
       </Box>
     </Flex>
-  );
+  )
 }
 
-export default MainLayout;
+export default MainLayout
+

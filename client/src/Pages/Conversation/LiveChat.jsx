@@ -127,11 +127,11 @@ export default function LiveChat({
         color={"white"}
         borderBottom={"1px solid gray"}
         p={4}
-        bg={"gray.800"}
+        bg={"orange.100"}
         h={"70px"}
       >
         {owner && (
-          <Flex alignItems={"center"}>
+          <Flex alignItems={"center"} color={'orange.600'}>
             <Link
               to={`/profile/${owner._id}`}
               style={{
@@ -163,7 +163,7 @@ export default function LiveChat({
         ref={scrollRef}
         height="300px"
         overflowY="scroll"
-        bg="gray.800"
+        bg="orange.100"
         borderRadius="md"
         display={"flex"}
         p={6}
@@ -181,8 +181,8 @@ export default function LiveChat({
               p={2}
               bg={
                 (Messages.sender._id || Messages.sender) === user?._id
-                  ? "green.600"
-                  : "gray.600"
+                  ? "orange.700"
+                  : "orange.300"
               }
               alignSelf={
                 (Messages.sender._id || Messages.sender) === user?._id

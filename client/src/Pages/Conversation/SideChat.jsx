@@ -79,17 +79,17 @@ export default function SideChat({ handleSideBarClick, ownerIdDetails, setAllDat
     <Box
       width={{ base: "100%", md: "20%" }}
      
-      bg="gray.800"
+      bg="orange.100"
       borderRight="1px solid"
       borderColor="gray.200"
       p={4}
     >
       <VStack spacing={4} align="stretch">
         
-        <Text color={'white'} fontWeight="bold">Chats</Text>
+        <Text color={'orange.500'} fontWeight="bold">Chats</Text>
 
 
-        <Input type='text' placeholder='Search Chat' color={'white'} onChange={(e)=> setSearchChat(e.target.value)} />
+        <Input bg={'orange.50'}  type='text' placeholder='Search Chat' color={'orange.600'} onChange={(e)=> setSearchChat(e.target.value)} />
 
 
         {combinedList && combinedList.length > 0 ? (
@@ -98,20 +98,20 @@ export default function SideChat({ handleSideBarClick, ownerIdDetails, setAllDat
 
           ).map((item, i) => (
             <Box
-            _active={{bg:'gray.500'}}
+            _active={{bg:'orange.50'}}
               key={item._id || i}
               display="flex"
               alignItems="center"
               cursor="pointer"
               p={2}
               
-              bg="gray.200"
+              bg="orange.200"
               borderRadius="md"
               onClick={() => handleSideBarClick(item._id, item.name, item, item.imageUrl)}
             >
      
               <Avatar mr={3} src={`${import.meta.env.VITE_BACK_END_URL}${item.imageUrl}`|| item.imageUrl} />
-              <Text  >{item.name}</Text>
+              <Text color={'orange.600'}  >{item.name}</Text>
             </Box>
           ))
         ) : (
