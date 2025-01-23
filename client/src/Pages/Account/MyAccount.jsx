@@ -124,7 +124,7 @@ export default function MyAccount() {
           <Tab>Personal</Tab>
           <Tab>Notifications</Tab>
           <Tab>Privacy</Tab>
-          <Tab>Security</Tab>
+          {!isThirdPartyUser && <Tab>Security</Tab>}
         </TabList>
         <TabPanels>
           <TabPanel>
@@ -196,30 +196,25 @@ export default function MyAccount() {
             </VStack>
           </TabPanel>
 
-          <TabPanel>
-            <VStack spacing={4}>
-              {!isThirdPartyUser && (
-                <>
-                  <FormControl>
-                    <FormLabel>Current Password</FormLabel>
-                    <Input type="password" value={currentPassword} onChange={(e)=> setCurrentPassword(e.target.value)}  />
-                  </FormControl>
-                  
-                </>
-              )}
-              <FormControl>
-                    <FormLabel>New Password</FormLabel>
-                    <Input type="password" value={newPassword} onChange={(e)=> setNewPassword(e.target.value)}/>
-                  </FormControl>
-                  <FormControl>
-                    <FormLabel>Confirm New Password</FormLabel>
-                    <Input type="password" value={confirmNewPassword} onChange={(e)=> setConfirmNewPassword(e.target.value)}/>
-                  </FormControl>
-                  <Text alignSelf={'flex-start'} color={'blue.500'} as={Link} to={'/auth/forgetPassword'}>Forget Password?</Text>
-          
-            </VStack>
-          </TabPanel>
-        </TabPanels>
+          {!isThirdPartyUser && (
+            <TabPanel>
+              <VStack spacing={4}>
+                <FormControl>
+                  <FormLabel>Current Password</FormLabel>
+                  <Input type="password" value={currentPassword} onChange={(e)=> setCurrentPassword(e.target.value)}  />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>New Password</FormLabel>
+                  <Input type="password" value={newPassword} onChange={(e)=> setNewPassword(e.target.value)}/>
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Confirm New Password</FormLabel>
+                  <Input type="password" value={confirmNewPassword} onChange={(e)=> setConfirmNewPassword(e.target.value)}/>
+                </FormControl>
+                <Text alignSelf={'flex-start'} color={'blue.500'} as={Link} to={'/auth/forgetPassword'}>Forget Password?</Text>
+              </VStack>
+            </TabPanel>
+          )}        </TabPanels>
       </Tabs>
       <HStack justifyContent="space-between" mt={6}>
         <Button variant="outline">Cancel</Button>
