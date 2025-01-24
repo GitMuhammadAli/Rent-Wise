@@ -21,8 +21,8 @@ exports.ToGetReview = async (req, res, next) => {
 
     const agreements = await Aggrement.find({
       $or: [{ ownerId: userId }, { renterId: userId }],
-      ownerConfirmed: true, 
-      renterConfirmed: true
+      ownerConfirmed: BOOLEAN.TRUE, 
+      renterConfirmed: BOOLEAN.TRUE
     })
       .populate("listingId")
       .populate("ownerId")
