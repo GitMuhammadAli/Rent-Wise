@@ -47,11 +47,11 @@ const ListingDetails = () => {
   const toast = useToast();
 
   useEffect(() => {
-    if(!user)
-    {
-      console.log("no user here in listing yet")
-      return
-    }
+    // if(!user)
+    // {
+    //   console.log("no user here in listing yet")
+    //   return
+    // }
     const fetchRentalDetails = async () => {
       try {
         const response = await getOneUserListingAPI(id);
@@ -66,7 +66,8 @@ const ListingDetails = () => {
     };
 
     fetchRentalDetails();
-  }, [id, user]);
+  }, [id]);
+  // }, [id, user]);
 
   useEffect(()=>{
     console.log("current Listing", currentListing);
