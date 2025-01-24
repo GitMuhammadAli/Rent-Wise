@@ -102,11 +102,11 @@ export default function Dashboard() {
               <p className="text-gray-600">{useremail}</p>
             </div>
           </div>
-          <Link href="/account-settings">
-            <a className="flex items-center px-4 py-2 bg-white text-orange-600 rounded-md border border-orange-600 hover:bg-orange-100 transition duration-300">
+          <Link to="/acc">
+            <div className="flex items-center px-4 py-2 bg-white text-orange-600 rounded-md border border-orange-600 hover:bg-orange-100 transition duration-300">
               <FaCog className="mr-2" />
               Account Settings
-            </a>
+            </div>
           </Link>
         </div>
 
