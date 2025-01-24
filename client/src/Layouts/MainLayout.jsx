@@ -165,19 +165,7 @@ function MainLayout() {
         </Box>
       </Flex>
 
-      <Box as="footer" bg={bgColor} color={textColor} py={4}>
-        <Container maxW="container.xl">
-          <VStack spacing={2} align="center">
-            <Text>&copy; 2023 RentWise. All rights reserved.</Text>
-            <Flex gap={4}>
-              <Link to="/about">About</Link>
-              <Link to="/contact">Contact</Link>
-              <Link to="/privacy">Privacy Policy</Link>
-              <Link to="/terms">Terms of Service</Link>
-            </Flex>
-          </VStack>
-        </Container>
-      </Box>
+     
     </Flex>
   )
 }

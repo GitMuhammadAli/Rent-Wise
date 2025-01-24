@@ -3,11 +3,11 @@ import { useContext, useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { Box, Flex, Heading, Text, Button, Container, Grid, GridItem,Input, Image } from "@chakra-ui/react";
 import { FaBuilding, FaCar, FaHotel, FaSearch, FaStar, FaArrowRight } from "react-icons/fa"
-import { getAllListingAPI } from "../../Api/ListingApi"; 
+import { getAllListingAPI } from "../Api/ListingApi"; 
 
-import AnimatedBackground from "./Test/Animated";
-import { categories } from "./Test/staticData";
-import { ListingsContext } from "../../hooks/ListingsContext";
+import AnimatedBackground from "./Listings/Test/Animated";
+import { categories } from "./Listings/Test/staticData";
+import { ListingsContext } from "../hooks/ListingsContext";
 
 const LandingPage = () => {
 

@@ -18,7 +18,7 @@ import Cookies from "js-cookie";
 import decodeToken from "./utils/jwt";
 import { AuthProvider } from "./hooks/AuthContext";
 import Otp from "./components/Otp";
-import LandingPage from "./Pages/Listings/LandingPage";
+import LandingPage from "./Pages/LandingPage";
 
 import { ListingsProvider } from "./hooks/ListingsContext";
 import Media from "../src/Pages/Listings/Media";
