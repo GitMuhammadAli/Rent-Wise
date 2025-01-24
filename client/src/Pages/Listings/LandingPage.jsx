@@ -9,7 +9,7 @@ import AnimatedBackground from "./Test/Animated";
 import { categories } from "./Test/staticData";
 import { ListingsContext } from "../../hooks/ListingsContext";
 
-const GetAllListings = () => {
+const LandingPage = () => {
 
 //   my things
 
@@ -83,7 +83,7 @@ const { state, dispatch } = useContext(ListingsContext);
             </Text>
             <Flex mt={10} justifyContent="center" className="animate-fade-in-up animation-delay-600">
               <Box rounded="md" shadow="md">
-                <Link href="#search" _hover={{ textDecoration: "none" }}>
+                <Link to="#search" _hover={{ textDecoration: "none" }}>
                   <Button
                     px={{ base: 8, md: 10 }}
                     py={{ base: 3, md: 7 }}
@@ -100,7 +100,7 @@ const { state, dispatch } = useContext(ListingsContext);
                 </Link>
               </Box>
               <Box ml={3}>
-                <Link href="#featured" _hover={{ textDecoration: "none" }}>
+                <Link to="#featured" _hover={{ textDecoration: "none" }}>
                   <Button
                     px={{ base: 8, md: 10 }}
                     py={{ base: 3, md: 7 }}
@@ -261,7 +261,7 @@ const { state, dispatch } = useContext(ListingsContext);
         </Container>
       </Box>
 
-      <style jsx>{`
+      <style jsx="true">{`
         @keyframes slide {
           0% { opacity: 0; transform: scale(1.1); }
           25% { opacity: 1; }
@@ -293,5 +293,5 @@ const { state, dispatch } = useContext(ListingsContext);
   )
 }
 
-export default GetAllListings
+export default LandingPage
 

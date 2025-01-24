@@ -32,6 +32,7 @@ import { Link } from 'react-router-dom';
 
 import DisplayListingComments from './Comments/DisplayListingComments';
 import AddCommentsInListing from './Comments/AddCommentsInListing';
+import { FaStar } from 'react-icons/fa';
 
 const baseUrl = import.meta.env.VITE_BACK_END_URL;
 
@@ -40,7 +41,7 @@ const ListingDetails = () => {
   const navigate = useNavigate();
   const { state, dispatch } = useContext(ListingsContext);
   const { currentListing } = state;
-  // const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const { user } = useAuth();
@@ -60,9 +61,9 @@ const ListingDetails = () => {
       } catch (error) {
         console.error('Error fetching rental details', error);
       } 
-      // finally {
-      //   setLoading(false);
-      // }
+      finally {
+        setLoading(false);
+      }
     };
 
     fetchRentalDetails();
@@ -82,18 +83,25 @@ const ListingDetails = () => {
     ));
   };
 
-  // if (loading) {
-  //   return (
-  //     <Flex justify="center" align="center" height="100vh">
-  //       <Spinner size="xl" />
-  //     </Flex>
-  //   );
-  // }
+  if (loading) {
+    return (
+      <Flex justify="center" align="center" height="100vh">
+        <Spinner size="xl" />
+      </Flex>
+    );
+  }
 
   const handleChatButtonClick = () => {
     // navigate(`/chat/${currentListing.owner._id}/${currentListing._id}/${user._id}`);
     navigate(`/chat`, { state: { ownerIdDetails: currentListing.owner, listingIdDetails : currentListing._id, userIdDetails: user } });
   };
+  const StarRating = ({ rating }) => (
+    <div className="flex">
+      {[...Array(5)].map((_, i) => (
+        <FaStar key={i} className={`w-4 h-4 ${i < rating ? 'text-yellow-400' : 'text-gray-300'}`} />
+      ))}
+    </div>)
+  
   return (
     <Box borderRadius={'10px'} bg="orange.50" _dark={{ bg: 'gray.900' }} minH="100vh" py={8} >
       <Box maxW="container.xl" mx="auto" px={4}>
@@ -104,8 +112,10 @@ const ListingDetails = () => {
               <Flex align="center" gap={4}>
                 <Badge colorScheme="orange" px={3} py={1} fontSize="sm">${currentListing?.price}/{currentListing?.priceUnit}</Badge> 
                 <Flex align="center">
-                  <StarIcon size={20} color="yellow.400" />
+                
+                  <StarRating rating={currentListing?.averageRating} />
                   <Text ml={1} color="gray.700" _dark={{ color: 'gray.300' }}> ({currentListing?.averageRating} reviews)</Text>
+                  
                    {/* <Text ml={1} color="gray.700" _dark={{ color: 'gray.300' }}>Reviews/Rating -- add it later</Text>  */}
                   
                 </Flex>

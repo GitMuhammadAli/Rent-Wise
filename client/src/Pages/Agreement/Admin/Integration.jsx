@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import Web3 from 'web3';
 import { MakeAggrementForAdminByOwnerIDs } from '../../../Api/Blockchain';
 
@@ -168,7 +168,7 @@ const Integration = ({agreementId}) => {
     <div>
       {
         agreementId && transactionHash!=='' && (
-           <a target="_blank" style={{fontSize:'24px', color:'blue', fontWeight:'bold'}} href={`https://sepolia.etherscan.io/tx/${transactionHash}`}>CLick Here to track Transaction </a> 
+           <Link target="_blank" style={{fontSize:'24px', color:'blue', fontWeight:'bold'}} to={`https://sepolia.etherscan.io/tx/${transactionHash}`}>CLick Here to track Transaction </Link> 
         )
       }
       {currentAccount ? (

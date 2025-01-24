@@ -18,9 +18,8 @@ import Cookies from "js-cookie";
 import decodeToken from "./utils/jwt";
 import { AuthProvider } from "./hooks/AuthContext";
 import Otp from "./components/Otp";
-import GetAllListings from "../src/Pages/Listings/GetAllListings";
-// import MakeListing from "../Pages/Listings/MakeListing";
-import NewListings from "../src/Pages/Listings/NewListings";
+import LandingPage from "./Pages/Listings/LandingPage";
+
 import { ListingsProvider } from "./hooks/ListingsContext";
 import Media from "../src/Pages/Listings/Media";
 import ListingDetails from "../src/Pages/Listings/ListingDetails";
@@ -92,10 +91,9 @@ const router = createBrowserRouter(
         <Route path="/categories/houses" element={<HouseListing />} />
         <Route path="/categories/cars" element={<CarListing />} />
 
-        <Route path="/" element={<GetAllListings />} />
+        <Route path="/" element={<LandingPage />} />
         
-        {/* <Route path="/createListings" element={<MakeListing />} /> */}
-        <Route path="/createNewListings" element={<NewListings />} />
+        
         <Route path="/media" element={<Media />} />
         <Route path="/rental/:id" element={<ListingDetails />} />
         <Route path="/dashboard" element={<Dashboard />} />
@@ -128,7 +126,7 @@ const router = createBrowserRouter(
         {/* <Route path="/chat" element={<MainChat/>} /> */}
 
         {/* <Route element={<ProtectedRoute requiredRole="user" />}>
-          <Route path="/getAll" element={<GetAllListings />} />
+          <Route path="/getAll" element={<LandingPage />} />
         </Route> */}
 
         <Route element={<ProtectedRoute requiredRole="admin" />}>
