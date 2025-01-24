@@ -12,7 +12,7 @@ function MainLayout() {
   const navigate = useNavigate()
   const [successMessage, setSuccessMessage] = useState("")
 
-  const bgColor = useColorModeValue("orange.500", "orange.600")
+  const bgColor = useColorModeValue("orange.400", "orange.600")
   const hoverBgColor = useColorModeValue("orange.600", "orange.800")
   const textColor = useColorModeValue("white", "gray.100")
   const buttonBgColor = useColorModeValue("white", "gray.700")

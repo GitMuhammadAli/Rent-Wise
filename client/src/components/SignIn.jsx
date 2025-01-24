@@ -79,7 +79,7 @@ function SignIn() {
         <div className="mb-8 md:mb-0 md:ml-[10px] md:mr-5 md:mt-[10px] w-full md:w-1/2 flex flex-col items-center">
           <img src="/images/signin-image.jpg" alt="sign in" />
           <p className="mt-6 text-center">
-            <Link to="/auth/signup" className="text-blue-500 hover:underline">
+            <Link to="/auth/signup" className="text-orange-500 hover:underline">
               Create an account
             </Link>
           </p>
@@ -95,7 +95,7 @@ function SignIn() {
                 type="email"
                 name="your_email"
                 id="your_email"
-                className="w-full pl-10 pr-4 py-2 border-b border-b-black rounded-t-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full pl-10 pr-4 py-2 border-b border-b-black rounded-t-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
                 placeholder="Your Email"
                 value={your_email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -108,7 +108,7 @@ function SignIn() {
                 type="password"
                 name="your_pass"
                 id="your_pass"
-                className="w-full pl-10 pr-4 py-2 border-b border-b-black rounded-t-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full pl-10 pr-4 py-2 border-b border-b-black rounded-t-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
                 placeholder="Password"
                 value={your_pass}
                 onChange={(e) => setPassword(e.target.value)}
@@ -118,7 +118,7 @@ function SignIn() {
             <div className="text-right">
               <Link
                 to="/auth/forgetPassword"
-                className="text-sm text-blue-500 hover:underline"
+                className="text-sm text-orange-500 hover:underline"
               >
                 Forget Password?
               </Link>
@@ -126,7 +126,7 @@ function SignIn() {
             <div>
               <button
                 type="submit"
-                className="w-full py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                className="w-full py-2 text-white bg-orange-500 rounded-lg hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
               >
                 Log in
               </button>
@@ -140,7 +140,7 @@ function SignIn() {
               <li>
                 <button
                   onClick={handleGoogleSignIn}
-                  className="flex items-center justify-center text-white bg-red-600 hover:bg-red-700 px-2 py-2 rounded-lg transform hover:scale-110 transition-transform duration-300"
+                  className="flex items-center justify-center text-white bg-orange-600 hover:bg-red-700 px-2 py-2 rounded-lg transform hover:scale-110 transition-transform duration-300"
                 >
                   <i className="zmdi zmdi-google flex items-center justify-center"></i>
                 </button>

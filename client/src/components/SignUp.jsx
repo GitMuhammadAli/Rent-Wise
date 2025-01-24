@@ -49,7 +49,7 @@ function SignUp() {
                 type="text"
                 name="name"
                 id="name"
-                className="w-full pl-10 pr-4 py-2 border-b border-b-black rounded-t-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full pl-10 pr-4 py-2 border-b border-b-black rounded-t-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
                 placeholder="Your Name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -62,7 +62,7 @@ function SignUp() {
                 type="email"
                 name="email"
                 id="email"
-                className="w-full pl-10 pr-4 py-2 border-b border-b-black rounded-t-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full pl-10 pr-4 py-2 border-b border-b-black rounded-t-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
                 placeholder="Your Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -75,7 +75,7 @@ function SignUp() {
                 type="password"
                 name="password"
                 id="password"
-                className="w-full pl-10 pr-4 py-2 border-b border-b-black rounded-t-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full pl-10 pr-4 py-2 border-b border-b-black rounded-t-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -88,7 +88,7 @@ function SignUp() {
                 type="password"
                 name="repeatPassword"
                 id="repeatPassword"
-                className="w-full pl-10 pr-4 py-2 border-b border-b-black rounded-t-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full pl-10 pr-4 py-2 border-b border-b-black rounded-t-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
                 placeholder="Repeat Password"
                 value={repeatPassword}
                 onChange={(e) => setRepeatPassword(e.target.value)}
@@ -99,7 +99,7 @@ function SignUp() {
             <div>
               <button
                 type="submit"
-                className="w-full py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                className="w-full py-2 text-white bg-orange-500 rounded-lg hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
               >
                 Register
               </button>
@@ -113,7 +113,7 @@ function SignUp() {
             className="max-w-full h-auto"
           />
           <p className="mt-6 text-center">
-            <Link to="/auth/signIn" className="text-blue-500 hover:underline">
+            <Link to="/auth/signIn" className="text-orange-500 hover:underline">
               I am already a member
             </Link>
           </p>

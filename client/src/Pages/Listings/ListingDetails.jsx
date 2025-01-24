@@ -94,14 +94,14 @@ const ListingDetails = () => {
     navigate(`/chat`, { state: { ownerIdDetails: currentListing.owner, listingIdDetails : currentListing._id, userIdDetails: user } });
   };
   return (
-    <Box borderRadius={'10px'} bg="whiteAlpha.800" _dark={{ bg: 'gray.900' }} minH="100vh" py={8} >
+    <Box borderRadius={'10px'} bg="orange.50" _dark={{ bg: 'gray.900' }} minH="100vh" py={8} >
       <Box maxW="container.xl" mx="auto" px={4}>
         <Grid templateColumns={{ base: '1fr', lg: '2fr 1fr' }} gap={8}>
           <GridItem>
             <VStack spacing={6} align="start">
               <Heading as="h1" size="xl" color="gray.900" _dark={{ color: 'white' }}>{currentListing?.title}</Heading>  
               <Flex align="center" gap={4}>
-                <Badge colorScheme="green" px={3} py={1} fontSize="sm">${currentListing?.price}/{currentListing?.priceUnit}</Badge> 
+                <Badge colorScheme="orange" px={3} py={1} fontSize="sm">${currentListing?.price}/{currentListing?.priceUnit}</Badge> 
                 <Flex align="center">
                   <StarIcon size={20} color="yellow.400" />
                   <Text ml={1} color="gray.700" _dark={{ color: 'gray.300' }}> ({currentListing?.averageRating} reviews)</Text>
