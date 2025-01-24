@@ -11,8 +11,15 @@ const UserDynamicfile = (directory) => {
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     const userId = req.body.userid; 
-    const userDirectory = path.join(__dirname, `../uploads/profile/${userId}`); 
+    const userDirectory = path.join(__dirname, `../uploads/profile/${userId}`);
     UserDynamicfile(userDirectory);
+    
+    if (fs.existsSync(userDirectory)) {
+      fs.readdirSync(userDirectory).forEach((file) => {
+        fs.unlinkSync(path.join(userDirectory, file));
+      });
+    }
+    
     cb(null, userDirectory);
   },
   filename: function (req, file, cb) {

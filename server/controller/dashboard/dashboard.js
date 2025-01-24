@@ -32,7 +32,7 @@ exports.GetUser = async (req, res, next) => {
   }
 };
 
-exports.updateUserDashboard = async (req, res , next) => {
+exports.updateUserDashboardProfile = async (req, res , next) => {
   const { id } = req.params;
   const { name, email, bio, avatar } = req.body;
 

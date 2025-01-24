@@ -9,7 +9,7 @@ const { AuthorizeUser } = require("../../middleware/auth");
 router.get("/getUserDashboard", asyncHandler(UserDashboard.GetUser));
 
 
-router.put("/updateUserDashboard/:id", profileImage.single("avatar"), asyncHandler(UserDashboard.updateUserDashboard));
+router.put("/updateUserDashboardProfile/:id", profileImage.single("avatar"), asyncHandler(UserDashboard.updateUserDashboardProfile));
 
 router.get("/reviews" , AuthorizeUser("user" , "Admin" ) , asyncHandler(review.ToGetReview))
 

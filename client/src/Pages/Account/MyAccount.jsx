@@ -6,7 +6,7 @@ import {
 import {Link} from 'react-router-dom'
 
 import { useDasboardHook } from '../../hooks/DashboardUserContext';
-import { getUser, updateUserDashboard } from '../../Api/DashboardAPI';
+import { getUser, updateUserDashboardProfile } from '../../Api/DashboardAPI';
 
 
 export default function MyAccount() {
@@ -80,7 +80,7 @@ export default function MyAccount() {
   
     try {
       // Pass the user ID in the API URL
-      const response = await updateUserDashboard(user._id, formData);
+      const response = await updateUserDashboardProfile(user._id, formData);
   
       toast({
         title: 'Profile updated successfully!',
