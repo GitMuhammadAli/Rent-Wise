@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const UserDashboard = require("../../controller/dashboard/dashboard");
-const profileImage = require("../../utils/profile");
+const profileImage = require("../../utils/profileFile");
 const  asyncHandler = require('../../middleware/asyncWrapper');
 const review = require("../../controller/review/review")
 const { AuthorizeUser } = require("../../middleware/auth");
