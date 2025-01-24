@@ -8,83 +8,79 @@ const AppError = require("../../utils/AppError");
 const { ROLES , BOOLEAN} = require("../../utils/Roles");
 
 
-
 const createOrGetConversation = async (req, res , next) => {
-    try {
-        const { receiver, listing } = req.body;
-        const senderId = req.user._id;
-        console.log("req.ody of create conversation" , req.body);
-        console.log("sender id "  , senderId)
-
-        if (!senderId || !receiver || !listing) {
-            return next(new AppError(BOOLEAN.FALSE , CONVERSATION.INVALID_DATA , STATUS.BAD_REQUEST));
-        }
-
-        let conversation = await Conversation.findOne({
-            participants: { $all: [senderId, receiver] },
-        });
-
-        if (!conversation) {
-            conversation = new Conversation({
-                participants: [senderId, receiver],
-                listing: [listing],
+        try {
+            const { receiver, listing } = req.body;
+            const senderId = req.user._id;
+            console.log("req.body of create conversation" , req.body);
+            console.log("sender id "  , senderId)
+    
+            if (!senderId || !receiver) {
+                return next(new AppError(BOOLEAN.FALSE , CONVERSATION.INVALID_DATA , STATUS.BAD_REQUEST));
+            }
+    
+            let conversation = await Conversation.findOne({
+                participants: { $all: [senderId, receiver] },
             });
-            await conversation.save();
-        } else if (!conversation.listing.includes(listing)) {
-            conversation.listing.push(listing);
-            await conversation.save();
-        }
-
-        if(!conversation){
-            return next(new AppError(BOOLEAN.FALSE , CONVERSATION.CONVERSATION_NOT_FOUND , STATUS.NOT_FOUND));
-        }
-
-        const participants = await Conversation.aggregate([
-            { $match: { _id: conversation._id } },
-            { $unwind: "$participants" },
-            {
-                $lookup: {
-                    from: "users",
-                    localField: "participants",
-                    foreignField: "_id",
-                    as: "user",
-                },
-            },
-            { $unwind: "$user" },
-            {
-                $project: {
-                    user: {
-                        _id: 1,
-                        name: 1,
-                        email: 1,
-                        imageUrl: 1,
+    
+            if (!conversation) {
+                conversation = new Conversation({
+                    participants: [senderId, receiver],
+                    listing: listing ? [listing] : [],
+                });
+                await conversation.save();
+            } else if (listing && !conversation.listing.includes(listing)) {
+                conversation.listing.push(listing);
+                await conversation.save();
+            }
+    
+            if(!conversation){
+                return next(new AppError(BOOLEAN.FALSE , CONVERSATION.CONVERSATION_NOT_FOUND , STATUS.NOT_FOUND));
+            }
+    
+            const participants = await Conversation.aggregate([
+                { $match: { _id: conversation._id } },
+                { $unwind: "$participants" },
+                {
+                    $lookup: {
+                        from: "users",
+                        localField: "participants",
+                        foreignField: "_id",
+                        as: "user",
                     },
                 },
-            },
-        ]);
-
-        if(!participants){
-            return next(new AppError(BOOLEAN.FALSE , CONVERSATION.PARTICIPANTS_NOT_FOUND , STATUS.NOT_FOUND));
+                { $unwind: "$user" },
+                {
+                    $project: {
+                        user: {
+                            _id: 1,
+                            name: 1,
+                            email: 1,
+                            imageUrl: 1,
+                        },
+                    },
+                },
+            ]);
+    
+            if(!participants){
+                return next(new AppError(BOOLEAN.FALSE , CONVERSATION.PARTICIPANTS_NOT_FOUND , STATUS.NOT_FOUND));
+            }
+    
+            res.status(STATUS.SUCCESS).json({
+                success: BOOLEAN.TRUE,
+                message: CONVERSATION.CONVERSATION_RETRIEVED,
+                data: {
+                    conversation,
+                    participants: participants.map((p) => p.user),
+                },
+            });
+    
+            return conversation;
+    
+        } catch (error) {
+            next(error);
         }
-
-        // const messages = await Messsage.find({ conversation: conversation._id }).sort({ createdAt: 1 });
-
-        res.status(STATUS.SUCCESS).json({
-            success: BOOLEAN.TRUE,
-            message: CONVERSATION.CONVERSATION_RETRIEVED,
-            data: {
-                conversation,
-                participants: participants.map((p) => p.user),
-                // messages,
-            },
-        });
-
-        return conversation;
-
-    } catch (error) {
-        next(error);
-    }
-};
+    };
 
 const getChatParticipants = async (req, res) => {
     try {
@@ -141,13 +137,12 @@ const createOrGetConversations = async (receiver, listing, senderId , next) => {
         console.log("senderId", senderId);
 
         // Validate required fields
-        if (!senderId || !receiver || !listing) {
+        if (!senderId || !receiver) {
             return next(new AppError(BOOLEAN.FALSE , CONVERSATION.INVALID_DATA , STATUS.BAD_REQUEST));
-          
         }
 
-        // Ensure listing is an array of ObjectIds
-        const listingArray = Array.isArray(listing) ? listing : [listing];
+        // Ensure listing is an array of ObjectIds if provided
+        const listingArray = listing ? (Array.isArray(listing) ? listing : [listing]) : [];
 
         // Check if a conversation already exists between sender and receiver
         let conversation = await Conversation.findOne({
@@ -161,7 +156,8 @@ const createOrGetConversations = async (receiver, listing, senderId , next) => {
                 listing: listingArray,
             });
             await conversation.save();
-        } else {
+        } else if (listing) {
+            // Only update listings if they are provided
             // Ensure listing is added if it's not already in the conversation
             const newListings = listingArray.filter(
                 (listId) => !conversation.listing.includes(listId)
@@ -171,8 +167,6 @@ const createOrGetConversations = async (receiver, listing, senderId , next) => {
                 await conversation.save();
             }
         }
-
-
 
         // Fetch participants of the conversation
         const participants = await Conversation.aggregate([
@@ -214,15 +208,100 @@ const createOrGetConversations = async (receiver, listing, senderId , next) => {
 };
 
 
+
+
+
+// from listing chat
+// const createOrGetConversations = async (receiver, listing, senderId , next) => {
+//     try {
+//         console.log("listing", listing);
+//         console.log("receiver", receiver);
+//         console.log("senderId", senderId);
+
+//         // Validate required fields
+//         if (!senderId || !receiver || !listing) {
+//             return next(new AppError(BOOLEAN.FALSE , CONVERSATION.INVALID_DATA , STATUS.BAD_REQUEST));
+          
+//         }
+
+//         // Ensure listing is an array of ObjectIds
+//         const listingArray = Array.isArray(listing) ? listing : [listing];
+
+//         // Check if a conversation already exists between sender and receiver
+//         let conversation = await Conversation.findOne({
+//             participants: { $all: [senderId, receiver] },
+//         });
+
+//         // If no conversation exists, create one
+//         if (!conversation) {
+//             conversation = new Conversation({
+//                 participants: [senderId, receiver],
+//                 listing: listingArray,
+//             });
+//             await conversation.save();
+//         } else {
+//             // Ensure listing is added if it's not already in the conversation
+//             const newListings = listingArray.filter(
+//                 (listId) => !conversation.listing.includes(listId)
+//             );
+//             if (newListings.length > 0) {
+//                 conversation.listing.push(...newListings);
+//                 await conversation.save();
+//             }
+//         }
+
+
+
+//         // Fetch participants of the conversation
+//         const participants = await Conversation.aggregate([
+//             { $match: { _id: conversation._id } },
+//             { $unwind: "$participants" },
+//             {
+//                 $lookup: {
+//                     from: "users",
+//                     localField: "participants",
+//                     foreignField: "_id",
+//                     as: "user",
+//                 },
+//             },
+//             { $unwind: "$user" },
+//             {
+//                 $project: {
+//                     user: {
+//                         _id: 1,
+//                         name: 1,
+//                         email: 1,
+//                         imageUrl: 1,
+//                     },
+//                 },
+//             },
+//         ]);
+//         if(!participants){
+//             return next(new AppError(BOOLEAN.FALSE , CONVERSATION.PARTICIPANTS_NOT_FOUND , STATUS.NOT_FOUND));
+//         }
+
+//         // Return the conversation and participants
+//         return {
+//             conversation,
+//             participants: participants.map((p) => p.user),
+//         };
+        
+//     } catch (error) {
+//        next(error);
+//     }
+// };
+
+
+
 const createMessage = async (req, res , next) => {
     try {
         const { message, listing } = req.body;
         const senderId = req.user._id; 
         const receiver = req.body.receiver;
 
-        const listingArray = Array.isArray(listing) ? listing : [listing];
+        const listingArray = listing ? (Array.isArray(listing) ? listing : [listing]) : [];
 
-        const conversationData = await createOrGetConversations(receiver, listingArray, senderId);
+        const conversationData = await createOrGetConversations(receiver, listingArray, senderId , next);
         console.log("conversationData", conversationData);
 
         const conversationId = conversationData.conversation._id;
@@ -643,3 +722,6 @@ module.exports = {
 //         return res.status(500).json({ error: "Internal server error" });
 //     }
 // };
+
+
+

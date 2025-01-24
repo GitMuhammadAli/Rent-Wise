@@ -68,12 +68,14 @@ export default function LiveChat({
     e.preventDefault();
 
     try {
-      const listingsToSend = listingIdDetails || localListingId;
+      const listingsToSend = listingIdDetails || localListingId || [];
 
-      if (!listingsToSend || listingsToSend.length === 0) {
-        console.error("No listing IDs available.");
-        return;
-      }
+      // if (listingIdDetails || localListingId) {
+      //   if (listingsToSend.length === 0) {
+      //     console.error("No listing IDs available.");
+      //     return;
+      //   }
+      // }
 
       const data = {
         message,
