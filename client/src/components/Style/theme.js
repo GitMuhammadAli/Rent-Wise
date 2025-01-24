@@ -7,26 +7,26 @@ const theme  =  extendTheme ({
         Button:{
             variants:{
                 customButton:{
-                    bg: 'black',
+                    bg: 'orange.400',
                     color:'white',
                     borderRadius: "md",
                     _hover:{
                         bg:'white',
-                        color:"black",
+                        color:"orange.500",
                         borderRadius:'md',
-                        border:'1px solid black',
+                        border:'1px solid orange',
                         cursor:'pointer',
                     }
                 },
                 dashboardButton:{
-                    bg:"rgb(41, 39, 39)",
+                    bg:"orange.300",
                     color:'white',
                     borderRadius: "md",
                     _hover:{
                         bg:'white',
-                        color:"black",
+                        color:"orange.500",
                         borderRadius:'md',
-                        border:'1px solid black',
+                        border:'1px solid orange',
                         cursor:'pointer',
                     }
                 }

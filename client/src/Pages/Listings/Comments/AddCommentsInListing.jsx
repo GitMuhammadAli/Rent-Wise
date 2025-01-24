@@ -89,7 +89,7 @@ export default function AddCommentsInListing({toast,id}) {
               onChange={(e) => setNewComment(e.target.value)}
               placeholder="Write a comment..."
             />
-            <Button my={4} variant={'dashboardButton'} onClick={handleCommentSubmit}>
+            <Button my={4} variant={'customButton'} onClick={handleCommentSubmit}>
               Post Comment
             </Button>
         </Box>

@@ -246,8 +246,8 @@ const ListingDetails = () => {
               </Button>
 
               <Link to={`/profile/${currentListing?.owner?._id}`}>
-                 <Button bg={'white'} color={'black'} border={'1px solid black'}
-                 _hover={{bg:'black', color:'white'}}
+                 <Button bg={'white'} color={'orange.500'} border={'1px solid orange'}
+                 _hover={{bg:'orange.400', color:'white'}}
                   w="full" >
                      View Owner Profile
                   </Button>

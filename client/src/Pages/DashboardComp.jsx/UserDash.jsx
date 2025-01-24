@@ -92,6 +92,7 @@ export default function UserDash() {
 
   const renderDashboard = () => (
     <>
+    
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <DashboardCard title="Upcoming Rentals" icon={Calendar} value="2" subtext="Next rental in 5 days" />
         <DashboardCard title="Total Spent" icon={CreditCard} value="$1,234.56" subtext="+$340.00 from last month" />
@@ -133,9 +134,9 @@ export default function UserDash() {
             </table>
           </div>
           <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
-            <button className="w-full px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700 transition-colors">
+            <Button variant={'dashboardButton'} w={'full'}>
               View All Rentals
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -155,12 +156,13 @@ export default function UserDash() {
             </ul>
           </div>
           <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
-            <button className="w-full px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700 transition-colors">
+            <Button variant={'dashboardButton'} w={'full'}>
               View Full Activity Log
-            </button>
+            </Button>
           </div>
         </div>
       </div>
+     
 
       {/* <div className="mt-8 flex justify-center">
         <button className="px-6 py-3 bg-teal-600 text-white rounded-full hover:bg-teal-700 transition-colors flex items-center">
@@ -366,7 +368,7 @@ export default function UserDash() {
   )
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
+    <div className="min-h-screen bg-whiteAlpha-800 p-8">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Renter Dashboard</h1>
         
@@ -376,8 +378,8 @@ export default function UserDash() {
               onClick={() => setActiveTab('dashboard')}
               className={`px-3 py-2 rounded-md text-sm font-medium ${
                 activeTab === 'dashboard' 
-                  ? 'bg-gray-900 text-white' 
-                  : 'text-gray-700 hover:bg-gray-200'
+                  ? 'bg-orange-400 text-white' 
+                  : 'text-gray-700 hover:bg-orange-100 hover:text-orange-500'
               }`}
             >
               Dashboard
@@ -386,8 +388,8 @@ export default function UserDash() {
               onClick={() => setActiveTab('agreements')}
               className={`px-3 py-2 rounded-md text-sm font-medium ${
                 activeTab === 'agreements' 
-                  ? 'bg-gray-900 text-white' 
-                  : 'text-gray-700 hover:bg-gray-200'
+                 ? 'bg-orange-400 text-white' 
+                  : 'text-gray-700 hover:bg-orange-100 hover:text-orange-500'
               }`}
             >
               Agreements
@@ -396,8 +398,8 @@ export default function UserDash() {
               onClick={() => setActiveTab('reviews')}
               className={`px-3 py-2 rounded-md text-sm font-medium ${
                 activeTab === 'reviews' 
-                  ? 'bg-gray-900 text-white' 
-                  : 'text-gray-700 hover:bg-gray-200'
+                 ? 'bg-orange-400 text-white' 
+                  : 'text-gray-700 hover:bg-orange-100 hover:text-orange-500'
               }`}
             >
               Reviews

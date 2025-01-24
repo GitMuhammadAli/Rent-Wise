@@ -278,17 +278,17 @@ export default function OwnerDash() {
                               rounded="full"
                               fontSize={{ base: "xs", sm: "sm" }}
                               fontWeight="medium"
-                              colorScheme={
-                                booking.listingStatus === "active"
-                                  ? "green"
-                                  : booking.listingStatus === "Inactive"
-                                    ? "red"
-                                    : booking.listingStatus === "pending"
-                                      ? "yellow"
-                                      : booking.listingStatus === "Rented"
-                                        ? "blue"
-                                        : "gray"
-                              }
+                              // colorScheme={
+                              //   booking.listingStatus === "active"
+                              //     ? "green"
+                              //     : booking.listingStatus === "Inactive"
+                              //       ? "red"
+                              //       : booking.listingStatus === "pending"
+                              //         ? "yellow"
+                              //         : booking.listingStatus === "Rented"
+                              //           ? "blue"
+                              //           : "gray"
+                              // }
                               bg={
                                 booking.listingStatus === "active"
                                   ? "green.100"
@@ -296,6 +296,17 @@ export default function OwnerDash() {
                                     ? "red.100"
                                     : booking.listingStatus === "pending"
                                       ? "yellow.100"
+                                      : booking.listingStatus === "Rented"
+                                        ? "blue.100"
+                                        : "gray.100"
+                              }
+                              color={
+                                booking.listingStatus === "active"
+                                  ? "green.700"
+                                  : booking.listingStatus === "Inactive"
+                                    ? "red.700"
+                                    : booking.listingStatus === "pending"
+                                      ? "yellow.700"
                                       : booking.listingStatus === "Rented"
                                         ? "blue.100"
                                         : "gray.100"
@@ -395,21 +406,21 @@ export default function OwnerDash() {
                               display="inline-flex"
                               alignItems="center"
                               px={2}
-                              py={0.5}
+                              py={1}
                               rounded="full"
                               fontSize={{ base: "xs", sm: "sm" }}
                               fontWeight="medium"
-                              colorScheme={
-                                agreement.agreementStatus === "pending"
-                                  ? "orange"
-                                  : agreement.agreementStatus === "rejected"
-                                    ? "red"
-                                    : agreement.agreementStatus === "active"
-                                      ? "green"
-                                      : agreement.agreementStatus === "Inactive"
-                                        ? "gray"
-                                        : "blue"
-                              }
+                              // colorScheme={
+                              //   agreement.agreementStatus === "pending"
+                              //     ? "orange"
+                              //     : agreement.agreementStatus === "rejected"
+                              //       ? "red"
+                              //       : agreement.agreementStatus === "active"
+                              //         ? "green"
+                              //         : agreement.agreementStatus === "Inactive"
+                              //           ? "gray"
+                              //           : "blue"
+                              // }
                               bg={
                                 agreement.agreementStatus === "pending"
                                   ? "orange.100"
@@ -417,6 +428,17 @@ export default function OwnerDash() {
                                     ? "red.100"
                                     : agreement.agreementStatus === "active"
                                       ? "green.100"
+                                      : agreement.agreementStatus === "Inactive"
+                                        ? "gray.100"
+                                        : "blue.100"
+                              }
+                              color={
+                                agreement.agreementStatus === "pending"
+                                  ? "orange.700"
+                                  : agreement.agreementStatus === "rejected"
+                                    ? "red.700"
+                                    : agreement.agreementStatus === "active"
+                                      ? "green.700"
                                       : agreement.agreementStatus === "Inactive"
                                         ? "gray.100"
                                         : "blue.100"
