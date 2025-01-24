@@ -438,6 +438,7 @@ exports.GetListings = async (req, res, next) => {
 // function to get a single listing by id
 exports.GetListingsById = async (req, res, next) => {
     const { id } = req.params;
+    console.log(req.params)
     try {
         const listing = await RentalItem.findById(id).populate("owner", "name email imageUrl").populate("images", "url caption ").populate("videos", "url caption").populate('bidding')
         if (!listing) {

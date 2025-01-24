@@ -9,8 +9,8 @@ const API_BASE_URL = `${import.meta.env.VITE_BACK_END_URL}/dashboard`;
 export const getUser = () =>
   axios.get(`${API_BASE_URL}/getUserDashboard`, { withCredentials: true });
 
-export const updateUserDashboard = async (id, formData) => {
-  return await axios.put(`${API_BASE_URL}/updateUserDashboard/${id}`, formData, {
+export const updateUserDashboardProfile = async (id, formData) => {
+  return await axios.put(`${API_BASE_URL}/updateUserDashboardProfile/${id}`, formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
