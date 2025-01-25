@@ -27,7 +27,9 @@ export default function Dashboard() {
         const response = await getUser();
         console.log("resUSER", response)
         setUserName(response.data.user.name);
+
         setAvatar(`${import.meta.env.VITE_BACK_END_URL}${response.data.user.imageUrl}`);
+        
         setUserEmail(response.data.user.email);
         setUserResponse(response); // Store full response if needed
         console.log("Response is:", response);

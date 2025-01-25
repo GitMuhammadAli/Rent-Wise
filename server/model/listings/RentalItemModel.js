@@ -105,8 +105,8 @@ const RentalSchema = new mongoose.Schema({
   ],
   listingReview: [{
     type: mongoose.Schema.Types.ObjectId, ref: "ListingReview", default: null,
+    canReview: { type: Boolean, default: false }
   }],
-  averageRating: { type: Number, default: 0 },
 
   bidding: { type: mongoose.Schema.Types.ObjectId, ref: "Bidding" },
 

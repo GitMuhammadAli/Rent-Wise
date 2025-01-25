@@ -50,6 +50,7 @@ const userSchema = new UserSchema({
   userReview:[{
     type :mongoose.Schema.Types.ObjectId , ref:"ProfileReview",
     default: null,
+    canReview: { type: Boolean, default: false }
   },
 ]
   ,
