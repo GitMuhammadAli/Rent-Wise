@@ -33,7 +33,7 @@ const userSchema = new UserSchema({
   },
   role: {
     type: String,
-    enum: ["owner", "user" , "admin" ],
+    enum: ["owner", "user", "admin"],
     default: "user",
     required: true,
   },
@@ -42,18 +42,21 @@ const userSchema = new UserSchema({
     trim: true,
     default: "",
   },
-  bio :{
+  bio: {
     type: String,
     trim: true,
     default: "",
   },
-  userReview:[{
-    type :mongoose.Schema.Types.ObjectId , ref:"ProfileReview",
-    default: null,
-    canReview: { type: Boolean, default: false }
-  },
-]
-  ,
+
+  // userReview:
+  //   [
+  //     {
+  //       reviewId: { type: mongoose.Schema.Types.ObjectId, ref: "ProfileReview" , default:null },
+  //       canReview: { type: Boolean, default: false }
+  //     }
+  //   ],
+
+  
   createdAt: {
     type: Date,
     default: Date.now,
