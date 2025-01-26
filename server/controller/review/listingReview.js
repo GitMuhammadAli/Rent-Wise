@@ -24,6 +24,8 @@ exports.CreateListReview = async (req, res, next) => {
     const userId = req.user._id;
 
 
+    console.log(userId)
+
     const listing =  await RentalItem.find({
         _id :id
     })
@@ -101,7 +103,7 @@ exports.getAllReviewsForRentalItem = async (req, res, next) => {
     const { id } = req.params
 
 
-    const ListingReview  = await  listingReview.find({listing:id })
+    const ListingReview  = await  listingReview.find({listing:id }).populate("reviewer")
 
     if (!ListingReview) {
       return res.status(STATUS.FORBIDDEN).json({

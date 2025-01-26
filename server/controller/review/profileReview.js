@@ -100,10 +100,13 @@ exports.getAllReviewsForUsers = async (req, res, next) => {
         const { id } = req.params
 
 
-        const ProfileReview = await profileReview.find({ reviewedUser: id })
+        const ProfileReview = await profileReview.find({ reviewedUser: id }).populate("reviewer")
 
         if (!ProfileReview) {
-            return next(new AppError("Rental item not found", 404));
+            return res.status(STATUS.FORBIDDEN).json({
+                Success: BOOLEAN.FALSE,
+                message: REVIEWS.REVIEW_USER_NOT_FOUND
+            })
         }
 
         res.status(STATUS.SUCCESS).json({
