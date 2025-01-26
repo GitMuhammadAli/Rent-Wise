@@ -47,7 +47,7 @@ export default function LiveChat({
   }, [listings]);
 
   useEffect(() => {
-    if (!convoID) return;
+    if (!convoID) return ;
 
     console.log("Joining conversation ID:", convoID);
     socket.emit("join-conversation", convoID);

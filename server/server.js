@@ -26,7 +26,7 @@ const HomeListings = require("./routes/home/HomelistingRoutes")
 const Owner = require("./routes/owner/owner")
 const Renter =require("./routes/renter/renter")
 const Review = require("./routes/reviews/reviews")
-
+const Notification = require('./routes/notifications/notification')
 
 
 const logger = require("./utils/logger");
@@ -147,7 +147,7 @@ app.use("/Specificlistings" , HomeListings )
 app.use("/owner", Owner )
 app.use("/renter", Renter )
 app.use("/review" , Review)
-
+app.use("/notification" , Notification ) 
 
 
 
