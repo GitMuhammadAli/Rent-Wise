@@ -37,15 +37,15 @@ export default function SideChat({ handleSideBarClick, ownerIdDetails, setAllDat
     fetchParticipants();
 
     
-}, []);
+},[]);
 
 useEffect(()=>{
  console.log("all data for id", allData);
- const participantData = allData?.data?.data.flatMap(item => 
+ const participantData = allData?.flatMap(item => 
   item.participants
 ).filter(Boolean);
 console.log("Filtered people of new:", participantData);
- setParticipants(participantData);
+setParticipants(participantData);
 
 },[allData])
 
@@ -102,8 +102,6 @@ useEffect(() => {
         imageUrl: ownerIdDetails.imageUrl
          });
       console.log("Owner name in side chat:", ownerIdDetails.name);
-
-     
     }
   }, [ownerIdDetails]);
 
