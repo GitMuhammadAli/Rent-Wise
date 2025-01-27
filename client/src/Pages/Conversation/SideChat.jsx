@@ -13,6 +13,10 @@ export default function SideChat({ handleSideBarClick, ownerIdDetails, setAllDat
   const [owner, setOwner] = useState(null);
   const [searchChat, setSearchChat] = useState('');
  
+  // const [avatar,setAvatar] = useState(''); 
+  // const [participantName , setParticipantName] = useState([]);
+
+  // Fetch participants from the API
   useEffect(() => {
     const fetchParticipants = async () => {
         try {
@@ -33,22 +37,49 @@ export default function SideChat({ handleSideBarClick, ownerIdDetails, setAllDat
     fetchParticipants();
 
     
-},[]);
+}, []);
 
+
+
+///newiest usee effect
 // useEffect(()=>{
 //  console.log("all data for id", allData);
-//  const participantData = allData?.flatMap(item => 
+//  const participantData = allData.flatMap(item => 
 //   item.participants
 // ).filter(Boolean);
 // console.log("Filtered people of new:", participantData);
-// setParticipants(participantData);
+// //  setParticipants(participantData);
 
 // },[allData])
+
+
+// useEffect(() => {
+//   console.log("Setting up newConversation listener");
+  
+//   socket.on("newConversation", (data) => {
+//     setAllData(prevData => {
+//         const newData = prevData ? [...prevData] : [];
+//         const exists = newData.some(conv => conv._id === data.conversation._id);
+//         if (!exists) {
+//             newData.push(data.conversation);
+//         } else {
+//             // Update existing conversation and move to top
+//             newData = newData.map(conv => 
+//                 conv._id === data.conversation._id ? data.conversation : conv
+//             );
+//         }
+//         return newData.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+//     });
+// });
+
+// return () => {
+//     socket.off("newConversation");
+// };
+// }, []);
 
 useEffect(() => {
   socket.on("receiveMessage", (data) => {
     setAllData(prevData => {
-      if (!prevData) return prevData;
       return prevData.map(conv => {
         if (conv._id === data.conversationId) {
           return { 
@@ -66,23 +97,28 @@ useEffect(() => {
   };
 }, []);
 
+
+  // Set the owner details
   useEffect(() => {
     if (ownerIdDetails?.name) {
       setOwner({ _id: ownerIdDetails._id, name: ownerIdDetails.name, email:ownerIdDetails.email, 
         imageUrl: ownerIdDetails.imageUrl
          });
       console.log("Owner name in side chat:", ownerIdDetails.name);
+
+     
     }
   }, [ownerIdDetails]);
 
   const combinedList = React.useMemo(() => {
-    if (!owner || !participants) return [];
-    const isOwnerInParticipants = participants.some((participant) => participant?._id === owner._id);
+    if (!owner) return participants;
+    const isOwnerInParticipants = participants.some((participant) => participant._id === owner._id);
     return isOwnerInParticipants ? participants : [owner, ...participants];
   }, [participants, owner]);
 
   useEffect(()=>{
     console.log("combines", combinedList)
+    
   },[combinedList])
 
   return (
@@ -98,7 +134,9 @@ useEffect(() => {
         
         <Text color={'orange.500'} fontWeight="bold">Chats</Text>
 
+
         <Input bg={'orange.50'}  type='text' placeholder='Search Chat' color={'orange.600'} onChange={(e)=> setSearchChat(e.target.value)} />
+
 
         {combinedList && combinedList.length > 0 ? (
           combinedList.filter((item)=> 
