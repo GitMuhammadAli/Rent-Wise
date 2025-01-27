@@ -294,10 +294,12 @@ const ListingDetails = () => {
 
            <Box>
                   <VStack spacing={4} align="stretch">
-                    <Box>
-                      <AddCommentsInListing toast={toast} id={id}/> 
-                      <DisplayListingComments currentID={currentListing?._id}/>
-                    </Box>
+                    <Flex flexDir={'column'} gap={4}>
+                    <ReviewsInListing/>
+                      <AddCommentsInListing toast={toast} id={id} currentID={currentListing?._id}/> 
+                      {/* <DisplayListingComments currentID={currentListing?._id}/> */}
+                      
+                    </Flex>
                   </VStack>
                 </Box>
         </Grid>

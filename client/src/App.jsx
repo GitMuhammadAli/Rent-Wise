@@ -42,7 +42,7 @@ import CarListing from "./Pages/Listings/CategoryBased/CarListing";
 import DisplayAgreements from "./Pages/Agreement/Admin/DisplayAgreements";
 import Integration from "./Pages/Agreement/Admin/Integration";
 import UserProfile from "./Pages/profile/owner/ownerProfile";
-// import TestHome from "./Pages/Listings/Test/TestHome";
+ import TestListingDetails from "./Pages/Listings/Test/TestHome";
 
 
 
@@ -113,7 +113,7 @@ const router = createBrowserRouter(
         <Route path="/profile/:_id" element={<UserProfile/>} />
 
 
-        {/* <Route path="/HT" element={<TestHome/>} /> */}
+        <Route path="/HT" element={<TestListingDetails/>} />
 
  
 
