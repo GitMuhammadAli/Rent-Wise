@@ -35,15 +35,15 @@ export default function SideChat({ handleSideBarClick, ownerIdDetails, setAllDat
     
 },[]);
 
-useEffect(()=>{
- console.log("all data for id", allData);
- const participantData = allData?.flatMap(item => 
-  item.participants
-).filter(Boolean);
-console.log("Filtered people of new:", participantData);
-setParticipants(participantData);
+// useEffect(()=>{
+//  console.log("all data for id", allData);
+//  const participantData = allData?.flatMap(item => 
+//   item.participants
+// ).filter(Boolean);
+// console.log("Filtered people of new:", participantData);
+// setParticipants(participantData);
 
-},[allData])
+// },[allData])
 
 useEffect(() => {
   socket.on("receiveMessage", (data) => {
