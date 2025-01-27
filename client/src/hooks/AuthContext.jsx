@@ -81,7 +81,7 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
       if (user?._id) {
-          socket.emit("join-user", user._id.toString());
+          // socket.emit("join-user", user._id.toString());
           console.log("User joined personal room:", user._id);
       }
   }, [user]);
