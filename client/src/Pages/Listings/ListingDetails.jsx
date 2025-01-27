@@ -30,8 +30,9 @@ import { useAuth } from '../../hooks/AuthContext';
 import { Link } from 'react-router-dom';
 
 
-import DisplayListingComments from './Comments/DisplayListingComments';
-import AddCommentsInListing from './Comments/AddCommentsInListing';
+import DisplayListingComments from './Comments/ReviewsInListing';
+import AddCommentsInListing from './Comments/CommentsInListing';
+import ReviewsInListing from './Comments/ReviewsInListing';
 
 const baseUrl = import.meta.env.VITE_BACK_END_URL;
 
@@ -104,7 +105,13 @@ const ListingDetails = () => {
               <Flex align="center" gap={4}>
                 <Badge colorScheme="orange" px={3} py={1} fontSize="sm">${currentListing?.price}/{currentListing?.priceUnit}</Badge> 
                 <Flex align="center">
-                  <StarIcon size={20} color="yellow.400" />
+                   {/* <div className="flex items-center">
+                                {[...Array(5)].map((_, i) => (
+                                  <FaStar key={i} className={`w-5 h-5 ${i < Math.floor(listingData.averageRating) ? 'text-yellow-400' : 'text-gray-300'}`} />
+                                ))}
+
+                                </div> */}
+    
                   <Text ml={1} color="gray.700" _dark={{ color: 'gray.300' }}> ({currentListing?.averageRating} reviews)</Text>
                    {/* <Text ml={1} color="gray.700" _dark={{ color: 'gray.300' }}>Reviews/Rating -- add it later</Text>  */}
                   
@@ -284,10 +291,12 @@ const ListingDetails = () => {
 
            <Box>
                   <VStack spacing={4} align="stretch">
-                    <Box>
-                      <AddCommentsInListing toast={toast} id={id}/> 
-                      <DisplayListingComments currentID={currentListing?._id}/>
-                    </Box>
+                    <Flex flexDir={'column'} gap={4}>
+                    <ReviewsInListing/>
+                      <AddCommentsInListing toast={toast} id={id} currentID={currentListing?._id}/> 
+                      {/* <DisplayListingComments currentID={currentListing?._id}/> */}
+                      
+                    </Flex>
                   </VStack>
                 </Box>
         </Grid>

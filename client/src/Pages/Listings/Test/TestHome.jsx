@@ -1,332 +1,261 @@
+import { Image } from '@chakra-ui/react'
+import React, { useState } from 'react'
 
-// import { useContext, useEffect, useState } from "react"
-// import { Link } from "react-router-dom"
-// import { Box, Flex, Heading, Text, Button, Container, Grid, GridItem,Input, Image } from "@chakra-ui/react";
-// import { FaBuilding, FaCar, FaHotel, FaSearch, FaStar, FaArrowRight } from "react-icons/fa"
-// import { getAllListingAPI } from "../../../Api/ListingApi"; 
-// // import { staticListings, categories } from "./data"
-// import AnimatedBackground from "./Animated"
-// import { staticListings, categories } from "./staticData"
-// import { ListingsContext } from "../../../hooks/ListingsContext";
+import { FaStar, FaRegStar, FaChevronLeft, FaChevronRight } from 'react-icons/fa'
 
-// const TestHome = () => {
+// Static data for demonstration
+const listingData = {
+  id: '1',
+  title: 'Luxurious Beachfront Villa',
+  price: 250,
+  priceUnit: 'night',
+  images: [
+    '/placeholder.svg?height=400&width=600&text=Beachfront+Villa+1',
+    '/placeholder.svg?height=400&width=600&text=Beachfront+Villa+2',
+    '/placeholder.svg?height=400&width=600&text=Beachfront+Villa+3',
+  ],
+  description: 'Experience luxury living in this stunning beachfront villa. Enjoy breathtaking ocean views, private beach access, and world-class amenities for an unforgettable vacation.',
+  averageRating: 4.5,
+  totalReviews: 28,
+  rules: [
+    'No smoking',
+    'No pets',
+    'No parties or events',
+    'Check-in time is 2PM - 8PM',
+    'Check out by 11AM',
+  ],
+  amenities: [
+    'Wi-Fi',
+    'Air conditioning',
+    'Full kitchen',
+    'Washer & Dryer',
+    'Swimming pool',
+    'Beach access',
+    'Free parking',
+  ],
+}
 
-// //   my things
+const reviews = [
+  {
+    id: '1',
+    user: 'Alice Johnson',
+    rating: 5,
+    date: '2023-06-15',
+    comment: 'Absolutely stunning villa! The views were breathtaking and the amenities were top-notch. We had an unforgettable stay.',
+  },
+  {
+    id: '2',
+    user: 'Bob Smith',
+    rating: 4,
+    date: '2023-05-28',
+    comment: 'Great location and beautiful property. The only minor issue was that the Wi-Fi was a bit slow at times.',
+  },
+  {
+    id: '3',
+    user: 'Carol Williams',
+    rating: 5,
+    date: '2023-05-10',
+    comment: "Perfect getaway! The villa was immaculate and the private beach access was a huge plus. We'll definitely be back!",
+  },
+]
 
-// const { state, dispatch } = useContext(ListingsContext); 
-//   const { listings } = state; 
-//   const itemsPerPage = 6 // Number of listings per page
-//     const [currentPage, setCurrentPage] = useState(1);
-//     const totalPages = Math.ceil(listings.length / itemsPerPage);
+const comments = [
+  {
+    id: '1',
+    user: 'David Brown',
+    date: '2023-06-18',
+    text: 'Is the villa suitable for a family with young children?',
+  },
+  {
+    id: '2',
+    user: 'Emma Davis',
+    date: '2023-06-17',
+    text: 'Are there any good restaurants within walking distance?',
+  },
+]
 
-//     // Get the listings for the current page
-//     const startIndex = (currentPage - 1) * itemsPerPage;
-//     const endIndex = startIndex + itemsPerPage;
-//     const curentListing = listings.slice(startIndex, endIndex);
+export default function TestListingDetails() {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [newReview, setNewReview] = useState({ rating: 0, comment: '' })
+  const [newComment, setNewComment] = useState('')
 
-//     const goToNextPage = () => {
-//       if (currentPage < totalPages) {
-//           setCurrentPage(currentPage + 1);
-//       }
-//   };
+  const handleImageNavigation = (direction) => {
+    setCurrentImageIndex(prevIndex => (
+      direction === 'next'
+        ? (prevIndex + 1) % listingData.images.length
+        : (prevIndex - 1 + listingData.images.length) % listingData.images.length
+    ))
+  }
 
-//   const goToPrevPage = () => {
-//       if (currentPage > 1) {
-//           setCurrentPage(currentPage - 1);
-//       }
-//   };
+  const handleReviewSubmit = (e) => {
+    e.preventDefault()
+    console.log('New review:', newReview)
+    // Here you would typically send the review to your backend
+    setNewReview({ rating: 0, comment: '' })
+  }
 
-  
+  const handleCommentSubmit = (e) => {
+    e.preventDefault()
+    console.log('New comment:', newComment)
+    // Here you would typically send the comment to your backend
+    setNewComment('')
+  }
 
-//   useEffect(() => {
-//     async function fetchData() {
-//       try {
-//         const response = await getAllListingAPI();
-//         console.log("Response is: ", response.data);
-//         dispatch({ type: 'GET_LISTINGS', payload: response.data });
-//       } catch (error) {
-//         console.error("Error fetching listings:", error);
-//       }
-//     }
-//     fetchData();
-//   }, [dispatch]);
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="md:col-span-2 space-y-6">
+          <h1 className="text-3xl font-bold text-gray-900">{listingData.title}</h1>
+          <div className="flex items-center space-x-4">
+            <span className="text-2xl font-semibold text-gray-900">${listingData.price}</span>
+            <span className="text-gray-600">per {listingData.priceUnit}</span>
+            <div className="flex items-center">
+              {[...Array(5)].map((_, i) => (
+                <FaStar key={i} className={`w-5 h-5 ${i < Math.floor(listingData.averageRating) ? 'text-yellow-400' : 'text-gray-300'}`} />
+              ))}
+              <span className="ml-2 text-sm text-gray-600">({listingData.totalReviews} reviews)</span>
+            </div>
+          </div>
 
-//   useEffect(()=>{
-//     console.log("Current listings in get state in getAll:", listings)
-//   },[listings])
+          <div className="relative">
+            <Image
+              src={listingData.images[currentImageIndex] || "/placeholder.svg"}
+              alt={`${listingData.title} - Image ${currentImageIndex + 1}`}
+              width={600}
+              height={400}
+              className="rounded-lg object-cover w-full"
+            />
+            {listingData.images.length > 1 && (
+              <>
+                <button 
+                  onClick={() => handleImageNavigation('prev')}
+                  className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-white bg-opacity-50 hover:bg-opacity-75 rounded-full p-2"
+                >
+                  <FaChevronLeft className="w-6 h-6 text-gray-800" />
+                </button>
+                <button 
+                  onClick={() => handleImageNavigation('next')}
+                  className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-white bg-opacity-50 hover:bg-opacity-75 rounded-full p-2"
+                >
+                  <FaChevronRight className="w-6 h-6 text-gray-800" />
+                </button>
+              </>
+            )}
+          </div>
 
-//   return (
-//     <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white">
-//        <Box position="relative" overflow="hidden" height="80vh">
-//       <AnimatedBackground />
-//       <Flex position="relative" zIndex={10} height="full" alignItems="center">
-//         <Container maxW="7xl" px={{ base: 4, sm: 6, lg: 8 }}>
-//           <Flex direction="column" alignItems="center" textAlign="center">
-//             <Heading
-//               fontSize={{ base: "5xl", md: "7xl" }}
-//               fontWeight="extrabold"
-//               color="white"
-//               mb={4}
-//               className="animate-fade-in-up"
-//             >
-//               Welcome to <Text as="span" color="yellow.300">RentWise</Text>
-//             </Heading>
-//             <Text
-//               mt={3}
-//               maxW={{ base: "md", md: "3xl" }}
-//               mx="auto"
-//               fontSize={{ base: "xl", sm: "2xl" }}
-//               color="white"
-//               className="animate-fade-in-up animation-delay-300"
-//             >
-//               Discover premium rentals for homes, cars, and more. Your journey begins here.
-//             </Text>
-//             <Flex mt={10} justifyContent="center" className="animate-fade-in-up animation-delay-600">
-//               <Box rounded="md" shadow="md">
-//                 <Link href="#search" _hover={{ textDecoration: "none" }}>
-//                   <Button
-//                     px={{ base: 8, md: 10 }}
-//                     py={{ base: 3, md: 7 }}
-//                     fontSize={{ base: "md", md: "lg" }}
-//                     fontWeight="medium"
-//                     colorScheme="whiteAlpha"
-//                     color="orange.700"
-//                     bg="white"
-//                     _hover={{ bg: "gray.50" }}
-//                     transition="all 0.3s ease"
-//                   >
-//                     Get started
-//                   </Button>
-//                 </Link>
-//               </Box>
-//               <Box ml={3}>
-//                 <Link href="#featured" _hover={{ textDecoration: "none" }}>
-//                   <Button
-//                     px={{ base: 8, md: 10 }}
-//                     py={{ base: 3, md: 7 }}
-//                     fontSize={{ base: "md", md: "lg" }}
-//                     fontWeight="medium"
-//                     colorScheme="orange"
-//                     bg="orange.500"
-//                     _hover={{ bg: "orange.700" }}
-//                     transition="all 0.3s ease"
-//                   >
-//                     View listings
-//                   </Button>
-//                 </Link>
-//               </Box>
-//             </Flex>
-//           </Flex>
-//         </Container>
-//       </Flex>
-//     </Box>
+          <div className="bg-white shadow-md rounded-lg p-6">
+            <h2 className="text-2xl font-semibold mb-4">Description</h2>
+            <p className="text-gray-700">{listingData.description}</p>
+          </div>
 
+          <div className="bg-white shadow-md rounded-lg p-6">
+            <h2 className="text-2xl font-semibold mb-4">Reviews</h2>
+            <form onSubmit={handleReviewSubmit} className="mb-6">
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2">Your Rating</label>
+                <div className="flex">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      type="button"
+                      onClick={() => setNewReview({ ...newReview, rating: star })}
+                      className="text-2xl focus:outline-none"
+                    >
+                      {star <= newReview.rating ? <FaStar className="text-yellow-400" /> : <FaRegStar className="text-gray-300" />}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="mb-4">
+                <label htmlFor="review" className="block text-gray-700 text-sm font-bold mb-2">Your Review</label>
+                <textarea
+                  id="review"
+                  rows={4}
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  value={newReview.comment}
+                  onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
+                  required
+                ></textarea>
+              </div>
+              <button type="submit" className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                Submit Review
+              </button>
+            </form>
+            <div className="space-y-4">
+              {reviews.map((review) => (
+                <div key={review.id} className="border-b border-gray-200 pb-4">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="font-semibold">{review.user}</span>
+                    <span className="text-sm text-gray-500">{review.date}</span>
+                  </div>
+                  <div className="flex items-center mb-2">
+                    {[...Array(5)].map((_, i) => (
+                      <FaStar key={i} className={`w-4 h-4 ${i < review.rating ? 'text-yellow-400' : 'text-gray-300'}`} />
+                    ))}
+                  </div>
+                  <p className="text-gray-700">{review.comment}</p>
+                </div>
+              ))}
+            </div>
+          </div>
 
-//       {/* Search Section */}
-//       <Box id="search" maxW="7xl" mx="auto" px={{ base: 4, sm: 6, lg: 8 }} py={16}>
-//       <Box textAlign="center">
-//         <Heading fontSize={{ base: "4xl", sm: "5xl" }} fontWeight="extrabold" color="gray.900">
-//           Find Your Perfect Rental
-//         </Heading>
-//         <Text mt={4} fontSize="xl" color="gray.600">
-//           Search through our extensive selection of premium rentals
-//         </Text>
-//       </Box>
-//       <Flex mt={8} justifyContent="center">
-//         <Input
-//         bg={'white'}
-//           type="text"
-//           placeholder="What would you like to rent?"
-//           w="60%"
-//           rounded="md"
-//           py={3}
-//           px={4}
-//           shadow="sm"
-          
-//           _focus={{ ringColor: "orange.500", borderColor: "orange.500",  boxShadow: "none" }}
-//           color="orange.500"
-//           fontSize="lg"
-//         />
-//         <Button  px={4} py={3} bg="orange.500" color="white" rounded="md" _hover={{ bg: "orange.600" }} transition="all 0.3s ease">
-//           <FaSearch className="h-5 w-5" />
-//         </Button>
-//       </Flex>
-//     </Box>
+          <div className="bg-white shadow-md rounded-lg p-6">
+            <h2 className="text-2xl font-semibold mb-4">Comments</h2>
+            <form onSubmit={handleCommentSubmit} className="mb-6">
+              <div className="mb-4">
+                <label htmlFor="comment" className="block text-gray-700 text-sm font-bold mb-2">Your Comment</label>
+                <textarea
+                  id="comment"
+                  rows={3}
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  required
+                ></textarea>
+              </div>
+              <button type="submit" className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                Post Comment
+              </button>
+            </form>
+            <div className="space-y-4">
+              {comments.map((comment) => (
+                <div key={comment.id} className="border-b border-gray-200 pb-4">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="font-semibold">{comment.user}</span>
+                    <span className="text-sm text-gray-500">{comment.date}</span>
+                  </div>
+                  <p className="text-gray-700">{comment.text}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
 
-//       {/* Categories Section */}
-//       {/* <div className="bg-white py-24">
-//         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-//           <h2 className="text-4xl font-extrabold text-gray-900 text-center">Explore Our Premium Categories</h2>
-//           <div className="mt-20 grid gap-12 lg:grid-cols-3">
-//             {categories.map((category) => (
-//               <div key={category.name} className="bg-orange-50 p-8 rounded-xl hover:shadow-lg transition duration-300">
-//                 <div className="text-center">
-//                   <category.icon className="text-orange-500 w-16 h-16 mx-auto" />
-//                   <h3 className="text-2xl font-semibold mt-4">{category.name}</h3>
-//                   <p className="text-gray-600 mt-2">{category.description}</p>
-//                   <Link to={`/categories/${category.name.toLowerCase()}`} className="text-orange-600 hover:text-orange-800 mt-4 inline-flex items-center">
-//                     Explore {category.name}
-//                     <FaArrowRight className="ml-2" />
-//                   </Link>
-//                 </div>
-//               </div>
-//             ))}
-//           </div>
-//         </div>
-//       </div> */}
-    
+        <div className="space-y-6">
+          <div className="bg-white shadow-md rounded-lg p-6">
+            <h2 className="text-2xl font-semibold mb-4">Rules</h2>
+            <ul className="list-disc pl-5 space-y-2">
+              {listingData.rules.map((rule, index) => (
+                <li key={index} className="text-gray-700">{rule}</li>
+              ))}
+            </ul>
+          </div>
 
-//       <Box bg="white" py={24}>
-//         <Container maxW="7xl" px={{ base: 4, sm: 6, lg: 8 }}>
-//           <Heading fontSize={{ base: "4xl", sm: "5xl" }} fontWeight="extrabold" color="gray.900" textAlign="center">
-//             Explore Our Premium Categories
-//           </Heading>
-//           <Grid mt={20} gap={12} templateColumns={{ base: "1fr", lg: "repeat(3, 1fr)" }}>
-//             {categories.map((category) => (
-//               <GridItem key={category.name} bg="orange.50"  p={14} rounded="xl" _hover={{ shadow: "2xl" }} transition="all 0.3s ease">
-//                 <Box textAlign="center">
-//                   <category.icon className="text-orange-500" style={{ width: "4rem", height: "4rem", margin: "0 auto" }} />
-//                   <Heading fontSize="2xl" fontWeight="semibold" mt={4}>{category.name}</Heading>
-//                   <Text color="gray.600" mt={2}>{category.description}</Text>
-//                   <Flex fontWeight={'semibold'} as={Link} to={`/categories/${category.name.toLowerCase()}`} color="orange.400" _hover={{ color: "orange.700" }} mt={4} display="inline-flex" alignItems="center">
-//                     <Text>Explore {category.name}</Text>
-//                     <FaArrowRight style={{ marginLeft: "0.5rem" }} />
-//                   </Flex>
-//                 </Box>
-//               </GridItem>
-//             ))}
-//           </Grid>
-//         </Container>
-//       </Box>
-
-      
-//       {/* Featured Listings Section */}
-// <Box id="featured" bg="gray.50" py={24}>
-//         <Container maxW="7xl" px={{ base: 4, sm: 6, lg: 8 }}>
-//           <Heading fontSize={{ base: "4xl", sm: "5xl" }} fontWeight="extrabold" color="gray.900" textAlign="center">
-//             Featured Premium Rentals
-//           </Heading>
-//           <Text my={4} fontSize={'18px'} color={'gray.600'} textAlign={'center'}>
-//           Experience luxury with our top-tier rental selections
-//           </Text>
-//           <Grid mt={20} gap={12} templateColumns={{ base: "1fr", md: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" }}>
-//             {curentListing && curentListing?.length > 0 &&  curentListing.map((rental) => (
-//               <GridItem key={rental._id} bg="white" rounded="lg" shadow="lg" overflow="hidden">
-//                 {
-//                    rental.images && rental.images.length > 0 ? (
-//                     <Image src={`http://localhost:3600${rental?.images[0]?.url}`} alt={rental.title} w="full" h={64} objectFit="cover" />
-//                    ) : (
-//                     <Image src='images/make_listing/random.png'  alt={rental.title} w="full" h={64} objectFit="cover" />
-//                    )
-//                 }
-//                 <Flex flexDir={'column'} gap={4} p={7}>
-//                     <Flex justifyContent={'space-between'}> 
-//                     <Heading fontSize="xl" fontWeight="semibold">{rental.title}</Heading>
-//                     <Text fontSize={'lg'} fontWeight={'bold'}>{rental.price}PKR</Text>
-//                     </Flex>
-                 
-//                   <Button alignSelf={'center'} w={'full'} bg={'orange.400'} _hover={{bg:'orange.500'}} as={Link}  to={`/rental/${rental._id}`} color="orange.50" fontWeight="medium">
-//                     View Details
-//                   </Button>
-//                 </Flex>
-//               </GridItem>
-              
-//             ))}
-//           </Grid>
-//             <Flex mt={10} alignItems={'center'}  justifyContent={'space-between'}>
-//                        <Button bg={'orange.400'} _hover={{bg:'orange.500'}} color={'white'} onClick={goToPrevPage} isDisabled={currentPage === 1}>
-//                        Previous
-//                       </Button>
-//                         <Text textAlign={'center'} >
-//                           Page {currentPage} of {totalPages}
-//                         </Text>
-//                       <Button bg={'orange.400'} _hover={{bg:'orange.500'}}  color={'white'} onClick={goToNextPage} isDisabled={currentPage === totalPages}>
-//                       Next
-//                       </Button>
-//                    </Flex>
-//         </Container>
-//       </Box>
-
-//       {/* Call to Action */}
-      
-//       {/* <div className="bg-gradient-to-r from-orange-600 to-orange-400">
-//         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 text-center">
-//           <h2 className="text-4xl font-extrabold text-white sm:text-5xl">Ready to Experience Premium Rentals?</h2>
-//           <p className="mt-6 text-xl text-orange-100 max-w-3xl mx-auto">
-//             Join RentWise today and unlock access to our exclusive selection of high-end rentals. Start your journey
-//             towards unparalleled luxury and convenience.
-//           </p>
-//           <Link
-//             to="/signup"
-//             className="mt-12 inline-flex items-center justify-center px-8 py-4 border border-transparent text-lg font-medium rounded-md text-orange-600 bg-white hover:bg-orange-50 transition duration-300"
-//           >
-//             Sign Up for Exclusive Access
-//           </Link>
-//         </div>
-//         </div> */}
-//         <Box bgGradient="linear(to-r, orange.500, orange.300)">
-//         <Container maxW="7xl" px={{ base: 4, sm: 6, lg: 8 }} py={{ base: 16, sm: 24 }} textAlign="center">
-//           <Heading fontSize={{ base: "4xl", sm: "5xl" }} fontWeight="extrabold" color="white">
-//             Ready to Experience Premium Rentals?
-//           </Heading>
-//           <Text mt={6} fontSize="xl" color="orange.50" maxW="3xl" mx="auto">
-//             Join RentWise today and unlock access to our exclusive selection of high-end rentals. Start your journey
-//             towards unparalleled luxury and convenience.
-//           </Text>
-//           <Button
-//           as={Link}
-//             to="/signup"
-//             mt={12}
-//             display="inline-flex"
-//             alignItems="center"
-//             justifyContent="center"
-//             px={8}
-//             py={7}
-//             border="1px solid transparent"
-//             fontSize="lg"
-//             fontWeight="medium"
-//             rounded="md"
-//             color="orange.500"
-//             bg="white"
-//             _hover={{ bg: "orange.50" }}
-//             transition="all 0.3s ease"
-//           >
-//             Sign Up for Exclusive Access
-//           </Button>
-//         </Container>
-//       </Box>
-
-//       <style jsx>{`
-//         @keyframes slide {
-//           0% { opacity: 0; transform: scale(1.1); }
-//           25% { opacity: 1; }
-//           50% { opacity: 0; transform: scale(1); }
-//           100% { opacity: 0; transform: scale(1.1); }
-//         }
-//         .animate-slide {
-//           animation: slide 20s infinite;
-//         }
-//         .animate-slide-delayed {
-//           animation: slide 20s infinite;
-//           animation-delay: 10s;
-//         }
-//         @keyframes fadeInUp {
-//           from { opacity: 0; transform: translateY(20px); }
-//           to { opacity: 1; transform: translateY(0); }
-//         }
-//         .animate-fade-in-up {
-//           animation: fadeInUp 1s ease-out forwards;
-//         }
-//         .animation-delay-300 {
-//           animation-delay: 300ms;
-//         }
-//         .animation-delay-600 {
-//           animation-delay: 600ms;
-//         }
-//       `}</style>
-//     </div>
-//   )
-// }
-
-// export default TestHome
-
+          <div className="bg-white shadow-md rounded-lg p-6">
+            <h2 className="text-2xl font-semibold mb-4">Amenities</h2>
+            <ul className="grid grid-cols-2 gap-2">
+              {listingData.amenities.map((amenity, index) => (
+                <li key={index} className="flex items-center text-gray-700">
+                  <svg className="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                  {amenity}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}

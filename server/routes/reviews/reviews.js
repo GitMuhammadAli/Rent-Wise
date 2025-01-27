@@ -8,4 +8,6 @@ const Listing = require("../../controller/review/listingReview")
 
 // Listing Review Routes
 
-router.post("/listing/:id " , AuthorizeUser("user" , "Admin") , asyncHandler(Listing.CreateListReview))
+router.post("/listing/:id" , AuthorizeUser("user" , "Admin") , asyncHandler(Listing.CreateListReview))
+
+module.exports = router;
