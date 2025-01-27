@@ -2,6 +2,11 @@ import React, { createContext, useState, useEffect, useContext } from "react";
 import Cookies from "js-cookie";
 import { User, login as apiLogin, logout } from "../Api/api";
 import decodeToken from "../utils/jwt";
+import { io } from "socket.io-client";
+
+const socket = io(import.meta.env.VITE_BACK_END_URL, {
+  withCredentials: true,
+});
 
 
 const AuthContext = createContext();

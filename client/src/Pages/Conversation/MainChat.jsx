@@ -7,8 +7,10 @@ import {useLocation } from 'react-router-dom';
 
 
 import { io } from "socket.io-client";
-const socket = io("http://localhost:3600"); // Ensure backend runs on this port
 
+const socket = io(import.meta.env.VITE_BACK_END_URL, {
+  withCredentials: true,
+});
 
 export default function MainChat() {
 const location = useLocation();

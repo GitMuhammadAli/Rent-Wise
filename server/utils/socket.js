@@ -13,11 +13,18 @@ const io = socketIo(server, {
     credentials: true // This allows cookies to be sent
   }
 });
+const onlineUsers = new Map();
+
 
 io.on("connection", (socket) => {
     console.log("A user connected:", socket.id);
 
-
+    socket.on("join-user", (userId) => {
+      onlineUsers.set(userId, socket.id);
+      socket.join(userId.toString());
+      io.emit("user-online", userId);
+  });
+  
     socket.on("join-user", (userId) => {
       if (typeof userId === 'object') {
           userId = userId._id;
