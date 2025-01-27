@@ -9,18 +9,11 @@ export const useSocketConnection = () => {
     const { user } = useAuth();
     
     socket.on("connect", () => {
-        if (user?._id) {
-            socket.emit("join-user", user._id);
-        }
+        // if (user?._id) {
+        //     socket.emit("join-user", user._id);
+        // }
     });
 
-    // socket.on("newConversation", (data) => {
-    //     setAllData(prevData => {
-    //         const updated = prevData ? [...prevData] : [];
-    //         updated.unshift(data);
-    //         return updated;
-    //     });
-    // });
 
     return socket;
 };
