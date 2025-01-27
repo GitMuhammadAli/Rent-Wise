@@ -4,7 +4,13 @@ import LiveChat from "./LiveChat";
 import { Flex } from "@chakra-ui/react";
 import { useLocation } from "react-router-dom";
 import { useAuth } from "../../hooks/AuthContext";
-import { useSocketConnection } from "../../hooks/useSocketConnection";
+// import { useSocketConnection } from "../../hooks/useSocketConnection";
+
+import { io } from "socket.io-client";
+
+const socket = io(import.meta.env.VITE_BACK_END_URL, {
+  withCredentials: true,
+});
 
 export default function MainChat() {
   const { user } = useAuth();
@@ -20,7 +26,7 @@ export default function MainChat() {
   const [listings, setListings] = useState([]);
   const [allData, setAllData] = useState(null);
 
-  const socket = useSocketConnection(setAllData);
+  // const socket = useSocketConnection(setAllData);
   useEffect(() => {
     console.log("Owner", ownerIdDetails);
     console.log("useer", userIdDetails);
@@ -32,11 +38,13 @@ export default function MainChat() {
 
   useEffect(() => {
     if (user?._id) {
+      // this one is for real time Conversation shown
       socket.emit("join-user", user._id);
     }
 
-    console.log("Current allData:", allData);
 
+    console.log("Current allData:", allData);
+      // this one is for real time Conversation shown
     socket.on("newConversation", (data) => {
       console.log("MainChat received new conversation:", data);
       setAllData((prevData) => {
