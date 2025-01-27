@@ -41,29 +41,29 @@ export default function SideChat({ handleSideBarClick, ownerIdDetails, setAllDat
 
 
 
-useEffect(() => {
-  console.log("Setting up newConversation listener");
+// useEffect(() => {
+//   console.log("Setting up newConversation listener");
   
-  socket.on("newConversation", (data) => {
-    setAllData(prevData => {
-        const newData = prevData ? [...prevData] : [];
-        const exists = newData.some(conv => conv._id === data.conversation._id);
-        if (!exists) {
-            newData.push(data.conversation);
-        } else {
-            // Update existing conversation and move to top
-            newData = newData.map(conv => 
-                conv._id === data.conversation._id ? data.conversation : conv
-            );
-        }
-        return newData.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
-    });
-});
+//   socket.on("newConversation", (data) => {
+//     setAllData(prevData => {
+//         const newData = prevData ? [...prevData] : [];
+//         const exists = newData.some(conv => conv._id === data.conversation._id);
+//         if (!exists) {
+//             newData.push(data.conversation);
+//         } else {
+//             // Update existing conversation and move to top
+//             newData = newData.map(conv => 
+//                 conv._id === data.conversation._id ? data.conversation : conv
+//             );
+//         }
+//         return newData.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+//     });
+// });
 
-return () => {
-    socket.off("newConversation");
-};
-}, []);
+// return () => {
+//     socket.off("newConversation");
+// };
+// }, []);
 
 useEffect(() => {
   socket.on("receiveMessage", (data) => {
