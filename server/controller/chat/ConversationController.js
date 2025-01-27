@@ -285,13 +285,17 @@ const createMessage = async (req, res, next) => {
         listing: listingArray,
       });
 
-
-      io.to(senderId.toString()).emit("newConversation", {
-        conversation: conversationResult.conversation,
-      });
       io.to(receiver.toString()).emit("newConversation", {
         conversation: conversationResult.conversation,
-      });
+        participants: conversationResult.participants,
+        lastMessage: newMessage,
+        unreadCount: 1
+    });
+    
+
+
+   
+  
 
     } else {
       return next(
