@@ -8,7 +8,7 @@ const socket = io(import.meta.env.VITE_BACK_END_URL, {
   withCredentials: true,
 });
 
-export default function SideChat({ handleSideBarClick, ownerIdDetails, setAllData }) {
+export default function SideChat({ handleSideBarClick, ownerIdDetails, setAllData , allData}) {
   const [participants, setParticipants] = useState([]);
   const [owner, setOwner] = useState(null);
   const [searchChat, setSearchChat] = useState('');
