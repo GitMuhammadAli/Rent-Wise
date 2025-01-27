@@ -39,6 +39,15 @@ export default function SideChat({ handleSideBarClick, ownerIdDetails, setAllDat
     
 }, []);
 
+useEffect(()=>{
+ console.log("all data for id", allData);
+ const participantData = allData?.data?.data.flatMap(item => 
+  item.participants
+).filter(Boolean);
+console.log("Filtered people of new:", participantData);
+ setParticipants(participantData);
+
+},[allData])
 
 
 // useEffect(() => {
