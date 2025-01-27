@@ -45,33 +45,46 @@ useEffect(() => {
   console.log("Setting up newConversation listener");
   
   socket.on("newConversation", (data) => {
-      console.log("SideChat received newConversation:", data);
-      setAllData(prevData => {
-          const newData = prevData ? [...prevData] : [];
-          const exists = newData.some(conv => conv._id === data.conversation._id);
-          if (!exists) {
-              newData.push(data.conversation);
-          }
-          return newData;
-      });
+    setAllData(prevData => {
+        const newData = prevData ? [...prevData] : [];
+        const exists = newData.some(conv => conv._id === data.conversation._id);
+        if (!exists) {
+            newData.push(data.conversation);
+        } else {
+            // Update existing conversation and move to top
+            newData = newData.map(conv => 
+                conv._id === data.conversation._id ? data.conversation : conv
+            );
+        }
+        return newData.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+    });
+});
 
-      // Update participants list
-      const newParticipants = data.conversation.participants;
-      setParticipants(prev => {
-          const updatedParticipants = [...prev];
-          newParticipants.forEach(participant => {
-              if (!updatedParticipants.some(p => p._id === participant._id)) {
-                  updatedParticipants.push(participant);
-              }
-          });
-          return updatedParticipants;
+return () => {
+    socket.off("newConversation");
+};
+}, []);
+
+useEffect(() => {
+  socket.on("receiveMessage", (data) => {
+    setAllData(prevData => {
+      return prevData.map(conv => {
+        if (conv._id === data.conversationId) {
+          return { 
+            ...conv, 
+            unreadMessagesCount: (conv.unreadMessagesCount || 0) + 1
+          };
+        }
+        return conv;
       });
+    });
   });
 
   return () => {
-      socket.off("newConversation");
+    socket.off("receiveMessage");
   };
 }, []);
+
 
   // Set the owner details
   useEffect(() => {

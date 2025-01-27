@@ -3,7 +3,6 @@ import SideChat from './SideChat'
 import LiveChat from './LiveChat'
 import { Flex } from '@chakra-ui/react'
 import {useLocation } from 'react-router-dom';
-// import { createOrGetConversation } from '../../Api/Chats'
 import { useAuth } from '../../hooks/AuthContext';
 
 import { io } from "socket.io-client";
@@ -106,23 +105,6 @@ const handleSideBarClick = (receiver_id, receiver_name,  selectedParticipant,  r
 
 };
 
-
-// useEffect(()=>{
-//     const createConversation = async () => {
-//       try {
-//         await createOrGetConversation({
-//           receiver: ownerIdDetails._id,
-//           listing: listingIdDetails._id || listingIdDetails,
-//         });
-//       } catch (error) {
-//         console.error("Error creating conversation:", error);
-//       }
-//     };
-
-//     if (ownerIdDetails && userIdDetails && listingIdDetails) {
-//       createConversation();
-//     }
-// },[ownerIdDetails,userIdDetails,listingIdDetails])
 
 return (
     <div>

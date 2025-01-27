@@ -31,7 +31,7 @@ exports.adminHome = async (req, res) => {};
 
 exports.checkAuth = (req, res,next) => {
   try {
-    console.log("User in checkAuth:", req.user);
+    // console.log("User in checkAuth:", req.user);
     res.status(STATUS.SUCCESS).json({
       success: BOOLEAN.TRUE,
       user: req.user

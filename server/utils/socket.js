@@ -15,26 +15,18 @@ const io = socketIo(server, {
 });
 const onlineUsers = new Map();
 
+console.log("online users are " , onlineUsers )
+
 
 io.on("connection", (socket) => {
-    console.log("A user connected:", socket.id);
-
+    // console.log("A user connected:", socket.id);
     socket.on("join-user", (userId) => {
       onlineUsers.set(userId, socket.id);
-      socket.join(userId.toString());
-      io.emit("user-online", userId);
-  });
-  
-    socket.on("join-user", (userId) => {
-      if (typeof userId === 'object') {
-          userId = userId._id;
-      }
       socket.join(userId.toString());
       console.log(`✅ User ${userId} joined room ${userId.toString()}`);
   });
   
   
-
     // Join a conversation room
     socket.on("join-conversation", (conversationId) => {
         console.log(`========================[Socket.IO] User ${socket.id} joining room ${conversationId}`);
@@ -49,7 +41,7 @@ io.on("connection", (socket) => {
 
     // Disconnect
     socket.on("disconnect", () => {
-        console.log("User disconnected:", socket.id);
+        // console.log("User disconnected:", socket.id);
     });
 });
 
