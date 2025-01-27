@@ -42,6 +42,22 @@ export default function LiveChat({
     }
   }, [message]);
 
+  useEffect(() => {
+    if (!convoID) return;
+
+    socket.emit("join-conversation", convoID);
+    
+    const handleNewMessage = (newMessage) => {
+        setMessages(prev => [...prev, newMessage]);
+    };
+
+    socket.on("receiveMessage", handleNewMessage);
+    
+    return () => {
+        socket.emit("leave-conversation", convoID);
+        socket.off("receiveMessage", handleNewMessage);
+    };
+}, [convoID]);
 
   useEffect(() => {
     if (listings) {
