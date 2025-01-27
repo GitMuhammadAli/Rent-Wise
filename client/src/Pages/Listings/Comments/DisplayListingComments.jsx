@@ -302,7 +302,7 @@ export default function DisplayListingComments({ currentID }) {
   return (
     <VStack spacing={4} align="stretch" >
       {comments.length > 0 ? (
-        comments.map((comment) => (
+        comments?.map((comment) => (
           <Box bg={'white'} key={comment._id} borderWidth={1} borderRadius="md" p={4} boxShadow={'lg'} >
             <HStack justify="space-between">
               <HStack>

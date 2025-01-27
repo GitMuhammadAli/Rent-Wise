@@ -12,7 +12,12 @@ function MainLayout() {
   const navigate = useNavigate()
   const [successMessage, setSuccessMessage] = useState("")
 
-  const bgColor = useColorModeValue("orange.400", "orange.600")
+  // const bgColor = useColorModeValue("orange.300", "orange.600")
+  const bgColor = useColorModeValue(
+    "linear(to-r, orange.300, #999cba)",  // Light mode gradient
+    "linear(to-r, orange.600, red.500)"   // Dark mode gradient
+  );
+  
   const hoverBgColor = useColorModeValue("orange.600", "orange.800")
   const textColor = useColorModeValue("white", "gray.100")
   const buttonBgColor = useColorModeValue("white", "gray.700")
@@ -37,7 +42,7 @@ function MainLayout() {
     <Flex direction="column" minH="100vh">
       <ToastContainer />
 
-      <Box bg={bgColor} color={textColor} boxShadow="md">
+      <Box bgGradient={bgColor} color={textColor} boxShadow="md">
         <Container maxW="container.xl" py={4}>
           <Flex justify="space-between" align="center">
             <Text as={Link} to="/" fontSize="2xl" fontFamily= "'Playwrite CU', cursive"  fontWeight="bold" _hover={{ color: "orange.200" }}>
