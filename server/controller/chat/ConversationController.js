@@ -269,7 +269,6 @@ const createMessage = async (req, res, next) => {
     newMessage.conversation = conversationId;
     await newMessage.save();
 
-    // Update conversation timestamp
     const conversation = await Conversation.findById(conversationId);
     if (conversation) {
       conversation.updatedAt = new Date();
@@ -277,18 +276,7 @@ const createMessage = async (req, res, next) => {
     }
 
     if (io) {
-        const eventData = {
-            conversation: {
-                _id: conversationResult.conversation._id.toString(),
-                participants: conversationResult.participants,
-                listing: listingArray
-            },
-            message: newMessage
-        };
-
-        io.to(senderId.toString()).emit("newConversation", eventData);
-        io.to(receiver.toString()).emit("newConversation", eventData);
-
+       
       io.to(conversationId.toString()).emit("receiveMessage", {
         conversationId,
         message,
@@ -296,6 +284,15 @@ const createMessage = async (req, res, next) => {
         receiver,
         listing: listingArray,
       });
+
+
+      io.to(senderId.toString()).emit("newConversation", {
+        conversation: conversationResult.conversation,
+      });
+      io.to(receiver.toString()).emit("newConversation", {
+        conversation: conversationResult.conversation,
+      });
+
     } else {
       return next(
         new AppError(
@@ -317,6 +314,9 @@ const createMessage = async (req, res, next) => {
     next(error);
   }
 };
+
+
+
 const fetchConversationsForSidebarOld = async (req, res, next) => {
   try {
     const userId = req.user._id;

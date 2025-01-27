@@ -65,7 +65,7 @@ const GetAndDecodeToken = async (req, res, next) => {
 
   try {
     const decodedToken = await decodingToken(token, process.env.JWT_API_SECRET_KEY);
-    console.log("decodedToken", decodedToken);
+    // console.log("decodedToken", decodedToken);
     return decodedToken;
   } catch (error) {
     next(error);
