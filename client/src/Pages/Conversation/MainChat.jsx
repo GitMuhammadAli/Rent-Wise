@@ -4,15 +4,15 @@ import LiveChat from './LiveChat'
 import { Flex } from '@chakra-ui/react'
 import {useLocation } from 'react-router-dom';
 // import { createOrGetConversation } from '../../Api/Chats'
-
+import { useAuth } from '../../hooks/AuthContext';
 
 import { io } from "socket.io-client";
 
 const socket = io(import.meta.env.VITE_BACK_END_URL, {
   withCredentials: true,
 });
-
 export default function MainChat() {
+  const { user } = useAuth();
 const location = useLocation();
 const scrollRef = useRef(null);
 const { ownerIdDetails, listingIdDetails, userIdDetails } = location.state || {};
@@ -43,6 +43,12 @@ useEffect(()=>{
 
 
 useEffect(() => {
+
+
+  if (user?._id) {
+    socket.emit("join-user", user._id);
+}
+
   console.log("Current allData:", allData);
   
   socket.on("newConversation", (data) => {
@@ -59,7 +65,7 @@ useEffect(() => {
   console.log("main chat data after is " , allData )
 
   return () => socket.off("newConversation");
-}, []);
+}, [user]);
 
 
 

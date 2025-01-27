@@ -277,23 +277,17 @@ const createMessage = async (req, res, next) => {
     }
 
     if (io) {
-      const conversationData = {
-        conversation: {
-            _id: conversationResult.conversation._id.toString(),
-            participants: conversationResult.participants.map(p => ({
-                _id: p._id.toString(),
-                name: p.name,
-                email: p.email,
-                imageUrl: p.imageUrl
-            })),
-            listing: listingArray.map(id => id.toString())
-        }
-    };
-    
-    console.log("Emitting newConversation to:", senderId.toString()); 
-    io.to(senderId.toString()).emit("newConversation", conversationData);
-    console.log("Emitting newConversation to:", receiver.toString());
-    io.to(receiver.toString()).emit("newConversation", conversationData);
+        const eventData = {
+            conversation: {
+                _id: conversationResult.conversation._id.toString(),
+                participants: conversationResult.participants,
+                listing: listingArray
+            },
+            message: newMessage
+        };
+
+        io.to(senderId.toString()).emit("newConversation", eventData);
+        io.to(receiver.toString()).emit("newConversation", eventData);
 
       io.to(conversationId.toString()).emit("receiveMessage", {
         conversationId,
