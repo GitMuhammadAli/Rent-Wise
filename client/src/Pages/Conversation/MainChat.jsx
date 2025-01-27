@@ -3,7 +3,12 @@ import SideChat from './SideChat'
 import LiveChat from './LiveChat'
 import { Flex } from '@chakra-ui/react'
 import {useLocation } from 'react-router-dom';
-import { createOrGetConversation } from '../../Api/Chats'
+// import { createOrGetConversation } from '../../Api/Chats'
+
+
+import { io } from "socket.io-client";
+const socket = io("http://localhost:3600"); // Ensure backend runs on this port
+
 
 export default function MainChat() {
 const location = useLocation();
@@ -29,6 +34,31 @@ useEffect(()=>{
 
   
 },[ownerIdDetails,userIdDetails,listingIdDetails,item,allData])
+
+
+
+
+
+
+useEffect(() => {
+  console.log("Current allData:", allData);
+  
+  socket.on("newConversation", (data) => {
+      console.log("MainChat received new conversation:", data);
+      setAllData(prevData => {
+          if (!prevData) return [data];
+          const exists = prevData.some(conv => conv._id === data.conversation._id);
+          if (!exists) {
+              return [...prevData, data];
+          }
+          return prevData;
+      });
+  });
+  console.log("main chat data after is " , allData )
+
+  return () => socket.off("newConversation");
+}, []);
+
 
 
 useEffect(() => {
@@ -69,22 +99,22 @@ const handleSideBarClick = (receiver_id, receiver_name,  selectedParticipant,  r
 };
 
 
-useEffect(()=>{
-    const createConversation = async () => {
-      try {
-        await createOrGetConversation({
-          receiver: ownerIdDetails._id,
-          listing: listingIdDetails._id || listingIdDetails,
-        });
-      } catch (error) {
-        console.error("Error creating conversation:", error);
-      }
-    };
+// useEffect(()=>{
+//     const createConversation = async () => {
+//       try {
+//         await createOrGetConversation({
+//           receiver: ownerIdDetails._id,
+//           listing: listingIdDetails._id || listingIdDetails,
+//         });
+//       } catch (error) {
+//         console.error("Error creating conversation:", error);
+//       }
+//     };
 
-    if (ownerIdDetails && userIdDetails && listingIdDetails) {
-      createConversation();
-    }
-},[ownerIdDetails,userIdDetails,listingIdDetails])
+//     if (ownerIdDetails && userIdDetails && listingIdDetails) {
+//       createConversation();
+//     }
+// },[ownerIdDetails,userIdDetails,listingIdDetails])
 
 return (
     <div>

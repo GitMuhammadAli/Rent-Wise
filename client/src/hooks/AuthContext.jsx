@@ -74,6 +74,14 @@ export const AuthProvider = ({ children }) => {
     fetchUserData();
   }, []);
 
+    useEffect(() => {
+      if (user?._id) {
+          socket.emit("join-user", user._id.toString());
+          console.log("User joined personal room:", user._id);
+      }
+  }, [user]);
+  
+  
 
   const login = async (credentials) => {
     try {

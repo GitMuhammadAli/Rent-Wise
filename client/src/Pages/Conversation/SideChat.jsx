@@ -2,6 +2,11 @@ import { Avatar, Box, Input, Text, VStack } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { getSideBarParticipants , fetchConversationsForSidebar } from '../../Api/Chats';
 
+import { io } from "socket.io-client";
+
+const socket = io(import.meta.env.VITE_BACK_END_URL, {
+  withCredentials: true,
+});
 
 export default function SideChat({ handleSideBarClick, ownerIdDetails, setAllData }) {
   const [participants, setParticipants] = useState([]);
@@ -14,43 +19,58 @@ export default function SideChat({ handleSideBarClick, ownerIdDetails, setAllDat
   // Fetch participants from the API
   useEffect(() => {
     const fetchParticipants = async () => {
-      try {
-
-        const response = await fetchConversationsForSidebar();
-        console.log("response", response);
-        
-        // const participantData = response.data.data[0].participants || [];
-        // const listingData = response.data.data[0].listing || [];
-        const participantData = response?.data?.data.flatMap(item =>
-          item.participants
-        );
-
-           // to directly get anything from participants data but make sure to add that column above first
-        // const participantNames = participantData.map(participant => participant.name);
-        // console.log(participantNames);
-        
-
-        // const listingData = response?.data?.data.flatMap(item => item.listing);
-
-
-
-
-        console.log("Participants are: ", participantData);
-        // console.log("Listings are: ", listingData);
-         setParticipants(participantData);
-        // setListings(listingData);
-       
-        setAllData(response.data.data);
-      } catch (error) {
-        console.error("Error fetching participants:", error);
-      }
+        try {
+            const response = await fetchConversationsForSidebar();
+            console.log("Sidebar conversations:", response.data.data);
+            setAllData(response.data.data);
+            
+            const participantData = response?.data?.data.flatMap(item => 
+                item.participants
+            ).filter(Boolean);
+            
+            console.log("Filtered participants:", participantData);
+            setParticipants(participantData);
+        } catch (error) {
+            console.error("Error fetching participants:", error);
+        }
     };
     fetchParticipants();
-  }, []);
+
+    
+}, []);
 
 
+useEffect(() => {
+  console.log("Setting up newConversation listener");
+  
+  socket.on("newConversation", (data) => {
+      console.log("SideChat received newConversation:", data);
+      setAllData(prevData => {
+          const newData = prevData ? [...prevData] : [];
+          const exists = newData.some(conv => conv._id === data.conversation._id);
+          if (!exists) {
+              newData.push(data.conversation);
+          }
+          return newData;
+      });
 
+      // Update participants list
+      const newParticipants = data.conversation.participants;
+      setParticipants(prev => {
+          const updatedParticipants = [...prev];
+          newParticipants.forEach(participant => {
+              if (!updatedParticipants.some(p => p._id === participant._id)) {
+                  updatedParticipants.push(participant);
+              }
+          });
+          return updatedParticipants;
+      });
+  });
 
+  return () => {
+      socket.off("newConversation");
+  };
+}, []);
 
   // Set the owner details
   useEffect(() => {
@@ -122,3 +142,5 @@ export default function SideChat({ handleSideBarClick, ownerIdDetails, setAllDat
     </Box>
   );
 }
+
+

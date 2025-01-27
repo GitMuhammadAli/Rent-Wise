@@ -5,7 +5,7 @@ const { AuthorizeUser } = require("../../middleware/auth");
 const  asyncHandler = require('../../middleware/asyncWrapper');
 
 // Get or create a conversation
-router.post("/CreateorGetconversations", AuthorizeUser("user" , "admin") ,asyncHandler(conversation.createOrGetConversation));
+// router.post("/CreateorGetconversations", AuthorizeUser("user" , "admin") ,asyncHandler(conversation.createOrGetConversation));
 
 // Create a new message in a conversation
 router.post("/CreateMessages", AuthorizeUser("user" , "admin") , asyncHandler(conversation.createMessage));

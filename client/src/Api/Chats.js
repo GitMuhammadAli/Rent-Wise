@@ -40,13 +40,13 @@ const API_BASE_URL = `${import.meta.env.VITE_BACK_END_URL}/conversations`;
 
 
 // Converstaion Routes New-One
-export const createOrGetConversation = (data) =>
-    axios.post(`${API_BASE_URL}/CreateorGetconversations`, data, { withCredentials: true })
-        .catch((error) => {
-            console.error(error.response.data);
-            console.error(error.response.status);
-            console.error(error.response.headers);
-        });
+// export const createOrGetConversation = (data) =>
+//     axios.post(`${API_BASE_URL}/CreateorGetconversations`, data, { withCredentials: true })
+//         .catch((error) => {
+//             console.error(error.response.data);
+//             console.error(error.response.status);
+//             console.error(error.response.headers);
+//         });
 
 
 
