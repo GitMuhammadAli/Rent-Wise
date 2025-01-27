@@ -5,7 +5,7 @@ const MesssageSchema = new mongoose.Schema({
     receiver: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     conversation: { type: mongoose.Schema.Types.ObjectId, ref: 'Conversation', required: true },
     listing:[ { type: mongoose.Schema.Types.ObjectId, ref: 'RentalItem', required: true }],
-    message: { type: String, required: true },
+    message: { type: mongoose.Schema.Types.Mixed, required: true }, 
     status: { type: String, enum: ['sent', 'read'], default: 'sent' },
     type: { type: String, enum: ['text', 'image', 'audio', 'video' , "link"] },
     createdAt: { type: Date, default: Date.now },

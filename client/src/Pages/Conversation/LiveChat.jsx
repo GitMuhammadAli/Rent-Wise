@@ -10,12 +10,15 @@ import {
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { useAuth } from "../../hooks/AuthContext";
 import { createMessage, fetchMessagesByConversation } from "../../Api/Chats";
-import { io } from "socket.io-client";
 import UserPopover from "../DashboardComp.jsx/UserPopover";
 import { ListingsContext } from "../../hooks/ListingsContext";
 import { Link } from 'react-router-dom';
 
-const socket = io("http://localhost:3600"); // Ensure backend runs on this port
+import { io } from "socket.io-client";
+
+const socket = io(import.meta.env.VITE_BACK_END_URL, {
+  withCredentials: true,
+});
 
 export default function LiveChat({
   showPopOver,
@@ -39,6 +42,7 @@ export default function LiveChat({
     }
   }, [message]);
 
+
   useEffect(() => {
     if (listings) {
       const listing_id = listings.map((list) => list._id);
@@ -49,6 +53,7 @@ export default function LiveChat({
   useEffect(() => {
     if (!convoID) return;
 
+    console.log("i am refreshed")
     console.log("Joining conversation ID:", convoID);
     socket.emit("join-conversation", convoID);
 
