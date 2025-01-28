@@ -30,6 +30,8 @@ export default function LiveChat({
   Messages,
   setMessages,
   listings,
+  isCLicked,
+  setIsCLicked
 }) {
   const [message, setMessage] = useState("");
 
@@ -114,13 +116,14 @@ export default function LiveChat({
         const response = await fetchMessagesByConversation(convoID);
         setMessages(response?.data?.data || []);
         console.log("meessages in live are:", response?.data?.data);
+        setIsCLicked(false)
       } catch (error) {
         console.error("Error fetching messages:", error);
       }
     };
 
     fetchMessages();
-  }, [convoID, owner]);
+  }, [convoID, owner, isCLicked]);
   return (
     <Box
       flex="1"
