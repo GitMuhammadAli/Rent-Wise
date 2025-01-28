@@ -215,6 +215,7 @@ const createOrGetConversations = async (receiver, listing, senderId, next) => {
     return {
       conversation,
       participants: participants.map((p) => p.user),
+      isNewConversation
     };
   } catch (error) {
     next(error);
@@ -276,7 +277,6 @@ const createMessage = async (req, res, next) => {
     }
 
     if (io) {
-       
       io.to(conversationId.toString()).emit("receiveMessage", {
         conversationId,
         message,
@@ -285,18 +285,14 @@ const createMessage = async (req, res, next) => {
         listing: listingArray,
       });
 
-      io.to(receiver.toString()).emit("newConversation", {
-        conversation: conversationResult.conversation,
-        participants: conversationResult.participants,
-        lastMessage: newMessage,
-        unreadCount: 1
-    });
-    
-
-
-   
-  
-
+      if (conversationResult.isNewConversation) {
+        io.to(receiver.toString()).emit("newConversation", {
+          conversation: conversationResult.conversation,
+          participants: conversationResult.participants,
+          lastMessage: newMessage,
+          unreadCount: 1
+        });
+      }
     } else {
       return next(
         new AppError(
@@ -307,8 +303,6 @@ const createMessage = async (req, res, next) => {
       );
     }
 
-    // In createMessage function, after saving the new message:
-
     res.status(STATUS.SUCCESS).json({
       success: BOOLEAN.TRUE,
       message: CONVERSATION.MESSAGE_SENT,
@@ -318,7 +312,6 @@ const createMessage = async (req, res, next) => {
     next(error);
   }
 };
-
 
 
 const fetchConversationsForSidebarOld = async (req, res, next) => {
