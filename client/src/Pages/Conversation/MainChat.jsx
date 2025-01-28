@@ -28,14 +28,14 @@ export default function MainChat() {
   const [isCLicked, setIsCLicked] = useState(false) // check if side bar is clicked
 
   // const socket = useSocketConnection(setAllData);
-  useEffect(() => {
-    console.log("Owner", ownerIdDetails);
-    console.log("useer", userIdDetails);
-    console.log("listingggg", listingIdDetails);
+  // useEffect(() => {
+  //   console.log("Owner", ownerIdDetails);
+  //   console.log("useer", userIdDetails);
+  //   console.log("listingggg", listingIdDetails);
 
-    console.log("item", item);
-    console.log("allData", allData);
-  }, [ownerIdDetails, userIdDetails, listingIdDetails, item, allData]);
+  //   console.log("item", item);
+  //   console.log("allData", allData);
+  // }, [ownerIdDetails, userIdDetails, listingIdDetails, item, allData]);
 
   useEffect(() => {
     if (user?._id) {

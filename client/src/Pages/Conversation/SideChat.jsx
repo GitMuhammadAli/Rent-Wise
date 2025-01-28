@@ -58,6 +58,7 @@ if (participantData !== undefined) {
 
   // Step 3: Set participants to the unique list
   setParticipants(uniqueParticipants);
+  // setParticipants(participantData);
 }
  
 
