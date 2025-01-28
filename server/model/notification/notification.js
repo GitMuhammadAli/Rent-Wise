@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
 const NotificationSchema = new mongoose.Schema({
   recipient: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }, 
   sender: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, 
-  listing: { type: mongoose.Schema.Types.ObjectId, ref: "Listing" }, 
   type: { 
     type: String, 
     enum: ["message", "review", "booking", "payment", "system" , "aggreement"], 
