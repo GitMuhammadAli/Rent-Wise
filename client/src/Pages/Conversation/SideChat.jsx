@@ -2,8 +2,13 @@ import { Avatar, Box, Input, Text, VStack } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { getSideBarParticipants , fetchConversationsForSidebar } from '../../Api/Chats';
 
+import { io } from "socket.io-client";
 
-export default function SideChat({ handleSideBarClick, ownerIdDetails, setAllData }) {
+const socket = io(import.meta.env.VITE_BACK_END_URL, {
+  withCredentials: true,
+});
+
+export default function SideChat({ handleSideBarClick, ownerIdDetails, setAllData , allData}) {
   const [participants, setParticipants] = useState([]);
   const [owner, setOwner] = useState(null);
   const [searchChat, setSearchChat] = useState('');
@@ -14,42 +19,84 @@ export default function SideChat({ handleSideBarClick, ownerIdDetails, setAllDat
   // Fetch participants from the API
   useEffect(() => {
     const fetchParticipants = async () => {
-      try {
-
-        const response = await fetchConversationsForSidebar();
-        console.log("response", response);
-        
-        // const participantData = response.data.data[0].participants || [];
-        // const listingData = response.data.data[0].listing || [];
-        const participantData = response?.data?.data.flatMap(item =>
-          item.participants
-        );
-
-           // to directly get anything from participants data but make sure to add that column above first
-        // const participantNames = participantData.map(participant => participant.name);
-        // console.log(participantNames);
-        
-
-        // const listingData = response?.data?.data.flatMap(item => item.listing);
-
-
-
-
-        console.log("Participants are: ", participantData);
-        // console.log("Listings are: ", listingData);
-         setParticipants(participantData);
-        // setListings(listingData);
-       
-        setAllData(response.data.data);
-      } catch (error) {
-        console.error("Error fetching participants:", error);
-      }
+        try {
+            const response = await fetchConversationsForSidebar();
+            console.log("Sidebar conversations:", response.data.data);
+            setAllData(response.data.data);
+            
+            const participantData = response?.data?.data.flatMap(item => 
+                item.participants
+            ).filter(Boolean);
+            
+            console.log("Filtered participants:", participantData);
+            setParticipants(participantData);
+        } catch (error) {
+            console.error("Error fetching participants:", error);
+        }
     };
     fetchParticipants();
-  }, []);
+
+    
+}, []);
 
 
 
+///newiest usee effect
+useEffect(()=>{
+ console.log("all data for id", allData);
+ const participantData = allData?.flatMap(item => 
+  item.participants
+).filter(Boolean);
+console.log("Filtered people of new:", participantData);
+ setParticipants(participantData);
+
+},[allData])
+
+
+// useEffect(() => {
+//   console.log("Setting up newConversation listener");
+  
+//   socket.on("newConversation", (data) => {
+//     setAllData(prevData => {
+//         const newData = prevData ? [...prevData] : [];
+//         const exists = newData.some(conv => conv._id === data.conversation._id);
+//         if (!exists) {
+//             newData.push(data.conversation);
+//         } else {
+//             // Update existing conversation and move to top
+//             newData = newData.map(conv => 
+//                 conv._id === data.conversation._id ? data.conversation : conv
+//             );
+//         }
+//         return newData.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+//     });
+// });
+
+// return () => {
+//     socket.off("newConversation");
+// };
+// }, []);
+
+useEffect(() => {
+  socket.on("receiveMessage", (data) => {
+    setAllData(prevData => {
+      if (!prevData) return [];
+      return prevData.map(conv => {
+        if (conv._id === data.conversationId) {
+          return { 
+            ...conv, 
+            unreadMessagesCount: (conv.unreadMessagesCount || 0) + 1
+          };
+        }
+        return conv;
+      });
+    });
+  });
+
+  return () => {
+    socket.off("receiveMessage");
+  };
+}, []);
 
 
   // Set the owner details
@@ -65,7 +112,8 @@ export default function SideChat({ handleSideBarClick, ownerIdDetails, setAllDat
   }, [ownerIdDetails]);
 
   const combinedList = React.useMemo(() => {
-    if (!owner) return participants;
+    if (!owner) return participants || [];
+    if (!participants) return [owner];
     const isOwnerInParticipants = participants.some((participant) => participant._id === owner._id);
     return isOwnerInParticipants ? participants : [owner, ...participants];
   }, [participants, owner]);
