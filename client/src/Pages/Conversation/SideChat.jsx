@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { getSideBarParticipants , fetchConversationsForSidebar } from '../../Api/Chats';
 
 import { io } from "socket.io-client";
+import { useAuth } from '../../hooks/AuthContext';
 
 const socket = io(import.meta.env.VITE_BACK_END_URL, {
   withCredentials: true,
@@ -12,6 +13,7 @@ export default function SideChat({ handleSideBarClick, ownerIdDetails, setAllDat
   const [participants, setParticipants] = useState([]);
   const [owner, setOwner] = useState(null);
   const [searchChat, setSearchChat] = useState('');
+  const {user} = useAuth();
  
   // const [avatar,setAvatar] = useState(''); 
   // const [participantName , setParticipantName] = useState([]);
@@ -48,7 +50,16 @@ useEffect(()=>{
   item.participants
 ).filter(Boolean);
 console.log("Filtered people of new:", participantData);
- setParticipants(participantData);
+if (participantData !== undefined) {
+  // Step 2: Remove duplicates based on _id
+  const uniqueParticipants = Array.from(
+    new Map(participantData.map((participant) => [participant._id, participant])).values()
+  );
+
+  // Step 3: Set participants to the unique list
+  setParticipants(uniqueParticipants);
+}
+ 
 
 },[allData])
 
@@ -110,11 +121,52 @@ useEffect(() => {
     }
   }, [ownerIdDetails]);
 
+  // const combinedList = React.useMemo(() => {
+   
+  //   console.log("participants in memo:", participants)
+  //     // checking if participant is user than exclude it, means apnay ap ko side bar ma show ni ho ga
+  //   const checkUser = participants?.filter((participants)=> participants._id !== user?._id)
+  //   if (!owner) return checkUser;
+
+  //  // checking if owner is already present, dont onclude it twice
+  //   const isOwnerInParticipants = participants?.some((participant) => participant._id === owner._id); 
+
+  //    // Remove duplicate participants (ensure unique _id)
+  // const uniqueParticipants = checkUser?.filter(
+  //   (participant, index, self) =>
+  //     self.findIndex((p) => p._id === participant._id) === index
+  // );
+    
+  //   return isOwnerInParticipants ? uniqueParticipants : [owner, ...uniqueParticipants];
+  // }, [participants, owner, user]);
   const combinedList = React.useMemo(() => {
-    if (!owner) return participants;
-    const isOwnerInParticipants = participants.some((participant) => participant._id === owner._id);
-    return isOwnerInParticipants ? participants : [owner, ...participants];
-  }, [participants, owner]);
+    console.log("participants in memo:", participants);
+  
+    // Step 1: Filter out the user themselves
+    const checkUser = participants?.filter(
+      (participant) => participant._id !== user?._id
+    );
+  
+    // Step 2: If there's no owner, return the filtered list
+    if (!owner) return checkUser;
+  
+    // Step 3: Check if the owner is already in the list
+    const isOwnerInParticipants = checkUser?.some(
+      (participant) => participant._id === owner._id
+    );
+    
+    console.log("CheckUSer", checkUser)
+    // Step 4: Ensure no duplicates using a Map (better for uniqueness by _id)
+    // const uniqueParticipants = Array.from(
+    //   new Map(checkUser.map((participant) => [participant._id, participant])).values()
+    // );
+  
+    // Step 5: Return the final combined list
+    return isOwnerInParticipants
+      ? checkUser
+      : [owner, ...checkUser];
+  }, [participants, owner, user]);
+  
 
   useEffect(()=>{
     console.log("combines", combinedList)

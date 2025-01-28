@@ -18,13 +18,14 @@ export default function MainChat() {
   const scrollRef = useRef(null);
   const { ownerIdDetails, listingIdDetails, userIdDetails } =
     location.state || {};
-  const [owner, setOwner] = useState("");
+  const [owner, setOwner] = useState(null);
   const [item, setItem] = useState("");
   const [convoID, setConvoId] = useState("");
   const [Messages, setMessages] = useState([]);
   const [showPopOver, setShowPopOver] = useState(false);
   const [listings, setListings] = useState([]);
   const [allData, setAllData] = useState(null);
+  const [isCLicked, setIsCLicked] = useState(false) // check if side bar is clicked
 
   // const socket = useSocketConnection(setAllData);
   useEffect(() => {
@@ -75,6 +76,7 @@ export default function MainChat() {
     selectedParticipant,
     receiver_imageUrl
   ) => {
+    setIsCLicked(true);
     setShowPopOver(true);
     console.log("selected participant", selectedParticipant);
     console.log("receiver_id", receiver_id);
@@ -91,13 +93,14 @@ export default function MainChat() {
       item.participants.some((participant) => participant._id === receiver_id)
     );
     console.log("fiiltered", filteredData);
+    
 
     // Extract the specific listings for this participant
     const specificListings = filteredData?.listing || [];
     console.log("Listings for this participant:", specificListings);
 
     if (!allData) return;
-    const ConvoID = filteredData?._id || [];
+    const ConvoID = filteredData?._id || filteredData?.conversation._id ||[];
     console.log("all data convoID", ConvoID);
     setConvoId(ConvoID);
 
@@ -116,11 +119,15 @@ export default function MainChat() {
           setAllData={setAllData}
           setListings={setListings}
           handleSideBarClick={handleSideBarClick}
+          owner={owner}
+          setOwner={setOwner}
           ownerIdDetails={ownerIdDetails}
           userIdDetails={userIdDetails}
           listingIdDetails={listingIdDetails}
         />
         <LiveChat
+          isCLicked={isCLicked}
+          setIsCLicked={setIsCLicked}
           showPopOver={showPopOver}
           scrollRef={scrollRef}
           convoID={convoID}
