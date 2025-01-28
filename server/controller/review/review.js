@@ -15,58 +15,59 @@ const Conversation = require("../../model/chat/ConversationModel");
 
 
 
-exports.ToGetReview = async (req, res, next) => {
-  try {
-    const userId = req.user._id;
+exports.ToGetReview = async(req,res,next)=>{
+    try {
+        const userId = req.user._id; 
+            
+        // Fetch agreements where the logged-in user is either the owner or renter
+        const agreements = await Aggrement.find({
+          $or: [{ ownerId: userId }, { renterId: userId }],
+          ownerConfirmed: BOOLEAN.TRUE,
+          renterConfirmed: BOOLEAN.TRUE
+        })
+          .populate("listingId") 
+          .populate("ownerId") 
+          .populate("renterId")
+          .exec();
 
-    const agreements = await Aggrement.find({
-      $or: [{ ownerId: userId }, { renterId: userId }],
-      ownerConfirmed: BOOLEAN.TRUE, 
-      renterConfirmed: BOOLEAN.TRUE
-    })
-      .populate("listingId")
-      .populate("ownerId")
-      .populate("renterId")
-      .exec();
+        console.log(agreements)
+    
+        // Prepare the response with the counterpart user
+        const counterparts = agreements.map((agreement) => {
+          const isOwner = agreement.ownerId._id.toString() === userId.toString();
+          const counterpartUser = isOwner ? agreement.renterId : agreement.ownerId;
+    
+          return {
+            agreementId: agreement._id,
+            listing: agreement.listingId,
+            user: {
+              id: counterpartUser._id,
+              name: counterpartUser.name,
+              email: counterpartUser.email,
+              imageUrl: counterpartUser.imageUrl,
+            },
+            agreementStatus: agreement.agreementStatus,
+            blockchainStatus: agreement.blockchainStatus,
+            ownerConfirmed: agreement.ownerConfirmed,
+            renterConfirmed: agreement.renterConfirmed,
+            agreementDate: agreement.agreementDate,
+          };
+        });
+        console.log("rev", counterparts)
+    
+        return res.status(200).json({
+          success: true,
+          message: "  to be given review  users fetched successfully",
+          data: counterparts,
+        });
 
-    const counterparts = await Promise.all(
-      agreements.map(async (agreement) => {
-        const isOwner = agreement.ownerId._id.toString() === userId.toString();
-        const counterpartUser = isOwner ? agreement.renterId : agreement.ownerId;
+        
 
-        const listing = await RentalItem.findById(agreement.listingId._id)
-          .populate("images")
-          .populate("videos");
-
-        return {
-          agreementId: agreement._id,
-          listing, 
-          user: {
-            id: counterpartUser._id,
-            name: counterpartUser.name,
-            email: counterpartUser.email,
-            imageUrl: counterpartUser.imageUrl,
-          },
-          agreementStatus: agreement.agreementStatus,
-          blockchainStatus: agreement.blockchainStatus,
-          ownerConfirmed: agreement.ownerConfirmed,
-          renterConfirmed: agreement.renterConfirmed,
-          agreementDate: agreement.agreementDate,
-        };
-      })
-    );
-
-    return res.status(200).json({
-      success: true,
-      message: "To be given review users fetched successfully",
-      data: counterparts,
-    });
-
-  } catch (error) {
-    console.error("Error fetching counterpart users:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Internal server error",
-    });
-  }
-};
+      } catch (error) {
+        console.error("Error fetching counterpart users:", error);
+        return res.status(500).json({
+          success: false,
+          message: "Internal server error",
+        });
+      }
+}

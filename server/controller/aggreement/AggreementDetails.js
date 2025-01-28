@@ -44,27 +44,26 @@ exports.getByOwnerId = async (req, res, next) => {
             const agreementDetail = await AggrementDetails.find({ _id: agreements[i].agreementDetailsId });
             const startDate = agreementDetail[0].aggrementDetail.startDate;
             const endDate = agreementDetail[0].aggrementDetail.endDate;
-
+                 
             const currentDate = new Date();
             const agreementStartDate = new Date(startDate);
             const agreementEndDate = new Date(endDate);
 
             if (agreements[i].renterConfirmed === BOOLEAN.FALSE) {
                 // If renter has not confirmed, the status is pending, unless the date has passed.
-                if (currentDate.getTime() >= agreementStartDate.getTime() && currentDate.getTime() <= agreementEndDate.getTime()) {
+                if (currentDate >= agreementStartDate && currentDate <= agreementEndDate) {
                     await Aggrement.findByIdAndUpdate(aggId, { agreementStatus: "pending" }, { new: true });
-                } else if (currentDate.getTime() > agreementEndDate.getTime()) {
+                } else if (currentDate > agreementEndDate) {
                     await Aggrement.findByIdAndUpdate(aggId, { agreementStatus: "Inactive" }, { new: true });
                 }
             } else if (agreements[i].renterConfirmed === BOOLEAN.TRUE) {
-                
                 // If renter has confirmed, check the date. If the date is not started, the status is pending.
-                if (currentDate.getTime() < agreementStartDate.getTime()) {
+                if (currentDate < agreementStartDate) {
                     await Aggrement.findByIdAndUpdate(aggId, { agreementStatus: "pending" }, { new: true });
-                } else if (currentDate.getTime() >= agreementStartDate.getTime() && currentDate.getTime() <= agreementEndDate.getTime()) {
+                } else if (currentDate >= agreementStartDate && currentDate <= agreementEndDate) {
                     // Date is within range
                     await Aggrement.findByIdAndUpdate(aggId, { agreementStatus: "active" }, { new: true });
-                } else if (currentDate.getTime() > agreementEndDate.getTime()) {
+                } else if (currentDate > agreementEndDate) {
                     // Date has passed
                     await Aggrement.findByIdAndUpdate(aggId, { agreementStatus: "Inactive" }, { new: true });
                 }

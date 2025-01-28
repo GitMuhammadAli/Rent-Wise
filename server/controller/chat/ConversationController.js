@@ -215,6 +215,7 @@ const createOrGetConversations = async (receiver, listing, senderId, next) => {
     return {
       conversation,
       participants: participants.map((p) => p.user),
+      isNewConversation
     };
   } catch (error) {
     next(error);
@@ -269,7 +270,6 @@ const createMessage = async (req, res, next) => {
     newMessage.conversation = conversationId;
     await newMessage.save();
 
-    // Update conversation timestamp
     const conversation = await Conversation.findById(conversationId);
     if (conversation) {
       conversation.updatedAt = new Date();
@@ -277,24 +277,6 @@ const createMessage = async (req, res, next) => {
     }
 
     if (io) {
-      const conversationData = {
-        conversation: {
-            _id: conversationResult.conversation._id.toString(),
-            participants: conversationResult.participants.map(p => ({
-                _id: p._id.toString(),
-                name: p.name,
-                email: p.email,
-                imageUrl: p.imageUrl
-            })),
-            listing: listingArray.map(id => id.toString())
-        }
-    };
-    
-    console.log("Emitting newConversation to:", senderId.toString()); 
-    io.to(senderId.toString()).emit("newConversation", conversationData);
-    console.log("Emitting newConversation to:", receiver.toString());
-    io.to(receiver.toString()).emit("newConversation", conversationData);
-
       io.to(conversationId.toString()).emit("receiveMessage", {
         conversationId,
         message,
@@ -302,6 +284,15 @@ const createMessage = async (req, res, next) => {
         receiver,
         listing: listingArray,
       });
+
+      if (conversationResult.isNewConversation) {
+        io.to(receiver.toString()).emit("newConversation", {
+          conversation: conversationResult.conversation,
+          participants: conversationResult.participants,
+          lastMessage: newMessage,
+          unreadCount: 1
+        });
+      }
     } else {
       return next(
         new AppError(
@@ -312,8 +303,6 @@ const createMessage = async (req, res, next) => {
       );
     }
 
-    // In createMessage function, after saving the new message:
-
     res.status(STATUS.SUCCESS).json({
       success: BOOLEAN.TRUE,
       message: CONVERSATION.MESSAGE_SENT,
@@ -323,6 +312,8 @@ const createMessage = async (req, res, next) => {
     next(error);
   }
 };
+
+
 const fetchConversationsForSidebarOld = async (req, res, next) => {
   try {
     const userId = req.user._id;
@@ -690,6 +681,3 @@ module.exports = {
 //         return res.status(500).json({ error: "Internal server error" });
 //     }
 // };
-
-
-

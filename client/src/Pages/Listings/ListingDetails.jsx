@@ -30,9 +30,9 @@ import { useAuth } from '../../hooks/AuthContext';
 import { Link } from 'react-router-dom';
 
 
-import DisplayListingComments from './Comments/DisplayListingComments';
-import AddCommentsInListing from './Comments/AddCommentsInListing';
-import { FaStar } from 'react-icons/fa';
+import DisplayListingComments from './Comments/ReviewsInListing';
+import AddCommentsInListing from './Comments/CommentsInListing';
+import ReviewsInListing from './Comments/ReviewsInListing';
 
 const baseUrl = import.meta.env.VITE_BACK_END_URL;
 
@@ -41,7 +41,7 @@ const ListingDetails = () => {
   const navigate = useNavigate();
   const { state, dispatch } = useContext(ListingsContext);
   const { currentListing } = state;
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const { user } = useAuth();
@@ -61,9 +61,9 @@ const ListingDetails = () => {
       } catch (error) {
         console.error('Error fetching rental details', error);
       } 
-      finally {
-        setLoading(false);
-      }
+      // finally {
+      //   setLoading(false);
+      // }
     };
 
     fetchRentalDetails();
@@ -83,25 +83,18 @@ const ListingDetails = () => {
     ));
   };
 
-  if (loading) {
-    return (
-      <Flex justify="center" align="center" height="100vh">
-        <Spinner size="xl" />
-      </Flex>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <Flex justify="center" align="center" height="100vh">
+  //       <Spinner size="xl" />
+  //     </Flex>
+  //   );
+  // }
 
   const handleChatButtonClick = () => {
     // navigate(`/chat/${currentListing.owner._id}/${currentListing._id}/${user._id}`);
     navigate(`/chat`, { state: { ownerIdDetails: currentListing.owner, listingIdDetails : currentListing._id, userIdDetails: user } });
   };
-  const StarRating = ({ rating }) => (
-    <div className="flex">
-      {[...Array(5)].map((_, i) => (
-        <FaStar key={i} className={`w-4 h-4 ${i < rating ? 'text-yellow-400' : 'text-gray-300'}`} />
-      ))}
-    </div>)
-  
   return (
     <Box borderRadius={'10px'} bg="orange.50" _dark={{ bg: 'gray.900' }} minH="100vh" py={8} >
       <Box maxW="container.xl" mx="auto" px={4}>
@@ -112,10 +105,14 @@ const ListingDetails = () => {
               <Flex align="center" gap={4}>
                 <Badge colorScheme="orange" px={3} py={1} fontSize="sm">${currentListing?.price}/{currentListing?.priceUnit}</Badge> 
                 <Flex align="center">
-                
-                  <StarRating rating={currentListing?.averageRating} />
+                   {/* <div className="flex items-center">
+                                {[...Array(5)].map((_, i) => (
+                                  <FaStar key={i} className={`w-5 h-5 ${i < Math.floor(listingData.averageRating) ? 'text-yellow-400' : 'text-gray-300'}`} />
+                                ))}
+
+                                </div> */}
+    
                   <Text ml={1} color="gray.700" _dark={{ color: 'gray.300' }}> ({currentListing?.averageRating} reviews)</Text>
-                  
                    {/* <Text ml={1} color="gray.700" _dark={{ color: 'gray.300' }}>Reviews/Rating -- add it later</Text>  */}
                   
                 </Flex>
@@ -294,10 +291,12 @@ const ListingDetails = () => {
 
            <Box>
                   <VStack spacing={4} align="stretch">
-                    <Box>
-                      <AddCommentsInListing toast={toast} id={id}/> 
-                      <DisplayListingComments currentID={currentListing?._id}/>
-                    </Box>
+                    <Flex flexDir={'column'} gap={4}>
+                    <ReviewsInListing/>
+                      <AddCommentsInListing toast={toast} id={id} currentID={currentListing?._id}/> 
+                      {/* <DisplayListingComments currentID={currentListing?._id}/> */}
+                      
+                    </Flex>
                   </VStack>
                 </Box>
         </Grid>

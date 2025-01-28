@@ -75,7 +75,7 @@ const RentalSchema = new mongoose.Schema({
   owner: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   category: {
     type: String,
-    enum: ["car", "hostel", "house"],
+    enum: ["car",  "hostel", "house"],
     required: true,
   },
   title: { type: String, required: true },
@@ -90,17 +90,23 @@ const RentalSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId, ref: "Location",
     //required: true 
   },
-  amenities: [{ type: String }],
+  amenities: [{ type: String }], 
   rules: [{ type: String }],
 
   images: [{ type: mongoose.Schema.Types.ObjectId, ref: "Image" }],
   videos: [{ type: mongoose.Schema.Types.ObjectId, ref: "Video" }],
 
-  // listingReview: [{
-  //   reviewId: { type: mongoose.Schema.Types.ObjectId, ref: "ListingReview" , default:null},
-  //   canReview: { type: Boolean, default: false }
-  // }
-  // ],
+  ratings: [
+    {
+      user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+      rating: { type: Number, min: 1, max: 5 },
+      review: { type: String },
+    },
+  ],
+  listingReview: [{
+    type: mongoose.Schema.Types.ObjectId, ref: "ListingReview", default: null,
+  }],
+  averageRating: { type: Number, default: 0 },
 
   bidding: { type: mongoose.Schema.Types.ObjectId, ref: "Bidding" },
 

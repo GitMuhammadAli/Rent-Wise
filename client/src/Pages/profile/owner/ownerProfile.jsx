@@ -206,15 +206,13 @@
 
 
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { Star, MessageCircle, ThumbsUp, ThumbsDown } from 'lucide-react'
 import { StarIcon, MessageCircleIcon, MailIcon, PhoneIcon } from "lucide-react";
 import { getOwnerProfileData } from "../../../Api/owner";
-import { Link , useNavigate , useParams} from "react-router-dom";
-import { useAuth } from "../../../hooks/AuthContext";
+import { Link } from "react-router-dom";
 
 const UserProfile = () => {
-  const navigate = useNavigate();
-  const { user } = useAuth();
   const { _id } = useParams();
   const [owner, setOwner] = useState(null);
   const [listings, setListings] = useState([]);
@@ -224,29 +222,22 @@ const UserProfile = () => {
   const [rating, setRating] = useState(0);
 
   useEffect(() => {
-      const fetchProfileData = async () => {
-          try {
-              const response = await getOwnerProfileData(_id);
-              const { user, listings } = response.data.data;
-              setOwner(user);
-              setListings(listings);
-          } catch (error) {
-              console.error("Error fetching user profile:", error);
-          } finally {
-              setLoading(false);
-          }
-      };
+    const fetchProfileData = async () => {
+      try {
+        const response = await getOwnerProfileData(_id);
+        const { user, listings } = response.data.data;
+        setOwner(user);
+        setListings(listings);
+      } catch (error) {
+        console.error("Error fetching user profile:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-      fetchProfileData();
+    fetchProfileData();
   }, [_id]);
 
-  const handleChatButtonClick = () => {
-      if (!user) {
-          navigate('/auth/signup');
-          return;
-      }
-      navigate(`/chat`, { state: { ownerIdDetails: owner, userIdDetails: user } });
-  };
   const handleSubmitReview = async (e) => {
     e.preventDefault();
     console.log("Review submitted:", { rating, reviewText });
@@ -491,9 +482,7 @@ const UserProfile = () => {
 
         {/* Contact Button */}
         <div className="mt-8 flex justify-center">
-          <button 
-            onClick={handleChatButtonClick}
-            className="bg-indigo-500 text-white px-6 py-2 rounded-full font-medium hover:bg-indigo-600 transition duration-300 flex items-center">
+          <button className="bg-indigo-500 text-white px-6 py-2 rounded-full font-medium hover:bg-indigo-600 transition duration-300 flex items-center">
             <MessageCircleIcon className="h-5 w-5 mr-2" />
             Contact {owner.name}
           </button>

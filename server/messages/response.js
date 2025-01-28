@@ -104,7 +104,6 @@ const AGGREEMENT = {
     AGGREMENT_ALREADY_EXISTS_WITH_OTHER_PARTY: "Aggrement already exists with other party cannot create new aggrement",
 CANNOT_UPDATE_AGREEMENT_RENTER_AGGREED_TO_IT: "Cannot update agreement as renter has agreed to it Create a New Agreement",
 AGGREMENT_NOT_AVAILABLE_BLOCKCAHIN:"No Aggrement Is Avaliable For BlockChain",
-RENTED_AGGREEMENT:"You can only review items that you have rented",
 
 }
 
@@ -129,42 +128,10 @@ const CONVERSATION = {
     CONVERSTAION_ID_REQUIRED: "Conversation Id is required",
 }
 
-
-const REVIEWS = {
-    REVIEW_CREATED: "Review created successfully",
-    REVIEW_FETCHED: "Review fetched successfully",
-    REVIEW_NOT_FOUND: "Review not found",
-    REVIEW_ALREADY_EXISTS_LISTING: "You have already reviewed this listing",
-    REVIEW_ALREADY_EXISTS_USER: "You have already reviewed this User",
-    REVIEW_NOT_AUTHORIZED: "You are not authorized to perform this action",
-    REVIEW_RATING_REQUIRED: "Rating is required",
-    REVIEW_COMMENT_REQUIRED: "Comment is required",
-    REVIEW_INVALID_RATING: "Rating must be between 1 and 5",
-    REVIEW_LISTING_NOT_FOUND: "Listing not found",
-    REVIEW_USER_NOT_FOUND: "User not found",
-    CANNOT_REVIEW_OWN_LISTING: "You cannot review your own listing",
-    MUST_BOOK_TO_REVIEW: "You must book this listing before reviewing",
-    REVIEW_REPORTED: "Review has been reported",
-    REVIEW_REPORT_REASON_REQUIRED: "Report reason is required",
-    ALL_REVIEWS_FETCHED: "All reviews fetched successfully",
-    USER_REVIEWS_FETCHED: "User reviews fetched successfully",
-    LISTING_REVIEWS_FETCHED: "Listing reviews fetched successfully",
-    REVIEW_HELPFUL: "Review marked as helpful",
-    REVIEW_UNHELPFUL: "Review marked as unhelpful",
-    REVIEW_RESPONSE_ADDED: "Response to review added successfully",
-    REVIEW_RESPONSE_UPDATED: "Response to review updated successfully",
-    REVIEW_RESPONSE_DELETED: "Response to review deleted successfully",
-    CANNOT_RESPOND_TO_REVIEW: "Only listing owner can respond to reviews",
-    NOT_CREATED:"Error Giving Review"
-}
-
-
-
 module.exports = {
     RESPONCE_MESSAGE,
     LISTINGS,
     AGGREEMENT,
     COMMENTS,
     CONVERSATION,
-    REVIEWS,
 };

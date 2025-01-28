@@ -27,9 +27,7 @@ export default function Dashboard() {
         const response = await getUser();
         console.log("resUSER", response)
         setUserName(response.data.user.name);
-
         setAvatar(`${import.meta.env.VITE_BACK_END_URL}${response.data.user.imageUrl}`);
-        
         setUserEmail(response.data.user.email);
         setUserResponse(response); // Store full response if needed
         console.log("Response is:", response);
@@ -104,11 +102,11 @@ export default function Dashboard() {
               <p className="text-gray-600">{useremail}</p>
             </div>
           </div>
-          <Link to="/acc">
-            <div className="flex items-center px-4 py-2 bg-white text-orange-600 rounded-md border border-orange-600 hover:bg-orange-100 transition duration-300">
+          <Link href="/account-settings">
+            <a className="flex items-center px-4 py-2 bg-white text-orange-600 rounded-md border border-orange-600 hover:bg-orange-100 transition duration-300">
               <FaCog className="mr-2" />
               Account Settings
-            </div>
+            </a>
           </Link>
         </div>
 

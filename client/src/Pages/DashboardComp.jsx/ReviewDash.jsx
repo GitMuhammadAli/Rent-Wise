@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { FaStar, FaExternalLinkAlt } from 'react-icons/fa';
-import { Tabs, TabList, Tab, TabPanels, TabPanel, Box, Card, CardBody, Flex, Avatar } from '@chakra-ui/react';
-import { ToGetReview } from '../../Api/DashboardAPI';
-import { format } from 'date-fns';
+import { Tabs, TabList, Tab, TabPanels, TabPanel, Box, Card, CardBody, Flex } from '@chakra-ui/react';
 
 const receivedReviews = [
   {
@@ -55,37 +53,7 @@ const StarRating = ({ rating }) => (
   </div>
 );
 
-
-
 export default function ReviewPage() {
-    const [peopleData, setPeopleData] = useState([]);
-
-    useEffect(() => {
-        const funcToGetReview = async () => {
-          try {
-            const response = await ToGetReview();
-      
-            console.log("Full response:", response);  // Check entire response structure
-      
-            if (response && response.data) {
-              console.log("Response data:", response.data);
-              console.log("Fetched data:", response.data.data);
-              setPeopleData(response?.data?.data);
-      
-              const reviewData = response.data.data || [];  
-              console.log("Processed review data:", reviewData);
-              
-             
-            } else {
-              console.warn("No data found in response");
-            }
-          } catch (error) {
-            console.error("Error fetching review data:", error);
-          }
-        };
-      
-        funcToGetReview();
-      }, []);
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold text-gray-900 mb-6">Reviews</h1>
@@ -128,44 +96,34 @@ export default function ReviewPage() {
               <CardBody>
                 <h2 className="text-2xl font-semibold text-gray-900 mb-4">People You Can Review</h2>
                 <div className="space-y-6">
-                  {peopleData && peopleData.length > 0 && peopleData.map((item) => (
-                    <div key={item.agreementId} className="flex flex-col md:flex-row md:items-start md:space-x-4">
+                  {potentialReviews.map((item) => (
+                    <div key={item.id} className="flex flex-col md:flex-row md:items-start md:space-x-4">
                       <div className="flex-shrink-0 mb-4 md:mb-0">
-                        {
-                            item.listing.images.length > 0 ? (
-                                <img
-                          src={`${import.meta.env.VITE_BACK_END_URL}${item.listing.images[0]}` || '/placeholder.svg'}
+                        <img
+                          src={item.images[0] || '/placeholder.svg'}
                           alt={item.listingTitle}
                           width={120}
                           height={80}
                           className="rounded-md object-cover"
                         />
-                            ) : (
-                                <Avatar
-                          src={'/images/randomUser.png'}
-                        />
-                             )
-                        } 
-                        
-                    
                       </div>
                       <div className="flex-grow">
                         <div className="flex items-center justify-between mb-2">
-                          <h3 className="text-lg font-medium text-gray-900">{item.listing.title}</h3>
-                          <span className="text-sm text-gray-500">
-                            Rented on: {format(new Date(item.agreementDate), "MMMM dd, yyyy")}
-                          </span>
+                          <h3 className="text-lg font-medium text-gray-900">{item.listingTitle}</h3>
+                          <span className="text-sm text-gray-500">Rented on: {item.rentalDate}</span>
                         </div>
                         <div className="flex items-center space-x-2 mb-2">
-                          <Avatar
-                            src={`${import.meta.env.VITE_BACK_END_URL}${item.user.imageUrl}` || '/placeholder.svg'}
-                            alt={item?.user?.name}
-    
+                          <img
+                            src={item.ownerAvatar || '/placeholder.svg'}
+                            alt={item.ownerName}
+                            width={24}
+                            height={24}
+                            className="rounded-full"
                           />
-                          <span className="text-sm text-gray-600">{item.user.name}</span>
+                          <span className="text-sm text-gray-600">{item.ownerName}</span>
                         </div>
                         <div className="flex flex-wrap gap-2 mb-4">
-                          {/* {item.images.slice(1).map((image, index) => (
+                          {item.images.slice(1).map((image, index) => (
                             <img
                               key={index}
                               src={image || '/placeholder.svg'}
@@ -174,11 +132,10 @@ export default function ReviewPage() {
                               height={60}
                               className="rounded-md object-cover"
                             />
-                          ))} */}
-                          
+                          ))}
                         </div>
                         <div className="flex justify-end">
-                          <Link to={`/rental/${item?.listing?._id}`} className="text-orange-600 hover:text-orange-800 text-sm font-medium flex items-center">
+                          <Link to={`/listing/${item.listingId}`} className="text-orange-600 hover:text-orange-800 text-sm font-medium flex items-center">
                             View Listing
                             <FaExternalLinkAlt className="ml-1 w-3 h-3" />
                           </Link>

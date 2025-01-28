@@ -3,13 +3,13 @@ import { useContext, useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { Box, Flex, Heading, Text, Button, Container, Grid, GridItem,Input, Image } from "@chakra-ui/react";
 import { FaBuilding, FaCar, FaHotel, FaSearch, FaStar, FaArrowRight } from "react-icons/fa"
-import { getAllListingAPI } from "../Api/ListingApi"; 
+import { getAllListingAPI } from "../../Api/ListingApi"; 
 
-import AnimatedBackground from "./Listings/Test/Animated";
-import { categories } from "./Listings/Test/staticData";
-import { ListingsContext } from "../hooks/ListingsContext";
+import AnimatedBackground from "./Test/Animated";
+import { categories } from "./Test/staticData";
+import { ListingsContext } from "../../hooks/ListingsContext";
 
-const LandingPage = () => {
+const GetAllListings = () => {
 
 //   my things
 
@@ -83,7 +83,7 @@ const { state, dispatch } = useContext(ListingsContext);
             </Text>
             <Flex mt={10} justifyContent="center" className="animate-fade-in-up animation-delay-600">
               <Box rounded="md" shadow="md">
-                <Link to="#search" _hover={{ textDecoration: "none" }}>
+                <Link href="#search" _hover={{ textDecoration: "none" }}>
                   <Button
                     px={{ base: 8, md: 10 }}
                     py={{ base: 3, md: 7 }}
@@ -100,7 +100,7 @@ const { state, dispatch } = useContext(ListingsContext);
                 </Link>
               </Box>
               <Box ml={3}>
-                <Link to="#featured" _hover={{ textDecoration: "none" }}>
+                <Link href="#featured" _hover={{ textDecoration: "none" }}>
                   <Button
                     px={{ base: 8, md: 10 }}
                     py={{ base: 3, md: 7 }}
@@ -261,7 +261,7 @@ const { state, dispatch } = useContext(ListingsContext);
         </Container>
       </Box>
 
-      <style jsx="true">{`
+      <style jsx>{`
         @keyframes slide {
           0% { opacity: 0; transform: scale(1.1); }
           25% { opacity: 1; }
@@ -293,5 +293,5 @@ const { state, dispatch } = useContext(ListingsContext);
   )
 }
 
-export default LandingPage
+export default GetAllListings
 

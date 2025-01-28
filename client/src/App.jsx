@@ -18,8 +18,9 @@ import Cookies from "js-cookie";
 import decodeToken from "./utils/jwt";
 import { AuthProvider } from "./hooks/AuthContext";
 import Otp from "./components/Otp";
-import LandingPage from "./Pages/LandingPage";
-
+import GetAllListings from "../src/Pages/Listings/GetAllListings";
+// import MakeListing from "../Pages/Listings/MakeListing";
+import NewListings from "../src/Pages/Listings/NewListings";
 import { ListingsProvider } from "./hooks/ListingsContext";
 import Media from "../src/Pages/Listings/Media";
 import ListingDetails from "../src/Pages/Listings/ListingDetails";
@@ -42,7 +43,7 @@ import CarListing from "./Pages/Listings/CategoryBased/CarListing";
 import DisplayAgreements from "./Pages/Agreement/Admin/DisplayAgreements";
 import Integration from "./Pages/Agreement/Admin/Integration";
 import UserProfile from "./Pages/profile/owner/ownerProfile";
-// import TestHome from "./Pages/Listings/Test/TestHome";
+ import TestListingDetails from "./Pages/Listings/Test/TestHome";
 
 
 
@@ -91,9 +92,10 @@ const router = createBrowserRouter(
         <Route path="/categories/houses" element={<HouseListing />} />
         <Route path="/categories/cars" element={<CarListing />} />
 
-        <Route path="/" element={<LandingPage />} />
+        <Route path="/" element={<GetAllListings />} />
         
-        
+        {/* <Route path="/createListings" element={<MakeListing />} /> */}
+        <Route path="/createNewListings" element={<NewListings />} />
         <Route path="/media" element={<Media />} />
         <Route path="/rental/:id" element={<ListingDetails />} />
         <Route path="/dashboard" element={<Dashboard />} />
@@ -113,7 +115,7 @@ const router = createBrowserRouter(
         <Route path="/profile/:_id" element={<UserProfile/>} />
 
 
-        {/* <Route path="/HT" element={<TestHome/>} /> */}
+        <Route path="/HT" element={<TestListingDetails/>} />
 
  
 
@@ -126,7 +128,7 @@ const router = createBrowserRouter(
         {/* <Route path="/chat" element={<MainChat/>} /> */}
 
         {/* <Route element={<ProtectedRoute requiredRole="user" />}>
-          <Route path="/getAll" element={<LandingPage />} />
+          <Route path="/getAll" element={<GetAllListings />} />
         </Route> */}
 
         <Route element={<ProtectedRoute requiredRole="admin" />}>

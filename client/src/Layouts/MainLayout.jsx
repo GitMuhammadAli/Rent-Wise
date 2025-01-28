@@ -12,12 +12,7 @@ function MainLayout() {
   const navigate = useNavigate()
   const [successMessage, setSuccessMessage] = useState("")
 
-  // const bgColor = useColorModeValue("orange.300", "orange.600")
-  const bgColor = useColorModeValue(
-    "linear(to-r, orange.300, #999cba)",  // Light mode gradient
-    "linear(to-r, orange.600, red.500)"   // Dark mode gradient
-  );
-  
+  const bgColor = useColorModeValue("orange.400", "orange.600")
   const hoverBgColor = useColorModeValue("orange.600", "orange.800")
   const textColor = useColorModeValue("white", "gray.100")
   const buttonBgColor = useColorModeValue("white", "gray.700")
@@ -42,7 +37,7 @@ function MainLayout() {
     <Flex direction="column" minH="100vh">
       <ToastContainer />
 
-      <Box bgGradient={bgColor} color={textColor} boxShadow="md">
+      <Box bg={bgColor} color={textColor} boxShadow="md">
         <Container maxW="container.xl" py={4}>
           <Flex justify="space-between" align="center">
             <Text as={Link} to="/" fontSize="2xl" fontFamily= "'Playwrite CU', cursive"  fontWeight="bold" _hover={{ color: "orange.200" }}>
@@ -170,7 +165,19 @@ function MainLayout() {
         </Box>
       </Flex>
 
-     
+      <Box as="footer" bg={bgColor} color={textColor} py={4}>
+        <Container maxW="container.xl">
+          <VStack spacing={2} align="center">
+            <Text>&copy; 2023 RentWise. All rights reserved.</Text>
+            <Flex gap={4}>
+              <Link to="/about">About</Link>
+              <Link to="/contact">Contact</Link>
+              <Link to="/privacy">Privacy Policy</Link>
+              <Link to="/terms">Terms of Service</Link>
+            </Flex>
+          </VStack>
+        </Container>
+      </Box>
     </Flex>
   )
 }

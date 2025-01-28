@@ -3,6 +3,7 @@ import {  Text, VStack, Flex, Icon, Button, Box, Badge , Table, Thead, Tbody, Tr
 import { StarIcon } from '@chakra-ui/icons';
 import { Calendar, CreditCard, MessageSquare, SearchIcon, FileText, Star, User } from 'lucide-react'
 import { fetchAllRenterAggreements } from '../../Api/renter';
+import { ToGetReview } from '../../Api/DashboardAPI';
 import { Link } from 'react-router-dom';
 
 
@@ -30,7 +31,31 @@ export default function UserDash() {
   ]
 
 
+  useEffect(() => {
+    const funcToGetReview = async () => {
+      try {
+        const response = await ToGetReview();
   
+        console.log("Full response:", response);  // Check entire response structure
+  
+        if (response && response.data) {
+          console.log("Response data:", response.data);
+          console.log("Fetched data:", response.data.data);
+  
+          const reviewData = response.data.data || [];  
+          console.log("Processed review data:", reviewData);
+          
+         
+        } else {
+          console.warn("No data found in response");
+        }
+      } catch (error) {
+        console.error("Error fetching review data:", error);
+      }
+    };
+  
+    funcToGetReview();
+  }, []);
   
   
 

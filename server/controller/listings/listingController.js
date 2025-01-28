@@ -464,7 +464,7 @@ exports.GetListingByUserId = async (req, res, next) => {
             return next(new AppError(BOOLEAN.FALSE, LISTINGS.LISTING_NOT_FOUND, STATUS.NOT_FOUND));
         }
         res.json({ listing, count });
-        console.log("Count of this owner is:", count)
+        // console.log("Count of this owner is:", count)
 
     } catch (error) {
         next(error)
