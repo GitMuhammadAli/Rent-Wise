@@ -9,11 +9,13 @@ const socket = io(import.meta.env.VITE_BACK_END_URL, {
   withCredentials: true,
 });
 
-export default function SideChat({ handleSideBarClick, ownerIdDetails, setAllData , allData}) {
+export default function SideChat({ handleSideBarClick, ownerIdDetails, setAllData ,
+   allData, isCLicked, checkClick}) {
   const [participants, setParticipants] = useState([]);
   const [owner, setOwner] = useState(null);
   const [searchChat, setSearchChat] = useState('');
   const {user} = useAuth();
+  const [activeItem, setActiveItem] = useState(null);
  
   // const [avatar,setAvatar] = useState(''); 
   // const [participantName , setParticipantName] = useState([]);
@@ -43,6 +45,8 @@ export default function SideChat({ handleSideBarClick, ownerIdDetails, setAllDat
 
 
 
+
+
 ///newiest usee effect
 useEffect(()=>{
  console.log("all data for id", allData);
@@ -58,39 +62,14 @@ if (participantData !== undefined) {
 
   // Step 3: Set participants to the unique list
   setParticipants(uniqueParticipants);
-  // setParticipants(participantData);
-}
  
-
+}
 },[allData])
 
 
-// useEffect(() => {
-//   console.log("Setting up newConversation listener");
-  
-//   socket.on("newConversation", (data) => {
-//     setAllData(prevData => {
-//         const newData = prevData ? [...prevData] : [];
-//         const exists = newData.some(conv => conv._id === data.conversation._id);
-//         if (!exists) {
-//             newData.push(data.conversation);
-//         } else {
-//             // Update existing conversation and move to top
-//             newData = newData.map(conv => 
-//                 conv._id === data.conversation._id ? data.conversation : conv
-//             );
-//         }
-//         return newData.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
-//     });
-// });
-
-// return () => {
-//     socket.off("newConversation");
-// };
-// }, []);
-
 useEffect(() => {
   socket.on("receiveMessage", (data) => {
+    console.log("message rec in side")
     setAllData(prevData => {
       return prevData.map(conv => {
         if (conv._id === data.conversationId) {
@@ -117,29 +96,9 @@ useEffect(() => {
         imageUrl: ownerIdDetails.imageUrl
          });
       console.log("Owner name in side chat:", ownerIdDetails.name);
-
-     
     }
   }, [ownerIdDetails]);
 
-  // const combinedList = React.useMemo(() => {
-   
-  //   console.log("participants in memo:", participants)
-  //     // checking if participant is user than exclude it, means apnay ap ko side bar ma show ni ho ga
-  //   const checkUser = participants?.filter((participants)=> participants._id !== user?._id)
-  //   if (!owner) return checkUser;
-
-  //  // checking if owner is already present, dont onclude it twice
-  //   const isOwnerInParticipants = participants?.some((participant) => participant._id === owner._id); 
-
-  //    // Remove duplicate participants (ensure unique _id)
-  // const uniqueParticipants = checkUser?.filter(
-  //   (participant, index, self) =>
-  //     self.findIndex((p) => p._id === participant._id) === index
-  // );
-    
-  //   return isOwnerInParticipants ? uniqueParticipants : [owner, ...uniqueParticipants];
-  // }, [participants, owner, user]);
   const combinedList = React.useMemo(() => {
     console.log("participants in memo:", participants);
   
@@ -157,12 +116,8 @@ useEffect(() => {
     );
     
     console.log("CheckUSer", checkUser)
-    // Step 4: Ensure no duplicates using a Map (better for uniqueness by _id)
-    // const uniqueParticipants = Array.from(
-    //   new Map(checkUser.map((participant) => [participant._id, participant])).values()
-    // );
   
-    // Step 5: Return the final combined list
+    // Step 4: Return the final combined list
     return isOwnerInParticipants
       ? checkUser
       : [owner, ...checkUser];
@@ -176,16 +131,17 @@ useEffect(() => {
 
   return (
     <Box
-      width={{ base: "100%", md: "25%" }}
+      width={{ base: "100%", sm:'25%'}}
       bg="white"
       borderRight="1px solid"
       borderColor="gray.200"
+      display={{ base: !checkClick ? 'initial' : 'none', md: 'initial' }}
       
     >
-      <VStack align="stretch">
+      <VStack align={'stretch'}>
         
         <Flex flexDir={'column'} gap={3} p={2}>
-        <Text color={'orange.500'} fontWeight="bold">Chats</Text>
+        <Text color={'orange.500'} fontSize={'xl'} fontWeight="bold">Chats</Text>
         <Input bg="gray.50"  type='text' placeholder='Search Chat' color={'orange.600'} onChange={(e)=> setSearchChat(e.target.value)} />
         </Flex>
         
@@ -197,15 +153,18 @@ useEffect(() => {
 
           ).map((item, i) => (
             <Box
-            _hover={{bg:'gray.100'}}
-            _active={{bg:'gray.100'}}
+            _hover={{bg: activeItem === item._id ? 'orange.50' : 'gray.50'}}
+            bg={activeItem === item._id ? 'orange.50' : 'transparent'}
               key={item._id || i}
               display="flex"
               alignItems="center"
               cursor="pointer"
-              px={2}
+              px={3}
               py={3}
-              onClick={() => handleSideBarClick(item._id, item.name, item, item.imageUrl)}
+              onClick={() => {
+                setActiveItem(item._id);
+                handleSideBarClick(item._id, item.name, item, item.imageUrl)
+              }}
             >
      
               <Avatar mr={3} src={`${import.meta.env.VITE_BACK_END_URL}${item.imageUrl}`|| item.imageUrl} />

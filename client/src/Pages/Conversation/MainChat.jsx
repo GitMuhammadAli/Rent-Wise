@@ -25,7 +25,10 @@ export default function MainChat() {
   const [showPopOver, setShowPopOver] = useState(false);
   const [listings, setListings] = useState([]);
   const [allData, setAllData] = useState(null);
-  const [isCLicked, setIsCLicked] = useState(false) // check if side bar is clicked
+  const [isCLicked, setIsCLicked] = useState(false) // check if side bar is clicked to display messages
+  const [checkClick, setCheckClick] = useState(false) // check if side bar is clicked display sidebae or livechat on basis of screen size
+  const [countOfUnreedMessage, setCountOfunreedMessage] = useState(null);
+  const [senderID, setSenderID] = useState(''); 
 
   // const socket = useSocketConnection(setAllData);
   // useEffect(() => {
@@ -36,6 +39,7 @@ export default function MainChat() {
   //   console.log("item", item);
   //   console.log("allData", allData);
   // }, [ownerIdDetails, userIdDetails, listingIdDetails, item, allData]);
+
 
   useEffect(() => {
     if (user?._id) {
@@ -76,7 +80,9 @@ export default function MainChat() {
     selectedParticipant,
     receiver_imageUrl
   ) => {
-    setIsCLicked(true);
+    setCountOfunreedMessage(null)
+    setCheckClick(true)  // check if side bar is clicked display sidebae or livechat on basis of screen size
+    setIsCLicked(true);  // check if side bar is clicked to display messages
     setShowPopOver(true);
     console.log("selected participant", selectedParticipant);
     console.log("receiver_id", receiver_id);
@@ -124,8 +130,17 @@ export default function MainChat() {
           ownerIdDetails={ownerIdDetails}
           userIdDetails={userIdDetails}
           listingIdDetails={listingIdDetails}
+          isCLicked={isCLicked}
+          checkClick={checkClick}
+          setCountOfunreedMessage={setCountOfunreedMessage}
+          countOfUnreedMessage={countOfUnreedMessage}
+          senderID={senderID}
         />
         <LiveChat
+        setSenderID={setSenderID}
+        setCountOfunreedMessage={setCountOfunreedMessage}
+        countOfUnreedMessage={countOfUnreedMessage}
+          checkClick={checkClick}
           isCLicked={isCLicked}
           setIsCLicked={setIsCLicked}
           showPopOver={showPopOver}

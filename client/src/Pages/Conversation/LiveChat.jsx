@@ -31,7 +31,8 @@ export default function LiveChat({
   setMessages,
   listings,
   isCLicked,
-  setIsCLicked
+  setIsCLicked,
+  checkClick,
 }) {
   const [message, setMessage] = useState("");
 
@@ -100,7 +101,8 @@ export default function LiveChat({
         setConvoId(response.data.data.conversation);
         // setMessages((prevMessages) => [...prevMessages, response?.data?.data]);
       }
-
+      
+       
       setMessage("");
     } catch (error) {
       console.error("Error sending message:", error);
@@ -126,12 +128,16 @@ export default function LiveChat({
   }, [convoID, owner, isCLicked]);
   return (
     <Flex
-    flexDir={'column'}
+     flexDir={'column'}
       flex="1"
+
       bg="gray.50"
       boxShadow="md"
       // borderColor="gray.200"
       borderRadius="md"
+      w={{base:'100%', sm:'75%'}}
+      h={'100%'}
+      display={{ base: checkClick ? 'inherit' : 'none', md: 'inherit' }}
     >
 
       {/* top bar of live chat */}
@@ -143,6 +149,7 @@ export default function LiveChat({
         bg={"white"}
         h={"80px"}
         borderBottom={'gray.200'}
+       
       >
         {owner && (
           <Flex alignItems={"center"}>
@@ -156,12 +163,13 @@ export default function LiveChat({
             >
               <Avatar
                 mr={3}
+                size={{base:'sm',sm:'md'}}
                 src={
                   `${import.meta.env.VITE_BACK_END_URL}${owner.imageUrl}` ||
                   owner.imageUrl
                 }
               />
-              <Text color={'black'} fontWeight={'semibold'} fontSize={'xl'}>{owner.name}</Text>
+              <Text color={'black'} fontWeight={'semibold'} fontSize={{base:'sm', sm:'lg', md:'xl'}}>{owner.name}</Text>
             </Link>
           </Flex>
         )}
@@ -197,11 +205,17 @@ export default function LiveChat({
               }
               borderRadius={"8px"}
               w={"fit-content"}
+              maxW={{base:'200px',sm:'350px'}}
               p={2}
               bg={
                 (Messages.sender._id || Messages.sender) === user?._id
                   ? "orange.500"
                   : "white"
+              }
+              border={
+                (Messages.sender._id || Messages.sender) === user?._id
+                  ? "none"
+                  : "1px solid #E0E0E0"
               }
               alignSelf={
                 (Messages.sender._id || Messages.sender) === user?._id
@@ -209,7 +223,7 @@ export default function LiveChat({
                   : "flex-start"
               }
             >
-              <Text>{Messages.message}</Text>
+              <Text wordBreak="break-word" fontSize={'sm'}>{Messages.message}</Text>
             </Box>
           ))}
       </Box>
@@ -220,14 +234,15 @@ export default function LiveChat({
             <Input
           
               placeholder="Type your message..."
-              border="none"
+              // border="none"
+              mx={4}
               bg="white"
-              borderRadius="md"
-              _focus={{ outline: "none", boxShadow:'none' }}
+              borderRadius="full"
+              _focus={{ outline: "none",}}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
             />
-            <Button type="submit" colorScheme="orange" rounded={'full'}>
+            <Button type="submit" colorScheme="orange" rounded={'full'} mr={2}>
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
             </svg>

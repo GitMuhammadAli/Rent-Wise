@@ -101,7 +101,7 @@ export default function UserPopover({tenant,convoID}) {
         <Popover>
         <PopoverTrigger>
           <Flex gap={3} alignItems={"center"}>
-            <Text fontWeight={"bold"} color={'orange.500'} fontSize={"md"}>
+            <Text fontWeight={"bold"} color={'orange.500'} fontSize={{base:'sm',md:"md"}}>
               Create Aggreement
             </Text>
             <Printer
@@ -157,7 +157,6 @@ export default function UserPopover({tenant,convoID}) {
                       {p.title || ""}
                     </Text>
                     <SquareMousePointer
-                
                       size={20}
                       color="#ff0000"
                     />

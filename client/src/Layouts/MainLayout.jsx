@@ -78,19 +78,6 @@ function MainLayout() {
                   >
                     Chats
                   </Button>
-                  {/* <Button
-                    as={Link}
-                    to="/getAll"
-                    bg={buttonBgColor}
-                    color={buttonTextColor}
-                    _hover={{ bg: buttonHoverBgColor }}
-                    fontWeight="bold"
-                    px={4}
-                    mr={2}
-                    leftIcon={<Icon as={FaList} />}
-                  >
-                    Listings
-                  </Button> */}
                   <Button
                     as={Link}
                     to="/dashboard"
