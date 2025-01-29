@@ -101,13 +101,14 @@ export default function UserPopover({tenant,convoID}) {
         <Popover>
         <PopoverTrigger>
           <Flex gap={3} alignItems={"center"}>
-            <Text fontWeight={"bold"} color={'orange.500'} fontSize={"lg"}>
+            <Text fontWeight={"bold"} color={'orange.500'} fontSize={"md"}>
               Create Aggreement
             </Text>
             <Printer
+            cursor={'pointer'}
               // onClick={fetchNameOfChatParticipants}
               size={40}
-              color="#ff0000"
+              color="orange"
             />
           </Flex>
         </PopoverTrigger>

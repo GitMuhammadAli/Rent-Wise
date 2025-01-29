@@ -112,7 +112,7 @@ export default function MainChat() {
 
   return (
     <div>
-      <Flex>
+     <div className="flex h-screen bg-gray-100">
         <SideChat
           listings={listings}
           allData={allData}
@@ -141,7 +141,7 @@ export default function MainChat() {
           listings={listings}
           item={item}
         />
-      </Flex>
+      </div>
     </div>
   );
 }

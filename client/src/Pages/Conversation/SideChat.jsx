@@ -1,4 +1,4 @@
-import { Avatar, Box, Input, Text, VStack } from '@chakra-ui/react';
+import { Avatar, Box, Flex, Input, Text, VStack } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { getSideBarParticipants , fetchConversationsForSidebar } from '../../Api/Chats';
 
@@ -176,19 +176,19 @@ useEffect(() => {
 
   return (
     <Box
-      width={{ base: "100%", md: "20%" }}
-     
-      bg="orange.100"
+      width={{ base: "100%", md: "25%" }}
+      bg="white"
       borderRight="1px solid"
       borderColor="gray.200"
-      p={4}
+      
     >
-      <VStack spacing={4} align="stretch">
+      <VStack align="stretch">
         
+        <Flex flexDir={'column'} gap={3} p={2}>
         <Text color={'orange.500'} fontWeight="bold">Chats</Text>
-
-
-        <Input bg={'orange.50'}  type='text' placeholder='Search Chat' color={'orange.600'} onChange={(e)=> setSearchChat(e.target.value)} />
+        <Input bg="gray.50"  type='text' placeholder='Search Chat' color={'orange.600'} onChange={(e)=> setSearchChat(e.target.value)} />
+        </Flex>
+        
 
 
         {combinedList && combinedList.length > 0 ? (
@@ -197,20 +197,19 @@ useEffect(() => {
 
           ).map((item, i) => (
             <Box
-            _active={{bg:'orange.50'}}
+            _hover={{bg:'gray.100'}}
+            _active={{bg:'gray.100'}}
               key={item._id || i}
               display="flex"
               alignItems="center"
               cursor="pointer"
-              p={2}
-              
-              bg="orange.200"
-              borderRadius="md"
+              px={2}
+              py={3}
               onClick={() => handleSideBarClick(item._id, item.name, item, item.imageUrl)}
             >
      
               <Avatar mr={3} src={`${import.meta.env.VITE_BACK_END_URL}${item.imageUrl}`|| item.imageUrl} />
-              <Text color={'orange.600'}  >{item.name}</Text>
+              <Text fontWeight={'semibold'}>{item.name}</Text>
             </Box>
           ))
         ) : (

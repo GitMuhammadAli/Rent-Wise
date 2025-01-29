@@ -5,7 +5,7 @@ import { Box, Flex, Heading, Text, Button, Container, Grid, GridItem,Input, Imag
 import { FaBuilding, FaCar, FaHotel, FaSearch, FaStar, FaArrowRight } from "react-icons/fa"
 import { getAllListingAPI } from "../Api/ListingApi"; 
 
-import AnimatedBackground from "./Listings/Test/Animated";
+import AnimatedBackground from "./Animated";
 import { categories } from "./Listings/Test/staticData";
 import { ListingsContext } from "../hooks/ListingsContext";
 
