@@ -62,7 +62,7 @@ exports.CreateListReview = async (req, res, next) => {
     if (existingReview) {
       return res.status(STATUS.FORBIDDEN).json({
         Success: BOOLEAN.FALSE,
-        message: REVIEWS.REVIEW_ALREADY_EXISTS_USER
+        message: REVIEWS.REVIEW_ALREADY_EXISTS_LISTING
     })
     }
     
