@@ -26,6 +26,29 @@ const Conversation = require("../../model/chat/ConversationModel");
 
 
 exports.CreateNotification = async(recipient , sender , type , message ) =>{
+  try {
+    const notification = {
+      recipient , sender , type , message
+    }
+  } catch (error) {
+    
+  }
   
+
+}
+
+
+
+exports.getNotificationByUser = async(req,res,next)=>{
+
+}
+
+
+exports.readAllNotificationByUser = async(req,res,next)=>{
+
+}
+
+
+exports.clearAllNotificationByUser = async(Req,res,next)=>{
 
 }
