@@ -2,6 +2,7 @@ const Aggrement = require("../../model/agreements/Aggrement");
 const AggrementDetails = require("../../model/agreements/AggrementDetails");
 const RentalItem = require("../../model/listings/RentalItemModel");
 const listingReview = require("../../model/reviews/listingReview");
+const Notification = require("../../model/notification/notification")
 const { ERROR_MESSAGE } = require("../../messages/error");
 const {
   RESPONCE_MESSAGE,
