@@ -154,7 +154,7 @@ useEffect(() => {
           ).map((item, i) => (
             <Box
             _hover={{bg: activeItem === item._id ? 'orange.50' : 'gray.50'}}
-            bg={activeItem === item._id ? 'orange.50' : 'transparent'}
+            bg={activeItem === item._id ? 'orange.100' : 'transparent'}
               key={item._id || i}
               display="flex"
               alignItems="center"
