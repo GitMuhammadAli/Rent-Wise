@@ -47,6 +47,11 @@ const userSchema = new UserSchema({
     trim: true,
     default: "",
   },
+  NotificationSetting: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "UserSettings",
+    default: null,
+  },
 
   // userReview:
   //   [
@@ -56,7 +61,6 @@ const userSchema = new UserSchema({
   //     }
   //   ],
 
-  
   createdAt: {
     type: Date,
     default: Date.now,

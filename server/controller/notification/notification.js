@@ -9,7 +9,8 @@ const {
   AGGREEMENT,
   CONVERSATION,
   REVIEWS,
-  
+  NOTIFICATION,
+
 } = require("../../messages/response");
 const { STATUS } = require("../../messages/status");
 const AppError = require("../../utils/AppError");
@@ -31,6 +32,27 @@ exports.CreateNotification = async(recipient , sender , type , message ) =>{
     const notification = {
       recipient , sender , type , message
     }
+
+    console.log("Notification body is " , notification);
+
+    const Notification = await Notification.create({
+      recipient:recipient,
+      sender:sender,
+      type:type,
+      message:message,
+    })
+
+
+
+    res.status(STATUS.SUCCESS).json({
+      status:BOOLEAN.SUCCESS,
+      message:NOTIFICATION.GENERAL.NOTIFICATION_CREATED
+    })
+
+
+
+
+
   } catch (error) {
     
   }
@@ -50,6 +72,11 @@ exports.readAllNotificationByUser = async(req,res,next)=>{
 }
 
 
-exports.clearAllNotificationByUser = async(Req,res,next)=>{
+exports.clearAllNotificationByUser = async(req,res,next)=>{
+
+}
+
+
+exports.ReadOneNotificationByUser = async (req , res , next) =>{
 
 }

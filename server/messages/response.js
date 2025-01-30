@@ -159,36 +159,49 @@ const REVIEWS = {
 }
 
 const NOTIFICATION = {
-    NOTIFICATION_CREATED: "Notification created successfully",
-    NOTIFICATION_FETCHED: "Notifications fetched successfully",
-    NOTIFICATION_DELETED: "Notification deleted successfully",
-    NOTIFICATION_MARKED_READ: "Notification marked as read",
-    NOTIFICATION_MARKED_UNREAD: "Notification marked as unread",
-    NOTIFICATION_CLEARED: "All notifications cleared",
-    NOTIFICATION_NOT_FOUND: "Notification not found",
-    NOTIFICATION_ERROR: "Error processing notification",
-    INVALID_NOTIFICATION_TYPE: "Invalid notification type",
-    RECIPIENT_REQUIRED: "Recipient is required",
-    SENDER_NOT_FOUND: "Sender not found",
-    LISTING_NOT_FOUND: "Referenced listing not found",
-    MESSAGE_REQUIRED: "Notification message is required",
-    NEW_MESSAGE_NOTIFICATION: "You have received a new message",
-    NEW_REVIEW_NOTIFICATION: "You have received a new review",
-    NEW_BOOKING_NOTIFICATION: "You have a new booking request",
-    BOOKING_CONFIRMED_NOTIFICATION: "Your booking has been confirmed",
-    BOOKING_REJECTED_NOTIFICATION: "Your booking has been rejected",
-    PAYMENT_RECEIVED_NOTIFICATION: "Payment received successfully",
-    PAYMENT_FAILED_NOTIFICATION: "Payment failed",
-    SYSTEM_NOTIFICATION: "System notification",
-    AGREEMENT_NOTIFICATION: "New agreement notification",
-    AGREEMENT_SIGNED_NOTIFICATION: "Agreement has been signed",
-    AGREEMENT_REJECTED_NOTIFICATION: "Agreement has been rejected",
-    ALL_NOTIFICATIONS_FETCHED: "All notifications retrieved successfully",
-    UNREAD_NOTIFICATIONS_FETCHED: "Unread notifications retrieved successfully",
-    NO_NOTIFICATIONS: "No notifications found",
-    NOTIFICATION_SETTINGS_UPDATED: "Notification settings updated successfully"
+    GENERAL: {
+        NOTIFICATION_CREATED: "Notification created successfully",
+        NOTIFICATION_FETCHED: "Notifications fetched successfully",
+        NOTIFICATION_DELETED: "Notification deleted successfully",
+        NOTIFICATION_MARKED_READ: "Notification marked as read",
+        NOTIFICATION_MARKED_UNREAD: "Notification marked as unread",
+        NOTIFICATION_CLEARED: "All notifications cleared",
+        NOTIFICATION_NOT_FOUND: "Notification not found",
+        NOTIFICATION_ERROR: "Error processing notification",
+        INVALID_NOTIFICATION_TYPE: "Invalid notification type",
+        RECIPIENT_REQUIRED: "Recipient is required",
+        SENDER_NOT_FOUND: "Sender not found",
+        ALL_NOTIFICATIONS_FETCHED: "All notifications retrieved successfully",
+        UNREAD_NOTIFICATIONS_FETCHED: "Unread notifications retrieved successfully",
+        NO_NOTIFICATIONS: "No notifications found",
+        NOTIFICATION_SETTINGS_UPDATED: "Notification settings updated successfully"
+    },
+    LISTING: {
+        LISTING_NOT_FOUND: "Referenced listing not found",
+        NEW_BOOKING_NOTIFICATION: "You have a new booking request",
+        BOOKING_CONFIRMED_NOTIFICATION: "Your booking has been confirmed",
+        BOOKING_REJECTED_NOTIFICATION: "Your booking has been rejected"
+    },
+    MESSAGE: {
+        MESSAGE_REQUIRED: "Notification message is required",
+        NEW_MESSAGE_NOTIFICATION: "You have received a new message"
+    },
+    REVIEW: {
+        NEW_REVIEW_NOTIFICATION: "You have received a new review"
+    },
+    PAYMENT: {
+        PAYMENT_RECEIVED_NOTIFICATION: "Payment received successfully",
+        PAYMENT_FAILED_NOTIFICATION: "Payment failed"
+    },
+    SYSTEM: {
+        SYSTEM_NOTIFICATION: "System notification"
+    },
+    AGREEMENT: {
+        AGREEMENT_NOTIFICATION: "New agreement notification",
+        AGREEMENT_SIGNED_NOTIFICATION: "Agreement has been signed",
+        AGREEMENT_REJECTED_NOTIFICATION: "Agreement has been rejected"
+    }
 }
-
 module.exports = {
     RESPONCE_MESSAGE,
     LISTINGS,
