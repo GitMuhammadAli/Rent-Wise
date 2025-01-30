@@ -218,15 +218,17 @@ const ListingDetails = () => {
 
               {/* Comments and Reviews displayed on top after images in large screen but not displayed in small screens */}
               <Flex
+              w={'full'}
                 flexDir={"column"}
                 gap={4}
                 display={{ base: "none", md: "flex" }}
               >
-                <ReviewsInListing />
+                <ReviewsInListing listingID={currentListing?._id} ownerID={currentListing?.owner._id} />
                 <AddCommentsInListing
                   toast={toast}
                   id={id}
                   currentID={currentListing?._id}
+                  ownerID={currentListing?.owner._id}
                 />
 
                 {/* <DisplayListingComments currentID={currentListing?._id}/> */}
@@ -407,11 +409,12 @@ const ListingDetails = () => {
             gap={4}
             display={{ base: "flex", md: "none" }}
           >
-            <ReviewsInListing />
+            <ReviewsInListing listingID={currentListing?._id} ownerID={currentListing?.owner._id} />
             <AddCommentsInListing
               toast={toast}
               id={id}
               currentID={currentListing?._id}
+              ownerID={currentListing?.owner._id}
             />
           </Flex>
         </Grid>

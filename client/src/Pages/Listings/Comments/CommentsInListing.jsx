@@ -25,7 +25,7 @@ import { DeleteIcon } from '@chakra-ui/icons';
   
 
 const baseUrl = import.meta.env.VITE_BACK_END_URL;
-export default function AddCommentsInListing({toast,id,currentID}) {
+export default function AddCommentsInListing({toast,id,currentID,ownerID}) {
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
     const [checkSubmit, setSetSubmit] = useState(false)
@@ -156,7 +156,10 @@ export default function AddCommentsInListing({toast,id,currentID}) {
       <Heading as="h2" size="lg" fontWeight="bold" mb={4}>
         Comments
       </Heading>
-      <form onSubmit={handleCommentSubmit}>
+
+{
+  user?._id !== ownerID && (
+    <form onSubmit={handleCommentSubmit}>
         <FormControl mb={6} isRequired>
           <FormLabel htmlFor="comment" fontWeight="bold" color="gray.700">
             Your Comment
@@ -180,6 +183,10 @@ export default function AddCommentsInListing({toast,id,currentID}) {
           Post Comment
         </Button>
       </form>
+
+  )
+}
+      
       <VStack spacing={4} mt={6} align="stretch">
         {comments.map((comment, i) => (
           <Box key={comment._id || i}>

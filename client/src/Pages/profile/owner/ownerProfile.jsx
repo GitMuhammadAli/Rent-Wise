@@ -211,6 +211,8 @@ import { StarIcon, MessageCircleIcon, MailIcon, PhoneIcon } from "lucide-react";
 import { getOwnerProfileData } from "../../../Api/owner";
 import { Link , useNavigate , useParams} from "react-router-dom";
 import { useAuth } from "../../../hooks/AuthContext";
+import { createUserReview, getUserReviews } from "../../../Api/reviews";
+import { useToast } from "@chakra-ui/react";
 
 const UserProfile = () => {
   const navigate = useNavigate();
@@ -222,6 +224,8 @@ const UserProfile = () => {
   const [activeTab, setActiveTab] = useState("listings");
   const [reviewText, setReviewText] = useState("");
   const [rating, setRating] = useState(0);
+  const [reviews, setReviews] = useState([])
+  const toast = useToast();
 
   useEffect(() => {
       const fetchProfileData = async () => {
@@ -247,13 +251,54 @@ const UserProfile = () => {
       }
       navigate(`/chat`, { state: { ownerIdDetails: owner, userIdDetails: user } });
   };
-  const handleSubmitReview = async (e) => {
-    e.preventDefault();
-    console.log("Review submitted:", { rating, reviewText });
-    setReviewText("");
-    setRating(0);
-    // Implement API call to submit review if needed
-  };
+ 
+
+
+    const handleSubmitReview =async(e)=>{
+      e.preventDefault();
+  
+      try {
+            const response = await createUserReview(owner?._id,{comment: reviewText, rating});
+            console.log('response after listing review', response);
+            if(response.status === 200)
+            {
+              toast({
+                      title: response?.data?.data?.message,
+                      status: "success",
+                      duration: 3000,
+                      isClosable: true,
+                    });
+                    setReviewText("");
+                    setRating(0);
+            }
+        
+      } catch (error) {
+        toast({
+          title: error?.response?.data?.message,
+          status: "warning",
+          duration: 3000,
+          isClosable: true,
+        });
+        setReviewText("");
+        setRating(0);  
+      }
+     
+    }
+  
+    useEffect(()=>{
+      const getReviews = async()=>{
+        if(!owner) return
+        try {
+          const response = await getUserReviews(owner?._id);
+          console.log("resGET", response?.data?.data?.reviews);
+         setReviews(response?.data?.data?.reviews)
+        } catch (error) {
+          console.log(error);
+          
+        }
+      }
+      getReviews();
+    },[owner])
 
   if (loading) {
     return (
@@ -377,37 +422,8 @@ const UserProfile = () => {
                      {reviewType.charAt(0).toUpperCase() + reviewType.slice(1)} Reviews
                    </h3>
                    <div className="space-y-4">
-                     {[
-                       {
-                         _id: '1',
-                         reviewer: 'John Doe',
-                         date: '2024-01-15',
-                         comment: 'Great experience renting from this owner. Very professional and responsive.',
-                         rating: 5
-                       },
-                       {
-                         _id: '2',
-                         reviewer: 'Jane Smith',
-                         date: '2024-01-10',
-                         comment: 'Equipment was in perfect condition. Would rent again!',
-                         rating: 4
-                       },
-                       {
-                         _id: '3',
-                         reviewer: 'Mike Johnson',
-                         date: '2024-01-05',
-                         comment: 'Not satisfied with the service. Equipment was not as described.',
-                         rating: 2
-                       },
-                       {
-                         _id: '4',
-                         reviewer: 'Sarah Wilson',
-                         date: '2024-01-01',
-                         comment: 'Poor communication and late delivery.',
-                         rating: 1
-                       }
-                     ]
-                       .filter((review) =>
+                     { 
+                         reviews.filter((review) =>
                          reviewType === "positive" ? review.rating > 3 : review.rating <= 3
                        )
                        .map((review) => (
@@ -418,8 +434,8 @@ const UserProfile = () => {
                            }`}
                          >
                            <div className="flex justify-between">
-                             <h3 className="font-bold">{review.reviewer}</h3>
-                             <span className="text-sm text-gray-400">{review.date}</span>
+                             <h3 className="font-bold">{review.reviewer.name}</h3>
+                             <span className="text-sm text-gray-400">{new Date(review.createdAt).toLocaleDateString()}</span>
                            </div>
                            <p>{review.comment}</p>
                            <div className="flex text-yellow-500 mt-2">

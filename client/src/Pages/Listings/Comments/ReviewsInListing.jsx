@@ -1,5 +1,8 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FaStar, FaRegStar, FaChevronLeft, FaChevronRight } from 'react-icons/fa'
+import { createListingReview, getListingReviews } from '../../../Api/reviews'
+import { useAuth } from '../../../hooks/AuthContext'
+import { Box, useToast } from '@chakra-ui/react'
 const reviews = [
   {
     id: '1',
@@ -24,15 +27,71 @@ const reviews = [
   },
 ]
 
-export default function ReviewsInListing() {
+export default function ReviewsInListing({listingID, ownerID}) {
    const [newReview, setNewReview] = useState({ rating: 0, comment: '' })
-  const handleReviewSubmit =()=>{
-    console.log('rllo')
+   const [reviews,setReview ] = useState([]);
+   const {user} = useAuth();
+   const toast = useToast();
+  const handleReviewSubmit =async(e)=>{
+    e.preventDefault();
+
+    try {
+
+      if (listingID)
+        {
+          const response = await createListingReview(listingID,{comment: newReview.comment, rating: newReview.rating});
+          console.log('response after listing review', response);
+          if(response.status === 200)
+          {
+            toast({
+                    title: response?.data?.data?.message,
+                    // description: "Listing not selected yet, select again.",
+                    status: "success",
+                    duration: 3000,
+                    isClosable: true,
+                  });
+            setNewReview({comment:'', rating:0})
+          }
+
+    
+        }
+        console.log('rllo')
+        console.log('review comments and raating are:', newReview)
+    } catch (error) {
+     
+      toast({
+        title: error?.response?.data?.message,
+        status: "warning",
+        duration: 3000,
+        isClosable: true,
+      });
+      setNewReview({comment:'', rating:0})
+      
+    }
+   
   }
+
+  useEffect(()=>{
+    const getReviews = async()=>{
+      try {
+        const response = await getListingReviews(listingID);
+        console.log("resGET", response?.data?.data?.reviews);
+        setReview(response?.data?.data?.reviews)
+      } catch (error) {
+        console.log(error);
+        
+      }
+    }
+    getReviews();
+  },[])
+  
   return (
-    <div>
+    
+    <Box>
       <div className="bg-white shadow-md rounded-lg p-6">
                   <h2 className="text-2xl font-semibold mb-4">Reviews</h2>
+                  {
+                    user?._id !== ownerID && (
                   <form onSubmit={handleReviewSubmit} className="mb-6">
                     <div className="mb-4">
                       <label className="block text-gray-700 text-sm font-bold mb-2">Your Rating</label>
@@ -64,12 +123,14 @@ export default function ReviewsInListing() {
                       Submit Review
                     </button>
                   </form>
+                    )
+                  }
                   <div className="space-y-4">
                     {reviews.map((review) => (
-                      <div key={review.id} className="border-b border-gray-200 pb-4">
+                      <div key={review._id} className="border-b border-gray-200 pb-4">
                         <div className="flex justify-between items-center mb-2">
-                          <span className="font-semibold">{review.user}</span>
-                          <span className="text-sm text-gray-500">{review.date}</span>
+                          <span className="font-semibold">{review.reviewer.name}</span>
+                          <span className="text-sm text-gray-500">{new Date(review.createdAt).toLocaleDateString()}</span>
                         </div>
                         <div className="flex items-center mb-2">
                           {[...Array(5)].map((_, i) => (
@@ -81,7 +142,8 @@ export default function ReviewsInListing() {
                     ))}
                   </div>
                 </div>
+                </Box>
       
-    </div>
+  
   )
 }
