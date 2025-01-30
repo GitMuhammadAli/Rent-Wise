@@ -4,48 +4,50 @@ import { FaStar, FaExternalLinkAlt } from 'react-icons/fa';
 import { Tabs, TabList, Tab, TabPanels, TabPanel, Box, Card, CardBody, Flex, Avatar } from '@chakra-ui/react';
 import { ToGetReview } from '../../Api/DashboardAPI';
 import { format } from 'date-fns';
+import { getUserReviews } from '../../Api/reviews';
+import { useAuth } from '../../hooks/AuthContext';
 
-const receivedReviews = [
-  {
-    id: '1',
-    reviewerName: 'Alice Johnson',
-    reviewerAvatar: '/placeholder.svg',
-    rating: 5,
-    comment: 'Great experience! The item was in perfect condition.',
-    date: '2023-05-24',
-  },
-  {
-    id: '2',
-    reviewerName: 'Bob Smith',
-    reviewerAvatar: '/placeholder.svg',
-    rating: 4,
-    comment: 'Good rental, but could use some minor improvements.',
-    date: '2023-06-15',
-  },
-];
+// const receivedReviews = [
+//   {
+//     id: '1',
+//     reviewerName: 'Alice Johnson',
+//     reviewerAvatar: '/placeholder.svg',
+//     rating: 5,
+//     comment: 'Great experience! The item was in perfect condition.',
+//     date: '2023-05-24',
+//   },
+//   {
+//     id: '2',
+//     reviewerName: 'Bob Smith',
+//     reviewerAvatar: '/placeholder.svg',
+//     rating: 4,
+//     comment: 'Good rental, but could use some minor improvements.',
+//     date: '2023-06-15',
+//   },
+// ];
 
-const potentialReviews = [
-  {
-    id: '1',
-    ownerId: 'owner456',
-    ownerName: 'John Doe',
-    ownerAvatar: '/placeholder.svg',
-    listingId: 'listing123',
-    listingTitle: 'Luxury Sedan',
-    rentalDate: '2023-07-01',
-    images: ['/placeholder.svg', '/placeholder.svg'],
-  },
-  {
-    id: '2',
-    ownerId: 'owner789',
-    ownerName: 'Jane Smith',
-    ownerAvatar: '/placeholder.svg',
-    listingId: 'listing456',
-    listingTitle: 'Beachfront Villa',
-    rentalDate: '2023-07-15',
-    images: ['/placeholder.svg', '/placeholder.svg'],
-  },
-];
+// const potentialReviews = [
+//   {
+//     id: '1',
+//     ownerId: 'owner456',
+//     ownerName: 'John Doe',
+//     ownerAvatar: '/placeholder.svg',
+//     listingId: 'listing123',
+//     listingTitle: 'Luxury Sedan',
+//     rentalDate: '2023-07-01',
+//     images: ['/placeholder.svg', '/placeholder.svg'],
+//   },
+//   {
+//     id: '2',
+//     ownerId: 'owner789',
+//     ownerName: 'Jane Smith',
+//     ownerAvatar: '/placeholder.svg',
+//     listingId: 'listing456',
+//     listingTitle: 'Beachfront Villa',
+//     rentalDate: '2023-07-15',
+//     images: ['/placeholder.svg', '/placeholder.svg'],
+//   },
+// ];
 
 const StarRating = ({ rating }) => (
   <div className="flex">
@@ -58,7 +60,11 @@ const StarRating = ({ rating }) => (
 
 
 export default function ReviewPage() {
-    const [peopleData, setPeopleData] = useState([]);
+  // those who you can review
+    const [peopleData, setPeopleData] = useState([]);  
+    const {user} = useAuth();
+    // reviews you got
+    const [receivedReviews, setReceivedReviews] = useState([]);
 
     useEffect(() => {
         const funcToGetReview = async () => {
@@ -86,6 +92,21 @@ export default function ReviewPage() {
       
         funcToGetReview();
       }, []);
+
+      useEffect(()=>{
+            const getReviews = async()=>{
+              if(!user) return
+              try {
+                const response = await getUserReviews(user._id);
+                console.log("resGET", response?.data?.data?.reviews);
+                setReceivedReviews(response?.data?.data?.reviews)
+              } catch (error) {
+                console.log(error); 
+              }
+            }
+            getReviews();
+          },[user])
+          
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold text-gray-900 mb-6">Reviews</h1>
@@ -100,19 +121,17 @@ export default function ReviewPage() {
               <CardBody>
                 <h2 className="text-2xl font-semibold text-gray-900 mb-4">Reviews You've Received</h2>
                 <div className="space-y-6">
-                  {receivedReviews.map((review) => (
-                    <div key={review.id} className="flex items-start space-x-4">
-                      <img
-                        src={review.reviewerAvatar || '/placeholder.svg'}
-                        alt={review.reviewerName}
-                        width={40}
-                        height={40}
-                        className="rounded-full"
+                  {receivedReviews?.map((review, i) => (
+                    <div key={review._id || i} className="flex items-start space-x-4">
+                      <Avatar
+                        src={`${import.meta.env.VITE_BACK_END_URL}${review.reviewer.imageUrl}` || '/placeholder.svg'}
+                        alt={review.reviewer.name}
+
                       />
                       <div className="flex-1">
                         <div className="flex items-center justify-between">
-                          <h3 className="text-lg font-medium text-gray-900">{review.reviewerName}</h3>
-                          <span className="text-sm text-gray-500">{review.date}</span>
+                          <h3 className="text-lg font-medium text-gray-900">{review.reviewer.name}</h3>
+                          <span className="text-sm text-gray-500">{new Date(review.createdAt).toLocaleString()}</span>
                         </div>
                         <StarRating rating={review.rating} />
                         <p className="mt-2 text-gray-600">{review.comment}</p>
@@ -134,15 +153,18 @@ export default function ReviewPage() {
                         {
                             item.listing.images.length > 0 ? (
                                 <img
-                          src={`${import.meta.env.VITE_BACK_END_URL}${item.listing.images[0]}` || '/placeholder.svg'}
+                          src={`${import.meta.env.VITE_BACK_END_URL}${item.listing.images[0].url}` || '/placeholder.svg'}
                           alt={item.listingTitle}
                           width={120}
                           height={80}
                           className="rounded-md object-cover"
                         />
                             ) : (
-                                <Avatar
-                          src={'/images/randomUser.png'}
+                                <img
+                          src={'/images/make_listing/random.png'}
+                          alt={item.listingTitle}
+                          width={120}
+                          height={80}
                         />
                              )
                         } 
@@ -162,7 +184,10 @@ export default function ReviewPage() {
                             alt={item?.user?.name}
     
                           />
-                          <span className="text-sm text-gray-600">{item.user.name}</span>
+                          <Link to={`/profile/${item.listing.owner}`}>
+                          <span className="text-sm text-gray-600 cursor-pointer">{item.user.name}</span>
+                          </Link>
+                          
                         </div>
                         <div className="flex flex-wrap gap-2 mb-4">
                           {/* {item.images.slice(1).map((image, index) => (
@@ -177,12 +202,21 @@ export default function ReviewPage() {
                           ))} */}
                           
                         </div>
-                        <div className="flex justify-end">
+
+                      <Flex flexDir={'column'} justifySelf={'end'} gap={2}>
+                        <div >
                           <Link to={`/rental/${item?.listing?._id}`} className="text-orange-600 hover:text-orange-800 text-sm font-medium flex items-center">
-                            View Listing
+                            Review Listing
                             <FaExternalLinkAlt className="ml-1 w-3 h-3" />
                           </Link>
                         </div>
+                        <div >
+                          <Link to={`/profile/${item?.listing?.owner}`} className="text-orange-600 hover:text-orange-800 text-sm font-medium flex items-center">
+                            Review Owner
+                            <FaExternalLinkAlt className="ml-1 w-3 h-3" />
+                          </Link>
+                        </div>
+                        </Flex>
                       </div>
                     </div>
                   ))}

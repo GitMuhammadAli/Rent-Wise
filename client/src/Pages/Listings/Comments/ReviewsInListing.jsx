@@ -3,29 +3,29 @@ import { FaStar, FaRegStar, FaChevronLeft, FaChevronRight } from 'react-icons/fa
 import { createListingReview, getListingReviews } from '../../../Api/reviews'
 import { useAuth } from '../../../hooks/AuthContext'
 import { Box, useToast } from '@chakra-ui/react'
-const reviews = [
-  {
-    id: '1',
-    user: 'Alice Johnson',
-    rating: 5,
-    date: '2023-06-15',
-    comment: 'Absolutely stunning villa! The views were breathtaking and the amenities were top-notch. We had an unforgettable stay.',
-  },
-  {
-    id: '2',
-    user: 'Bob Smith',
-    rating: 4,
-    date: '2023-05-28',
-    comment: 'Great location and beautiful property. The only minor issue was that the Wi-Fi was a bit slow at times.',
-  },
-  {
-    id: '3',
-    user: 'Carol Williams',
-    rating: 5,
-    date: '2023-05-10',
-    comment: "Perfect getaway! The villa was immaculate and the private beach access was a huge plus. We'll definitely be back!",
-  },
-]
+// const reviews = [
+//   {
+//     id: '1',
+//     user: 'Alice Johnson',
+//     rating: 5,
+//     date: '2023-06-15',
+//     comment: 'Absolutely stunning villa! The views were breathtaking and the amenities were top-notch. We had an unforgettable stay.',
+//   },
+//   {
+//     id: '2',
+//     user: 'Bob Smith',
+//     rating: 4,
+//     date: '2023-05-28',
+//     comment: 'Great location and beautiful property. The only minor issue was that the Wi-Fi was a bit slow at times.',
+//   },
+//   {
+//     id: '3',
+//     user: 'Carol Williams',
+//     rating: 5,
+//     date: '2023-05-10',
+//     comment: "Perfect getaway! The villa was immaculate and the private beach access was a huge plus. We'll definitely be back!",
+//   },
+// ]
 
 export default function ReviewsInListing({listingID, ownerID}) {
    const [newReview, setNewReview] = useState({ rating: 0, comment: '' })
@@ -36,6 +36,17 @@ export default function ReviewsInListing({listingID, ownerID}) {
     e.preventDefault();
 
     try {
+      if(!newReview.rating || !newReview.comment)
+      {
+        toast({
+          title: "Rating or Review is missing!",
+          // description: "Listing not selected yet, select again.",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+        return
+      }
 
       if (listingID)
         {
@@ -61,7 +72,7 @@ export default function ReviewsInListing({listingID, ownerID}) {
      
       toast({
         title: error?.response?.data?.message,
-        status: "warning",
+        status: "error",
         duration: 3000,
         isClosable: true,
       });

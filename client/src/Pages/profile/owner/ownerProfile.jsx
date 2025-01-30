@@ -256,7 +256,19 @@ const UserProfile = () => {
 
     const handleSubmitReview =async(e)=>{
       e.preventDefault();
-  
+
+      if(!reviewText || !rating)
+      {
+        toast({
+          title: "Rating or Review is missing!",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+        return
+
+      }
+    
       try {
             const response = await createUserReview(owner?._id,{comment: reviewText, rating});
             console.log('response after listing review', response);
@@ -298,7 +310,7 @@ const UserProfile = () => {
         }
       }
       getReviews();
-    },[owner])
+    },[owner, activeTab])
 
   if (loading) {
     return (
@@ -487,9 +499,10 @@ const UserProfile = () => {
                   Your Review
                 </label>
                 <textarea
+                  
                   id="review"
                   rows={4}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   value={reviewText}
                   onChange={(e) => setReviewText(e.target.value)}
                   required
