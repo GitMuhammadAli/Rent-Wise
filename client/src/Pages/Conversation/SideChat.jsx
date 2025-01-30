@@ -58,7 +58,6 @@ export default function SideChat({ handleSideBarClick, ownerIdDetails, setAllDat
 }, []);
 
     
-}, []);
 
 
 
