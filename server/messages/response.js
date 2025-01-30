@@ -161,7 +161,9 @@ const REVIEWS = {
 const NOTIFICATION = {
     GENERAL: {
         NOTIFICATION_CREATED: "Notification created successfully",
+        NOTIFICATION_NOT_CREATED: "Notification Not created successfully",
         NOTIFICATION_FETCHED: "Notifications fetched successfully",
+
         NOTIFICATION_DELETED: "Notification deleted successfully",
         NOTIFICATION_MARKED_READ: "Notification marked as read",
         NOTIFICATION_MARKED_UNREAD: "Notification marked as unread",

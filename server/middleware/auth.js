@@ -38,7 +38,7 @@ exports.AuthorizeUser = (RequiredRole) => {
         return next();
       } else {
         clearCookies(req, res);
-        return next(new AppError(BOOLEAN.FALSE, "Unauthorized - Invalid Role", STATUS.UNAUTHORIZED));
+        return next(new AppError(BOOLEAN.FALSE, "Unauthorized - Invalid", STATUS.UNAUTHORIZED));
       }
     } catch (error) {
       clearCookies(req, res);

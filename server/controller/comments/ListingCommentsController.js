@@ -1,15 +1,27 @@
 const  Comment = require("../../model/comments/listingCommentModel");
 const Reply = require("../../model/comments/listingReplyModel");
-const { RESPONCE_MESSAGE, LISTINGS , COMMENTS} = require("../../messages/response");
+const User = require("../../model/user/userModel");
+const {
+  RESPONCE_MESSAGE,
+  AGGREEMENT,
+  CONVERSATION,
+  REVIEWS,
+  NOTIFICATION,
+  COMMENTS,
+} = require("../../messages/response");
 const { STATUS } = require("../../messages/status");
 const { ERROR_MESSAGE } = require("../../messages/error");
 const logger = require("../../utils/logger");
 const AppError = require("../../utils/AppError");
 const { ROLES , BOOLEAN} = require("../../utils/Roles");
-
+const {CreateNotification} = require("../../controller/notification/notification")
+const RentalItem = require("../../model/listings/RentalItemModel");
 exports.createComment = async (req, res , next) => {
     try {
         const { rental, author, text } = req.body;
+        const owner = await RentalItem.findById(rental).select('owner');
+        const rental_Name = await RentalItem.findById(rental).select('title')
+        const author_name = await User.findById(author).select('name')
         if(!rental || !author || !text){
         return next(new AppError (BOOLEAN.FALSE , ERROR_MESSAGE.INVALID_DATA , STATUS.BAD_REQUEST));
         }
@@ -18,12 +30,31 @@ exports.createComment = async (req, res , next) => {
             return next(new AppError(BOOLEAN.FALSE , COMMENTS.COMMENT_NOT_CREATED , STATUS.BAD_REQUEST));
         }
 
-        res.status(STATUS.CREATED).json({ message: RESPONCE_MESSAGE.COMMENT_CREATED, comment });
+        const notification = await CreateNotification(
+          owner.owner,
+          author,
+          'comment',
+          `${author_name.name} Commented On your ${rental_Name.title} Listing`,          next,
+          res,
+      );
+
+     
+if (!notification) {
+    return next(new AppError(BOOLEAN.FALSE, NOTIFICATION.GENERAL.NOTIFICATION_NOT_CREATED, STATUS.FORBIDDEN));
+}
+
+return res.status(STATUS.CREATED).json({ 
+    message: RESPONCE_MESSAGE.COMMENT_CREATED, 
+    comment, 
+    notification 
+})
+      
+
+       
     } catch (error) {
         next(error);
     }
 };
-
 
 
 exports.Check = async(req, res )=>{

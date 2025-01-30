@@ -11,6 +11,7 @@ const Location = require("../../model/listings/LocationModel");
 const Bidding = require("../../model/listings/biddingModel");
 const AppError = require("../../utils/AppError");
 const { BOOLEAN } = require("../../utils/Roles");
+const {CreateNotification} = require("../../controller/notification/notification")
 
 
 exports.uploadMedia = async (req, res, next) => {
