@@ -55,7 +55,7 @@ export default function LiveChat({
   }, [listings]);
 
   useEffect(() => {
-    if (!convoID) return;
+    if (!convoID) return ;
 
     console.log("i am refreshed")
     console.log("Joining conversation ID:", convoID);

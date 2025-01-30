@@ -37,8 +37,25 @@ export default function SideChat({ handleSideBarClick, ownerIdDetails, setAllDat
         } catch (error) {
             console.error("Error fetching participants:", error);
         }
+        try {
+            const response = await fetchConversationsForSidebar();
+            console.log("Sidebar conversations:", response.data.data);
+            setAllData(response.data.data);
+            
+            const participantData = response?.data?.data.flatMap(item => 
+                item.participants
+            ).filter(Boolean);
+            
+            console.log("Filtered participants:", participantData);
+            setParticipants(participantData);
+        } catch (error) {
+            console.error("Error fetching participants:", error);
+        }
     };
     fetchParticipants();
+
+    
+}, []);
 
     
 }, []);

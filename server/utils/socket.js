@@ -33,11 +33,32 @@ io.on("connection", (socket) => {
         socket.join(conversationId);
     });
 
-    // Leave a conversation room
-    socket.on("leave-conversation", (conversationId) => {
-        console.log(`[Socket.IO] User ${socket.id} leaving room ${conversationId}`);
-        socket.leave(conversationId);
-    });
+  // Leave a conversation room
+  socket.on("leave-conversation", (conversationId) => {
+    console.log(`[Socket.IO] User ${socket.id} leaving room ${conversationId}`);
+    socket.leave(conversationId);
+  });
+
+
+
+  // ================== NOTIFICATION SOCKET EVENTS ==================
+
+  // Send notification
+  socket.on("sendNotification", async ({ recipient, sender, type, message, listing }) => {
+    console.log(`[Notification] Sending notification to user: ${recipient}`);
+
+    const notification = new Notification({ recipient, sender, type, message, listing });
+    await notification.save();
+
+    io.to(recipient).emit("receiveNotification", notification);
+  });
+
+  // Mark notification as read
+  socket.on("markAsRead", async ({ notificationId }) => {
+    console.log(`[Notification] Marking notification as read: ${notificationId}`);
+    await Notification.findByIdAndUpdate(notificationId, { isRead: true });
+  });
+
 
     // Disconnect
     socket.on("disconnect", () => {
@@ -46,4 +67,4 @@ io.on("connection", (socket) => {
 });
 
 
-module.exports = { server, io , app};
+module.exports = { server, io, app };
