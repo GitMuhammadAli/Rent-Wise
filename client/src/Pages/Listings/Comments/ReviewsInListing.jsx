@@ -27,11 +27,12 @@ import { Box, useToast } from '@chakra-ui/react'
 //   },
 // ]
 
-export default function ReviewsInListing({listingID, ownerID}) {
+export default function ReviewsInListing({listingID, ownerID, setAvgRating}) {
    const [newReview, setNewReview] = useState({ rating: 0, comment: '' })
    const [reviews,setReview ] = useState([]);
    const {user} = useAuth();
    const toast = useToast();
+
   const handleReviewSubmit =async(e)=>{
     e.preventDefault();
 
@@ -88,6 +89,17 @@ export default function ReviewsInListing({listingID, ownerID}) {
         const response = await getListingReviews(listingID);
         console.log("resGET", response?.data?.data?.reviews);
         setReview(response?.data?.data?.reviews)
+
+        const reviews = response?.data?.data?.reviews || [];
+
+  const averageRating =
+  reviews.length > 0
+    ? (reviews.reduce((sum, review) => sum + (review.rating || 0), 0) / reviews.length).toFixed(1)
+    : "No ratings yet";
+
+ setAvgRating(averageRating)
+
+
       } catch (error) {
         console.log(error);
         

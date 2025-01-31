@@ -13,7 +13,8 @@ import {
   useToast,
   Flex,
   Image,
-  Text
+  Text,
+  HStack
 } from "@chakra-ui/react";
 import { useParams, useNavigate } from 'react-router-dom';
 import { getOneUserListingAPI, Updatelistings } from '../../Api/ListingApi';
@@ -35,7 +36,9 @@ const { listings,currentListing } = state;
     priceUnit: '',
     amenities: [],
     rules: [],
-    listingStatus: 'active'
+    listingStatus: 'active',
+    // bedrooms: 0,
+    // bathrooms: 0,
   });
 
   // Media states
@@ -56,6 +59,7 @@ const { listings,currentListing } = state;
   useEffect(() => {
     async function fetchListing() {
       try {
+     
         const response = await getOneUserListingAPI(id);
         const listing = response.data;
 
@@ -66,6 +70,7 @@ const { listings,currentListing } = state;
        
           
         console.log("useeffect fetch lists", currentListing)
+
         
         setFormData({
           title: listing.title,
@@ -75,7 +80,9 @@ const { listings,currentListing } = state;
           priceUnit: listing.priceUnit,
           amenities: listing.amenities || [],
           rules: listing.rules || [],
-          listingStatus: listing.listingStatus
+          listingStatus: listing.listingStatus,
+          // bedrooms: listing.facilities?.bedrooms ?? 0,
+          // bathrooms: listing.facilities?.bathrooms ?? 0
         });
 
         setExistingImages(listing.images || []);
@@ -155,9 +162,19 @@ const { listings,currentListing } = state;
         });
         return;
       }
+       
+      // new one
+      // const updatedFormData = {
+      //   ...formData,
+      //   bedrooms: formData.category === "house" || formData.category === "hostel" ? formData.bedrooms : 0,
+      //   bathrooms: formData.category === "house" || formData.category === "hostel" ? formData.bathrooms : 0,
+      // };
+      // till here
+
     const updateData = new FormData();
 
     // Append basic form data
+
     Object.keys(formData).forEach(key => {
       if (Array.isArray(formData[key])) {
         updateData.append(key, JSON.stringify(formData[key]));
@@ -165,6 +182,16 @@ const { listings,currentListing } = state;
         updateData.append(key, formData[key]);
       }
     });
+
+    // Object.keys(updatedFormData).forEach((key) => {
+    //   const value = updatedFormData[key];
+    
+    //   if (Array.isArray(value)) {
+    //     updateData.append(key, JSON.stringify(value)); // Convert arrays to JSON
+    //   } else {
+    //     updateData.append(key, value);
+    //   }
+    // });
 
     for (let [key, value] of updateData.entries()) {
       console.log(`${key}: ${value}`);
@@ -278,8 +305,31 @@ const { listings,currentListing } = state;
             </Select>
           </FormControl>
 
+
+
           {formData.category && formData.category !== 'car' && (
-            <FormControl>
+
+            <>
+                           {/* <FormControl isRequired>
+                              <FormLabel FormLabel>Bedrooms</FormLabel>
+                                <HStack maxW="200px">
+                                  <Button onClick={() => setFormData((prev) => ({ ...prev, bedrooms: Math.max(prev.bedrooms - 1, 0) }))}>-</Button>
+                                    <Text>{formData.bedrooms}</Text>
+                                  <Button onClick={() => setFormData((prev) => ({ ...prev, bedrooms: prev.bedrooms + 1 }))}>+</Button>
+                                </HStack>
+                            </FormControl>
+            
+                            <FormControl isRequired mt={4}>
+                              <FormLabel>Bathrooms</FormLabel>
+                                <HStack maxW="200px">
+                                  <Button onClick={() => setFormData((prev) => ({ ...prev, bathrooms: Math.max(prev.bathrooms - 1, 0) }))}>-</Button>
+                                  <Text>{formData.bathrooms}</Text>
+                                  <Button onClick={() => setFormData((prev) => ({ ...prev, bathrooms: prev.bathrooms + 1 }))}>+</Button>
+                                </HStack>
+                              </FormControl> */}
+
+                <FormControl>
+
               <FormLabel>Amenities</FormLabel>
               {formData.amenities.map((amenity, index) => (
                 <Flex key={index} mb={2}>
@@ -304,6 +354,9 @@ const { listings,currentListing } = state;
                 amenities: [...formData.amenities, ''] 
               })}>Add Amenity</Button>
             </FormControl>
+            
+            </>
+        
           )}
 
           <FormControl>

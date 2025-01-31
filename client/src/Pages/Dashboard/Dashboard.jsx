@@ -100,22 +100,25 @@ export default function Dashboard() {
           
             />
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">{username}</h1>
-              <p className="text-gray-600">{useremail}</p>
+            {/* <h1 className="text-[24px] font-bold text-gray-900 sm:text-[12px] lg:text-[24px]">{username}</h1> */}
+            <Heading fontSize={{base:'12px', md:'16px', lg:'24px'}}>{username}</Heading>
+            <Text fontSize={{base:'10px', md:'14px', lg:'18px'}}>{useremail}</Text>
+          
             </div>
           </div>
           <Link to="/acc">
-            <div className="flex items-center px-4 py-2 bg-white text-orange-600 rounded-md border border-orange-600 hover:bg-orange-100 transition duration-300">
-              <FaCog className="mr-2" />
-              Account Settings
+            <div className="flex items-center px-4 sm:px-2 lg:px-4 py-2
+             bg-white text-orange-600 rounded-md border border-orange-600 hover:bg-orange-100 transition duration-300">
+              <FaCog className="mr-2"/>
+             <Text fontSize={{base:'12px', md:'14px', lg:'16px'}}>Account Settings</Text> 
             </div>
           </Link>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md">
-          <div className="flex border-b">
+        <div className="bg-white rounded-lg shadow-md overflow-hidden">
+          <div className="flex border-b text-[10px] sm:text-[12px] xl-text-[20px]">
             <button
-              className={`flex items-center px-6 py-3 text-gray-700 hover:bg-orange-100 focus:outline-none ${
+              className={`flex items-center px-4 sm:px-4 lg:px-6 py-3 text-gray-700 hover:bg-orange-100 focus:outline-none ${
                 activeTab === 'myListing' ? 'border-b-2 border-orange-500' : ''
               }`}
               onClick={() => setActiveTab('myListing')}
@@ -124,7 +127,7 @@ export default function Dashboard() {
               My Listing
             </button>
             <button
-              className={`flex items-center px-6 py-3 text-gray-700 hover:bg-orange-100 focus:outline-none ${
+              className={`flex items-center px-4 sm:px-4 lg:px-6 py-3 text-gray-700 hover:bg-orange-100 focus:outline-none ${
                 activeTab === 'rentalListing' ? 'border-b-2 border-orange-500' : ''
               }`}
               onClick={() => setActiveTab('rentalListing')}
@@ -133,7 +136,7 @@ export default function Dashboard() {
               Rental Listing
             </button>
             <button
-              className={`flex items-center px-6 py-3 text-gray-700 hover:bg-orange-100 focus:outline-none ${
+              className={`flex items-center  px-4 sm:px-4 lg:px-6 py-3 text-gray-700 hover:bg-orange-100 focus:outline-none ${
                 activeTab === 'reviews' ? 'border-b-2 border-orange-500' : ''
               }`}
               onClick={() => setActiveTab('reviews')}
