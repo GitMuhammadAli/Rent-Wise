@@ -37,6 +37,29 @@ export default function SendToTenant({ mainDetails ,isOpen, setIsOpen,  open, cl
 //  const close = () => setIsOpen(false)
 
 
+const SentToRenter = async () => {
+  console.log("Agreement detail:", aggrementFromResponce);
+  console.log("Joining conversation ID:", conversationId);
+  socket.emit("join-conversation", conversationId);
+
+  try {
+      const link = `${import.meta.env.VITE_FRONT_END_URL}/agreement/${aggrementFromResponce._id}`;
+      const dataForSentMessageOfAgreement = {
+          message: `Agreement Link: ${link}`,
+          listing: [aggrementFromResponce.listingId], // Add appropriate listing ID(s)
+          receiver: aggrementFromResponce.receiverId, // Adjust as needed
+      };
+
+      console.log("Sending link as message:", dataForSentMessageOfAgreement);
+
+      const response = await createMessage(dataForSentMessageOfAgreement);
+      console.log("Response from message creation:", response);
+  } catch (error) {
+      console.error("Error sending message:", error);
+  }
+};
+
+
   useEffect(()=>{
     console.log("details in send to tenant are:" , mainDetails)
     set_id(mainDetails._id)
