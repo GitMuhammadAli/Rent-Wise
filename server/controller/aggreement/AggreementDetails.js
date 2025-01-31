@@ -277,6 +277,8 @@ const createLinkMessage = async (listingId, message, senderId, receiver, convers
             type: "link",
         });
 
+        console.log(newMessage)
+
         await newMessage.save();
 
 
@@ -295,6 +297,7 @@ const createLinkMessage = async (listingId, message, senderId, receiver, convers
 exports.sentAggreement = async (req, res, next) => {
     try {
         const { aggrementFromResponce } = req.body;
+        console.log(req.body)
         if (!aggrementFromResponce) {
             return next(new AppError(BOOLEAN.FALSE, AGGREEMENT.AGGREMENT_FROM_REQUEST, STATUS.BAD_REQUEST));
         }
@@ -307,12 +310,17 @@ exports.sentAggreement = async (req, res, next) => {
             return next(new AppError(BOOLEAN.FALSE, AGGREEMENT.AGGREMENT_NOT_FOUND, STATUS.NOT_FOUND));
         }
 
+
+
         const aggDetails = await AggrementDetails.findById(agg.agreementDetailsId);
         if (!aggDetails) {
             return next(new AppError(BOOLEAN.FALSE, AGGREEMENT.AGGREMENT_NOT_FOUND, STATUS.NOT_FOUND));
         }
 
-        if (!agg.ownerConfirmed === BOOLEAN.FALSE) {
+
+        const listingTitle = await RentalItem.findById(agg.listingId).select('title')
+
+        if (agg.ownerConfirmed === BOOLEAN.FALSE) {
             return res.status(STATUS.FORBIDDEN).json({
                 status: STATUS.FORBIDDEN,
                 message: AGGREEMENT.AFFGEMENT_NOT_CONFIRMED_BY_OWNER,
@@ -321,46 +329,48 @@ exports.sentAggreement = async (req, res, next) => {
 
         const messageLink = await createLinkMessage(
             agg.listingId,
-            ` Agreement for renter confirmation 
-            <a href="${process.env.CLIENT_URL}/agreements/${agg._id}">Click here to view agreement</a>`,
+            `Agreement for renter confirmation
+                     ${process.env.CLIENT_URL}/agreements/${agg._id}`,
             agg.ownerId,
             agg.renterId,
             conversationID,
-            true
+            true,
+            next
         );
+
         
         
-        if(messageLink){
-            console.log("link is cretaed to sent")
-            await CreateNotification(
-                ownerId,
-                renterId,
-                "aggrement",
-                `You have received a new agreement for ${listingId.title} from the owner. Please review and confirm`,
-                next,
-                res
-            );
-        }
-      
+     
 
         if (io) {
             console.log("sending message to conversationID:", conversationID);
 
-            io.to(conversationID.toString()).emit("receiveMessage",
-                {
-                    conversationID,
-                    message: `Agreement for renter confirmation
+            io.to(conversationID.toString()).emit("receiveMessage", {
+                conversationID,
+                message:`Agreement for renter confirmation
                      ${process.env.CLIENT_URL}/agreements/${agg._id}`,
-                    sender: ownerId,
-                    receiver: renterId,
-                    listing: listingId,
-                });
+                sender: agg.ownerId,
+                receiver:agg.renterId,
+                listing: listingId,
+              });
                    
         } else {
             return next(new AppError(BOOLEAN.FALSE, CONVERSATION.SOCKET_ERROR, STATUS.NOT_FOUND));
         }
 
        
+        if(messageLink){
+            console.log("link is cretaed to sent")
+            await CreateNotification(
+                agg.ownerId,
+                agg.renterId,
+                "aggreement",
+                `You have received a new agreement for ${listingTitle.title} from the owner. Please review and confirm`,
+                next,
+                res
+            );
+        }
+
         res.status(200).json({
             success: true,
             message: "Agreement notification sent successfully",

@@ -75,15 +75,21 @@ export default function SendToTenant({ mainDetails ,isOpen, setIsOpen,  open, cl
         return;
       }
        
-        const dataForSentMessageOfAgreement = {
+      // const dataForSentMessageOfAgreement = {
+        const aggrementFromResponce = {
             message: `Agreement Link: ${link}`,
             listing: [listingId], // Add appropriate listing ID(s)
-            receiver: renterId, // Adjust as needed
+            receiver: renterId, // Adjust as needed,
+            _id,
+            conversationID,
+            
         };
   
-        console.log("Sending link as message:", dataForSentMessageOfAgreement);
+        console.log("Sending link as message:", aggrementFromResponce);
   
-        const response = await createMessage(dataForSentMessageOfAgreement);
+        // const response = await createMessage(dataForSentMessageOfAgreement);
+        // const response = await SentAggreement(dataForSentMessageOfAgreement);
+        const response = await SentAggreement({aggrementFromResponce});
         console.log("Response from message creation:", response);
 
        if(mainDetails?.renterId?.name)

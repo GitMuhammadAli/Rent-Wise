@@ -101,19 +101,7 @@ export default function AgreementTemplate() {
 
 
 
-  // const SentToRenter = async()=>{
-  //   console.log("aggrement detail", aggrementFromResponce);
-  //   console.log("Joining conversation ID:", conversationId);
-  //   socket.emit("join-conversation", conversationId);
-
-  //   try {
-  //     const response = await SentAggreement({ aggrementFromResponce });
-  //     console.log("Response from SentAggreement:", response.data);
-  // } catch (error) {
-  //     console.error("Error sending agreement notification:", error);
-  // }
-
-  // }
+z
 
 
 const SentToRenter = async () => {
