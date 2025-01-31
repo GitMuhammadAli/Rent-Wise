@@ -106,6 +106,9 @@ const RentalSchema = new mongoose.Schema({
 
   comment: { type: mongoose.Schema.Types.ObjectId, ref: "Comment" },
 
+
+  facilities: { type: mongoose.Schema.Types.ObjectId, ref: "facilties", default: null },
+
   listingStatus: {
     type: String,
     enum: ["active", "Inactive", "pending", "Rented"],

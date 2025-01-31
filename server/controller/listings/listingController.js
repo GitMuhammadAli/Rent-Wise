@@ -1,4 +1,5 @@
 const RentalItem = require("../../model/listings/RentalItemModel");
+const Facilities = require("../../model/listings/facilitiesModel");
 const path = require("path");
 const logger = require("../../utils/logger");
 const fs = require("fs");
@@ -123,6 +124,17 @@ exports.CreateListings = async (req, res, next) => {
             }
         }
 
+        let facilities = null;
+        if(category === 'house' || category === 'hostel'){
+            const {bedrooms , bathrooms} = req.body;
+
+            console.log("facilities in req body is" , bedrooms , bathrooms)
+
+            facilities = await Facilities.create({
+                bedrooms:bedrooms,
+                bathrooms:bathrooms
+            })
+        }
         // Create the rental item
         const newRentalItem = new RentalItem({
             owner,
@@ -136,6 +148,7 @@ exports.CreateListings = async (req, res, next) => {
             images,
             videos,
             listingStatus:"active",
+            facilities: facilities ? facilities._id : null
             // location: newLocation._id,
         });
 
@@ -276,7 +289,8 @@ exports.UpdateListings = async (req, res, next) => {
         location,
         availability,
         averageRating,
-        listingStatus
+        listingStatus,
+        bedrooms, bathrooms ,
     } = req.body;
 
     console.log("Received request to update listing", req.body);
@@ -301,7 +315,7 @@ exports.UpdateListings = async (req, res, next) => {
     const uploadedFilePaths = [];
 
     try {
-        const existingListing = await RentalItem.findById(id).populate("images").populate("videos");
+        const existingListing = await RentalItem.findById(id).populate("images").populate("videos").populate("facilities");
         if (!existingListing) {
             return next(new AppError(BOOLEAN.FALSE, LISTINGS.LISTING_NOT_FOUND, STATUS.NOT_FOUND));
         }
@@ -353,7 +367,22 @@ exports.UpdateListings = async (req, res, next) => {
             await Promise.all(uploadedFilePaths.map(filePath => removeFile(path.resolve(filePath))));
             return next(new AppError(BOOLEAN.FALSE, LISTINGS.MEDIA_UPLOAD_ERR, STATUS.INTERNAL_SERVER_ERROR));
         }
-
+        if (
+            (existingListing.category === 'house' || existingListing.category === 'hostel') &&
+            (category !== 'house' && category !== 'hostel')
+        ) {
+            await Facilities.deleteOne({ _id: existingListing.facilities });
+            facilitiesId = null;
+        }
+        let facilitiesId = null;
+        if (category === 'house' || category === 'hostel') {
+            facilitiesId  = await  manageFacilities(
+                category,
+                bedrooms, bathrooms ,
+                existingListing.facilities?._id || null
+            );
+        
+        }
         // Update listing with all changes
         const updatedListing = await RentalItem.findByIdAndUpdate(
             id,
@@ -371,6 +400,7 @@ exports.UpdateListings = async (req, res, next) => {
                 videos: finalVideoIds,
                 averageRating,
                 listingStatus,
+                facilities: facilitiesId,
                 updatedAt: Date.now(),
             },
             { new: BOOLEAN.TRUE, runValidators: BOOLEAN.TRUE }
@@ -386,6 +416,32 @@ exports.UpdateListings = async (req, res, next) => {
 };
 
 
+async function manageFacilities(category, bedrooms,bathrooms, existingFacilitiesId = null) {
+    if (category !== 'house' && category !== 'hostel') {
+        return null;
+    }
+
+    if ((category === 'house' || category === 'hostel') && (!bedrooms || !bathrooms)) {
+        return next(new AppError(BOOLEAN.FALSE, "Bedrooms and bathrooms are required", STATUS.BAD_REQUEST));
+      }
+    
+    if (existingFacilitiesId) {
+        // Update existing facilities
+        const updatedFacilities = await Facilities.findByIdAndUpdate(
+            existingFacilitiesId,
+            { bedrooms, bathrooms },
+            { new: true }
+        );
+        return updatedFacilities._id;
+    } else {
+        // Create new facilities
+        const newFacilities = await Facilities.create({
+            bedrooms,
+            bathrooms
+        });
+        return newFacilities._id;
+    }
+}
 
 
 exports.DeleteListings = async (req, res, next) => {
@@ -428,7 +484,7 @@ exports.DeleteListings = async (req, res, next) => {
 
 exports.GetListings = async (req, res, next) => {
     try {
-        const listings = await RentalItem.find({ listingStatus : "active" }).populate("owner").populate("images").populate("videos").populate("bidding");
+        const listings = await RentalItem.find({ listingStatus : "active" }).populate("owner").populate("images").populate("videos").populate("bidding").populate('facilities');
         res.json(listings);
     } catch (error) {
         next(error)
@@ -441,7 +497,7 @@ exports.GetListingsById = async (req, res, next) => {
     const { id } = req.params;
     console.log(req.params)
     try {
-        const listing = await RentalItem.findById(id).populate("owner", "name email imageUrl").populate("images", "url caption ").populate("videos", "url caption").populate('bidding')
+        const listing = await RentalItem.findById(id).populate("owner", "name email imageUrl").populate("images", "url caption ").populate("videos", "url caption").populate('bidding').populate('facilities');
         if (!listing) {
             return next(new AppError(BOOLEAN.FALSE, LISTINGS.LISTING_NOT_FOUND, STATUS.NOT_FOUND));
         }
