@@ -337,6 +337,7 @@ exports.UpdateListings = async (req, res, next) => {
         // Handle new media
         let finalImageIds = parsedExistingImages.map(img => img._id);
         let finalVideoIds = parsedExistingVideos.map(vid => vid._id);
+        let facilitiesId = null;
 
         try {
             // Process new images
@@ -374,12 +375,12 @@ exports.UpdateListings = async (req, res, next) => {
             await Facilities.deleteOne({ _id: existingListing.facilities });
             facilitiesId = null;
         }
-        let facilitiesId = null;
         if (category === 'house' || category === 'hostel') {
             facilitiesId  = await  manageFacilities(
                 category,
                 bedrooms, bathrooms ,
-                existingListing.facilities?._id || null
+                existingListing.facilities?._id || null,
+                next
             );
         
         }
@@ -405,7 +406,7 @@ exports.UpdateListings = async (req, res, next) => {
             },
             { new: BOOLEAN.TRUE, runValidators: BOOLEAN.TRUE }
         );
-        await cleanUpUnreferencedMedia(id);
+        // await cleanUpUnreferencedMedia(id);
 
         console.log("Updated listing:", updatedListing);
 
@@ -416,7 +417,7 @@ exports.UpdateListings = async (req, res, next) => {
 };
 
 
-async function manageFacilities(category, bedrooms,bathrooms, existingFacilitiesId = null) {
+async function manageFacilities(category, bedrooms,bathrooms, existingFacilitiesId = null , next) {
     if (category !== 'house' && category !== 'hostel') {
         return null;
     }

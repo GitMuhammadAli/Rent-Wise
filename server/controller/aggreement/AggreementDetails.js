@@ -10,6 +10,8 @@ const QRCode = require('qrcode')
 const { io } = require("../../utils/socket");
 const Messsage = require("../../model/chat/MesssageModel");
 const Conversation = require("../../model/chat/ConversationModel");
+const {CreateNotification} = require("../../controller/notification/notification")
+
 
 const CreateQrCode = async (data, next) => {
     try {
@@ -24,7 +26,68 @@ const CreateQrCode = async (data, next) => {
 }
 
 
+//old - One
+// exports.getByOwnerId = async (req, res, next) => {
+//     try {
+//         const ownerId = req.user._id;
+//         const agreements = await Aggrement.find({ ownerId })
+//             .populate("listingId")
+//             .populate("renterId")
+//             .populate("agreementDetailsId")
+//             .populate("blockChain");
 
+//         if (!agreements || agreements.length === 0) {
+//             return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.USER_NOT_FOUND, STATUS.NOT_FOUND));
+//         }
+
+
+//         for (let i = 0; i < agreements.length; i++) {
+//             const aggId = agreements[i]._id;
+//             const agreementDetail = await AggrementDetails.find({ _id: agreements[i].agreementDetailsId });
+//             const startDate = agreementDetail[0].aggrementDetail.startDate;
+//             const endDate = agreementDetail[0].aggrementDetail.endDate;
+
+//             const currentDate = new Date();
+//             const agreementStartDate = new Date(startDate);
+//             const agreementEndDate = new Date(endDate);
+
+//             if (agreements[i].renterConfirmed === BOOLEAN.FALSE) {
+//                 // If renter has not confirmed, the status is pending, unless the date has passed.
+//                 if (currentDate.getTime() >= agreementStartDate.getTime() && currentDate.getTime() <= agreementEndDate.getTime()) {
+//                     await Aggrement.findByIdAndUpdate(aggId, { agreementStatus: "pending" }, { new: true });
+//                 } else if (currentDate.getTime() > agreementEndDate.getTime()) {
+//                     await Aggrement.findByIdAndUpdate(aggId, { agreementStatus: "Inactive" }, { new: true });
+//                 }
+//             } else if (agreements[i].renterConfirmed === BOOLEAN.TRUE) {
+                
+//                 // If renter has confirmed, check the date. If the date is not started, the status is pending.
+//                 if (currentDate.getTime() < agreementStartDate.getTime()) {
+//                     await Aggrement.findByIdAndUpdate(aggId, { agreementStatus: "pending" }, { new: true });
+//                 } else if (currentDate.getTime() >= agreementStartDate.getTime() && currentDate.getTime() <= agreementEndDate.getTime()) {
+//                     // Date is within range
+//                     await Aggrement.findByIdAndUpdate(aggId, { agreementStatus: "active" }, { new: true });
+//                 } else if (currentDate.getTime() > agreementEndDate.getTime()) {
+//                     // Date has passed
+//                     await Aggrement.findByIdAndUpdate(aggId, { agreementStatus: "Inactive" }, { new: true });
+//                 }
+//             }
+//         }
+
+//         res.status(STATUS.SUCCESS).json({
+//             status: STATUS.SUCCESS,
+//             message: RESPONCE_MESSAGE.AGGREGEMENT_CREATED,
+//             data: agreements,
+//         });
+//     } catch (error) {
+//         next(error);
+//     }
+// };
+
+// if listing any other agrement with in date cannot make new
+
+
+
+// With Notification
 exports.getByOwnerId = async (req, res, next) => {
     try {
         const ownerId = req.user._id;
@@ -34,40 +97,57 @@ exports.getByOwnerId = async (req, res, next) => {
             .populate("agreementDetailsId")
             .populate("blockChain");
 
-        if (!agreements || agreements.length === 0) {
+        if (!agreements?.length) {
             return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.USER_NOT_FOUND, STATUS.NOT_FOUND));
         }
 
-
-        for (let i = 0; i < agreements.length; i++) {
-            const aggId = agreements[i]._id;
-            const agreementDetail = await AggrementDetails.find({ _id: agreements[i].agreementDetailsId });
-            const startDate = agreementDetail[0].aggrementDetail.startDate;
-            const endDate = agreementDetail[0].aggrementDetail.endDate;
-
+        for (const agreement of agreements) {
+            const aggDetails = await AggrementDetails.findById(agreement.agreementDetailsId);
+            const { startDate, endDate } = aggDetails.aggrementDetail;
+            
             const currentDate = new Date();
-            const agreementStartDate = new Date(startDate);
-            const agreementEndDate = new Date(endDate);
+            const agreementStart = new Date(startDate);
+            const agreementEnd = new Date(endDate);
+            const originalStatus = agreement.agreementStatus;
 
-            if (agreements[i].renterConfirmed === BOOLEAN.FALSE) {
-                // If renter has not confirmed, the status is pending, unless the date has passed.
-                if (currentDate.getTime() >= agreementStartDate.getTime() && currentDate.getTime() <= agreementEndDate.getTime()) {
-                    await Aggrement.findByIdAndUpdate(aggId, { agreementStatus: "pending" }, { new: true });
-                } else if (currentDate.getTime() > agreementEndDate.getTime()) {
-                    await Aggrement.findByIdAndUpdate(aggId, { agreementStatus: "Inactive" }, { new: true });
-                }
-            } else if (agreements[i].renterConfirmed === BOOLEAN.TRUE) {
-                
-                // If renter has confirmed, check the date. If the date is not started, the status is pending.
-                if (currentDate.getTime() < agreementStartDate.getTime()) {
-                    await Aggrement.findByIdAndUpdate(aggId, { agreementStatus: "pending" }, { new: true });
-                } else if (currentDate.getTime() >= agreementStartDate.getTime() && currentDate.getTime() <= agreementEndDate.getTime()) {
-                    // Date is within range
-                    await Aggrement.findByIdAndUpdate(aggId, { agreementStatus: "active" }, { new: true });
-                } else if (currentDate.getTime() > agreementEndDate.getTime()) {
-                    // Date has passed
-                    await Aggrement.findByIdAndUpdate(aggId, { agreementStatus: "Inactive" }, { new: true });
-                }
+            let newStatus;
+            
+            // Determine new status
+            if (!agreement.renterConfirmed) {
+                newStatus = currentDate > agreementEnd ? "Inactive" 
+                    : (currentDate >= agreementStart ? "pending" : originalStatus);
+            } else {
+                newStatus = currentDate > agreementEnd ? "Inactive" 
+                    : currentDate >= agreementStart ? "active" 
+                    : currentDate < agreementStart ? "pending" 
+                    : originalStatus;
+            }
+
+            // Only update and notify if status changed
+            if (newStatus !== originalStatus) {
+                const updatedAgreement = await Aggrement.findByIdAndUpdate(
+                    agreement._id,
+                    { agreementStatus: newStatus },
+                    { new: true }
+                );
+
+                await CreateNotification(
+                    agreement.ownerId._id,
+                    null,
+                    "aggrement",
+                    `Agreement status changed to ${newStatus} for ${agreement.listingId.title}`,
+                    next,
+                    res
+                );
+
+                await CreateNotification(
+                    agreement.renterId._id,
+                    null,
+                    "aggrement",
+                    `Agreement status changed to ${newStatus} for ${agreement.listingId.title}`,
+                    next,
+                    res
+                );
             }
         }
 
@@ -80,8 +160,6 @@ exports.getByOwnerId = async (req, res, next) => {
         next(error);
     }
 };
-
-// if listing any other agrement with in date cannot make new
 
 exports.CreateAggrement = async (req, res, next) => {
     try {
@@ -201,8 +279,11 @@ const createLinkMessage = async (listingId, message, senderId, receiver, convers
 
         await newMessage.save();
 
+
         conversation.updatedAt = new Date();
         await conversation.save();
+
+      
 
         return newMessage;
     } catch (err) {
@@ -247,6 +328,20 @@ exports.sentAggreement = async (req, res, next) => {
             conversationID,
             true
         );
+        
+        
+        if(messageLink){
+            console.log("link is cretaed to sent")
+            await CreateNotification(
+                ownerId,
+                renterId,
+                "aggrement",
+                `You have received a new agreement for ${listingId.title} from the owner. Please review and confirm`,
+                next,
+                res
+            );
+        }
+      
 
         if (io) {
             console.log("sending message to conversationID:", conversationID);
@@ -260,10 +355,12 @@ exports.sentAggreement = async (req, res, next) => {
                     receiver: renterId,
                     listing: listingId,
                 });
+                   
         } else {
             return next(new AppError(BOOLEAN.FALSE, CONVERSATION.SOCKET_ERROR, STATUS.NOT_FOUND));
         }
 
+       
         res.status(200).json({
             success: true,
             message: "Agreement notification sent successfully",
