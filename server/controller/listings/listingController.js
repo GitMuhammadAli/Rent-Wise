@@ -406,7 +406,7 @@ exports.UpdateListings = async (req, res, next) => {
             },
             { new: BOOLEAN.TRUE, runValidators: BOOLEAN.TRUE }
         );
-        await cleanUpUnreferencedMedia(id);
+        // await cleanUpUnreferencedMedia(id);
 
         console.log("Updated listing:", updatedListing);
 
