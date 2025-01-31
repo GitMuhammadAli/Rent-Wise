@@ -440,7 +440,7 @@ export default function OwnerDash() {
                                     : agreement.agreementStatus === "active"
                                       ? "green.700"
                                       : agreement.agreementStatus === "Inactive"
-                                        ? "gray.100"
+                                        ? "gray.600"
                                         : "blue.100"
                               }
                             >
