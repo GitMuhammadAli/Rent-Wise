@@ -404,7 +404,7 @@ const UserProfile = () => {
                       <div className="flex items-center text-yellow-500 mt-2">
                         <StarIcon className="h-5 w-5" />
                         <span className="ml-1">
-                          {listing.averageRating.toFixed(1) || "0.0"}
+                          {listing?.averageRating?.toFixed(1) || "0.0"}
                         </span>
                       </div>
                     </div>

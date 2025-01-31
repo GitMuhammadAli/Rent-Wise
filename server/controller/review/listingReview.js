@@ -30,12 +30,11 @@ exports.CreateListReview = async (req, res, next) => {
 
     console.log(userId)
 
-    const listing =  await RentalItem.find({
-        _id :id
-    })
+    const listing =  await RentalItem.findById(id)
 
-    const user = await User
+    const userName = await User.findById(userId).select('name');
 
+    
     if(!listing) {
       return res.status(STATUS.FORBIDDEN).json({
         Success: BOOLEAN.FALSE,
@@ -80,17 +79,19 @@ exports.CreateListReview = async (req, res, next) => {
       createdAt: Date.now(),
     });
 
-    console.log("notification data for listing review  " , listing.owner )
+    // console.log("notification data for listing review  " , listing.owner.name , userName , listing.title )
 
     if(ListingReview){
       const notification = await CreateNotification(
         listing.owner,
-        userId,
+        userName,
         'review',
-        `${userId.name} Commented On your ${rental_Name.title} Listing`,          next,
+        `${userName.name} has Reviewd On your ${listing.title} Listing`,          next,
         res,
-    );
+      );
+      // console.log(notification);
     }
+
     // const Listing = await RentalItem.findByIdAndUpdate(
     //   id,
     //   { $push: { listingReviews: ListingReview._id } },
@@ -101,11 +102,14 @@ exports.CreateListReview = async (req, res, next) => {
     //   return next(new AppError("Rental item not found", 404));
     // }
 
+
+
     res.status(STATUS.SUCCESS).json({
       status: BOOLEAN.TRUE,
       data: {
           message: REVIEWS.REVIEW_REPORTED,
           review: ListingReview,
+          // notification
           // list: Listing,
       },
   });

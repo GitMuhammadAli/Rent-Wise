@@ -3,6 +3,8 @@ const AggrementDetails = require("../../model/agreements/AggrementDetails");
 const User = require("../../model/user/userModel")
 const profileReview = require("../../model/reviews/profileReview");
 const { ERROR_MESSAGE } = require("../../messages/error");
+const {CreateNotification} = require("../../controller/notification/notification")
+
 const {
     RESPONCE_MESSAGE,
     AGGREEMENT,
@@ -28,6 +30,8 @@ exports.CreateUserReview = async (req, res, next) => {
                 message: REVIEWS.REVIEW_USER_NOT_FOUND
             })
         }
+
+        const findReviewerUser = await User.findById(userId);
 
         const CheckAggreement = await Aggrement.find({
             ownerId: id,
@@ -60,9 +64,22 @@ exports.CreateUserReview = async (req, res, next) => {
         });
 
 
+        
         if (!userprofileReview) {
             return next(new AppError(BOOLEAN.FALSE, REVIEWS.NOT_CREATED, STATUS.NOT_FOUND))
         }
+
+        if(userprofileReview){
+            const notification = await CreateNotification(
+              findUser,
+              userId,
+              'review',
+              `${findReviewerUser.name} has Reviewd On your Profile`,          next,
+              res,
+            );
+            // console.log(notification);
+          }
+
 
         // const updateResult = await User.findByIdAndUpdate(
         //     id,
