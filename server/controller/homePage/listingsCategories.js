@@ -38,6 +38,7 @@ exports.getAllHouseListings = async (req, res, next) => {
         })
         .populate("images")
         .populate("videos")
+        .populate('facilities')
 
         res.status(STATUS.SUCCESS).json({
             status: STATUS.SUCCESS,
@@ -59,6 +60,7 @@ exports.getAllApartmentsListings = async (req, res, next) => {
         })
         .populate("images")
         .populate("videos")
+        .populate('facilities')
 
         res.status(STATUS.SUCCESS).json({
             status: STATUS.SUCCESS,

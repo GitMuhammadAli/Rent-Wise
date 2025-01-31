@@ -3,6 +3,8 @@ const AggrementDetails = require("../../model/agreements/AggrementDetails");
 const RentalItem = require("../../model/listings/RentalItemModel");
 const listingReview = require("../../model/reviews/listingReview");
 const { ERROR_MESSAGE } = require("../../messages/error");
+const User = require("../../model/user/userModel");
+
 const {
   RESPONCE_MESSAGE,
   AGGREEMENT,
@@ -31,6 +33,8 @@ exports.CreateListReview = async (req, res, next) => {
     const listing =  await RentalItem.find({
         _id :id
     })
+
+    const user = await User
 
     if(!listing) {
       return res.status(STATUS.FORBIDDEN).json({
@@ -76,8 +80,16 @@ exports.CreateListReview = async (req, res, next) => {
       createdAt: Date.now(),
     });
 
+    console.log("notification data for listing review  " , listing.owner )
+
     if(ListingReview){
-      
+      const notification = await CreateNotification(
+        listing.owner,
+        userId,
+        'review',
+        `${userId.name} Commented On your ${rental_Name.title} Listing`,          next,
+        res,
+    );
     }
     // const Listing = await RentalItem.findByIdAndUpdate(
     //   id,
