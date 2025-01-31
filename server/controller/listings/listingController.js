@@ -375,15 +375,18 @@ exports.UpdateListings = async (req, res, next) => {
             await Facilities.deleteOne({ _id: existingListing.facilities });
             facilitiesId = null;
         }
-        if (category === 'house' || category === 'hostel') {
-            facilitiesId  = await  manageFacilities(
-                category,
-                bedrooms, bathrooms ,
-                existingListing.facilities?._id || null,
-                next
-            );
+
+
+        // if (category === 'house' || category === 'hostel') {
+        //     facilitiesId  = await  manageFacilities(
+        //         category,
+        //         bedrooms, bathrooms ,
+        //         existingListing.facilities?._id || null,
+        //         next
+        //     );
         
-        }
+        // }
+
         // Update listing with all changes
         const updatedListing = await RentalItem.findByIdAndUpdate(
             id,
@@ -406,6 +409,9 @@ exports.UpdateListings = async (req, res, next) => {
             },
             { new: BOOLEAN.TRUE, runValidators: BOOLEAN.TRUE }
         );
+
+        
+
         // await cleanUpUnreferencedMedia(id);
 
         console.log("Updated listing:", updatedListing);
@@ -417,32 +423,32 @@ exports.UpdateListings = async (req, res, next) => {
 };
 
 
-async function manageFacilities(category, bedrooms,bathrooms, existingFacilitiesId = null , next) {
-    if (category !== 'house' && category !== 'hostel') {
-        return null;
-    }
+// async function manageFacilities(category, bedrooms,bathrooms, existingFacilitiesId = null , next) {
+//     if (category !== 'house' && category !== 'hostel') {
+//         return null;
+//     }
 
-    if ((category === 'house' || category === 'hostel') && (!bedrooms || !bathrooms)) {
-        return next(new AppError(BOOLEAN.FALSE, "Bedrooms and bathrooms are required", STATUS.BAD_REQUEST));
-      }
+//     if ((category === 'house' || category === 'hostel') && (!bedrooms || !bathrooms)) {
+//         return next(new AppError(BOOLEAN.FALSE, "Bedrooms and bathrooms are required", STATUS.BAD_REQUEST));
+//       }
     
-    if (existingFacilitiesId) {
-        // Update existing facilities
-        const updatedFacilities = await Facilities.findByIdAndUpdate(
-            existingFacilitiesId,
-            { bedrooms, bathrooms },
-            { new: true }
-        );
-        return updatedFacilities._id;
-    } else {
-        // Create new facilities
-        const newFacilities = await Facilities.create({
-            bedrooms,
-            bathrooms
-        });
-        return newFacilities._id;
-    }
-}
+//     if (existingFacilitiesId) {
+//         // Update existing facilities
+//         const updatedFacilities = await Facilities.findByIdAndUpdate(
+//             existingFacilitiesId,
+//             { bedrooms, bathrooms },
+//             { new: true }
+//         );
+//         return updatedFacilities._id;
+//     } else {
+//         // Create new facilities
+//         const newFacilities = await Facilities.create({
+//             bedrooms,
+//             bathrooms
+//         });
+//         return newFacilities._id;
+//     }
+// }
 
 
 exports.DeleteListings = async (req, res, next) => {
