@@ -115,7 +115,7 @@ exports.ReadOneNotificationByUser = async (req, res, next) => {
 
     res.status(STATUS.SUCCESS).json({
       status: BOOLEAN.TRUE,
-      message: NOTIFICATION.GENERAL.NOTIFICATION_READ,
+      message: NOTIFICATION.GENERAL.NOTIFICATION_MARKED_READ,
       data: notification
     });
   } catch (error) {
