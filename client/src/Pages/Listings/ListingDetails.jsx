@@ -58,6 +58,7 @@ const ListingDetails = () => {
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const { user } = useAuth();
   const toast = useToast();
+  const [avgRating, setAvgRating] = useState(0);
 
   useEffect(() => {
     // if(!user)
@@ -151,10 +152,10 @@ const ListingDetails = () => {
                   ${currentListing?.price}/{currentListing?.priceUnit}
                 </Badge>
                 <Flex align="center">
-                  <StarRating rating={currentListing?.averageRating} />
+                  <StarRating rating={avgRating} />
                   <Text ml={1} color="gray.700" _dark={{ color: "gray.300" }}>
                     {" "}
-                    ({currentListing?.averageRating} reviews)
+                    ({avgRating} reviews)
                   </Text>
 
                   {/* <Text ml={1} color="gray.700" _dark={{ color: 'gray.300' }}>Reviews/Rating -- add it later</Text>  */}
@@ -223,7 +224,7 @@ const ListingDetails = () => {
                 gap={4}
                 display={{ base: "none", md: "flex" }}
               >
-                <ReviewsInListing listingID={currentListing?._id} ownerID={currentListing?.owner._id} />
+                <ReviewsInListing setAvgRating={setAvgRating} listingID={currentListing?._id} ownerID={currentListing?.owner._id} />
                 <AddCommentsInListing
                   toast={toast}
                   id={id}
@@ -409,7 +410,7 @@ const ListingDetails = () => {
             gap={4}
             display={{ base: "flex", md: "none" }}
           >
-            <ReviewsInListing listingID={currentListing?._id} ownerID={currentListing?.owner._id} />
+            <ReviewsInListing setAvgRating={setAvgRating} listingID={currentListing?._id} ownerID={currentListing?.owner._id} />
             <AddCommentsInListing
               toast={toast}
               id={id}

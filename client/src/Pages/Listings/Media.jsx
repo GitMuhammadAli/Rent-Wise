@@ -1,7 +1,8 @@
 import React, { useContext, useState } from 'react';
 import {
   Box, Button, FormControl, FormLabel, Input, Stack, Heading, useToast, Textarea, Flex, Text, Image,
-  Switch, Select} from "@chakra-ui/react";
+  Switch, Select,
+  HStack} from "@chakra-ui/react";
 import { uploadMediaAPI } from "../../Api/ListingApi";  
 import { useAuth } from "../../hooks/AuthContext";
 import { ListingsContext } from '../../hooks/ListingsContext';
@@ -28,6 +29,7 @@ export default function Media() {
   const [price, setPrice] = useState('');
   const [category, setCategory] = useState('');
   const [priceUnit, setPriceUnit] = useState('');
+  // const [facilities, setFacilities] = useState({ bedrooms: 1 , bathrooms: 1 })
 
   const toast = useToast();
 
@@ -130,6 +132,9 @@ const handleSubmit = async (e) => {
   formDataToSend.append('minimumBid', formData.minimumBid);
   formDataToSend.append('bidIncrement', formData.bidIncrement);
   formDataToSend.append('bidEndDate', formData.bidEndDate);
+  // formDataToSend.append('bedrooms', facilities.bedrooms);
+  // formDataToSend.append('bathrooms', facilities.bathrooms);
+
 
   // Append each image
   if (images.length > 0) {
@@ -164,6 +169,7 @@ const handleSubmit = async (e) => {
     setPrice('');
     setCategory('');
     setPriceUnit('');
+    // setFacilities({ bathrooms: 0 , bedrooms: 0 })
     setFormData({
       amenities: [],
       rules: [],
@@ -223,15 +229,15 @@ const handleSubmit = async (e) => {
             </FormControl>
 
 
-  <FormControl isRequired>
-  <FormLabel>Price</FormLabel>
-  <Input
-    type="number"
-    value={price}
-    onChange={(e) => setPrice(e.target.value)}
-    placeholder="Enter listing price"
-  />
-</FormControl>
+            <FormControl isRequired>  
+              <FormLabel>Price</FormLabel>
+                <Input
+                type="number"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                placeholder="Enter listing price"
+                />
+            </FormControl>
            
 
             <FormControl isRequired>
@@ -243,7 +249,6 @@ const handleSubmit = async (e) => {
               >
                 <option value="car">Car</option>
                 <option value="hostel">Hostel</option>
-                <option value="apartment">Apartment</option>
                 <option value="house">House</option>
               </Select>
             </FormControl>
@@ -261,12 +266,40 @@ const handleSubmit = async (e) => {
               </Select>
             </FormControl>
 
+            {/* facilities section with bedrooms and bathrooms for House and Hostels */}
+
+            {/* {
+              category && (category === 'house' || category === 'hostel') && (
+                <>
+                <FormControl isRequired>
+                  <FormLabel FormLabel>Bedrooms</FormLabel>
+                    <HStack maxW="200px">
+                      <Button onClick={() => setFacilities((prev) => ({ ...prev, bedrooms: Math.max(prev.bedrooms - 1, 0) }))}>-</Button>
+                        <Text>{facilities.bedrooms}</Text>
+                      <Button onClick={() => setFacilities((prev) => ({ ...prev, bedrooms: prev.bedrooms + 1 }))}>+</Button>
+                    </HStack>
+                </FormControl>
+
+                <FormControl isRequired mt={4}>
+                  <FormLabel>Bathrooms</FormLabel>
+                    <HStack maxW="200px">
+                      <Button onClick={() => setFacilities((prev) => ({ ...prev, bathrooms: Math.max(prev.bathrooms - 1, 0) }))}>-</Button>
+                      <Text>{facilities.bathrooms}</Text>
+                      <Button onClick={() => setFacilities((prev) => ({ ...prev, bathrooms: prev.bathrooms + 1 }))}>+</Button>
+                    </HStack>
+                  </FormControl>
+
+                </>
+
+              )
+            } */}
+
             {/* Amenities Section */}
 
             {
              category && category !== 'car' && (
 
-<FormControl>
+            <FormControl>
               <FormLabel>Amenities</FormLabel>
               {formData.amenities.map((amenity, index) => (
                 <Flex key={index} mb={2}>
@@ -399,8 +432,6 @@ const handleSubmit = async (e) => {
             </Box>
 
             <Button colorScheme="blue" type="submit" mt={4}>
-
-
               Create Listing
             </Button>
           </Stack>

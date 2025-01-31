@@ -12,7 +12,7 @@ export const getAllHouse = () =>
     axios.get(`${API_BASE_URL}/house`, { withCredentials: true });
 
 
-export const getAllApartmen = () =>
-    axios.get(`${API_BASE_URL}/apartment`, { withCredentials: true });
+export const getAllHostel = () =>
+    axios.get(`${API_BASE_URL}/hostel`, { withCredentials: true });
 
 
