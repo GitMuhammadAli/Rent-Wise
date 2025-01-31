@@ -19,6 +19,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 const socket = io("http://localhost:3600");
 import { io } from "socket.io-client";
 import { createMessage, fetchMessagesByConversation } from "../../Api/Chats";
+import { createAgreement , SentAggreement } from "../../Api/Agreement";
+
 import ViewHouseAgr from './ViewAgreement.jsx/ViewHouseAgr';
 import ViewCarAgr from './ViewAgreement.jsx/ViewCarAgr';
 
@@ -37,27 +39,6 @@ export default function SendToTenant({ mainDetails ,isOpen, setIsOpen,  open, cl
 //  const close = () => setIsOpen(false)
 
 
-const SentToRenter = async () => {
-  console.log("Agreement detail:", aggrementFromResponce);
-  console.log("Joining conversation ID:", conversationId);
-  socket.emit("join-conversation", conversationId);
-
-  try {
-      const link = `${import.meta.env.VITE_FRONT_END_URL}/agreement/${aggrementFromResponce._id}`;
-      const dataForSentMessageOfAgreement = {
-          message: `Agreement Link: ${link}`,
-          listing: [aggrementFromResponce.listingId], // Add appropriate listing ID(s)
-          receiver: aggrementFromResponce.receiverId, // Adjust as needed
-      };
-
-      console.log("Sending link as message:", dataForSentMessageOfAgreement);
-
-      const response = await createMessage(dataForSentMessageOfAgreement);
-      console.log("Response from message creation:", response);
-  } catch (error) {
-      console.error("Error sending message:", error);
-  }
-};
 
 
   useEffect(()=>{
