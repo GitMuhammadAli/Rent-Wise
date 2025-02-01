@@ -3,16 +3,26 @@ const router = express.Router();
 const rentalController = require("../../controller/listings/listingController");
 const upload = require("../../utils/mediaFile");
 const asyncHandler = require("../../middleware/asyncWrapper");
+const mongoose = require("mongoose");
+
 
 // Route to create a new listing with image/video upload
 router.post(
   "/create",
+  (req, res, next) => {
+    const listingId =  new mongoose.Types.ObjectId();
+    console.log("router created listing id is" , listingId)
+    req.listingId = listingId;
+    next();
+  },
   upload.fields([
     { name: "images", maxCount: 10 }, // Max 10 images
     { name: "videos", maxCount: 5 }, // Max 5 videos
   ]),
   asyncHandler(rentalController.CreateListings)
 );
+
+
 
 router.post(
   "/uploadMedia",
@@ -26,20 +36,29 @@ router.post(
 // Route to update a listing by ID
 router.put(
   "/update/:id",
+  (req , res ,  next)=>{
+    const  listingId  = req.params.id
+    console.log("router updated listing id is" , listingId)
+    req.listingId = listingId
+    console.log(req.listingId)
+    next();
+  },
+
   upload.fields([
     { name: "images", maxCount: 10 }, // Max 10 images
     { name: "videos", maxCount: 5 }, // Max 5 videos
   ]),
   asyncHandler(rentalController.UpdateListings)
 );
-router.post(
-  "/updatehtml/:id",
-  upload.fields([
-    { name: "images", maxCount: 10 }, // Max 10 images
-    { name: "videos", maxCount: 5 }, // Max 5 videos
-  ]),
-  asyncHandler(rentalController.UpdateListings)
-);
+
+// router.post(
+//   "/updatehtml/:id",
+//   upload.fields([
+//     { name: "images", maxCount: 10 }, // Max 10 images
+//     { name: "videos", maxCount: 5 }, // Max 5 videos
+//   ]),
+//   asyncHandler(rentalController.UpdateListings)
+// );
 
 // Route to delete a listing by ID
 router.delete("/delete/:id", asyncHandler(rentalController.DeleteListings));

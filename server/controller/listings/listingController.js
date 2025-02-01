@@ -73,6 +73,7 @@ exports.CreateListings = async (req, res, next) => {
             location, biddingEnabled, minimumBid, bidIncrement, bidEndDate
         } = req.body;
 
+        const listingId = req.listingId
         console.log("body ", req.body);
         const missingFields = [];
         if (!owner) missingFields.push("owner");
@@ -95,7 +96,8 @@ exports.CreateListings = async (req, res, next) => {
             try {
                 const imagePromises = req.files['images'].map(file => {
                     const image = new Image({
-                        url: `/uploads/media/${req.body.owner}/${file.filename}`,
+                        // url: `/uploads/media/${req.body.owner}/${file.filename}`,
+                        url: `/uploads/media/${listingId}/${file.filename}`,
                         caption: ""
                     });
                     return image.save();
@@ -112,7 +114,8 @@ exports.CreateListings = async (req, res, next) => {
             try {
                 const videoPromises = req.files['videos'].map(file => {
                     const video = new Video({
-                        url: `/uploads/media/${req.body.owner}/${file.filename}`,
+                        // url: `/uploads/media/${req.body.owner}/${file.filename}`,
+                        url: `/uploads/media/${listingId}/${file.filename}`,
                         caption: ""
                     });
                     return video.save();
@@ -137,6 +140,7 @@ exports.CreateListings = async (req, res, next) => {
         }
         // Create the rental item
         const newRentalItem = new RentalItem({
+            _id:listingId,
             owner,
             title,
             description,
@@ -244,35 +248,25 @@ const removeFile = (filePath) => {
 
 const cleanUpUnreferencedMedia = async (listingId, next) => {
     try {
-        // Fetch the updated listing's images and videos
-        const listing = await RentalItem.findById(listingId).populate(['images', 'videos']);
-        if (!listing) return next(new AppError(BOOLEAN.FALSE, LISTINGS.LISTING_NOT_FOUND, STATUS.NOT_FOUND));
+        const listing = await RentalItem.findById(listingId)
+            .populate(['images', 'videos']);
 
-        // Paths from the database
         const referencedFiles = [
             ...listing.images.map(img => path.basename(img.url)),
             ...listing.videos.map(vid => path.basename(vid.url))
         ];
 
-        // Path to the directory containing the listing's media files
-        const mediaDirPath = path.resolve(`uploads/media/${listing.owner}`);
+        const mediaDirPath = path.resolve(`uploads/media/${listingId}`); 
 
-        // List all files in the directory
         const allFiles = await fs.promises.readdir(mediaDirPath);
-
-        // Files to delete: those not in `referencedFiles`
         const unreferencedFiles = allFiles.filter(file => !referencedFiles.includes(file));
 
-        // Delete each unreferenced file
         for (const file of unreferencedFiles) {
             const filePath = path.join(mediaDirPath, file);
             await fs.promises.unlink(filePath);
-            console.log(`Deleted unreferenced file: ${filePath}`);
         }
-
     } catch (error) {
-        //  next(error);
-        console.log("error is ", error)
+        console.error("Cleanup error:", error);
     }
 };
 
@@ -321,30 +315,27 @@ exports.UpdateListings = async (req, res, next) => {
         }
         console.log("Existing listing:", existingListing);
 
-        // Handle removed media
         for (const imageObj of parsedRemovedImages) {
             await Image.findByIdAndDelete(imageObj._id);
-            const filePath = path.resolve(`uploads/media/${existingListing.owner}/${path.basename(imageObj.url)}`);
+            const filePath = path.resolve(`uploads/media/${id}/${path.basename(imageObj.url)}`);
             await removeFile(filePath);
         }
 
         for (const videoObj of parsedRemovedVideos) {
             await Video.findByIdAndDelete(videoObj._id);
-            const filePath = path.resolve(`uploads/media/${existingListing.owner}/${path.basename(videoObj.url)}`);
+            const filePath = path.resolve(`uploads/media/${id}/${path.basename(videoObj.url)}`);
             await removeFile(filePath);
         }
 
-        // Handle new media
         let finalImageIds = parsedExistingImages.map(img => img._id);
         let finalVideoIds = parsedExistingVideos.map(vid => vid._id);
         let facilitiesId = null;
 
         try {
-            // Process new images
             if (req.files?.['images']) {
                 const newImages = await Image.insertMany(
                     req.files['images'].map(file => {
-                        const filePath = `/uploads/media/${existingListing.owner}/${file.filename}`;
+                        const filePath = `/uploads/media/${id}/${file.filename}`;
                         uploadedFilePaths.push(filePath);  // Track for potential cleanup
                         return { url: filePath, caption: "" };
                     })
@@ -352,11 +343,10 @@ exports.UpdateListings = async (req, res, next) => {
                 finalImageIds = [...finalImageIds, ...newImages.map(img => img._id)];
             }
 
-            // Process new videos
             if (req.files?.['videos']) {
                 const newVideos = await Video.insertMany(
                     req.files['videos'].map(file => {
-                        const filePath = `/uploads/media/${existingListing.owner}/${file.filename}`;
+                        const filePath = `/uploads/media/${id}/${file.filename}`;
                         uploadedFilePaths.push(filePath);  // Track for potential cleanup
                         return { url: filePath, caption: "" };
                     })
@@ -364,7 +354,6 @@ exports.UpdateListings = async (req, res, next) => {
                 finalVideoIds = [...finalVideoIds, ...newVideos.map(vid => vid._id)];
             }
         } catch (mediaError) {
-            // If any media insertion fails, delete all uploaded files
             await Promise.all(uploadedFilePaths.map(filePath => removeFile(path.resolve(filePath))));
             return next(new AppError(BOOLEAN.FALSE, LISTINGS.MEDIA_UPLOAD_ERR, STATUS.INTERNAL_SERVER_ERROR));
         }
@@ -412,7 +401,7 @@ exports.UpdateListings = async (req, res, next) => {
 
         
 
-        // await cleanUpUnreferencedMedia(id);
+        await cleanUpUnreferencedMedia(id , next);
 
         console.log("Updated listing:", updatedListing);
 

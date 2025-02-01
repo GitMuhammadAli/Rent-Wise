@@ -393,13 +393,13 @@ export default function OwnerDash() {
                             fontSize={{ base: "xs", sm: "sm" }}
                             fontWeight="medium"
                           >
-                            {agreement.listingId.title}
+                            {agreement.listingId?.title}
                           </Td>
                           <Td
                             fontSize={{ base: "xs", sm: "sm" }}
                             fontWeight="medium"
                           >
-                            {agreement.listingId.category}
+                            {agreement.listingId?.category}
                           </Td>
                           <Td fontSize={{ base: "xs", sm: "sm" }}>
                             <Text
@@ -471,7 +471,7 @@ export default function OwnerDash() {
                           <Td>
                             <Link
                               to={
-                                agreement.listingId.category === "car"
+                                agreement.listingId?.category === "car"
                                   ? `/agreementCar/${agreement._id}`
                                   : `/agreementHouse/${agreement._id}`
                               }
