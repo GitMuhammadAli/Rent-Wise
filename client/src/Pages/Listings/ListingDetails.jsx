@@ -249,7 +249,7 @@ const ListingDetails = () => {
             >
               <Heading
                 as="h3"
-                size="md"
+                fontSize={"2xl"} fontWeight={'semibold'}
                 color="gray.900"
                 _dark={{ color: "white" }}
                 mb={4}
@@ -285,7 +285,7 @@ const ListingDetails = () => {
               >
                 <Heading
                   as="h3"
-                  size="md"
+                  fontSize={"2xl"} fontWeight={'semibold'}
                   color="gray.900"
                   _dark={{ color: "white" }}
                   mb={4}
@@ -366,7 +366,7 @@ const ListingDetails = () => {
               shadow="md"
               w="full"
             >
-              <Heading mb={4} fontSize={"28px"}>
+              <Heading mb={4} fontSize={"2xl"} fontWeight={'semibold'}>
                 Description
               </Heading>
               <Text
@@ -386,7 +386,7 @@ const ListingDetails = () => {
               shadow="md"
               w="full"
             >
-              <Heading mb={4} fontSize={"28px"}>
+              <Heading mb={4} fontSize={"2xl"} fontWeight={'semibold'}>
                 Rules
               </Heading>
               <List spacing={3}>

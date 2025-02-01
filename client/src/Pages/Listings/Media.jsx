@@ -29,7 +29,7 @@ export default function Media() {
   const [price, setPrice] = useState('');
   const [category, setCategory] = useState('');
   const [priceUnit, setPriceUnit] = useState('');
-  // const [facilities, setFacilities] = useState({ bedrooms: 1 , bathrooms: 1 })
+  const [facilities, setFacilities] = useState({ bedrooms: 0 , bathrooms: 0 })
 
   const toast = useToast();
 
@@ -132,8 +132,8 @@ const handleSubmit = async (e) => {
   formDataToSend.append('minimumBid', formData.minimumBid);
   formDataToSend.append('bidIncrement', formData.bidIncrement);
   formDataToSend.append('bidEndDate', formData.bidEndDate);
-  // formDataToSend.append('bedrooms', facilities.bedrooms);
-  // formDataToSend.append('bathrooms', facilities.bathrooms);
+  formDataToSend.append('bedrooms', facilities.bedrooms);
+  formDataToSend.append('bathrooms', facilities.bathrooms);
 
 
   // Append each image
@@ -169,7 +169,7 @@ const handleSubmit = async (e) => {
     setPrice('');
     setCategory('');
     setPriceUnit('');
-    // setFacilities({ bathrooms: 0 , bedrooms: 0 })
+    setFacilities({ bathrooms: 0 , bedrooms: 0 })
     setFormData({
       amenities: [],
       rules: [],
@@ -268,7 +268,7 @@ const handleSubmit = async (e) => {
 
             {/* facilities section with bedrooms and bathrooms for House and Hostels */}
 
-            {/* {
+            {
               category && (category === 'house' || category === 'hostel') && (
                 <>
                 <FormControl isRequired>
@@ -292,7 +292,7 @@ const handleSubmit = async (e) => {
                 </>
 
               )
-            } */}
+            }
 
             {/* Amenities Section */}
 

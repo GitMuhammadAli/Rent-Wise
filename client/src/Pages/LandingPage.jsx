@@ -57,8 +57,9 @@ const { state, dispatch } = useContext(ListingsContext);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white">
-       <Box position="relative" overflow="hidden" height="80vh">
-      <AnimatedBackground />
+      {/* just added bg because removed animation */}
+       <Box position="relative" overflow="hidden" height="80vh" bg={'orange.400'} > 
+      {/* <AnimatedBackground /> */}
       <Flex position="relative" zIndex={10} height="full" alignItems="center">
         <Container maxW="7xl" px={{ base: 4, sm: 6, lg: 8 }}>
           <Flex direction="column" alignItems="center" textAlign="center">
@@ -179,7 +180,7 @@ const { state, dispatch } = useContext(ListingsContext);
       </Box>
 
       
-      {/* Featured Listings Section */}
+      {/* Listings Section */}
 <Box id="featured" bg="gray.50" py={24}>
         <Container maxW="7xl" px={{ base: 4, sm: 6, lg: 8 }}>
           <Heading fontSize={{ base: "4xl", sm: "5xl" }} fontWeight="extrabold" color="gray.900" textAlign="center">

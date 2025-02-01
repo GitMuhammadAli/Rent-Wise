@@ -37,8 +37,8 @@ const { listings,currentListing } = state;
     amenities: [],
     rules: [],
     listingStatus: 'active',
-    // bedrooms: 0,
-    // bathrooms: 0,
+    bedrooms: 0,
+    bathrooms: 0,
   });
 
   // Media states
@@ -81,8 +81,8 @@ const { listings,currentListing } = state;
           amenities: listing.amenities || [],
           rules: listing.rules || [],
           listingStatus: listing.listingStatus,
-          // bedrooms: listing.facilities?.bedrooms ?? 0,
-          // bathrooms: listing.facilities?.bathrooms ?? 0
+          bedrooms: listing.facilities?.bedrooms ?? 0,
+          bathrooms: listing.facilities?.bathrooms ?? 0
         });
 
         setExistingImages(listing.images || []);
@@ -164,34 +164,34 @@ const { listings,currentListing } = state;
       }
        
       // new one
-      // const updatedFormData = {
-      //   ...formData,
-      //   bedrooms: formData.category === "house" || formData.category === "hostel" ? formData.bedrooms : 0,
-      //   bathrooms: formData.category === "house" || formData.category === "hostel" ? formData.bathrooms : 0,
-      // };
+      const updatedFormData = {
+        ...formData,
+        bedrooms: formData.category === "house" || formData.category === "hostel" ? formData.bedrooms : 0,
+        bathrooms: formData.category === "house" || formData.category === "hostel" ? formData.bathrooms : 0,
+      };
       // till here
 
     const updateData = new FormData();
 
     // Append basic form data
 
-    Object.keys(formData).forEach(key => {
-      if (Array.isArray(formData[key])) {
-        updateData.append(key, JSON.stringify(formData[key]));
-      } else {
-        updateData.append(key, formData[key]);
-      }
-    });
-
-    // Object.keys(updatedFormData).forEach((key) => {
-    //   const value = updatedFormData[key];
-    
-    //   if (Array.isArray(value)) {
-    //     updateData.append(key, JSON.stringify(value)); // Convert arrays to JSON
+    // Object.keys(formData).forEach(key => {
+    //   if (Array.isArray(formData[key])) {
+    //     updateData.append(key, JSON.stringify(formData[key]));
     //   } else {
-    //     updateData.append(key, value);
+    //     updateData.append(key, formData[key]);
     //   }
     // });
+
+    Object.keys(updatedFormData).forEach((key) => {
+      const value = updatedFormData[key];
+    
+      if (Array.isArray(value)) {
+        updateData.append(key, JSON.stringify(value)); // Convert arrays to JSON
+      } else {
+        updateData.append(key, value);
+      }
+    });
 
     for (let [key, value] of updateData.entries()) {
       console.log(`${key}: ${value}`);
@@ -310,7 +310,7 @@ const { listings,currentListing } = state;
           {formData.category && formData.category !== 'car' && (
 
             <>
-                           {/* <FormControl isRequired>
+                           <FormControl isRequired>
                               <FormLabel FormLabel>Bedrooms</FormLabel>
                                 <HStack maxW="200px">
                                   <Button onClick={() => setFormData((prev) => ({ ...prev, bedrooms: Math.max(prev.bedrooms - 1, 0) }))}>-</Button>
@@ -326,7 +326,7 @@ const { listings,currentListing } = state;
                                   <Text>{formData.bathrooms}</Text>
                                   <Button onClick={() => setFormData((prev) => ({ ...prev, bathrooms: prev.bathrooms + 1 }))}>+</Button>
                                 </HStack>
-                              </FormControl> */}
+                              </FormControl>
 
                 <FormControl>
 

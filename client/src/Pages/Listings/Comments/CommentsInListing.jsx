@@ -153,7 +153,7 @@ export default function AddCommentsInListing({toast,id,currentID,ownerID}) {
         </Box> */}
 
 <Box bg="white" boxShadow="md" borderRadius="lg" p={6}>
-      <Heading as="h2" size="lg" fontWeight="bold" mb={4}>
+      <Heading as="h2" fontSize={'2xl'} fontWeight="semibold" mb={4}>
         Comments
       </Heading>
 

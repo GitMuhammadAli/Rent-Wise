@@ -1,172 +1,152 @@
 import React, { useEffect, useState } from 'react'
-import { getAllCar } from '../../../Api/Home'
-import { Box, Button,Flex, Link ,Input, Select, Slider, Text, VStack, HStack, Grid, GridItem, Card, CardHeader, CardBody, CardFooter, Image, SliderTrack, SliderFilledTrack, SliderThumb, Heading } from '@chakra-ui/react';
-import { SearchIcon, StarIcon } from '@chakra-ui/icons';
+import { getAllCar, getAllHostel, getAllHouse } from '../../../Api/Home';
+import { Box, Card, CardFooter, CardHeader, Heading, Input, Slider,Button, Flex } from '@chakra-ui/react';
+import { Bath, BedDouble, DollarSign, MapPin } from 'lucide-react';
+import {Link} from 'react-router-dom'
 
 export default function CarListing() {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [priceRange, setPriceRange] = useState([0, 200])
-  const [category, setCategory] = useState("All")
-  const [carsData, setCarsData] = useState([]);
-
-
+  const [priceRange, setPriceRange] = useState([0, 1500000])
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(10000000);
+   const [carData, setCarData] = useState([]);
+ 
 
   useEffect(()=>{
-      const fetchCarListings = async()=>{
-        try {
-          const response = await getAllCar();
-          console.log("res of car", response.data.data);
-          setCarsData(response?.data?.data);
-          
-        } catch (error) {
-          console.log(error);
+        const fetchCarListings = async()=>{
+          try {
+            const response = await getAllCar();
+            console.log("res of hostel", response.data.data);
+            setCarData(response?.data?.data);
+            
+          } catch (error) {
+            console.log(error);
+          }
+         
         }
-       
-      }
-      fetchCarListings();
+        fetchCarListings();
+  
+    },[])
 
-  },[])
+    const handleMinChange = (e) => {
+      const value = Number(e.target.value);
+      if (value <= maxPrice) setMinPrice(value);
+    };
 
-  const filteredCars = carsData.filter(
-    (car) =>
-      (car.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        car.description.toLowerCase().includes(searchTerm.toLowerCase())) &&
-      car.price >= priceRange[0] &&
-      car.price <= priceRange[1] &&
-      (category === "All" || car.category === category),
-  )
+    const handleMaxChange = (e) => {
+      const value = Number(e.target.value);
+      if (value >= minPrice) setMaxPrice(value);
+    };
+
+    const handleSliderChange = (e) => {
+      const value = Number(e.target.value);
+      setMaxPrice(value);
+    };
+
+    const filteredListings = carData.filter(
+      (hostel) => hostel.price >= minPrice && hostel.price <= maxPrice 
+      
+
+
+    );
+
+    useEffect(()=>{
+    console.log('houseD', carData)
+    },[carData])
 
   return (
-    <Box bg="background" minHeight="100vh" py={8}>
-      <Box maxW="7xl" mx="auto" px={{ base: 4, lg: 8 }}>
-        <VStack spacing={8}>
-          <Text fontSize="4xl" fontWeight="bold" textAlign="center">
-            Find Your Perfect Ride
-          </Text>
-  
-          <HStack spacing={4} justify="center" w={'70%'} >
-            <Input
-              type="text"
-              placeholder="Search cars..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              flex="1"
-            />
-            <Button leftIcon={<SearchIcon boxSize={5} />} colorScheme="teal">
-              Search
-            </Button>
-          </HStack>
-  
-          <HStack
-            spacing={6}
-            align="start"
-            direction={{ base: 'column', lg: 'row' }}
-            justify="space-between"
-            width="100%"
-          >
-            <Card width={{ base: '100%', lg: '25%' }} p={4}>
-              <CardHeader>
-                <Text fontSize="lg" fontWeight="bold">
-                  Filters
-                </Text>
-              </CardHeader>
-              <CardBody>
-                <VStack spacing={4}>
-                  <Box>
-                    <Text fontSize="sm" fontWeight="medium" mb={2}>
-                      Price Range: ${priceRange[0]} - ${priceRange[1]}
-                    </Text>
-                    <Slider
-                      min={0}
-                      max={500000}
-                      step={1000}
-                      value={[priceRange[1]]}
-                      onChange={(value) => setPriceRange([priceRange[0], value[0]])}
-                    >
-                      <SliderTrack>
-                        <SliderFilledTrack />
-                      </SliderTrack>
-                      <SliderThumb />
-                    </Slider>
-                  </Box>
-                  <Box>
-                    <Text fontSize="sm" fontWeight="medium" mb={2}>
-                      Category
-                    </Text>
-                    <Select value={category} onChange={(e) => setCategory(e.target.value)}>
-                      <option value="All">All Categories</option>
-                      <option value="Electric">Electric</option>
-                      <option value="Sedan">Sedan</option>
-                      <option value="Sports">Sports</option>
-                      <option value="SUV">SUV</option>
-                    </Select>
-                  </Box>
-                </VStack>
-              </CardBody>
+    <div className="container mx-auto px-4 py-8 bg-orange-50">
+      <h1 className="text-4xl font-bold mb-8 text-center text-orange-800">Discover Your Dream Cars</h1>
+      <div className="flex flex-col lg:flex-row gap-8">
+        {/* Sidebar with filters */}
+        <div className="w-full lg:w-1/4">
+          <Card boxShadow={'lg'}>
+            <CardHeader className="bg-orange-500 text-white">
+              <Heading>Find Your Perfect Car</Heading>
+            </CardHeader>
+            <Box p={6}>
+              <div>
+                <Flex flexDir={'column'} gap={3} mb={5}>
+                <label htmlFor="price" className="text-orange-800 font-semibold">Price Range</label>
+                <input
+        type="range"
+        min={minPrice}
+        max="10000000"
+        step="500"
+        value={maxPrice}
+        onChange={handleSliderChange}
+        style={{ width: "100%" }}
+      />
+                </Flex>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px" }}>
+        <Input
+          type="number"
+          value={minPrice}
+          onChange={handleMinChange}
+          min="0"
+          max="10000000"
+          style={{ width: "45%", padding: "5px" }}
+          placeholder="Min Price"
+        />
+        <Input
+          type="number"
+          value={maxPrice}
+          onChange={handleMaxChange}
+          min="0"
+          max="10000000"
+          style={{ width: "45%", padding: "5px" }}
+          placeholder="Max Price"
+        />
+      </div>
+              </div>
+      
+             
+            </Box>
+          </Card>
+        </div>
+
+        {/* Main content area with listings */}
+        <div className="w-full lg:w-3/4">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            {filteredListings.map(hostel => (
+              <Card key={hostel._id} className="overflow-hidden hover:shadow-2xl transition-shadow duration-300 bg-white">
+                {
+                  hostel?.images.length > 0 ? (
+                    <img  src={
+                      `${import.meta.env.VITE_BACK_END_URL}${hostel?.images[0]?.url}` ||
+                      '/images/make_listing/random.png'
+                    } alt={hostel.title} className="w-full h-48 object-cover" />  
+                  ) : (
+                    <img  src={
+                      `/images/make_listing/random.png`
+                    } alt={hostel.title} className="w-full h-48 object-cover" />  
+                  ) 
+                }
+                <Box px={2}>
+                <Heading py={2} fontSize={'20px'} color={'orange.800'}>{hostel.title}</Heading>
+                  <p className="text-[16px] font-bold mb-2 flex items-center text-orange-500">
+                    
+                    {hostel.price.toLocaleString()} PKR
+                  </p>
+                  <p className="text-gray-600 flex items-center">
+                    <MapPin className="w-5 h-5 text-orange-500 mr-1" /> {hostel?.location || 'Lahore'}
+                  </p>
+                </Box>
+                <CardFooter>
+                  <Button as={Link} to={`/rental/${hostel._id}`} variant={'cutomButton'} className="w-full bg-orange-500 hover:bg-orange-600 text-white">View Details</Button>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
+          {filteredListings.length === 0 && (
+            <Card className="p-8 text-center bg-white">
+              <p className="text-orange-800 text-xl">No listings found matching your criteria.</p>
+              <p className="text-gray-600 mt-2">Try adjusting your filters to see more results.</p>
             </Card>
-  
-            <Grid templateColumns="repeat(auto-fill, minmax(300px, 1fr))" gap={6} width="100%">
-              {carsData.map((rental) => (
-                <Card key={rental._id} _hover={{ boxShadow: 'lg' }} transition="box-shadow 0.3s">
-                  <CardHeader p={0}>
-                    {rental.images && rental.images.length > 0 ? (
-                      <Image
-                        src={`${import.meta.env.VITE_BACK_END_URL}${rental.images[0].url}`}
-                        alt ={rental.title}
-                        width="100%"
-                        height="200px"
-                        objectFit="cover"
-                        borderRadius="md"
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.src = 'images/make_listing/random.png';
-                        }}
-                      />
-                    ) : (
-                      <Image
-                        src="/images/make_listing/random.png"
-                        alt="No Image Available"
-                        width="100%"
-                        height="200px"
-                        objectFit="cover"
-                        borderRadius="md"
-                      />
-                    )}
-                  </CardHeader>
-                  <CardBody>
-                    <Heading as="h3" size="md" mb={2}>
-                      {rental.title}
-                    </Heading>
-                    <Text>{rental.category}</Text>
-                    <Flex justify="space-between" align="center" mt={2}>
-                      <Text fontWeight="bold">{rental.price} PKR</Text>
-                      <Flex align="center">
-                        <StarIcon color="yellow.400" mr={1} />
-                        <Text>{rental.averageRating}</Text>
-                      </Flex>
-                    </Flex>
-                  </CardBody>
-                  <CardFooter>
-                    <Button
-                      as={Link}
-                      w="full"
-                      variant="customButton"
-                    >
-                      View Details
-                    </Button>
-                  </CardFooter>
-                </Card>
-              ))}
-            </Grid>
-          </HStack>
-        </VStack>
-      </Box>
-    </Box>
-  );
-  
-  
+          )}
+        </div>
+      </div>
+    </div>
+  )
 }
 
 
-
- 
