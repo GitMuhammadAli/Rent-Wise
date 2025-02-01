@@ -11,6 +11,7 @@ const { io } = require("../../utils/socket");
 const Messsage = require("../../model/chat/MesssageModel");
 const Conversation = require("../../model/chat/ConversationModel");
 const {CreateNotification} = require("../../controller/notification/notification")
+const User = require("../../model/user/userModel");
 
 
 const CreateQrCode = async (data, next) => {
@@ -301,7 +302,7 @@ exports.sentAggreement = async (req, res, next) => {
         if (!aggrementFromResponce) {
             return next(new AppError(BOOLEAN.FALSE, AGGREEMENT.AGGREMENT_FROM_REQUEST, STATUS.BAD_REQUEST));
         }
-        const { _id, conversationID, renterId, ownerId, listingId } = aggrementFromResponce;
+        const { _id, conversationID, renterId, ownerId, listingId , message } = aggrementFromResponce;
         console.log("Request body:", req.body);
         console.log("id:", _id);
 
@@ -329,8 +330,7 @@ exports.sentAggreement = async (req, res, next) => {
 
         const messageLink = await createLinkMessage(
             agg.listingId,
-            `Agreement for renter confirmation
-                     ${process.env.CLIENT_URL}/agreements/${agg._id}`,
+            message,
             agg.ownerId,
             agg.renterId,
             conversationID,
@@ -347,8 +347,7 @@ exports.sentAggreement = async (req, res, next) => {
 
             io.to(conversationID.toString()).emit("receiveMessage", {
                 conversationID,
-                message:`Agreement for renter confirmation
-                     ${process.env.CLIENT_URL}/agreements/${agg._id}`,
+                message:message,
                 sender: agg.ownerId,
                 receiver:agg.renterId,
                 listing: listingId,
@@ -429,6 +428,9 @@ exports.VerifyAggrementByRenter = async (req, res, next) => {
         if (!aggrement) {
             return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.AGGREMENT_NOT_FOUND, STATUS.NOT_FOUND));
         }
+
+         const userName = await User.findById(user).select('name')
+         const listingTitle = await RentalItem.findById(aggrement.listingId).select('title')
         console.log("aggrement", aggrement);
         const ownerId = aggrement.ownerId;
         // if (user.toString() !== ownerId.toString()) {
@@ -462,6 +464,18 @@ exports.VerifyAggrementByRenter = async (req, res, next) => {
         }
         if (renterConfirmed === BOOLEAN.TRUE && aggrement.renterConfirmed === BOOLEAN.FALSE && user.toString() === aggrement.renterId.toString()) {
             const agg = await Aggrement.findByIdAndUpdate(aggId, { renterConfirmed: BOOLEAN.TRUE, agreementStatus: "active" }, { new: true });
+            if(agg){
+                console.log("link is cretaed to sent")
+                await CreateNotification(
+                    agg.renterId,
+                    agg.ownerId,
+                    "aggreement",
+                    `${userName.name} has Confirmed the agreement for ${listingTitle.title}.`,
+                    next,
+                    res
+                );
+            }
+    
             return res.status(STATUS.SUCCESS).json({
                 status: STATUS.SUCCESS,
                 message: AGGREEMENT.AGGREMENT_IS_CONFIRMED,
