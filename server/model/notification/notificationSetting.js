@@ -9,8 +9,15 @@ const UserSettingsSchema = new mongoose.Schema({
     payments: { type: Boolean, default: true },
     systemUpdates: { type: Boolean, default: true },
   },
+  webPushSubscription: {
+    endpoint: { type: String },
+    keys: {
+      p256dh: { type: String },
+      auth: { type: String },
+    },
+  },
   createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now }
+  updatedAt: { type: Date, default: Date.now },
 });
 
 const UserSettings = mongoose.model("UserSettings", UserSettingsSchema);
