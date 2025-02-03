@@ -166,9 +166,10 @@ const { listings,currentListing } = state;
       // new one
       const updatedFormData = {
         ...formData,
-        bedrooms: formData.category === "house" || formData.category === "hostel" ? formData.bedrooms : 0,
-        bathrooms: formData.category === "house" || formData.category === "hostel" ? formData.bathrooms : 0,
+        bedrooms: formData.category === "house" || formData.category === "hostel" ? (formData.bedrooms ?? 0) : 0,
+        bathrooms: formData.category === "house" || formData.category === "hostel" ? (formData.bathrooms ?? 0) : 0,
       };
+      
       // till here
 
     const updateData = new FormData();
@@ -194,7 +195,7 @@ const { listings,currentListing } = state;
     });
 
     for (let [key, value] of updateData.entries()) {
-      console.log(`${key}: ${value}`);
+      console.log(`values:::${key}: ${value}`);
     }
     
     // updateData.append('listingStatus', formData.listingStatus);

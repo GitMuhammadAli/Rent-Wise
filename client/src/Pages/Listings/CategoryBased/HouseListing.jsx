@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { getAllHouse } from '../../../Api/Home';
-import { Box, Card, CardFooter, CardHeader, Heading, Input, Slider,Button, Flex } from '@chakra-ui/react';
+import { Box, Card, CardFooter, CardHeader, Heading, Input, Slider,Button, Flex, Text, SimpleGrid, Checkbox } from '@chakra-ui/react';
 import { Bath, BedDouble, DollarSign, MapPin } from 'lucide-react';
 import {Link} from 'react-router-dom'
 
@@ -9,10 +9,16 @@ export default function HouseListing() {
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(10000000);
    const [houseData, setHouseData] = useState([]);
+   const [amenity, setAmenity] = useState([]);
   const [bedrooms, setBedrooms] = useState(0)
   const [bathrooms, setBathrooms] = useState(0)
   // const [hasGarage, setHasGarage] = useState(false)
   // const [hasGarden, setHasGarden] = useState(false)
+
+  const amenitiesList = [
+    "WiFi", "Pool", "Parking", "Gym", "Air Conditioning", 
+    "Pet Friendly", "Balcony", "Laundry", "Security", "Garden"
+  ];
 
   useEffect(()=>{
         const fetchCarListings = async()=>{
@@ -45,27 +51,42 @@ export default function HouseListing() {
       setMaxPrice(value);
     };
 
+    const handleAmenityChange = (selectedAmenity) => {
+      setAmenity((prev) =>
+        prev.includes(selectedAmenity)
+          ? prev.filter((item) => item !== selectedAmenity) // Remove if already selected
+          : [...prev, selectedAmenity] // Add if not selected
+      );
+    };
+
     const filteredListings = houseData.filter(
-      (house) => house.price >= minPrice && house.price <= maxPrice &&
-      house?.facilities?.bedrooms >= bedrooms &&  house?.facilities?.bathrooms >= bathrooms
-
-
+      (house) =>
+        house.price >= minPrice &&
+        house.price <= maxPrice &&
+        house?.facilities?.bedrooms >= bedrooms &&
+        house?.facilities?.bathrooms >= bathrooms &&
+        amenity.every((selectedAmenity) => // every returns boolean, if all conditions are true, it returns true, if any is false it returns false
+          house?.amenities
+            ?.map((a) => a.toLowerCase())
+            .includes(selectedAmenity.toLowerCase())
+        )
     );
 
     useEffect(()=>{
     console.log('houseD', houseData)
-    },[houseData])
+    console.log('filtered', filteredListings)
+    },[houseData, filteredListings])
 
   return (
-    <div className="container mx-auto px-4 py-8 bg-orange-50">
+    <div className="container mx-auto px-4 py-8 bg-white">
       <h1 className="text-4xl font-bold mb-8 text-center text-orange-800">Discover Your Dream Home</h1>
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Sidebar with filters */}
         <div className="w-full lg:w-1/4">
-          <Card boxShadow={'lg'}>
-            <CardHeader className="bg-orange-500 text-white">
+          <Card  border={'1px solid #E0E0E0'}>
+            {/* <CardHeader className="bg-orange-500 text-white">
               <Heading>Find Your Perfect House</Heading>
-            </CardHeader>
+            </CardHeader> */}
             <Box p={6}>
               <div>
                 <Flex flexDir={'column'} gap={3} mb={5}>
@@ -123,6 +144,21 @@ export default function HouseListing() {
                   className="mt-2 border-orange-300 focus:border-orange-500 focus:ring-orange-500"
                 />
               </div>
+              <Flex flexDir="column">
+                  <Text fontSize="lg" fontWeight="bold" mb={2} color="orange.800">
+                   Amenities
+                  </Text>
+                  <SimpleGrid columns={[2, 1]} spacing={3}>
+                    {amenitiesList.map((amenities, index) => (
+                      <Checkbox key={index} colorScheme="orange" value={amenity}
+                      onChange={() => handleAmenityChange(amenities)}
+                      isChecked={amenity.includes(amenities)}
+                       >
+                        {amenities}
+                      </Checkbox>
+                    ))}
+                 </SimpleGrid>
+                </Flex>
              
             </Box>
           </Card>
@@ -146,11 +182,12 @@ export default function HouseListing() {
                   ) 
                 }
                 <Box px={2}>
-                <Heading py={2} fontSize={'20px'} color={'orange.800'}>{house.title}</Heading>
-                  <p className="text-[16px] font-bold mb-2 flex items-center text-orange-500">
-                    
-                    {house.price.toLocaleString()} PKR
-                  </p>
+                <Heading py={2} fontSize={'20px'} fontWeight={'semibold'}>{house.title}</Heading>
+                  <Flex gap={1} alignItems={'baseline'}>
+                    <span className="text-[20px] font-bold mb-2 flex items-center text-orange-500">{house.price.toLocaleString()} PKR</span>
+                    <span className="text-gray-600">/{house.priceUnit}</span>
+                  </Flex>
+                  
                   <div className="flex justify-between items-center mb-2 text-orange-700">
                     <span className="flex items-center">
                       <BedDouble className="w-5 h-5 mr-1" /> {house?.facilities?.bedrooms || 0}
@@ -162,6 +199,22 @@ export default function HouseListing() {
                   <p className="text-gray-600 flex items-center">
                     <MapPin className="w-5 h-5 text-orange-500 mr-1" /> {house?.location || 'Lahore'}
                   </p>
+                  <Flex my={2} gap={2}>
+                  {house?.amenities?.slice(0, 4).map((item, i) => (
+                    <Text 
+                      borderRadius="10px" 
+                      px={3} 
+                      py="2px"  
+                      bg="gray.100" 
+                      color="gray.800" 
+                      fontWeight="semibold" 
+                      fontSize="13px" 
+                      key={i}
+                    >
+                      {item}
+                    </Text>
+                  ))}
+                </Flex>
                 </Box>
                 <CardFooter>
                   <Button as={Link} to={`/rental/${house._id}`} variant={'cutomButton'} className="w-full bg-orange-500 hover:bg-orange-600 text-white">View Details</Button>
