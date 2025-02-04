@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { getAllHouse } from '../../../Api/Home';
-import { Box, Card, CardFooter, CardHeader, Heading, Input, Slider,Button, Flex, Text, SimpleGrid, Checkbox } from '@chakra-ui/react';
+import { Box, Card, CardFooter, CardHeader, Heading, Input, Slider,Button, Flex, Text, SimpleGrid, Checkbox,Skeleton,Stack, } from '@chakra-ui/react';
 import { Bath, BedDouble, DollarSign, MapPin } from 'lucide-react';
 import {Link} from 'react-router-dom'
 
@@ -12,6 +12,7 @@ export default function HouseListing() {
    const [amenity, setAmenity] = useState([]);
   const [bedrooms, setBedrooms] = useState(0)
   const [bathrooms, setBathrooms] = useState(0)
+  const [loading, setLoading] = useState(true);
   // const [hasGarage, setHasGarage] = useState(false)
   // const [hasGarden, setHasGarden] = useState(false)
 
@@ -29,6 +30,9 @@ export default function HouseListing() {
             
           } catch (error) {
             console.log(error);
+          } finally {
+              setLoading(false);
+        
           }
          
         }
@@ -77,6 +81,7 @@ export default function HouseListing() {
     console.log('filtered', filteredListings)
     },[houseData, filteredListings])
 
+  
   return (
     <div className="container mx-auto px-4 py-8 bg-white">
       <h1 className="text-4xl font-bold mb-8 text-center text-orange-800">Discover Your Dream Home</h1>
@@ -167,6 +172,7 @@ export default function HouseListing() {
         {/* Main content area with listings */}
         <div className="w-full lg:w-3/4">
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          
             {filteredListings.map(house => (
               <Card key={house._id} className="overflow-hidden hover:shadow-2xl transition-shadow duration-300 bg-white">
                 {
@@ -228,6 +234,19 @@ export default function HouseListing() {
               <p className="text-gray-600 mt-2">Try adjusting your filters to see more results.</p>
             </Card>
           )}
+
+     {loading && 
+        (
+        <Stack mt={10}>
+        <Skeleton startColor='#F4FFF3' endColor='#f4bf6f' height='20px' />
+        <Skeleton startColor='#F4FFF3' endColor='#f4bf6f' height='20px' />
+        <Skeleton startColor='#F4FFF3' endColor='#f4bf6f' height='20px' />
+        <Skeleton startColor='#F4FFF3' endColor='#f4bf6f' height='20px' />
+        <Skeleton startColor='#F4FFF3' endColor='#f4bf6f' height='20px' />
+        <Skeleton startColor='#F4FFF3' endColor='#f4bf6f' height='20px' />
+      </Stack>
+       )
+     }
         </div>
       </div>
     </div>

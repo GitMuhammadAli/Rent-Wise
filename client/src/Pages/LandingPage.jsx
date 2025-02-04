@@ -1,7 +1,7 @@
 
-import { useContext, useEffect, useState } from "react"
+import { useContext, useEffect, useState, useRef } from "react"
 import { Link } from "react-router-dom"
-import { Box, Flex, Heading, Text, Button, Container, Grid, GridItem,Input, Image } from "@chakra-ui/react";
+import { Box, Flex, Heading, Text, Button, Container, Grid, GridItem,Input, Image, Stack, Skeleton } from "@chakra-ui/react";
 import { FaBuilding, FaCar, FaHotel, FaSearch, FaStar, FaArrowRight } from "react-icons/fa"
 import { getAllListingAPI } from "../Api/ListingApi"; 
 
@@ -12,7 +12,8 @@ import { ListingsContext } from "../hooks/ListingsContext";
 const LandingPage = () => {
 
 //   my things
-
+const sectionRef = useRef(null);
+  const [loading, setLoading] = useState(true);
 const { state, dispatch } = useContext(ListingsContext); 
   const { listings } = state; 
   const itemsPerPage = 6 // Number of listings per page
@@ -36,6 +37,9 @@ const { state, dispatch } = useContext(ListingsContext);
       }
   };
 
+  const handleScroll = () => {
+    sectionRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
   
 
   useEffect(() => {
@@ -46,6 +50,8 @@ const { state, dispatch } = useContext(ListingsContext);
         dispatch({ type: 'GET_LISTINGS', payload: response.data });
       } catch (error) {
         console.error("Error fetching listings:", error);
+      } finally{
+        setLoading(false)
       }
     }
     fetchData();
@@ -95,6 +101,7 @@ const { state, dispatch } = useContext(ListingsContext);
                     bg="white"
                     _hover={{ bg: "gray.50" }}
                     transition="all 0.3s ease"
+                    onClick={handleScroll}
                   >
                     Get started
                   </Button>
@@ -111,6 +118,7 @@ const { state, dispatch } = useContext(ListingsContext);
                     bg="orange.500"
                     _hover={{ bg: "orange.700" }}
                     transition="all 0.3s ease"
+                    onClick={handleScroll}
                   >
                     View listings
                   </Button>
@@ -157,7 +165,7 @@ const { state, dispatch } = useContext(ListingsContext);
       {/* Categories Section */}
       
       <Box bg="white" py={24}>
-        <Container maxW="7xl" px={{ base: 4, sm: 6, lg: 8 }}>
+        <Container maxW="7xl" px={{ base: 4, sm: 6, lg: 8 }} >
           <Heading fontSize={{ base: "4xl", sm: "5xl" }} fontWeight="extrabold" color="gray.900" textAlign="center">
             Explore Our Premium Categories
           </Heading>
@@ -181,8 +189,22 @@ const { state, dispatch } = useContext(ListingsContext);
 
       
       {/* Listings Section */}
-<Box id="featured" bg="gray.50" py={24}>
-        <Container maxW="7xl" px={{ base: 4, sm: 6, lg: 8 }}>
+        <Box id="featured" bg="gray.50" py={24} >
+
+          {loading && 
+                              (
+                              <Stack mb={10}>
+                              <Skeleton startColor='#F4FFF3' endColor='#f4bf6f' height='20px' />
+                              <Skeleton startColor='#F4FFF3' endColor='#f4bf6f' height='20px' />
+                              <Skeleton startColor='#F4FFF3' endColor='#f4bf6f' height='20px' />
+                              <Skeleton startColor='#F4FFF3' endColor='#f4bf6f' height='20px' />
+                              <Skeleton startColor='#F4FFF3' endColor='#f4bf6f' height='20px' />
+                              <Skeleton startColor='#F4FFF3' endColor='#f4bf6f' height='20px' />
+                            </Stack>
+                             )
+                           }
+
+        <Container maxW="7xl" px={{ base: 4, sm: 6, lg: 8 }} ref={sectionRef} >
           <Heading fontSize={{ base: "4xl", sm: "5xl" }} fontWeight="extrabold" color="gray.900" textAlign="center">
             Featured Premium Rentals
           </Heading>
@@ -191,7 +213,7 @@ const { state, dispatch } = useContext(ListingsContext);
           </Text>
           <Grid mt={20} gap={12} templateColumns={{ base: "1fr", md: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" }}>
             {curentListing && curentListing?.length > 0 &&  curentListing.map((rental) => (
-              <GridItem key={rental._id} bg="white" rounded="lg" shadow="lg" overflow="hidden">
+              <GridItem key={rental._id} bg="white" rounded="lg" shadow="lg" overflow="hidden" >
                 {
                    rental.images && rental.images.length > 0 ? (
                     <Image src={`http://localhost:3600${rental?.images[0]?.url}`} alt={rental.title} w="full" h={64} objectFit="cover" />

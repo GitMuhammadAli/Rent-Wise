@@ -98,6 +98,7 @@ export default function OwnerDash() {
   useEffect(() => {
     console.log("useListInOwner", userListings.length);
     setListingCount(userListings.length);
+    console.log("userLisintg", userListings)
   }, [userListings, userListings.listingStatus]);
 
   return (

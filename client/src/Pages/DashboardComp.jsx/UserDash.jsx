@@ -24,15 +24,6 @@ export default function UserDash() {
     { id: 3, action: 'Cancelled Hotel Booking', date: '2023-04-30' },
   ]
 
-  const reviews= [
-    { id: 1, item: 'Luxury Sedan', owner: 'Car Rentals Inc.', rating: 4, comment: 'Great car, smooth ride!', date: '2023-05-24' },
-    { id: 2, item: 'Mountain Bike', owner: 'Adventure Rentals', rating: 5, comment: 'Excellent bike and service!', date: '2023-04-13' },
-  ]
-
-
-  
-  
-  
 
   useEffect(()=>{
 
@@ -238,109 +229,7 @@ export default function UserDash() {
   } 
 
 
-  const renderReviews = () => (
-    // <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-    //   <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
-    //     <h3 className="text-lg font-semibold text-gray-900">Your Reviews</h3>
-    //   </div>
-    //   <div className="p-6">
-    //     <ul className="space-y-6">
-    //       {reviews.map((review) => (
-    //         <li key={review.id} className="border-b border-gray-200 pb-6 last:border-b-0 last:pb-0">
-    //           <div className="flex justify-between items-start mb-2">
-    //             <div>
-    //               <h4 className="font-semibold text-lg">{review.item}</h4>
-    //               <p className="text-sm text-gray-600">Owner: {review.owner}</p>
-    //             </div>
-    //             <div className="flex items-center">
-    //               {[...Array(5)].map((_, i) => (
-    //                 <Star 
-    //                   key={i} 
-    //                   size={16} 
-    //                   className={i < review.rating ? 'text-yellow-400' : 'text-gray-300'} 
-    //                   fill={i < review.rating ? 'currentColor' : 'none'}
-    //                 />
-    //               ))}
-    //             </div>
-    //           </div>
-    //           <p className="text-gray-700 mb-2">{review.comment}</p>
-    //           <p className="text-sm text-gray-500">Reviewed on {review.date}</p>
-    //         </li>
-    //       ))}
-    //     </ul>
-    //   </div>
-    //   <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
-    //     <button className="w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
-    //       Write a New Review
-    //     </button>
-    //   </div>
-    // </div>
 
-    <Box bg="white" rounded="lg" shadow="lg" overflow="hidden">
-    <Box px={6} py={4} bg="gray.50" borderBottom="1px" borderColor="gray.200">
-      <Text fontSize="lg" fontWeight="semibold" color="gray.900">
-        Your Reviews
-      </Text>
-    </Box>
-  
-    <Box p={6}>
-      <VStack spacing={6} align="stretch">
-        {reviews.map((review) => (
-          <Box
-            key={review.id}
-            borderBottom="1px"
-            borderColor="gray.200"
-            pb={6}
-            _last={{ borderBottom: 'none', pb: 0 }}
-          >
-            <Flex justify="space-between" align="start" mb={2}>
-              <Box>
-                <Text fontWeight="semibold" fontSize="lg">
-                  {review.item}
-                </Text>
-                <Text fontSize="sm" color="gray.600">
-                  Owner: {review.owner}
-                </Text>
-              </Box>
-  
-              <Flex align="center">
-                {[...Array(5)].map((_, i) => (
-                  <Icon
-                    as={StarIcon}
-                    key={i}
-                    boxSize={4}
-                    color={i < review.rating ? 'yellow.400' : 'gray.300'}
-                  />
-                ))}
-              </Flex>
-            </Flex>
-  
-            <Text color="gray.700" mb={2}>
-              {review.comment}
-            </Text>
-            <Text fontSize="sm" color="gray.500">
-              Reviewed on {review.date}
-            </Text>
-          </Box>
-        ))}
-      </VStack>
-    </Box>
-  
-    <Box px={6} py={4} bg="gray.50" borderTop="1px" borderColor="gray.200">
-      <Button
-        w="full"
-        px={4}
-        py={2}
-        bg="blue.600"
-        color="white"
-        _hover={{ bg: 'blue.700' }}
-        transition="background-color 0.2s"
-      >
-        Write a New Review
-      </Button>
-    </Box>
-  </Box>
-  )
 
   return (
     <div className="min-h-screen bg-whiteAlpha-800 p-8">
@@ -369,22 +258,13 @@ export default function UserDash() {
             >
               Agreements
             </button>
-            <button
-              onClick={() => setActiveTab('reviews')}
-              className={`px-3 py-2 rounded-md text-sm font-medium ${
-                activeTab === 'reviews' 
-                 ? 'bg-orange-400 text-white' 
-                  : 'text-gray-700 hover:bg-orange-100 hover:text-orange-500'
-              }`}
-            >
-              Reviews
-            </button>
+           
           </nav>
         </div>
 
         {activeTab === 'dashboard' && renderDashboard()}
         {activeTab === 'agreements' && renderAgreements()}
-        {activeTab === 'reviews' && renderReviews()}
+        
       </div>
     </div>
   )

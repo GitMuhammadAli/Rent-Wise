@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { getAllCar } from '../../../Api/Home';
-import { Box, Card, CardFooter, CardHeader, Heading, Input, Slider,Button, Flex } from '@chakra-ui/react';
+import { Box, Card, CardFooter, CardHeader, Heading, Input, Slider,Button, Flex, Stack, Skeleton } from '@chakra-ui/react';
 import { Bath, BedDouble, DollarSign, MapPin } from 'lucide-react';
 import {Link} from 'react-router-dom'
 
@@ -8,7 +8,8 @@ export default function CarListing() {
   const [priceRange, setPriceRange] = useState([0, 1500000])
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(10000000);
-   const [carData, setCarData] = useState([]);
+  const [carData, setCarData] = useState([]);
+  const [loading, setLoading] = useState(true);
  
 
   useEffect(()=>{
@@ -20,7 +21,10 @@ export default function CarListing() {
             
           } catch (error) {
             console.log(error);
-          }
+          } finally {
+            setLoading(false);
+      
+        }
          
         }
         fetchCarListings();
@@ -54,7 +58,7 @@ export default function CarListing() {
     },[carData])
 
   return (
-    <div className="container mx-auto px-4 py-8 bg-orange-50">
+    <div className="container mx-auto px-4 py-8 bg-white">
       <h1 className="text-4xl font-bold mb-8 text-center text-orange-800">Discover Your Dream Cars</h1>
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Sidebar with filters */}
@@ -143,6 +147,19 @@ export default function CarListing() {
               <p className="text-gray-600 mt-2">Try adjusting your filters to see more results.</p>
             </Card>
           )}
+
+           {loading && 
+                  (
+                  <Stack mt={10}>
+                  <Skeleton startColor='#F4FFF3' endColor='#f4bf6f' height='20px' />
+                  <Skeleton startColor='#F4FFF3' endColor='#f4bf6f' height='20px' />
+                  <Skeleton startColor='#F4FFF3' endColor='#f4bf6f' height='20px' />
+                  <Skeleton startColor='#F4FFF3' endColor='#f4bf6f' height='20px' />
+                  <Skeleton startColor='#F4FFF3' endColor='#f4bf6f' height='20px' />
+                  <Skeleton startColor='#F4FFF3' endColor='#f4bf6f' height='20px' />
+                </Stack>
+                 )
+               }
         </div>
       </div>
     </div>
