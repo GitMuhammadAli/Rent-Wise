@@ -78,30 +78,33 @@ const Register = async (req, res , next) => {
   }
 };
 
-const login = async (req, res ,next) => {
+const login = async (req, res, next) => {
   try {
     const { your_email, your_pass } = req.body;
     const user = await Users.findOne({ email: your_email });
 
-
     if (!user) {
-      return next(new AppError(BOOLEAN.FALSE ,ERROR_MESSAGE.EMAIL_NOT_FOUND, STATUS.UNAUTHORIZED))
+      return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.EMAIL_NOT_FOUND, STATUS.UNAUTHORIZED));
     }
-    const isPasswordValid =  bcrypt.compare(your_pass, user.password);
+
+    const isPasswordValid = await user.comparePassword(your_pass);
 
     if (!isPasswordValid) {
-      return next(new AppError(BOOLEAN.FALSE , ERROR_MESSAGE.INVALID_PASSWORD, STATUS.UNAUTHORIZED))
+      return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.INVALID_PASSWORD, STATUS.UNAUTHORIZED));
     }
-    await GenerateToken(user, req, res ,next);
+
+    await GenerateToken(user, req, res, next);
+    
     return res.status(STATUS.SUCCESS).json({
       message: RESPONCE_MESSAGE.LOGIN_SUCCESS,
       user: { id: user._id, role: user.role },
-    }); 
-    
+    });
+
   } catch (error) {
     next(error);
   }
 };
+
 
 const handleGoogleCallback = async (req, res ,next) => {
   try {
