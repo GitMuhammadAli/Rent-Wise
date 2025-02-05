@@ -42,6 +42,8 @@ export default function Dashboard() {
     getUserDetail();
   }, []);
 
+
+
   // return (
   //   <Box>
   //     <Flex px={'50px'} justifyContent={'space-between'}>
@@ -95,7 +97,10 @@ export default function Dashboard() {
         <div className="flex justify-between items-center mb-8">
           <div className="flex items-center space-x-4">
             <Avatar
+            size={'lg'}
+            
               src={avatar || "/placeholder.svg"}
+              
               alt={username}
           
             />

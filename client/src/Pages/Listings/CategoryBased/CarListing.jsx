@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { getAllCar, getAllHostel, getAllHouse } from '../../../Api/Home';
-import { Box, Card, CardFooter, CardHeader, Heading, Input, Slider,Button, Flex } from '@chakra-ui/react';
+import { getAllCar } from '../../../Api/Home';
+import { Box, Card, CardFooter, CardHeader, Heading, Input, Slider,Button, Flex, Stack, Skeleton } from '@chakra-ui/react';
 import { Bath, BedDouble, DollarSign, MapPin } from 'lucide-react';
 import {Link} from 'react-router-dom'
 
@@ -8,19 +8,23 @@ export default function CarListing() {
   const [priceRange, setPriceRange] = useState([0, 1500000])
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(10000000);
-   const [carData, setCarData] = useState([]);
+  const [carData, setCarData] = useState([]);
+  const [loading, setLoading] = useState(true);
  
 
   useEffect(()=>{
         const fetchCarListings = async()=>{
           try {
             const response = await getAllCar();
-            console.log("res of hostel", response.data.data);
+            console.log("res of car", response.data.data);
             setCarData(response?.data?.data);
             
           } catch (error) {
             console.log(error);
-          }
+          } finally {
+            setLoading(false);
+      
+        }
          
         }
         fetchCarListings();
@@ -43,18 +47,18 @@ export default function CarListing() {
     };
 
     const filteredListings = carData.filter(
-      (hostel) => hostel.price >= minPrice && hostel.price <= maxPrice 
+      (car) => car.price >= minPrice && car.price <= maxPrice 
       
 
 
     );
 
     useEffect(()=>{
-    console.log('houseD', carData)
+    console.log('carD', carData)
     },[carData])
 
   return (
-    <div className="container mx-auto px-4 py-8 bg-orange-50">
+    <div className="container mx-auto px-4 py-8 bg-white">
       <h1 className="text-4xl font-bold mb-8 text-center text-orange-800">Discover Your Dream Cars</h1>
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Sidebar with filters */}
@@ -107,32 +111,32 @@ export default function CarListing() {
         {/* Main content area with listings */}
         <div className="w-full lg:w-3/4">
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            {filteredListings.map(hostel => (
-              <Card key={hostel._id} className="overflow-hidden hover:shadow-2xl transition-shadow duration-300 bg-white">
+            {filteredListings.map(car => (
+              <Card key={car._id} className="overflow-hidden hover:shadow-2xl transition-shadow duration-300 bg-white">
                 {
-                  hostel?.images.length > 0 ? (
+                  car?.images.length > 0 ? (
                     <img  src={
-                      `${import.meta.env.VITE_BACK_END_URL}${hostel?.images[0]?.url}` ||
+                      `${import.meta.env.VITE_BACK_END_URL}${car?.images[0]?.url}` ||
                       '/images/make_listing/random.png'
-                    } alt={hostel.title} className="w-full h-48 object-cover" />  
+                    } alt={car.title} className="w-full h-48 object-cover" />  
                   ) : (
                     <img  src={
                       `/images/make_listing/random.png`
-                    } alt={hostel.title} className="w-full h-48 object-cover" />  
+                    } alt={car.title} className="w-full h-48 object-cover" />  
                   ) 
                 }
                 <Box px={2}>
-                <Heading py={2} fontSize={'20px'} color={'orange.800'}>{hostel.title}</Heading>
-                  <p className="text-[16px] font-bold mb-2 flex items-center text-orange-500">
-                    
-                    {hostel.price.toLocaleString()} PKR
-                  </p>
+                 <Heading py={2} fontSize={'20px'} fontWeight={'semibold'}>{car.title}</Heading>
+                  <Flex gap={1} alignItems={'baseline'}>
+                    <span className="text-[20px] font-bold mb-2 flex items-center text-orange-500">{car.price.toLocaleString()} PKR</span>
+                    <span className="text-gray-600">/{car.priceUnit}</span>
+                    </Flex>
                   <p className="text-gray-600 flex items-center">
-                    <MapPin className="w-5 h-5 text-orange-500 mr-1" /> {hostel?.location || 'Lahore'}
+                    <MapPin className="w-5 h-5 text-orange-500 mr-1" /> {car?.location || 'Lahore'}
                   </p>
                 </Box>
                 <CardFooter>
-                  <Button as={Link} to={`/rental/${hostel._id}`} variant={'cutomButton'} className="w-full bg-orange-500 hover:bg-orange-600 text-white">View Details</Button>
+                  <Button as={Link} to={`/rental/${car._id}`} variant={'cutomButton'} className="w-full bg-orange-500 hover:bg-orange-600 text-white">View Details</Button>
                 </CardFooter>
               </Card>
             ))}
@@ -143,6 +147,19 @@ export default function CarListing() {
               <p className="text-gray-600 mt-2">Try adjusting your filters to see more results.</p>
             </Card>
           )}
+
+           {loading && 
+                  (
+                  <Stack mt={10}>
+                  <Skeleton startColor='#F4FFF3' endColor='#f4bf6f' height='20px' />
+                  <Skeleton startColor='#F4FFF3' endColor='#f4bf6f' height='20px' />
+                  <Skeleton startColor='#F4FFF3' endColor='#f4bf6f' height='20px' />
+                  <Skeleton startColor='#F4FFF3' endColor='#f4bf6f' height='20px' />
+                  <Skeleton startColor='#F4FFF3' endColor='#f4bf6f' height='20px' />
+                  <Skeleton startColor='#F4FFF3' endColor='#f4bf6f' height='20px' />
+                </Stack>
+                 )
+               }
         </div>
       </div>
     </div>

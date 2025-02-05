@@ -23,6 +23,7 @@ import {
   ListItem,
   ListIcon,
   List,
+  Modal, ModalOverlay, ModalContent, ModalCloseButton, ModalBody, useDisclosure 
 } from "@chakra-ui/react";
 import {
   StarIcon,
@@ -31,6 +32,8 @@ import {
   CarIcon,
   FuelIcon as GasPumpIcon,
   UsersIcon,
+  ArrowLeft,
+  ArrowRight,
 } from "lucide-react";
 import {
   ChevronLeftIcon,
@@ -59,6 +62,14 @@ const ListingDetails = () => {
   const { user } = useAuth();
   const toast = useToast();
   const [avgRating, setAvgRating] = useState(0);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [selectedImage, setSelectedImage] = useState(null);
+
+
+  const handleImageClick = (imgSrc) => {
+    setSelectedImage(imgSrc);
+    onOpen();
+  };
 
   useEffect(() => {
     // if(!user)
@@ -177,43 +188,74 @@ const ListingDetails = () => {
                       ? `${baseUrl}${currentListing.images[currentImageIndex].url}`
                       : "/images/make_listing/random.png" // Default image path
                   }
-                  // alt={
-                  //   currentListing?.images && currentListing?.images?.length > 0
-                  //     ? currentListing.images[currentImageIndex].caption || 'Image'
-                  //     : 'Default image'
-                  // }
+                  alt={'Cant load picture right now'}
+
                   objectFit="cover"
                   borderRadius="lg"
                   w="100%"
                   h="100%"
+                  onClick={() => handleImageClick(`${baseUrl}${currentListing.images[currentImageIndex].url}`)}
+                 _hover={{ filter: "brightness(1.2)", transition: "0.2s" }}
+
                 />
+
+     <Modal isOpen={isOpen} onClose={onClose} isCentered>
+        <ModalOverlay />
+        <ModalContent minW={'60vw'}>
+        <ModalCloseButton 
+            color="white" 
+            backgroundColor="black" 
+            _hover={{ backgroundColor: "gray.600" }} 
+            borderRadius="50%" 
+            boxSize="40px"
+          />
+          <ModalBody p={4}>
+            {selectedImage && <Image src={selectedImage} borderRadius="md" />}
+          </ModalBody>
+        </ModalContent>
+      </Modal>
 
                 {currentListing?.images &&
                   currentListing?.images?.length > 1 && (
-                    <>
-                      <IconButton
-                        icon={<ChevronLeftIcon />}
-                        position="absolute"
-                        top="50%"
-                        left="10px"
-                        transform="translateY(-50%)"
-                        onClick={() => handleImageNavigation("prev")}
-                        zIndex="1"
-                        colorScheme="teal"
-                        aria-label="Previous Image"
-                      />
-                      <IconButton
-                        icon={<ChevronRightIcon />}
+                   <>
+             
+                      <Button
+                      position="absolute"
+                      top="50%"
+                      left="10px"
+                      transform="translateY(-50%)"
+                      onClick={() => handleImageNavigation("prev")}
+                      _hover={{
+                       
+                        transition: "transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease", // Smooth transition
+                      }}
+                      zIndex="1"
+                      colorScheme="none"
+                      aria-label="Previous Image" 
+                      >
+                        <ArrowLeft size={'40px'} color="#ffffff"/>
+                      </Button>
+                      
+                       
+                      <Button
                         position="absolute"
                         top="50%"
                         right="10px"
                         transform="translateY(-50%)"
+                        _hover={{
+                       
+                          transition: "transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease", // Smooth transition
+                        }}
                         onClick={() => handleImageNavigation("next")}
                         zIndex="1"
-                        colorScheme="teal"
+                        colorScheme="none"
                         aria-label="Next Image"
-                      />
-                    </>
+                      >
+                      <ArrowRight size={'40px'} color="#ffffff" />
+                      </Button>
+
+                      </>
+                    
                   )}
               </Box>
 

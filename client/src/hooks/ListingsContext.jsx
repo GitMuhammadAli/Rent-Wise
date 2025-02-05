@@ -24,20 +24,19 @@ const listingsReducer = (state, action) => {
       return { ...state, listings: [...state.listings, action.payload] };
 
     case "UPDATE_LISTING":
-      console.log('Updating listing with payload:', action.payload); // Log payload
-      console.log('Current listings in state:', state.listings); // Log current listings
-      console.log('Length of current listings:', state.listings.length); // Log length of listings
+        const updatedListings = state.listings.map((listing) =>
+          listing._id === action.payload._id ? action.payload : listing
+        );
       
-      const updatedListings = state.listings.map((listing) => {
-        console.log('Listing ID:', listing._id); // Log each listing's ID
-        return listing._id === action.payload._id ? action.payload : listing;
-      });
+        const updatedUserListings = state.userListings.map((listing) =>
+          listing._id === action.payload._id ? action.payload : listing
+        );
       
-      console.log('Updated listings:', updatedListings); // Log new state
-      return {
-        ...state,
-        listings: updatedListings,
-      };
+        return {
+          ...state,
+          listings: updatedListings,
+          userListings: updatedUserListings, 
+        };
 
     case "DELETE_LISTING":
       return {

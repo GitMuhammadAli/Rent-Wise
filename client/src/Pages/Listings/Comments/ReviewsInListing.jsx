@@ -95,7 +95,7 @@ export default function ReviewsInListing({listingID, ownerID, setAvgRating}) {
   const averageRating =
   reviews.length > 0
     ? (reviews.reduce((sum, review) => sum + (review.rating || 0), 0) / reviews.length).toFixed(1)
-    : "No ratings yet";
+    : "No ratings and";
 
  setAvgRating(averageRating)
 
