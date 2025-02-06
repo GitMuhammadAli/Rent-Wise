@@ -90,8 +90,10 @@ exports.updateUserDashboardProfile = async (req, res , next) => {
 
 exports.NotificationSubscription = async (req, res, next) => {
   try {
-    const { userId, subscription } = req.body;
+    const {  subscription } = req.body;
 
+    const userId =req.userId._id;
+    
     if (!userId || !subscription) {
       return next(new AppError(BOOLEAN.FALSE , ERROR_MESSAGE.INVALID_DATA, STATUS.UNAUTHORIZED));
 
