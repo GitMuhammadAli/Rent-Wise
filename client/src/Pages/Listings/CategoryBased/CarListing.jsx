@@ -58,7 +58,7 @@ export default function CarListing() {
     },[carData])
 
   return (
-    <div className="container mx-auto px-4 py-8 bg-white">
+    <div className="container mx-auto px-4 py-8">
       <h1 className="text-4xl font-bold mb-8 text-center text-orange-800">Discover Your Dream Cars</h1>
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Sidebar with filters */}
