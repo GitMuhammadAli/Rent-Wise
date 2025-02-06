@@ -43,6 +43,7 @@ import DisplayAgreements from "./Pages/Agreement/Admin/DisplayAgreements";
 import Integration from "./Pages/Agreement/Admin/Integration";
 import UserProfile from "./Pages/profile/owner/ownerProfile";
 import ChatWindow from "./Pages/Listings/Test/TestHome";
+
 //  import TestListingDetails from "./Pages/Listings/Test/TestHome";
 
 
@@ -106,6 +107,9 @@ const router = createBrowserRouter(
         {/* <Route path="/agreements/:id" element={<UpdateAgreement/>} /> */}
         <Route path="/agreementCar/:id" element={<UpdateCarAgrr/>} />
         <Route path="/agreementHouse/:id" element={<UpdateHouseAgrr/>} />
+
+
+        
 
 
 

@@ -4,6 +4,7 @@ import { User, login as apiLogin, logout } from "../Api/api";
 import decodeToken from "../utils/jwt";
 import { io } from "socket.io-client";
 
+
 const socket = io(import.meta.env.VITE_BACK_END_URL, {
   withCredentials: true,
 });
@@ -14,6 +15,7 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [status, setStatus] = useState("loading");
+
 
   // const fetchUserData = async () => {
   //   try {
@@ -102,11 +104,17 @@ export const AuthProvider = ({ children }) => {
   };
 
 
-  const handleLogout = async () => {
-    await logout();
+  // const handleLogout = async () => {    commented by huzaifa
+  //   await logout();
 
-    Cookies.remove("jwt");
-    setUser(null);
+  //   Cookies.remove("jwt");
+  //   setUser(null);
+  //   setStatus("unauthenticated");
+  //   naviagte('/')
+  // };
+
+   const handleLogout = async () => {    
+    setUser(null)
     setStatus("unauthenticated");
   };
 
@@ -114,7 +122,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, status, handleLogout, login, fetchUserData }}
+      value={{ user, status, login, fetchUserData, handleLogout }} // handleLogout
     >
       {children}
     </AuthContext.Provider>
