@@ -6,11 +6,15 @@ const review = require("../../controller/review/review")
 const { AuthorizeUser } = require("../../middleware/auth");
 
 
-router.get("/getUserDashboard", asyncHandler(UserDashboard.GetUser));
 
+router.get("/getUserDashboard", asyncHandler(UserDashboard.GetUser));
 
 router.put("/updateUserDashboardProfile/:id", profileImage.single("avatar"), asyncHandler(UserDashboard.updateUserDashboardProfile));
 
 router.get("/reviews" , AuthorizeUser("user" , "Admin" ) , asyncHandler(review.ToGetReview))
+
+router.get("/save-subscription" , AuthorizeUser("user" , "Admin" ) , asyncHandler(UserDashboard.NotificationSubscription))
+
+
 
 module.exports = router

@@ -3,6 +3,7 @@ const AggrementDetails = require("../../model/agreements/AggrementDetails");
 const RentalItem = require("../../model/listings/RentalItemModel");
 const listingReview = require("../../model/reviews/listingReview");
 const Notification = require("../../model/notification/notification")
+const UserSettings = require("../../model/notification/notificationSetting")
 const { ERROR_MESSAGE } = require("../../messages/error");
 const {
   RESPONCE_MESSAGE,
@@ -18,6 +19,8 @@ const QRCode = require("qrcode");
 const { io } = require("../../utils/socket");
 const Messsage = require("../../model/chat/MesssageModel");
 const Conversation = require("../../model/chat/ConversationModel");
+const sendWebPush = require("../../utils/pushService");
+
 
 exports.CreateNotification = async (recipient, sender, type, message, next, ) => {
 
@@ -27,6 +30,12 @@ exports.CreateNotification = async (recipient, sender, type, message, next, ) =>
     }
 
     console.log("notification body is" , notification)
+    
+    const userSettings = await UserSettings.findOne({ user: recipient });
+
+
+   
+
 
     const newNotification = await Notification.create({
       recipient: recipient,
@@ -37,6 +46,15 @@ exports.CreateNotification = async (recipient, sender, type, message, next, ) =>
 
     console.log("notification  is saved" , newNotification)
 
+
+    if (userSettings?.webPushSubscription?.endpoint) {
+      const payload = {
+        title: "New Notification",
+        body: message,
+        icon: "/path-to-icon.png",
+      };
+      await sendWebPush(userSettings.webPushSubscription, payload);
+    }
 
     if (!newNotification) {
       return res.status(STATUS.FORBIDDEN).json({

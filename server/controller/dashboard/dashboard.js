@@ -1,12 +1,13 @@
 const User = require("../../model/user/userModel");
 const logger = require("../../utils/logger");
 const { ERROR_MESSAGE } = require("../../messages/error");
-const { RESPONCE_MESSAGE, LISTINGS } = require("../../messages/response");
+  const { RESPONCE_MESSAGE, LISTINGS , NOTIFICATION,  } = require("../../messages/response");
 const { STATUS } = require("../../messages/status");
 const { GetAndDecodeToken } = require("../../token/Tokens");
 const bcrypt = require('bcrypt')
 const AppError = require("../../utils/AppError");
 const { ROLES , BOOLEAN} = require("../../utils/Roles");
+const UserSettings = require("../../model/notification/notificationSetting")
 
 
 exports.GetUser = async (req, res, next) => {
@@ -83,5 +84,45 @@ exports.updateUserDashboardProfile = async (req, res , next) => {
     });
   } catch (error) {
     next(error);
+  }
+};
+
+
+exports.NotificationSubscription = async (req, res, next) => {
+  try {
+    const { userId, subscription } = req.body;
+
+    if (!userId || !subscription) {
+      return next(new AppError(BOOLEAN.FALSE , ERROR_MESSAGE.INVALID_DATA, STATUS.UNAUTHORIZED));
+
+    }
+
+    let userSettings = await UserSettings.findOne({ user: userId });
+
+    if (userSettings) {
+      userSettings.webPushSubscription = subscription;
+      userSettings.updatedAt = new Date();
+      await userSettings.save();
+    } else {
+      userSettings = await UserSettings.create({
+        _id: new mongoose.Types.ObjectId(),
+        notificationPreferences: {
+          messages: true,
+          reviews: true,
+          bookings: true,
+          payments: true,
+          systemUpdates: true,
+        },
+        webPushSubscription: subscription,
+      });
+
+      await User.findByIdAndUpdate(userId, {
+        NotificationSetting: userSettings._id,
+      });
+    }
+
+    res.status(STATUS.SUCCESS).json({ success: BOOLEAN.TRUE, message: NOTIFICATION.SYSTEM.NOTIFICATION_SUBSCRIBED });
+  } catch (error) {
+    next(error)
   }
 };

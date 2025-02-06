@@ -196,7 +196,8 @@ const NOTIFICATION = {
         PAYMENT_FAILED_NOTIFICATION: "Payment failed"
     },
     SYSTEM: {
-        SYSTEM_NOTIFICATION: "System notification"
+        SYSTEM_NOTIFICATION: "System notification",
+        NOTIFICATION_SUBSCRIBED:"Notifcation Service Enabled"
     },
     AGREEMENT: {
         AGREEMENT_NOTIFICATION: "New agreement notification",

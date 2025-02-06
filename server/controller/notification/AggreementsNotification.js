@@ -19,7 +19,7 @@ const { io } = require("../../utils/socket");
 const Messsage = require("../../model/chat/MesssageModel");
 const Conversation = require("../../model/chat/ConversationModel");
 const {CreateNotification} = require("../../controller/notification/notification")
-
+const sendWebPush = require("../../services/pushService");
 
 const cron = require('node-cron');
 
@@ -27,64 +27,67 @@ const cron = require('node-cron');
 const threeDaysFromNow = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
 
 
-
 cron.schedule('0 0 * * *', async () => {
   try {
+    console.log("Running Agreement Expiry Notification Cron Job...");
+
+    const threeDaysFromNow = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
+
     const expiringAgreements = await Aggrement.aggregate([
-        {
-          $lookup: {
-            from: "aggrementdetails",
-            localField: "agreementDetailsId",
-            foreignField: "_id",
-            as: "details"
-          }
-        },
-        {
-          $unwind: "$details"
-        },
-        {
-          $match: {
-            "details.aggrementDetail.endDate": {
-              $lte: threeDaysFromNow,
-              $gte: new Date() // Ensure end date is in the future
-            },
-            agreementStatus: "active" // Only active agreements
-          }
-        },
-        {
-          $project: {
-            ownerId: 1,
-            renterId: 1,
-            endDate: "$details.aggrementDetail.endDate",
-            listingId: 1
-          }
+      {
+        $lookup: {
+          from: "aggrementdetails",
+          localField: "agreementDetailsId",
+          foreignField: "_id",
+          as: "details"
         }
-      ]);
-      
-    
-    expiringAgreements.forEach(async (agreement) => {
+      },
+      { $unwind: "$details" },
+      {
+        $match: {
+          "details.aggrementDetail.endDate": {
+            $lte: threeDaysFromNow,
+            $gte: new Date()
+          },
+          agreementStatus: "active"
+        }
+      },
+      {
+        $project: {
+          ownerId: 1,
+          renterId: 1,
+          endDate: "$details.aggrementDetail.endDate",
+          listingId: 1
+        }
+      }
+    ]);
+
+    for (const agreement of expiringAgreements) {
       const daysLeft = Math.ceil((agreement.endDate - Date.now()) / (1000 * 60 * 60 * 24));
-      
-      // Notify owner
+
+      console.log(`Notifying owner (${agreement.ownerId}) and renter (${agreement.renterId}) for agreement expiring in ${daysLeft} days.`);
+
+      // Notify Owner
       await CreateNotification(
         agreement.ownerId,
-        null, // System as sender
+        null,
         "aggrement",
         `Agreement for listing ${agreement.listingId} expires in ${daysLeft} days`,
         next
       );
 
-      // Notify renter
+      // Notify Renter
       await CreateNotification(
         agreement.renterId,
         null,
         "aggrement",
-        `Your rental agreement expires in ${daysLeft} days`,
-        next
+        `Your rental agreement expires in ${daysLeft} days`
       );
-    });
+    }
+
+    console.log("Agreement notifications sent successfully.");
   } catch (error) {
-    console.error('Cron job error:', error);
+    console.error("Cron job error:", error);
   }
 });
 
