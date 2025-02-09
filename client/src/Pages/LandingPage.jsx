@@ -8,11 +8,16 @@ import { getAllListingAPI } from "../Api/ListingApi";
 import AnimatedBackground from "./Animated";
 import { categories } from "./Listings/Test/staticData";
 import { ListingsContext } from "../hooks/ListingsContext";
+import { useAuth } from "../hooks/AuthContext";
+
+// import NotificationButton from "./Notifications/NotificationButton";
 
 const LandingPage = () => {
 
 //   my things
+const [checkAlert, setCheckAlert] = useState(false);
 const sectionRef = useRef(null);
+const {user} = useAuth();
   const [loading, setLoading] = useState(true);
 const { state, dispatch } = useContext(ListingsContext); 
   const { listings } = state; 
@@ -61,8 +66,51 @@ const { state, dispatch } = useContext(ListingsContext);
     console.log("Current listings in get state in getAll:", listings)
   },[listings])
 
+  useEffect(() => {
+    const subscribeToPush = async () => {
+      if(!user || checkAlert) return;
+        
+        try {
+          const registration = await navigator.serviceWorker.ready;
+          const subscription = await registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: "BHwPjc3C15tZQTTbVYA6Bb0vDvpusKecxa8ChQAoFkB9QbJgF74psdSALVMNySe72AlyOfzMf07aV7JWRHOX9d0",
+          });
+  
+          console.log("Subscription Object:", subscription);
+  
+          const response = await fetch(`${import.meta.env.VITE_BACK_END_URL}/dashboard/save-subscription`, {
+            method: "POST",
+            body: JSON.stringify({ subscription }),
+            headers: { "Content-Type": "application/json" },
+          });
+          console.log('response of subsription', response)
+  
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+       
+          alert("Push Notifications Enabled!");
+          setCheckAlert(true)
+        } catch (error) {
+          console.error("Push Subscription Error:", error);
+        }
+      
+    };
+  
+    subscribeToPush();
+  }, [user]); 
+  
+  
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white">
+
+
+      {/* {
+        user && <subscibeTo/>
+        
+      } */}
       {/* just added bg because removed animation */}
        <Box position="relative" overflow="hidden" height="80vh" bg={'orange.400'} > 
       {/* <AnimatedBackground /> */}

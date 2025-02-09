@@ -121,7 +121,7 @@ export default function Notification({notificationData, setNotificationData }) {
       <PopoverContent>
         <PopoverArrow />
         <PopoverCloseButton color="teal" />
-        <PopoverHeader color="black">notificationData</PopoverHeader>
+        <PopoverHeader color="black">Notifications</PopoverHeader>
         <PopoverBody>
           <Box>
             {/* Tabs Header */}

@@ -8,6 +8,7 @@ const bcrypt = require('bcrypt')
 const AppError = require("../../utils/AppError");
 const { ROLES , BOOLEAN} = require("../../utils/Roles");
 const UserSettings = require("../../model/notification/notificationSetting")
+const mongoose = require('mongoose')
 
 
 exports.GetUser = async (req, res, next) => {
@@ -90,9 +91,15 @@ exports.updateUserDashboardProfile = async (req, res , next) => {
 
 exports.NotificationSubscription = async (req, res, next) => {
   try {
+    
     const {  subscription } = req.body;
 
-    const userId =req.userId._id;
+
+    // const userId =req.userId._id;
+    const userId = '670a69f02b298d4a1a047f24'
+
+    console.log("req.body", subscription)
+    console.log("uuser", userId)
     
     if (!userId || !subscription) {
       return next(new AppError(BOOLEAN.FALSE , ERROR_MESSAGE.INVALID_DATA, STATUS.UNAUTHORIZED));
@@ -108,6 +115,7 @@ exports.NotificationSubscription = async (req, res, next) => {
     } else {
       userSettings = await UserSettings.create({
         _id: new mongoose.Types.ObjectId(),
+        user: userId,   // LINE ADDED
         notificationPreferences: {
           messages: true,
           reviews: true,

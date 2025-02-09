@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { Outlet, Link, useLocation, useNavigate } from "react-router-dom"
 import { useAuth } from "../hooks/AuthContext"
 import { ToastContainer, toast } from "react-toastify"
-import { Box, Flex, Text, Button, Container, useColorModeValue, Icon, VStack, Avatar, Menu, MenuButton, MenuList, MenuGroup, MenuItem, MenuDivider } from "@chakra-ui/react"
+import { Box, Flex, Text, Button, Container, useColorModeValue, Icon, VStack, Avatar, Menu, MenuButton, MenuList, MenuGroup, MenuItem, MenuDivider, IconButton, Drawer, DrawerOverlay, DrawerContent, DrawerCloseButton, DrawerHeader, DrawerBody, useDisclosure, MenuIcon } from "@chakra-ui/react"
 import { FaUser,FaBell, FaComments, FaList, FaTachometerAlt, FaPlus, FaFileContract, FaSignOutAlt } from "react-icons/fa"
 import "react-toastify/dist/ReactToastify.css"
 import {LogOut} from 'lucide-react'
@@ -20,6 +20,7 @@ function MainLayout() {
  
   const [notificationData, setNotificationData] = useState([]);
   const [successMessage, setSuccessMessage] = useState("");
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   // const bgColor = useColorModeValue("orange.300", "orange.600")
   const bgColor = useColorModeValue(
@@ -87,7 +88,8 @@ function MainLayout() {
         >
           RentWise
         </Text>
-        <Flex pl={10} alignItems="center" gap={8}>
+        {/* display={{ base: 'none', md: 'flex' }} */}
+        <Flex pl={10} alignItems="center" gap={8} >
           {user ? (
             <>
               <Text
@@ -151,14 +153,9 @@ function MainLayout() {
       <Flex alignItems="center" gap={5}>
         {user ?  (
           <>
-          
-             
-            
+
               <Notification setNotificationData={setNotificationData} notificationData={notificationData} />
-             
-             
-             
-              
+            
             <Menu>
               <MenuButton>
                 <Avatar size="md" src={`${import.meta.env.VITE_BACK_END_URL}${user.imageUrl}`} />
@@ -191,6 +188,41 @@ function MainLayout() {
 
         )}
       </Flex>
+
+      {/* <IconButton
+           bg={'brown'}
+            aria-label="Open Menu"
+            icon={<MenuIcon/>}
+            display={{ base: 'flex', md: 'none' }}
+            onClick={onOpen}
+          /> */}
+
+          
+           <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
+            <DrawerOverlay />
+            <DrawerContent>
+              <DrawerCloseButton />
+              <DrawerHeader>Menu</DrawerHeader>
+              <DrawerBody>
+                <VStack align="start" spacing={4}>
+                  <Text as={Link} to="/" onClick={onClose} color="gray.600" _hover={{ color: 'blue.600' }}>
+                    Home
+                  </Text>
+                  <Text as={Link} to="/destinations" onClick={onClose} color="gray.600" _hover={{ color: 'blue.600' }}>
+                    Destinations
+                  </Text>
+                  <Text as={Link} to="/services" onClick={onClose} color="gray.600" _hover={{ color: 'blue.600' }}>
+                    Services
+                  </Text>
+                  <Text as={Link} to="/contact" onClick={onClose} color="gray.600" _hover={{ color: 'blue.600' }}>
+                    Contact
+                  </Text>
+                </VStack>
+              </DrawerBody>
+            </DrawerContent>
+          </Drawer>
+
+
     </Flex>
   </Container>
 </Box>
