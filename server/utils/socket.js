@@ -17,7 +17,6 @@ const onlineUsers = new Map();
 
 console.log("online users are " , onlineUsers )
 
-
 io.on("connection", (socket) => {
     // console.log("A user connected:", socket.id);
     socket.on("join-user", (userId) => {
