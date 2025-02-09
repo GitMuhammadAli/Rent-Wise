@@ -95,8 +95,8 @@ exports.NotificationSubscription = async (req, res, next) => {
     const {  subscription } = req.body;
 
 
-    // const userId =req.userId._id;
-    const userId = '670a69f02b298d4a1a047f24'
+    const userId = req.user._id;
+    // const userId = '670a69f02b298d4a1a047f24'
 
     console.log("req.body", subscription)
     console.log("uuser", userId)
