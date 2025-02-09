@@ -66,7 +66,7 @@ const { state, dispatch } = useContext(ListingsContext);
     console.log("Current listings in get state in getAll:", listings)
   },[listings])
 
-  useEffect(() => {
+  
     const subscribeToPush = async () => {
       if(!user || checkAlert) return;
         
@@ -98,8 +98,19 @@ const { state, dispatch } = useContext(ListingsContext);
       
     };
   
-    subscribeToPush();
-  }, [user]); 
+    useEffect(() => {
+      if (!user) return;
+  
+      const isAllowed = window.confirm("Do you want to allow notifications?");
+      
+      if (isAllowed) {
+          console.log("User clicked Allow");
+          subscribeToPush()
+      } else {
+          console.log("User clicked Block");
+      }
+  }, [user]);
+  
   
   
 
