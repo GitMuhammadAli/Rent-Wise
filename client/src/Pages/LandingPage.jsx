@@ -123,7 +123,12 @@ const { state, dispatch } = useContext(ListingsContext);
         
       } */}
       {/* just added bg because removed animation */}
-       <Box position="relative" overflow="hidden" height="80vh" bg={'orange.400'} > 
+       <Box position="relative" overflow="hidden" height="80vh"  style={{
+    backgroundImage: `url('/images/HomeCar1.jpg')`,
+    backgroundSize: 'cover', 
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat', 
+  }}  > 
       {/* <AnimatedBackground /> */}
       <Flex position="relative" zIndex={10} height="full" alignItems="center">
         <Container maxW="7xl" px={{ base: 4, sm: 6, lg: 8 }}>
@@ -133,7 +138,7 @@ const { state, dispatch } = useContext(ListingsContext);
               fontWeight="extrabold"
               color="white"
               mb={4}
-              className="animate-fade-in-up"
+              className="animate-fade-in-up mainHeading"
             >
               Welcome to <Text as="span" color="yellow.300">RentWise</Text>
             </Heading>
@@ -370,6 +375,25 @@ const { state, dispatch } = useContext(ListingsContext);
         .animation-delay-600 {
           animation-delay: 600ms;
         }
+        
+        /* for the main heading */
+        .mainHeading {
+    width: 20ch; /* Width of the text */
+    white-space: nowrap; /* Prevent text from wrapping */
+    overflow: hidden; /* Hide overflow */
+    border-right: 2px solid; /* Optional: Add a cursor effect */
+    animation: typing 3s linear infinite alternate-reverse; /* Smooth typing animation */
+}
+
+@keyframes typing {
+    from {
+        width: 10ch; /* Start with no width */
+    }
+    to {
+        width: 20ch; /* End with full width */
+    }
+}
+   
       `}</style>
     </div>
   )
@@ -377,3 +401,35 @@ const { state, dispatch } = useContext(ListingsContext);
 
 export default LandingPage
 
+
+
+
+// blinking cursor
+
+
+// .mainHeading {
+//   width: 20ch;
+//   white-space: nowrap;
+//   overflow: hidden;
+//   border-right: 2px solid; /* Cursor */
+//   animation: typing 4s linear infinite alternate-reverse,
+//              blink-cursor 0.75s step-end infinite;
+// }
+
+// @keyframes typing {
+//   from {
+//       width: 0;
+//   }
+//   to {
+//       width: 20ch;
+//   }
+// }
+
+// @keyframes blink-cursor {
+//   from, to {
+//       border-color: transparent; /* Hide cursor */
+//   }
+//   50% {
+//       border-color: black; /* Show cursor */
+//   }
+// }
