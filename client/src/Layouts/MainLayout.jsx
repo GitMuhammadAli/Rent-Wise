@@ -24,7 +24,7 @@ function MainLayout() {
 
   // const bgColor = useColorModeValue("orange.300", "orange.600")
   const bgColor = useColorModeValue(
-    "linear(to-r, orange.300, #f9da9c)",  // Light mode gradient
+    "linear(to-r, #cfb27b, #eedfbf)",  // Light mode gradient
     "linear(to-r, orange.600, red.500)"   // Dark mode gradient
   );
   

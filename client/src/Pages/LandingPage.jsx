@@ -145,84 +145,77 @@ const LandingPage = () => {
         
       } */}
       {/* just added bg because removed animation */}
-      <Box
-        position="relative"
-        overflow="hidden"
-        height="80vh"
-        bg={"orange.400"}
-      >
-        {/* <AnimatedBackground /> */}
-        <Flex position="relative" zIndex={10} height="full" alignItems="center">
-          <Container maxW="7xl" px={{ base: 4, sm: 6, lg: 8 }}>
-            <Flex direction="column" alignItems="center" textAlign="center">
-              <Heading
-                fontSize={{ base: "5xl", md: "7xl" }}
-                fontWeight="extrabold"
-                color="white"
-                mb={4}
-                className="animate-fade-in-up"
-              >
-                Welcome to{" "}
-                <Text as="span" color="yellow.300">
-                  RentWise
-                </Text>
-              </Heading>
-              <Text
-                mt={3}
-                maxW={{ base: "md", md: "3xl" }}
-                mx="auto"
-                fontSize={{ base: "xl", sm: "2xl" }}
-                color="white"
-                className="animate-fade-in-up animation-delay-300"
-              >
-                Discover premium rentals for homes, cars, and more. Your journey
-                begins here.
-              </Text>
-              <Flex
-                mt={10}
-                justifyContent="center"
-                className="animate-fade-in-up animation-delay-600"
-              >
-                <Box rounded="md" shadow="md">
-                  <Link to="#search" _hover={{ textDecoration: "none" }}>
-                    <Button
-                      px={{ base: 8, md: 10 }}
-                      py={{ base: 3, md: 7 }}
-                      fontSize={{ base: "md", md: "lg" }}
-                      fontWeight="medium"
-                      colorScheme="whiteAlpha"
-                      color="orange.700"
-                      bg="white"
-                      _hover={{ bg: "gray.50" }}
-                      transition="all 0.3s ease"
-                      onClick={handleScroll}
-                    >
-                      Get started
-                    </Button>
-                  </Link>
-                </Box>
-                <Box ml={3}>
-                  <Link to="#featured" _hover={{ textDecoration: "none" }}>
-                    <Button
-                      px={{ base: 8, md: 10 }}
-                      py={{ base: 3, md: 7 }}
-                      fontSize={{ base: "md", md: "lg" }}
-                      fontWeight="medium"
-                      colorScheme="orange"
-                      bg="orange.500"
-                      _hover={{ bg: "orange.700" }}
-                      transition="all 0.3s ease"
-                      onClick={handleScroll}
-                    >
-                      View listings
-                    </Button>
-                  </Link>
-                </Box>
-              </Flex>
+       <Box position="relative" overflow="hidden" height="80vh"  style={{
+    backgroundImage: `url('/images/HomeCar1.jpg')`,
+    backgroundSize: 'cover', 
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat', 
+  }}  > 
+      {/* <AnimatedBackground /> */}
+      <Flex position="relative" zIndex={10} height="full" alignItems="center">
+        <Container maxW="7xl" px={{ base: 4, sm: 6, lg: 8 }}>
+          <Flex direction="column" alignItems="center" textAlign="center">
+            <Heading
+              fontSize={{ base: "5xl", md: "7xl" }}
+              fontWeight="extrabold"
+              color="white"
+              mb={4}
+              className="animate-fade-in-up mainHeading"
+            >
+              Welcome to <Text as="span" color="yellow.300">RentWise</Text>
+            </Heading>
+            <Text
+              mt={3}
+              maxW={{ base: "md", md: "3xl" }}
+              mx="auto"
+              fontSize={{ base: "xl", sm: "2xl" }}
+              color="white"
+              className="animate-fade-in-up animation-delay-300"
+            >
+              Discover premium rentals for homes, cars, and more. Your journey begins here.
+            </Text>
+            <Flex mt={10} justifyContent="center" className="animate-fade-in-up animation-delay-600">
+              <Box rounded="md" shadow="md">
+                <Link to="#search" _hover={{ textDecoration: "none" }}>
+                  <Button
+                    px={{ base: 8, md: 10 }}
+                    py={{ base: 3, md: 7 }}
+                    fontSize={{ base: "md", md: "lg" }}
+                    fontWeight="medium"
+                    colorScheme="whiteAlpha"
+                    color="orange.700"
+                    bg="white"
+                    _hover={{ bg: "gray.50" }}
+                    transition="all 0.3s ease"
+                    onClick={handleScroll}
+                  >
+                    Get started
+                  </Button>
+                </Link>
+              </Box>
+              <Box ml={3}>
+                <Link to="#featured" _hover={{ textDecoration: "none" }}>
+                  <Button
+                    px={{ base: 8, md: 10 }}
+                    py={{ base: 3, md: 7 }}
+                    fontSize={{ base: "md", md: "lg" }}
+                    fontWeight="medium"
+                    colorScheme="orange"
+                    bg="orange.500"
+                    _hover={{ bg: "orange.700" }}
+                    transition="all 0.3s ease"
+                    onClick={handleScroll}
+                  >
+                    View listings
+                  </Button>
+                </Link>
+              </Box>
             </Flex>
-          </Container>
-        </Flex>
-      </Box>
+          </Flex>
+        </Container>
+      </Flex>
+    </Box>
+
 
       {/* Search Section */}
       <Box
@@ -539,9 +532,61 @@ const LandingPage = () => {
         .animation-delay-600 {
           animation-delay: 600ms;
         }
+        
+        /* for the main heading */
+        .mainHeading {
+    width: 20ch; /* Width of the text */
+    white-space: nowrap; /* Prevent text from wrapping */
+    overflow: hidden; /* Hide overflow */
+    border-right: 2px solid; /* Optional: Add a cursor effect */
+    animation: typing 3s linear infinite alternate-reverse; /* Smooth typing animation */
+}
+
+@keyframes typing {
+    from {
+        width: 10ch; /* Start with no width */
+    }
+    to {
+        width: 20ch; /* End with full width */
+    }
+}
+   
       `}</style>
     </div>
   );
 };
 
-export default LandingPage;
+export default LandingPage
+
+
+
+
+// blinking cursor
+
+
+// .mainHeading {
+//   width: 20ch;
+//   white-space: nowrap;
+//   overflow: hidden;
+//   border-right: 2px solid; /* Cursor */
+//   animation: typing 4s linear infinite alternate-reverse,
+//              blink-cursor 0.75s step-end infinite;
+// }
+
+// @keyframes typing {
+//   from {
+//       width: 0;
+//   }
+//   to {
+//       width: 20ch;
+//   }
+// }
+
+// @keyframes blink-cursor {
+//   from, to {
+//       border-color: transparent; /* Hide cursor */
+//   }
+//   50% {
+//       border-color: black; /* Show cursor */
+//   }
+// }
