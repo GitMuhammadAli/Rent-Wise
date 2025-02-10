@@ -113,8 +113,8 @@ exports.NotificationSubscription = async (req, res, next) => {
     const userId = req.user._id;
     // const userId = '670a69f02b298d4a1a047f24'
 
-    console.log("req.body", subscription)
-    console.log("uuser", userId)
+    // console.log("req.body", subscription)
+    // console.log("uuser", userId)
 
     if (!userId || !subscription) {
       return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.INVALID_DATA, STATUS.UNAUTHORIZED));
