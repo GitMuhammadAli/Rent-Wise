@@ -19,7 +19,7 @@ const QRCode = require("qrcode");
 const { io } = require("../../utils/socket");
 const Messsage = require("../../model/chat/MesssageModel");
 const Conversation = require("../../model/chat/ConversationModel");
-const sendWebPush = require("../../utils/pushService");
+const {sendWebPush} = require("../../utils/pushService");
 
 
 exports.CreateNotification = async (recipient, sender, type, message, next, ) => {
@@ -110,7 +110,7 @@ exports.readAllNotificationByUser = async (req, res, next) => {
 
     res.status(STATUS.SUCCESS).json({
       status: BOOLEAN.TRUE,
-      message: NOTIFICATION.GENERAL.NOTIFICATIONS_READ
+      message: NOTIFICATION.GENERAL.NOTIFICATION_MARKED_READ
     });
   } catch (error) {
     next(error);
@@ -123,7 +123,7 @@ exports.clearAllNotificationByUser = async (req, res, next) => {
 
     res.status(STATUS.SUCCESS).json({
       status: BOOLEAN.TRUE,
-      message: NOTIFICATION.GENERAL.NOTIFICATIONS_CLEARED
+      message: NOTIFICATION.GENERAL.NOTIFICATION_CLEARED
     });
   } catch (error) {
     next(error);

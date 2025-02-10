@@ -24,7 +24,6 @@ exports.GetUser = async (req, res, next) => {
       return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.USER_NOT_FOUND, STATUS.NOT_FOUND));
     }
 
-    console.log(user)
     res.status(STATUS.SUCCESS).json({
       success: BOOLEAN.TRUE,
       message: RESPONCE_MESSAGE.USER_FETCHED,
@@ -78,11 +77,12 @@ exports.updateUserDashboardProfile = async (req, res, next) => {
         { user: id },
         {
           notificationPreferences: {
-            message: JSON.parse(notificationPreferences).message,
+            // message: JSON.parse(notificationPreferences).message,
             review: JSON.parse(notificationPreferences).review,
             comment: JSON.parse(notificationPreferences).comment,
             system: JSON.parse(notificationPreferences).system,
             aggreement: JSON.parse(notificationPreferences).aggreement,
+            chat: JSON.parse(notificationPreferences).chat,
           }
         },
         { new: true, upsert: true }
@@ -132,13 +132,14 @@ exports.NotificationSubscription = async (req, res, next) => {
         _id: new mongoose.Types.ObjectId(),
         user: userId,
         notificationPreferences: {
-          message: true,
+          // message: true,
           review: true,
           comment:true,
           // bookings: true,
           // payments: true,
           system: true,
           aggreement:true,
+          chat:true,
         },
         webPushSubscription: subscription,
       });

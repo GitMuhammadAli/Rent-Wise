@@ -167,10 +167,10 @@ export default function MyAccount() {
 
           <TabPanel>
             <VStack spacing={4}>
-              <FormControl display="flex" justifyContent="space-between" alignItems="center">
+              {/* <FormControl display="flex" justifyContent="space-between" alignItems="center">
                 <FormLabel>Messages Notifications</FormLabel>
                 <Switch isChecked={notificationSettings.message} onChange={() => handleNotificationChange('message')} />
-              </FormControl>
+              </FormControl> */}
               <FormControl display="flex" justifyContent="space-between" alignItems="center">
                 <FormLabel>Reviews Notifications</FormLabel>
                 <Switch isChecked={notificationSettings.review} onChange={() => handleNotificationChange('review')} />
@@ -194,6 +194,10 @@ export default function MyAccount() {
               <FormControl display="flex" justifyContent="space-between" alignItems="center">
                 <FormLabel>Comments</FormLabel>
                 <Switch isChecked={notificationSettings.comment} onChange={() => handleNotificationChange('comment')} />
+              </FormControl>
+              <FormControl display="flex" justifyContent="space-between" alignItems="center">
+                <FormLabel>Chats</FormLabel>
+                <Switch isChecked={notificationSettings.chat} onChange={() => handleNotificationChange('chat')} />
               </FormControl>
             </VStack>
           </TabPanel>
