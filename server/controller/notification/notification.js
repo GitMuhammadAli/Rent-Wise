@@ -19,7 +19,7 @@ const QRCode = require("qrcode");
 const { io } = require("../../utils/socket");
 const Messsage = require("../../model/chat/MesssageModel");
 const Conversation = require("../../model/chat/ConversationModel");
-const {sendWebPush} = require("../../utils/pushService");
+const sendWebPush = require("../../utils/pushService");
 
 
 exports.CreateNotification = async (recipient, sender, type, message, next, ) => {
