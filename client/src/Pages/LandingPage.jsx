@@ -1,10 +1,32 @@
-
-import { useContext, useEffect, useState, useRef } from "react"
-import { Link } from "react-router-dom"
-import { Box, Flex, Heading, Text, Button, Container, Grid, GridItem,Input, Image, Stack, Skeleton } from "@chakra-ui/react";
-import { FaBuilding, FaCar, FaHotel, FaSearch, FaStar, FaArrowRight } from "react-icons/fa"
-import { getAllListingAPI } from "../Api/ListingApi"; 
-
+import { useContext, useEffect, useState, useRef } from "react";
+import { Link } from "react-router-dom";
+import {
+  Box,
+  Flex,
+  Heading,
+  Text,
+  Button,
+  Container,
+  Grid,
+  GridItem,
+  Input,
+  Image,
+  Stack,
+  Skeleton,
+} from "@chakra-ui/react";
+import {
+  FaBuilding,
+  FaCar,
+  FaHotel,
+  FaSearch,
+  FaStar,
+  FaArrowRight,
+} from "react-icons/fa";
+import { getAllListingAPI } from "../Api/ListingApi";
+import {
+  SetSubscriptionNotification,
+  GetSubscriptionNotification,
+} from "../Api/DashboardAPI";
 import AnimatedBackground from "./Animated";
 import { categories } from "./Listings/Test/staticData";
 import { ListingsContext } from "../hooks/ListingsContext";
@@ -13,229 +35,294 @@ import { useAuth } from "../hooks/AuthContext";
 // import NotificationButton from "./Notifications/NotificationButton";
 
 const LandingPage = () => {
-
-//   my things
-const [checkAlert, setCheckAlert] = useState(false);
-const sectionRef = useRef(null);
-const {user} = useAuth();
+  //   my things
+  const [checkAlert, setCheckAlert] = useState(false);
+  const sectionRef = useRef(null);
+  const { user } = useAuth();
   const [loading, setLoading] = useState(true);
-const { state, dispatch } = useContext(ListingsContext); 
-  const { listings } = state; 
-  const itemsPerPage = 6 // Number of listings per page
-    const [currentPage, setCurrentPage] = useState(1);
-    const totalPages = Math.ceil(listings.length / itemsPerPage);
+  const { state, dispatch } = useContext(ListingsContext);
+  const { listings } = state;
+  const itemsPerPage = 6; // Number of listings per page
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = Math.ceil(listings.length / itemsPerPage);
+  const [hasSubscription, setHasSubscription] = useState(null);
 
-    // Get the listings for the current page
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const curentListing = listings.slice(startIndex, endIndex);
+  // Get the listings for the current page
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const curentListing = listings.slice(startIndex, endIndex);
 
-    const goToNextPage = () => {
-      if (currentPage < totalPages) {
-          setCurrentPage(currentPage + 1);
-      }
+  const goToNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
   };
 
   const goToPrevPage = () => {
-      if (currentPage > 1) {
-          setCurrentPage(currentPage - 1);
-      }
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
   };
 
   const handleScroll = () => {
     sectionRef.current?.scrollIntoView({ behavior: "smooth" });
   };
-  
 
   useEffect(() => {
     async function fetchData() {
       try {
         const response = await getAllListingAPI();
         console.log("Response is: ", response.data);
-        dispatch({ type: 'GET_LISTINGS', payload: response.data });
+        dispatch({ type: "GET_LISTINGS", payload: response.data });
       } catch (error) {
         console.error("Error fetching listings:", error);
-      } finally{
-        setLoading(false)
+      } finally {
+        setLoading(false);
       }
     }
     fetchData();
   }, [dispatch]);
 
-  useEffect(()=>{
-    console.log("Current listings in get state in getAll:", listings)
-  },[listings])
+  useEffect(() => {
+    console.log("Current listings in get state in getAll:", listings);
+  }, [listings]);
 
-  
-    const subscribeToPush = async () => {
-      if(!user || checkAlert) return;
-        
-        try {
-          const registration = await navigator.serviceWorker.ready;
-          const subscription = await registration.pushManager.subscribe({
-            userVisibleOnly: true,
-            applicationServerKey: "BHwPjc3C15tZQTTbVYA6Bb0vDvpusKecxa8ChQAoFkB9QbJgF74psdSALVMNySe72AlyOfzMf07aV7JWRHOX9d0",
-          });
-  
-          console.log("Subscription Object:", subscription);
-  
-          const response = await fetch(`${import.meta.env.VITE_BACK_END_URL}/dashboard/save-subscription`, {
-            method: "POST",
-            body: JSON.stringify({ subscription }),
-            headers: { "Content-Type": "application/json" },
-          });
-          console.log('response of subsription', response)
-  
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+
+
+  // Fetch user's notification setting
+  useEffect(() => {
+    if (!user) return;
+
+    const fetchNotificationSetting = async () => {
+      try {
+        const response = await GetSubscriptionNotification();
+        console.log("notification response:", response.data);
+        setHasSubscription(response.data.hasSubscriptionNotification);
+        if (!response.data.hasSubscriptionNotification && !checkAlert) {
+          const isAllowed = window.confirm("Do you want to allow notifications?");
+          if (isAllowed) {
+            subscribeToPush();
           }
-       
-          alert("Push Notifications Enabled!");
-          setCheckAlert(true)
-        } catch (error) {
-          console.error("Push Subscription Error:", error);
+          setCheckAlert(true);
         }
-      
-    };
-  
-    useEffect(() => {
-      if (!user) return;
-  
-      const isAllowed = window.confirm("Do you want to allow notifications?");
-      
-      if (isAllowed) {
-          console.log("User clicked Allow");
-          subscribeToPush()
-      } else {
-          console.log("User clicked Block");
+      } catch (error) {
+        console.error("Error fetching notification setting:", error);
       }
+    };
+
+    fetchNotificationSetting();
   }, [user]);
-  
-  
-  
 
-  return (
+  const subscribeToPush = async () => {
+    if (!user) return;
+
+    try {
+      const registration = await navigator.serviceWorker.ready;
+      const subscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: `${import.meta.env.VITE_WEB_PUSH_PUBLIC_KEY}`,
+      });
+
+      console.log("Subscription Object:", subscription);
+
+      const response = await SetSubscriptionNotification({ subscription });
+      console.log("response of subscription", response);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      if (response.data.success) {
+        alert("Push Notifications Enabled!");
+      }
+    } catch (error) {
+      console.error("Push Subscription Error:", error);
+    }
+  };  return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white">
-
-
       {/* {
         user && <subscibeTo/>
         
       } */}
       {/* just added bg because removed animation */}
-       <Box position="relative" overflow="hidden" height="80vh" bg={'orange.400'} > 
-      {/* <AnimatedBackground /> */}
-      <Flex position="relative" zIndex={10} height="full" alignItems="center">
-        <Container maxW="7xl" px={{ base: 4, sm: 6, lg: 8 }}>
-          <Flex direction="column" alignItems="center" textAlign="center">
-            <Heading
-              fontSize={{ base: "5xl", md: "7xl" }}
-              fontWeight="extrabold"
-              color="white"
-              mb={4}
-              className="animate-fade-in-up"
-            >
-              Welcome to <Text as="span" color="yellow.300">RentWise</Text>
-            </Heading>
-            <Text
-              mt={3}
-              maxW={{ base: "md", md: "3xl" }}
-              mx="auto"
-              fontSize={{ base: "xl", sm: "2xl" }}
-              color="white"
-              className="animate-fade-in-up animation-delay-300"
-            >
-              Discover premium rentals for homes, cars, and more. Your journey begins here.
-            </Text>
-            <Flex mt={10} justifyContent="center" className="animate-fade-in-up animation-delay-600">
-              <Box rounded="md" shadow="md">
-                <Link to="#search" _hover={{ textDecoration: "none" }}>
-                  <Button
-                    px={{ base: 8, md: 10 }}
-                    py={{ base: 3, md: 7 }}
-                    fontSize={{ base: "md", md: "lg" }}
-                    fontWeight="medium"
-                    colorScheme="whiteAlpha"
-                    color="orange.700"
-                    bg="white"
-                    _hover={{ bg: "gray.50" }}
-                    transition="all 0.3s ease"
-                    onClick={handleScroll}
-                  >
-                    Get started
-                  </Button>
-                </Link>
-              </Box>
-              <Box ml={3}>
-                <Link to="#featured" _hover={{ textDecoration: "none" }}>
-                  <Button
-                    px={{ base: 8, md: 10 }}
-                    py={{ base: 3, md: 7 }}
-                    fontSize={{ base: "md", md: "lg" }}
-                    fontWeight="medium"
-                    colorScheme="orange"
-                    bg="orange.500"
-                    _hover={{ bg: "orange.700" }}
-                    transition="all 0.3s ease"
-                    onClick={handleScroll}
-                  >
-                    View listings
-                  </Button>
-                </Link>
-              </Box>
+      <Box
+        position="relative"
+        overflow="hidden"
+        height="80vh"
+        bg={"orange.400"}
+      >
+        {/* <AnimatedBackground /> */}
+        <Flex position="relative" zIndex={10} height="full" alignItems="center">
+          <Container maxW="7xl" px={{ base: 4, sm: 6, lg: 8 }}>
+            <Flex direction="column" alignItems="center" textAlign="center">
+              <Heading
+                fontSize={{ base: "5xl", md: "7xl" }}
+                fontWeight="extrabold"
+                color="white"
+                mb={4}
+                className="animate-fade-in-up"
+              >
+                Welcome to{" "}
+                <Text as="span" color="yellow.300">
+                  RentWise
+                </Text>
+              </Heading>
+              <Text
+                mt={3}
+                maxW={{ base: "md", md: "3xl" }}
+                mx="auto"
+                fontSize={{ base: "xl", sm: "2xl" }}
+                color="white"
+                className="animate-fade-in-up animation-delay-300"
+              >
+                Discover premium rentals for homes, cars, and more. Your journey
+                begins here.
+              </Text>
+              <Flex
+                mt={10}
+                justifyContent="center"
+                className="animate-fade-in-up animation-delay-600"
+              >
+                <Box rounded="md" shadow="md">
+                  <Link to="#search" _hover={{ textDecoration: "none" }}>
+                    <Button
+                      px={{ base: 8, md: 10 }}
+                      py={{ base: 3, md: 7 }}
+                      fontSize={{ base: "md", md: "lg" }}
+                      fontWeight="medium"
+                      colorScheme="whiteAlpha"
+                      color="orange.700"
+                      bg="white"
+                      _hover={{ bg: "gray.50" }}
+                      transition="all 0.3s ease"
+                      onClick={handleScroll}
+                    >
+                      Get started
+                    </Button>
+                  </Link>
+                </Box>
+                <Box ml={3}>
+                  <Link to="#featured" _hover={{ textDecoration: "none" }}>
+                    <Button
+                      px={{ base: 8, md: 10 }}
+                      py={{ base: 3, md: 7 }}
+                      fontSize={{ base: "md", md: "lg" }}
+                      fontWeight="medium"
+                      colorScheme="orange"
+                      bg="orange.500"
+                      _hover={{ bg: "orange.700" }}
+                      transition="all 0.3s ease"
+                      onClick={handleScroll}
+                    >
+                      View listings
+                    </Button>
+                  </Link>
+                </Box>
+              </Flex>
             </Flex>
-          </Flex>
-        </Container>
-      </Flex>
-    </Box>
-
+          </Container>
+        </Flex>
+      </Box>
 
       {/* Search Section */}
-      <Box id="search" maxW="7xl" mx="auto" px={{ base: 4, sm: 6, lg: 8 }} py={16}>
-      <Box textAlign="center">
-        <Heading fontSize={{ base: "4xl", sm: "5xl" }} fontWeight="extrabold" color="gray.900">
-          Find Your Perfect Rental
-        </Heading>
-        <Text mt={4} fontSize="xl" color="gray.600">
-          Search through our extensive selection of premium rentals
-        </Text>
+      <Box
+        id="search"
+        maxW="7xl"
+        mx="auto"
+        px={{ base: 4, sm: 6, lg: 8 }}
+        py={16}
+      >
+        <Box textAlign="center">
+          <Heading
+            fontSize={{ base: "4xl", sm: "5xl" }}
+            fontWeight="extrabold"
+            color="gray.900"
+          >
+            Find Your Perfect Rental
+          </Heading>
+          <Text mt={4} fontSize="xl" color="gray.600">
+            Search through our extensive selection of premium rentals
+          </Text>
+        </Box>
+        <Flex mt={8} justifyContent="center">
+          <Input
+            bg={"white"}
+            type="text"
+            placeholder="What would you like to rent?"
+            w="60%"
+            rounded="md"
+            py={3}
+            px={4}
+            shadow="sm"
+            _focus={{
+              ringColor: "orange.500",
+              borderColor: "orange.500",
+              boxShadow: "none",
+            }}
+            color="orange.500"
+            fontSize="lg"
+          />
+          <Button
+            px={4}
+            py={3}
+            bg="orange.500"
+            color="white"
+            rounded="md"
+            _hover={{ bg: "orange.600" }}
+            transition="all 0.3s ease"
+          >
+            <FaSearch className="h-5 w-5" />
+          </Button>
+        </Flex>
       </Box>
-      <Flex mt={8} justifyContent="center">
-        <Input
-        bg={'white'}
-          type="text"
-          placeholder="What would you like to rent?"
-          w="60%"
-          rounded="md"
-          py={3}
-          px={4}
-          shadow="sm"
-          
-          _focus={{ ringColor: "orange.500", borderColor: "orange.500",  boxShadow: "none" }}
-          color="orange.500"
-          fontSize="lg"
-        />
-        <Button  px={4} py={3} bg="orange.500" color="white" rounded="md" _hover={{ bg: "orange.600" }} transition="all 0.3s ease">
-          <FaSearch className="h-5 w-5" />
-        </Button>
-      </Flex>
-    </Box>
 
       {/* Categories Section */}
-      
+
       <Box bg="white" py={24}>
-        <Container maxW="7xl" px={{ base: 4, sm: 6, lg: 8 }} >
-          <Heading fontSize={{ base: "4xl", sm: "5xl" }} fontWeight="extrabold" color="gray.900" textAlign="center">
+        <Container maxW="7xl" px={{ base: 4, sm: 6, lg: 8 }}>
+          <Heading
+            fontSize={{ base: "4xl", sm: "5xl" }}
+            fontWeight="extrabold"
+            color="gray.900"
+            textAlign="center"
+          >
             Explore Our Premium Categories
           </Heading>
-          <Grid mt={20} gap={12} templateColumns={{ base: "1fr", lg: "repeat(3, 1fr)" }}>
+          <Grid
+            mt={20}
+            gap={12}
+            templateColumns={{ base: "1fr", lg: "repeat(3, 1fr)" }}
+          >
             {categories.map((category) => (
-              <GridItem key={category.name} bg="orange.50"  p={14} rounded="xl" _hover={{ shadow: "2xl" }} transition="all 0.3s ease">
+              <GridItem
+                key={category.name}
+                bg="orange.50"
+                p={14}
+                rounded="xl"
+                _hover={{ shadow: "2xl" }}
+                transition="all 0.3s ease"
+              >
                 <Box textAlign="center">
-                  <category.icon className="text-orange-500" style={{ width: "4rem", height: "4rem", margin: "0 auto" }} />
-                  <Heading fontSize="2xl" fontWeight="semibold" mt={4}>{category.name}</Heading>
-                  <Text color="gray.600" mt={2}>{category.description}</Text>
-                  <Flex fontWeight={'semibold'} as={Link} to={`/categories/${category.name.toLowerCase()}`} color="orange.400" _hover={{ color: "orange.700" }} mt={4} display="inline-flex" alignItems="center">
+                  <category.icon
+                    className="text-orange-500"
+                    style={{ width: "4rem", height: "4rem", margin: "0 auto" }}
+                  />
+                  <Heading fontSize="2xl" fontWeight="semibold" mt={4}>
+                    {category.name}
+                  </Heading>
+                  <Text color="gray.600" mt={2}>
+                    {category.description}
+                  </Text>
+                  <Flex
+                    fontWeight={"semibold"}
+                    as={Link}
+                    to={`/categories/${category.name.toLowerCase()}`}
+                    color="orange.400"
+                    _hover={{ color: "orange.700" }}
+                    mt={4}
+                    display="inline-flex"
+                    alignItems="center"
+                  >
                     <Text>Explore {category.name}</Text>
                     <FaArrowRight style={{ marginLeft: "0.5rem" }} />
                   </Flex>
@@ -246,82 +333,147 @@ const { state, dispatch } = useContext(ListingsContext);
         </Container>
       </Box>
 
-      
       {/* Listings Section */}
-        <Box id="featured" bg="gray.50" py={24} >
+      <Box id="featured" bg="gray.50" py={24}>
+        {loading && (
+          <Stack mb={10}>
+            <Skeleton startColor="#F4FFF3" endColor="#f4bf6f" height="20px" />
+            <Skeleton startColor="#F4FFF3" endColor="#f4bf6f" height="20px" />
+            <Skeleton startColor="#F4FFF3" endColor="#f4bf6f" height="20px" />
+            <Skeleton startColor="#F4FFF3" endColor="#f4bf6f" height="20px" />
+            <Skeleton startColor="#F4FFF3" endColor="#f4bf6f" height="20px" />
+            <Skeleton startColor="#F4FFF3" endColor="#f4bf6f" height="20px" />
+          </Stack>
+        )}
 
-          {loading && 
-                              (
-                              <Stack mb={10}>
-                              <Skeleton startColor='#F4FFF3' endColor='#f4bf6f' height='20px' />
-                              <Skeleton startColor='#F4FFF3' endColor='#f4bf6f' height='20px' />
-                              <Skeleton startColor='#F4FFF3' endColor='#f4bf6f' height='20px' />
-                              <Skeleton startColor='#F4FFF3' endColor='#f4bf6f' height='20px' />
-                              <Skeleton startColor='#F4FFF3' endColor='#f4bf6f' height='20px' />
-                              <Skeleton startColor='#F4FFF3' endColor='#f4bf6f' height='20px' />
-                            </Stack>
-                             )
-                           }
-
-        <Container maxW="7xl" px={{ base: 4, sm: 6, lg: 8 }} ref={sectionRef} >
-          <Heading fontSize={{ base: "4xl", sm: "5xl" }} fontWeight="extrabold" color="gray.900" textAlign="center">
+        <Container maxW="7xl" px={{ base: 4, sm: 6, lg: 8 }} ref={sectionRef}>
+          <Heading
+            fontSize={{ base: "4xl", sm: "5xl" }}
+            fontWeight="extrabold"
+            color="gray.900"
+            textAlign="center"
+          >
             Featured Premium Rentals
           </Heading>
-          <Text my={4} fontSize={'18px'} color={'gray.600'} textAlign={'center'}>
-          Experience luxury with our top-tier rental selections
+          <Text
+            my={4}
+            fontSize={"18px"}
+            color={"gray.600"}
+            textAlign={"center"}
+          >
+            Experience luxury with our top-tier rental selections
           </Text>
-          <Grid mt={20} gap={12} templateColumns={{ base: "1fr", md: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" }}>
-            {curentListing && curentListing?.length > 0 &&  curentListing.map((rental) => (
-              <GridItem key={rental._id} bg="white" rounded="lg" shadow="lg" overflow="hidden" >
-                {
-                   rental.images && rental.images.length > 0 ? (
-                    <Image src={`http://localhost:3600${rental?.images[0]?.url}`} alt={rental.title} w="full" h={64} objectFit="cover" />
-                   ) : (
-                    <Image src='images/make_listing/random.png'  alt={rental.title} w="full" h={64} objectFit="cover" />
-                   )
-                }
-                <Flex flexDir={'column'} gap={4} p={7}>
-                    <Flex justifyContent={'space-between'}> 
-                    <Heading fontSize="xl" fontWeight="semibold">{rental.title}</Heading>
-                    <Text fontSize={'lg'} fontWeight={'bold'}>{rental.price}PKR</Text>
+          <Grid
+            mt={20}
+            gap={12}
+            templateColumns={{
+              base: "1fr",
+              md: "repeat(2, 1fr)",
+              lg: "repeat(3, 1fr)",
+            }}
+          >
+            {curentListing &&
+              curentListing?.length > 0 &&
+              curentListing.map((rental) => (
+                <GridItem
+                  key={rental._id}
+                  bg="white"
+                  rounded="lg"
+                  shadow="lg"
+                  overflow="hidden"
+                >
+                  {rental.images && rental.images.length > 0 ? (
+                    <Image
+                      src={`http://localhost:3600${rental?.images[0]?.url}`}
+                      alt={rental.title}
+                      w="full"
+                      h={64}
+                      objectFit="cover"
+                    />
+                  ) : (
+                    <Image
+                      src="images/make_listing/random.png"
+                      alt={rental.title}
+                      w="full"
+                      h={64}
+                      objectFit="cover"
+                    />
+                  )}
+                  <Flex flexDir={"column"} gap={4} p={7}>
+                    <Flex justifyContent={"space-between"}>
+                      <Heading fontSize="xl" fontWeight="semibold">
+                        {rental.title}
+                      </Heading>
+                      <Text fontSize={"lg"} fontWeight={"bold"}>
+                        {rental.price}PKR
+                      </Text>
                     </Flex>
-                 
-                  <Button alignSelf={'center'} w={'full'} bg={'orange.400'} _hover={{bg:'orange.500'}} as={Link}  to={`/rental/${rental._id}`} color="orange.50" fontWeight="medium">
-                    View Details
-                  </Button>
-                </Flex>
-              </GridItem>
-              
-            ))}
+
+                    <Button
+                      alignSelf={"center"}
+                      w={"full"}
+                      bg={"orange.400"}
+                      _hover={{ bg: "orange.500" }}
+                      as={Link}
+                      to={`/rental/${rental._id}`}
+                      color="orange.50"
+                      fontWeight="medium"
+                    >
+                      View Details
+                    </Button>
+                  </Flex>
+                </GridItem>
+              ))}
           </Grid>
-            <Flex mt={10} alignItems={'center'}  justifyContent={'space-between'}>
-                       <Button bg={'orange.400'} _hover={{bg:'orange.500'}} color={'white'} onClick={goToPrevPage} isDisabled={currentPage === 1}>
-                       Previous
-                      </Button>
-                        <Text textAlign={'center'} >
-                          Page {currentPage} of {totalPages}
-                        </Text>
-                      <Button bg={'orange.400'} _hover={{bg:'orange.500'}}  color={'white'} onClick={goToNextPage} isDisabled={currentPage === totalPages}>
-                      Next
-                      </Button>
-                   </Flex>
+          <Flex mt={10} alignItems={"center"} justifyContent={"space-between"}>
+            <Button
+              bg={"orange.400"}
+              _hover={{ bg: "orange.500" }}
+              color={"white"}
+              onClick={goToPrevPage}
+              isDisabled={currentPage === 1}
+            >
+              Previous
+            </Button>
+            <Text textAlign={"center"}>
+              Page {currentPage} of {totalPages}
+            </Text>
+            <Button
+              bg={"orange.400"}
+              _hover={{ bg: "orange.500" }}
+              color={"white"}
+              onClick={goToNextPage}
+              isDisabled={currentPage === totalPages}
+            >
+              Next
+            </Button>
+          </Flex>
         </Container>
       </Box>
 
       {/* Call to Action */}
-      
 
-        <Box bgGradient="linear(to-r, orange.500, orange.300)">
-        <Container maxW="7xl" px={{ base: 4, sm: 6, lg: 8 }} py={{ base: 16, sm: 24 }} textAlign="center">
-          <Heading fontSize={{ base: "4xl", sm: "5xl" }} fontWeight="extrabold" color="white">
+      <Box bgGradient="linear(to-r, orange.500, orange.300)">
+        <Container
+          maxW="7xl"
+          px={{ base: 4, sm: 6, lg: 8 }}
+          py={{ base: 16, sm: 24 }}
+          textAlign="center"
+        >
+          <Heading
+            fontSize={{ base: "4xl", sm: "5xl" }}
+            fontWeight="extrabold"
+            color="white"
+          >
             Ready to Experience Premium Rentals?
           </Heading>
           <Text mt={6} fontSize="xl" color="orange.50" maxW="3xl" mx="auto">
-            Join RentWise today and unlock access to our exclusive selection of high-end rentals. Start your journey
-            towards unparalleled luxury and convenience.
+            Join RentWise today and unlock access to our exclusive selection of
+            high-end rentals. Start your journey towards unparalleled luxury and
+            convenience.
           </Text>
           <Button
-          as={Link}
+            as={Link}
             to="/"
             mt={12}
             display="inline-flex"
@@ -345,10 +497,21 @@ const { state, dispatch } = useContext(ListingsContext);
 
       <style jsx="true">{`
         @keyframes slide {
-          0% { opacity: 0; transform: scale(1.1); }
-          25% { opacity: 1; }
-          50% { opacity: 0; transform: scale(1); }
-          100% { opacity: 0; transform: scale(1.1); }
+          0% {
+            opacity: 0;
+            transform: scale(1.1);
+          }
+          25% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0;
+            transform: scale(1);
+          }
+          100% {
+            opacity: 0;
+            transform: scale(1.1);
+          }
         }
         .animate-slide {
           animation: slide 20s infinite;
@@ -358,8 +521,14 @@ const { state, dispatch } = useContext(ListingsContext);
           animation-delay: 10s;
         }
         @keyframes fadeInUp {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
         .animate-fade-in-up {
           animation: fadeInUp 1s ease-out forwards;
@@ -372,8 +541,7 @@ const { state, dispatch } = useContext(ListingsContext);
         }
       `}</style>
     </div>
-  )
-}
+  );
+};
 
-export default LandingPage
-
+export default LandingPage;

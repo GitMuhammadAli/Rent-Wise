@@ -28,4 +28,26 @@ export const ToGetReview = async () => {
   }
 };
 
+export const SetSubscriptionNotification = async (data) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/save-subscription`,data, { withCredentials: true });
+    return response;  // Ensure the function returns the response properly
+  } catch (error) {
+    console.error("API request failed:", error);
+    throw error;
+  }
+};
+export const GetSubscriptionNotification = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/get-subscription`, { withCredentials: true });
+    return response;  // Ensure the function returns the response properly
+  } catch (error) {
+    console.error("API request failed:", error);
+    throw error;
+  }
+};
+
+
+
+
   

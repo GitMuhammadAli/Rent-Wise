@@ -20,6 +20,14 @@ export default function MyAccount() {
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [currentPassword, setCurrentPassword] = useState('');
   const [avatarPreview, setAvatarPreview] = useState('');
+  const [notificationSettings, setNotificationSettings] = useState({
+    messages: false,
+    reviews: false,
+    // bookings: false,
+    // payments: false,
+    systemUpdates: false,
+    comments: false
+  });
   const toast = useToast();
 
   useEffect(() => {
@@ -32,6 +40,9 @@ export default function MyAccount() {
         setAvatar(`${import.meta.env.VITE_BACK_END_URL}${response.data.user.imageUrl}`);
         setBio(response.data.user.bio);
         setIsThirdPartyUser(!!response.data.user.googleId || !!response.data.user.facebookId);
+        if (response.data.user.NotificationSetting) {
+          setNotificationSettings(response.data.user.NotificationSetting.notificationPreferences);
+        }
       } catch (err) {
         console.log(err);
       }
@@ -41,8 +52,7 @@ export default function MyAccount() {
   }, [dispatch]);
 
   console.log("user" , user);
-  // console.log("file from backend is " , user.imageUrl)
-  // Handle avatar change (image upload preview)
+
   const handleAvatarChange = (event) => {
     const file = event.target.files?.[0];
     
@@ -54,8 +64,13 @@ export default function MyAccount() {
     }
   };
   
+  const handleNotificationChange = (setting) => {
+    setNotificationSettings(prev => ({
+      ...prev,
+      [setting]: !prev[setting]
+    }));
+  };
 
-  // Handle form submission and save changes
   const handleSaveChanges = async () => {
     if (newPassword !== confirmNewPassword) {
       toast({
@@ -72,6 +87,7 @@ export default function MyAccount() {
     formData.append('name', username);
     formData.append('email', userEmail);
     formData.append('bio', bio);
+    formData.append('notificationPreferences', JSON.stringify(notificationSettings));
 
     if(currentPassword) formData.append('currentPassword', currentPassword);
     if (avatar) formData.append('avatar', avatar);  
@@ -79,7 +95,6 @@ export default function MyAccount() {
     if (newPassword) formData.append('password', newPassword);
   
     try {
-      // Pass the user ID in the API URL
       const response = await updateUserDashboardProfile(user._id, formData);
   
       toast({
@@ -107,14 +122,11 @@ export default function MyAccount() {
     console.log("username to display:", username)
     console.log("useremail to display:", userEmail)
     console.log("bio to display:", bio)
-
   }
   
 
   return (
     <Box bg={'white'} maxW="3xl" mx="auto" p={4} borderWidth="1px" borderRadius="lg" boxShadow="md">
-    
-     
       <Box mb={6}>
         <Text fontSize="2xl" fontWeight="bold">Account Settings</Text>
         <Text fontSize="md" color="gray.600">Manage your account settings and set email preferences.</Text>
@@ -130,13 +142,9 @@ export default function MyAccount() {
           <TabPanel>
             <VStack spacing={4}>
               <HStack spacing={4}>
-
               <Avatar size="xl" src={avatarPreview || avatar} />
-              
-
                 <Box>
                   <FormLabel htmlFor="avatar-upload" cursor="pointer" display="flex" alignItems="center">
-                    {/* <CameraIcon mr={2} /> */}
                      Change Avatar
                   </FormLabel>
                   <Input id="avatar-upload" type="file" accept="image/*" display="none" onChange={handleAvatarChange} />
@@ -154,23 +162,38 @@ export default function MyAccount() {
                 <FormLabel htmlFor="bio">Bio</FormLabel>
                 <Textarea id="bio" placeholder="Tell us about yourself" value={bio} onChange={(e)=> setBio(e.target.value)} />
               </FormControl>
-             
             </VStack>
           </TabPanel>
 
           <TabPanel>
             <VStack spacing={4}>
               <FormControl display="flex" justifyContent="space-between" alignItems="center">
-                <FormLabel>Email Notifications</FormLabel>
-                <Switch />
+                <FormLabel>Messages Notifications</FormLabel>
+                <Switch isChecked={notificationSettings.message} onChange={() => handleNotificationChange('message')} />
               </FormControl>
               <FormControl display="flex" justifyContent="space-between" alignItems="center">
-                <FormLabel>Marketing Emails</FormLabel>
-                <Switch />
+                <FormLabel>Reviews Notifications</FormLabel>
+                <Switch isChecked={notificationSettings.review} onChange={() => handleNotificationChange('review')} />
+              </FormControl>
+              {/* <FormControl display="flex" justifyContent="space-between" alignItems="center">
+                <FormLabel>Bookings Notifications</FormLabel>
+                <Switch isChecked={notificationSettings.bookings} onChange={() => handleNotificationChange('bookings')} />
               </FormControl>
               <FormControl display="flex" justifyContent="space-between" alignItems="center">
-                <FormLabel>Social Notifications</FormLabel>
-                <Switch />
+                <FormLabel>Payments Notifications</FormLabel>
+                <Switch isChecked={notificationSettings.payments} onChange={() => handleNotificationChange('payments')} />
+              </FormControl> */}
+              <FormControl display="flex" justifyContent="space-between" alignItems="center">
+                <FormLabel>System Updates</FormLabel>
+                <Switch isChecked={notificationSettings.system} onChange={() => handleNotificationChange('system')} />
+              </FormControl>
+              <FormControl display="flex" justifyContent="space-between" alignItems="center">
+                <FormLabel>Aggreements</FormLabel>
+                <Switch isChecked={notificationSettings.aggreement} onChange={() => handleNotificationChange('aggreement')} />
+              </FormControl>
+              <FormControl display="flex" justifyContent="space-between" alignItems="center">
+                <FormLabel>Comments</FormLabel>
+                <Switch isChecked={notificationSettings.comment} onChange={() => handleNotificationChange('comment')} />
               </FormControl>
             </VStack>
           </TabPanel>
@@ -218,7 +241,7 @@ export default function MyAccount() {
       </Tabs>
       <HStack justifyContent="space-between" mt={6}>
         <Button variant="outline">Cancel</Button>
-        <Button colorScheme="blue" onClick={handleSaveChanges }   >Save Changes</Button>
+        <Button colorScheme="blue" onClick={handleSaveChanges}>Save Changes</Button>
       </HStack>
     </Box>
   )

@@ -33,10 +33,17 @@ exports.CreateNotification = async (recipient, sender, type, message, next, ) =>
     
     const userSettings = await UserSettings.findOne({ user: recipient });
 
-
-   
-
-
+    if (!userSettings) {
+          throw new AppError(ERROR_MESSAGE.NOTIFICATION.SETTINGS_NOT_FOUND, STATUS.NOT_FOUND);
+        }
+    
+        const isEnabled = userSettings.notificationPreferences[type.toLowerCase()];
+        
+        if (!isEnabled) {
+          console.log(`Notification type ${type} is disabled for user`);
+          return null;
+        }
+    
     const newNotification = await Notification.create({
       recipient: recipient,
       sender: sender,
@@ -49,9 +56,9 @@ exports.CreateNotification = async (recipient, sender, type, message, next, ) =>
 
     if (userSettings?.webPushSubscription?.endpoint) {
       const payload = {
-        title: "New Notification",
+        title: `New ${type} Notification from Rent-Wise`,
         body: message,
-        icon: "/path-to-icon.png",
+        icon: "./../../uploads/Server-Images/notification.png",
       };
       await sendWebPush(userSettings.webPushSubscription, payload);
     }

@@ -14,6 +14,11 @@ router.put("/updateUserDashboardProfile/:id", profileImage.single("avatar"), asy
 router.get("/reviews" , AuthorizeUser("user" , "Admin" ) , asyncHandler(review.ToGetReview))
 
 router.post("/save-subscription" , AuthorizeUser("user" , "Admin" ) , asyncHandler(UserDashboard.NotificationSubscription))
+
+
+router.get("/get-subscription" , AuthorizeUser("user" , "Admin" ) , asyncHandler(UserDashboard.GetNotificationSubscription))
+
+
 // router.post("/save-subscription"  , asyncHandler(UserDashboard.NotificationSubscription))
 
 

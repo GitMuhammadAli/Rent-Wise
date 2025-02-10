@@ -3,12 +3,11 @@ const mongoose = require("mongoose");
 const UserSettingsSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true, unique: true },
   notificationPreferences: {
-    messages: { type: Boolean, default: true },
-    reviews: { type: Boolean, default: true },
-    bookings: { type: Boolean, default: true },
-    payments: { type: Boolean, default: true },
-    systemUpdates: { type: Boolean, default: true },
-  },
+    message: { type: Boolean, default: false },
+    review: { type: Boolean, default: false },
+    comment: { type: Boolean, default: false },
+    system: { type: Boolean, default: false },
+    aggreement: { type: Boolean, default: false },  },
   webPushSubscription: {
     endpoint: { type: String },
     keys: {
