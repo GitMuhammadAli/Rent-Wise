@@ -3,10 +3,10 @@ const mongoose = require("mongoose");
 const UserSettingsSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true, unique: true },
   notificationPreferences: {
-    message: { type: Boolean, default: false },
     review: { type: Boolean, default: false },
     comment: { type: Boolean, default: false },
     system: { type: Boolean, default: false },
+    chat: { type: Boolean, default: false },
     aggreement: { type: Boolean, default: false },  },
   webPushSubscription: {
     endpoint: { type: String },

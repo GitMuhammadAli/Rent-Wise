@@ -6,7 +6,7 @@ const { STATUS } = require("../../messages/status");
 const { io } = require("../../utils/socket");
 const AppError = require("../../utils/AppError");
 const { ROLES, BOOLEAN } = require("../../utils/Roles");
-const {CreateNotification} = require("../../controller/notification/notification")
+const { CreateNotification } = require("../../controller/notification/notification")
 
 
 //     try {
@@ -293,6 +293,14 @@ const createMessage = async (req, res, next) => {
           lastMessage: newMessage,
           unreadCount: 1
         });
+      }
+
+      const referer = req.headers.referer;
+      if (!referer || !referer.includes('/chat')) {
+        await CreateNotification(receiver, senderId, 'chat', 'You have received a new message', next);
+        if (conversationResult.isNewConversation) {
+          await CreateNotification(receiver, senderId, 'chat', 'Someone started a conversation with you', next);
+        }
       }
     } else {
       return next(
