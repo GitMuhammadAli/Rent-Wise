@@ -31,8 +31,8 @@ exports.createComment = async (req, res , next) => {
         }
 
         const notification = await CreateNotification(
-          author,
           owner.owner,
+          author,
           'comment',
           `${author_name.name} Commented On your ${rental_Name.title} Listing`,          next,
           res,
