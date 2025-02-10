@@ -43,6 +43,7 @@ import DisplayAgreements from "./Pages/Agreement/Admin/DisplayAgreements";
 import Integration from "./Pages/Agreement/Admin/Integration";
 import UserProfile from "./Pages/profile/owner/ownerProfile";
 import ChatWindow from "./Pages/Listings/Test/TestHome";
+import { NotificationProvider } from "./hooks/NotificationContext";
 
 //  import TestListingDetails from "./Pages/Listings/Test/TestHome";
 
@@ -157,9 +158,11 @@ function App() {
   return (
     <AuthProvider>
       <DashboardUserContextProvider>
+        <NotificationProvider>
         <ListingsProvider>
           <RouterProvider router={router} />
         </ListingsProvider>
+        </NotificationProvider>
       </DashboardUserContextProvider>
     </AuthProvider>
   );

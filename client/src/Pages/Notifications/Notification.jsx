@@ -11,10 +11,12 @@ import {
     Flex,
     Text,
     useDisclosure,
+    Badge,
   } from '@chakra-ui/react';
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { FaBell, FaHome, FaComments, FaEllipsisH, FaCheck, FaTrash } from 'react-icons/fa'
 import { clearAllNotifications, readAllNotifications, readOneNotification } from '../../Api/Notification';
+import { NotificationContext } from '../../hooks/NotificationContext';
 
 // Static data for demonstration
 // const initialNotifications = [
@@ -25,10 +27,24 @@ import { clearAllNotifications, readAllNotifications, readOneNotification } from
 //   { id: '5', type: 'chat', message: 'Bob replied to your question about check-in time.', isRead: true, timestamp: '2023-06-17T16:30:00Z' },
 // ]
 
-export default function Notification({notificationData, setNotificationData }) {
-  // const [notificationData, setNotificationData] = useState(initialNotifications)
+export default function Notification({}) {
+  const [notificationData, setNotificationData] = useState([]);
   const [activeTab, setActiveTab] = useState('all')
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { notifications } = useContext(NotificationContext);
+  const [unreadCount, setUnreadCount] = useState(0); 
+
+
+  useEffect(()=>{
+    if(!notifications) return;
+    console.log("notification in real time", notifications)
+    setNotificationData(notifications)
+
+    const count = notifications.filter(notification => !notification.isRead).length;
+    setUnreadCount(count);
+    
+
+  },[notifications])
   
 
   const filterNotifications = (type) => {
@@ -38,26 +54,15 @@ export default function Notification({notificationData, setNotificationData }) {
   
     // Filter notifications that match the specified type
     const filtered = notificationData.filter(n => n.type === type);
-  
-    // If no notifications match the type, return notifications with 'other' type
-    // if (filtered.length === 0) {
-    //   return notificationData.map(n => {
-    //     if(n.type !== type)
-    //     {
-    //       return {...n, type:'other'}
-    //     }
-    //     return n;
-
-    //   }); 
-    // }
-  
+    
     return filtered;
   };
 
   const markAllAsRead = async() => {
     try {
 
-    setNotificationData(notificationData.map(n => ({ ...n, isRead: true })))
+    setNotificationData(notifications.map(n => ({ ...n, isRead: true })))
+    setUnreadCount(0);
     const response = await readAllNotifications()
     console.log("responseOFReadALl", response)
 
@@ -72,6 +77,7 @@ export default function Notification({notificationData, setNotificationData }) {
 
     try {
       setNotificationData([])
+      setUnreadCount(0)
       const response = await clearAllNotifications();
       console.log('cleared', response)
       
@@ -84,14 +90,22 @@ export default function Notification({notificationData, setNotificationData }) {
  
 
   const deleteRead = () => {
-    setNotificationData(notificationData.filter(n => !n.isRead))
+    setNotificationData(notifications.filter(n => !n.isRead))
   }
 
   const toggleRead =async (id) => {
     try {
-      setNotificationData(notificationData.map(n => 
-        n._id === id ? { ...n, isRead: !n.isRead } : n ))
-  
+      setNotificationData(notifications.map(n => 
+        n._id === id ? { ...n, isRead: true } : n ))
+
+        
+        const notification = notifications.find(n => n._id === id);
+        if (notification) {
+          if (notification.isRead !== true ) {
+            setUnreadCount(unreadCount - 1);
+          } 
+        }
+     
        const response = await readOneNotification(id);
        console.log('readedONe', response);
       
@@ -114,9 +128,27 @@ export default function Notification({notificationData, setNotificationData }) {
   return (
     <Popover placement="bottom-start" isOpen={isOpen} onClose={onClose} >
       <PopoverTrigger>
-      <Box as="span" cursor="pointer" onClick={togglePopover}>
-          <FaBell className="h-6 w-6 text-gray-700" />
-        </Box>
+      <Box as="span" cursor="pointer" onClick={togglePopover} position="relative">
+      <FaBell className="h-6 w-6 text-gray-700" />
+
+      {/* Display the unread count if greater than 0 */}
+      {unreadCount > 0 && (
+        <Badge
+          position="absolute"
+          top="-2"
+          right="-2"
+          bg="orange.500" // Orange background
+          color="white" // White text
+          borderRadius="full" // Circular shape
+          fontSize="xs" // Small text size
+          px="2" // Horizontal padding
+          py="0.5" // Vertical padding
+        >
+          {unreadCount}
+        </Badge>
+      )}
+    </Box>
+
       </PopoverTrigger>
       <PopoverContent>
         <PopoverArrow />
@@ -193,11 +225,11 @@ export default function Notification({notificationData, setNotificationData }) {
 </Flex>
 
   
-            {/* notificationData List */}
+            {/* notifications List */}
             <Box maxH="80" overflowY="auto">
-              {filterNotifications(activeTab).map((notification) => (
+              {filterNotifications(activeTab).map((notification, i) => (
                 <Box
-                  key={notification._id}
+                  key={notification._id|| i}
                   p={4}
                   borderBottom="1px"
                   borderColor="gray.200"
@@ -223,6 +255,7 @@ export default function Notification({notificationData, setNotificationData }) {
                       ml={2}
                       color="gray.400"
                       _hover={{ color: 'gray.600' }}
+                      
                     >
                       <FaCheck color={notification.isRead ? 'green' : undefined} />
                     </Button>

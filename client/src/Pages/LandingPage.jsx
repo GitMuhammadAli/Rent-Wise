@@ -31,6 +31,7 @@ import AnimatedBackground from "./Animated";
 import { categories } from "./Listings/Test/staticData";
 import { ListingsContext } from "../hooks/ListingsContext";
 import { useAuth } from "../hooks/AuthContext";
+import { NotificationContext } from "../hooks/NotificationContext";
 
 // import NotificationButton from "./Notifications/NotificationButton";
 
@@ -46,6 +47,7 @@ const LandingPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(listings.length / itemsPerPage);
   const [hasSubscription, setHasSubscription] = useState(null);
+  const { notifications } = useContext(NotificationContext);
 
   // Get the listings for the current page
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -67,6 +69,11 @@ const LandingPage = () => {
   const handleScroll = () => {
     sectionRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+
+  useEffect(()=>{
+    console.log("notification in real time in navbar", notifications)
+
+  },[notifications])
 
   useEffect(() => {
     async function fetchData() {
@@ -91,7 +98,7 @@ const LandingPage = () => {
 
   // Fetch user's notification setting
   useEffect(() => {
-    if (!user) return;
+    if (!user || checkAlert) return;
 
     const fetchNotificationSetting = async () => {
       try {
@@ -138,7 +145,9 @@ const LandingPage = () => {
     } catch (error) {
       console.error("Push Subscription Error:", error);
     }
-  };  return (
+  }; 
+  
+  return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white">
       {/* {
         user && <subscibeTo/>
@@ -535,21 +544,32 @@ const LandingPage = () => {
         
         /* for the main heading */
         .mainHeading {
-    width: 20ch; /* Width of the text */
-    white-space: nowrap; /* Prevent text from wrapping */
-    overflow: hidden; /* Hide overflow */
-    border-right: 2px solid; /* Optional: Add a cursor effect */
-    animation: typing 3s linear infinite alternate-reverse; /* Smooth typing animation */
+  width: 20ch;
+  white-space: nowrap;
+  overflow: hidden;
+  border-right: 2px solid; /* Cursor */
+  animation: typing 3s linear infinite alternate-reverse,
+             blink-cursor 0.75s step-end infinite;
 }
 
 @keyframes typing {
-    from {
-        width: 10ch; /* Start with no width */
-    }
-    to {
-        width: 20ch; /* End with full width */
-    }
+  from {
+      width: 10ch;
+  }
+  to {
+      width: 20ch;
+  }
 }
+
+@keyframes blink-cursor {
+  from, to {
+      border-color: transparent; /* Hide cursor */
+  }
+  50% {
+      border-color: #ffffff; /* Show cursor */
+  }
+}
+    
    
       `}</style>
     </div>
@@ -564,29 +584,24 @@ export default LandingPage
 // blinking cursor
 
 
+
+
+
+
+
 // .mainHeading {
-//   width: 20ch;
-//   white-space: nowrap;
-//   overflow: hidden;
-//   border-right: 2px solid; /* Cursor */
-//   animation: typing 4s linear infinite alternate-reverse,
-//              blink-cursor 0.75s step-end infinite;
+//   width: 20ch; /* Width of the text */
+//   white-space: nowrap; /* Prevent text from wrapping */
+//   overflow: hidden; /* Hide overflow */
+//   border-right: 2px solid; /* Optional: Add a cursor effect */
+//   animation: typing 3s linear infinite alternate-reverse; /* Smooth typing animation */
 // }
 
 // @keyframes typing {
 //   from {
-//       width: 0;
+//       width: 10ch; /* Start with no width */
 //   }
 //   to {
-//       width: 20ch;
-//   }
-// }
-
-// @keyframes blink-cursor {
-//   from, to {
-//       border-color: transparent; /* Hide cursor */
-//   }
-//   50% {
-//       border-color: black; /* Show cursor */
+//       width: 20ch; /* End with full width */
 //   }
 // }

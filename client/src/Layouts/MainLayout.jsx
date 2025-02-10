@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import { Outlet, Link, useLocation, useNavigate } from "react-router-dom"
 import { useAuth } from "../hooks/AuthContext"
 import { ToastContainer, toast } from "react-toastify"
@@ -12,13 +12,13 @@ import { getNotifications } from "../Api/Notification"
 
 
 
+
+
 function MainLayout() {
   const { user } = useAuth() // handleLogout
   const location = useLocation()
   const navigate = useNavigate()
   const {LogoutUser} = Logout()
- 
-  const [notificationData, setNotificationData] = useState([]);
   const [successMessage, setSuccessMessage] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -36,6 +36,7 @@ function MainLayout() {
   const textHoverHome = useColorModeValue("white", "gray.100")                            // only for landing page
   const hoverBottomLinkHome = useColorModeValue("3px solid white","3px solid gray.100")   // only for landing page
 
+  
   useEffect(() => {
     if (location.state && location.state.successMessage) {
       setSuccessMessage(location.state.successMessage)
@@ -154,7 +155,7 @@ function MainLayout() {
         {user ?  (
           <>
 
-              <Notification setNotificationData={setNotificationData} notificationData={notificationData} />
+              <Notification />
             
             <Menu>
               <MenuButton>

@@ -57,11 +57,15 @@ exports.CreateNotification = async (recipient, sender, type, message, next, ) =>
     if (userSettings?.webPushSubscription?.endpoint) {
       const payload = {
         title: `New ${type} Notification from Rent-Wise`,
-        body: message,
+        message: message,  // body changed to message
+        // body: message,
         recipient: recipient,
-      sender: sender,
+        sender: sender,
       createdAt:newNotification.createdAt,
-        icon: "./../../Server-Images/notification.png",
+      _id: newNotification._id,  // id added,
+      isRead: newNotification.isRead,
+      type: newNotification.type,
+       icon: "./../../Server-Images/notification.png",
       };
       await sendWebPush(userSettings.webPushSubscription, payload);
     }
