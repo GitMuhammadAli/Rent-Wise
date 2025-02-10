@@ -31,18 +31,21 @@ export default function Notification({}) {
   const [notificationData, setNotificationData] = useState([]);
   const [activeTab, setActiveTab] = useState('all')
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { notifications } = useContext(NotificationContext);
-  const [unreadCount, setUnreadCount] = useState(0); 
+  const {
+    notifications,
+    unreadCount,
+    markAllAsRead,
+    clearAll,
+    deleteRead,
+    toggleRead,
+  } = useContext(NotificationContext);
+  
 
 
   useEffect(()=>{
     if(!notifications) return;
     console.log("notification in real time", notifications)
     setNotificationData(notifications)
-
-    const count = notifications.filter(notification => !notification.isRead).length;
-    setUnreadCount(count);
-    
 
   },[notifications])
   
@@ -58,63 +61,6 @@ export default function Notification({}) {
     return filtered;
   };
 
-  const markAllAsRead = async() => {
-    try {
-
-    setNotificationData(notifications.map(n => ({ ...n, isRead: true })))
-    setUnreadCount(0);
-    const response = await readAllNotifications()
-    console.log("responseOFReadALl", response)
-
-    } catch (error) {
-      console.log(error);
-      
-    }
-    
-  }
-
-  const clearAll = async() => {
-
-    try {
-      setNotificationData([])
-      setUnreadCount(0)
-      const response = await clearAllNotifications();
-      console.log('cleared', response)
-      
-    } catch (error) {
-      console.log(error)
-      
-    }
-  }
-
- 
-
-  const deleteRead = () => {
-    setNotificationData(notifications.filter(n => !n.isRead))
-  }
-
-  const toggleRead =async (id) => {
-    try {
-      setNotificationData(notifications.map(n => 
-        n._id === id ? { ...n, isRead: true } : n ))
-
-        
-        const notification = notifications.find(n => n._id === id);
-        if (notification) {
-          if (notification.isRead !== true ) {
-            setUnreadCount(unreadCount - 1);
-          } 
-        }
-     
-       const response = await readOneNotification(id);
-       console.log('readedONe', response);
-      
-    } catch (error) {
-      console.log(error);
-      
-    }
-   
-  }
 
   const formatTimestamp = (timestamp) => {
     const date = new Date(timestamp)
