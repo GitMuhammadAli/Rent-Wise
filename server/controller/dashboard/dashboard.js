@@ -1,12 +1,12 @@
 const User = require("../../model/user/userModel");
 const logger = require("../../utils/logger");
 const { ERROR_MESSAGE } = require("../../messages/error");
-  const { RESPONCE_MESSAGE, LISTINGS , NOTIFICATION,  } = require("../../messages/response");
+const { RESPONCE_MESSAGE, LISTINGS, NOTIFICATION, } = require("../../messages/response");
 const { STATUS } = require("../../messages/status");
 const { GetAndDecodeToken } = require("../../token/Tokens");
 const bcrypt = require('bcrypt')
 const AppError = require("../../utils/AppError");
-const { ROLES , BOOLEAN} = require("../../utils/Roles");
+const { ROLES, BOOLEAN } = require("../../utils/Roles");
 const UserSettings = require("../../model/notification/notificationSetting")
 const mongoose = require('mongoose')
 
@@ -16,14 +16,15 @@ exports.GetUser = async (req, res, next) => {
     const decodedToken = await GetAndDecodeToken(req, res);
 
     if (!decodedToken) {
-      return next(new AppError(BOOLEAN.FALSE , ERROR_MESSAGE.INVALID_TOKEN, STATUS.UNAUTHORIZED));
+      return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.INVALID_TOKEN, STATUS.UNAUTHORIZED));
     }
 
-    const user = await User.findById(decodedToken.decoded._id);
+    const user = await User.findById(decodedToken.decoded._id).populate("NotificationSetting" , "notificationPreferences");
     if (!user) {
-      return next(new AppError(BOOLEAN.FALSE , ERROR_MESSAGE.USER_NOT_FOUND, STATUS.NOT_FOUND));
+      return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.USER_NOT_FOUND, STATUS.NOT_FOUND));
     }
 
+    console.log(user)
     res.status(STATUS.SUCCESS).json({
       success: BOOLEAN.TRUE,
       message: RESPONCE_MESSAGE.USER_FETCHED,
@@ -34,10 +35,10 @@ exports.GetUser = async (req, res, next) => {
   }
 };
 
-exports.updateUserDashboardProfile = async (req, res , next) => {
+exports.updateUserDashboardProfile = async (req, res, next) => {
   const { id } = req.params;
-  const { name, email, bio, avatar } = req.body;
-
+  const { name, email, bio, avatar , notificationPreferences } = req.body;
+  console.log(req.body)
   const { currentPassword, password, ...updateData } = req.body;
   if (bio === '' || bio === '\r\n') {
     delete updateData.bio;
@@ -46,7 +47,7 @@ exports.updateUserDashboardProfile = async (req, res , next) => {
   try {
     const user = await User.findById(id);
     if (!user) {
-      return next(new AppError(BOOLEAN.FALSE , ERROR_MESSAGE.USER_NOT_FOUND, STATUS.NOT_FOUND));
+      return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.USER_NOT_FOUND, STATUS.NOT_FOUND));
     }
     console.log(req.file);
     if (req.file) {
@@ -65,13 +66,27 @@ exports.updateUserDashboardProfile = async (req, res , next) => {
 
         const pass = bcrypt.compare(currentPassword, user.password);
         if (!pass) {
-          return next(new AppError(BOOLEAN.FALSE , ERROR_MESSAGE.CURRENT_PASSWORD_INVALID, STATUS.UNAUTHORIZED));
+          return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.CURRENT_PASSWORD_INVALID, STATUS.UNAUTHORIZED));
         }
 
         const salt = await bcrypt.genSalt(10);
         updateData.password = await bcrypt.hash(password, salt);
       }
     }
+
+      let userSettings = await UserSettings.findOneAndUpdate(
+        { user: id },
+        {
+          notificationPreferences: {
+            message: JSON.parse(notificationPreferences).message,
+            review: JSON.parse(notificationPreferences).review,
+            comment: JSON.parse(notificationPreferences).comment,
+            system: JSON.parse(notificationPreferences).system,
+            aggreement: JSON.parse(notificationPreferences).aggreement,
+          }
+        },
+        { new: true, upsert: true }
+      );
 
     const updatedUser = await User.findByIdAndUpdate(id, updateData, {
       new: BOOLEAN.TRUE,
@@ -91,8 +106,8 @@ exports.updateUserDashboardProfile = async (req, res , next) => {
 
 exports.NotificationSubscription = async (req, res, next) => {
   try {
-    
-    const {  subscription } = req.body;
+
+    const { subscription } = req.body;
 
 
     const userId = req.user._id;
@@ -100,9 +115,9 @@ exports.NotificationSubscription = async (req, res, next) => {
 
     console.log("req.body", subscription)
     console.log("uuser", userId)
-    
+
     if (!userId || !subscription) {
-      return next(new AppError(BOOLEAN.FALSE , ERROR_MESSAGE.INVALID_DATA, STATUS.UNAUTHORIZED));
+      return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.INVALID_DATA, STATUS.UNAUTHORIZED));
 
     }
 
@@ -115,13 +130,15 @@ exports.NotificationSubscription = async (req, res, next) => {
     } else {
       userSettings = await UserSettings.create({
         _id: new mongoose.Types.ObjectId(),
-        user: userId,   // LINE ADDED
+        user: userId,
         notificationPreferences: {
-          messages: true,
-          reviews: true,
-          bookings: true,
-          payments: true,
-          systemUpdates: true,
+          message: true,
+          review: true,
+          comment:true,
+          // bookings: true,
+          // payments: true,
+          system: true,
+          aggreement:true,
         },
         webPushSubscription: subscription,
       });
@@ -136,3 +153,22 @@ exports.NotificationSubscription = async (req, res, next) => {
     next(error)
   }
 };
+
+
+exports.GetNotificationSubscription = async (req, res, next) => {
+  try {
+
+    const userId  = req.user._id
+    const getSubscription = await UserSettings.findOne({ user: userId  })
+
+    console.log(getSubscription)
+
+    const hasSubscriptionNotification = getSubscription ? true : false;
+    
+    res.status(200).json({
+      hasSubscriptionNotification
+    });
+  } catch (error) {
+    next(error)
+  }
+}
