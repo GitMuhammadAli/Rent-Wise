@@ -13,21 +13,30 @@
 
 
 self.addEventListener("push", (event) => {
-    if (!event.data) return;
-
+    if (!event.data) {
+      console.error("Push event has no data");
+      return;
+    }
+  
     const data = event.data.json();
     console.log("Received push notification:", data);
-
+  
     self.registration.showNotification(data.title, {
-        message: data.message,
-        icon: data.icon,
+      body: data.message, // Use `body` instead of `message`
+      icon: data.icon,
     });
-
+  
     // Send the notification data to the main thread (React App)
     self.clients.matchAll().then((clients) => {
+      if (clients.length === 0) {
+        console.log("No clients are currently connected.");
+      } else {
         clients.forEach((client) => {
-            client.postMessage(data);
+          console.log("Sending notification to client:", client);
+          client.postMessage(data);
         });
+      }
+    }).catch((error) => {
+      console.error("Error sending notification to clients:", error);
     });
-});
-
+  });

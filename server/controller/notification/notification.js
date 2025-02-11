@@ -34,7 +34,8 @@ exports.CreateNotification = async (recipient, sender, type, message, next, ) =>
     const userSettings = await UserSettings.findOne({ user: recipient });
 
     if (!userSettings) {
-          throw new AppError(ERROR_MESSAGE.NOTIFICATION.SETTINGS_NOT_FOUND, STATUS.NOT_FOUND);
+          // throw new AppError(ERROR_MESSAGE.NOTIFICATION.SETTINGS_NOT_FOUND, STATUS.NOT_FOUND); // it says not exist
+          throw new AppError("Error setting not found");
         }
     
         const isEnabled = userSettings.notificationPreferences[type.toLowerCase()];
@@ -55,18 +56,14 @@ exports.CreateNotification = async (recipient, sender, type, message, next, ) =>
 
 
     if (userSettings?.webPushSubscription?.endpoint) {
+      
       const payload = {
+        _id: newNotification._id, // Unique ID for the notification
         title: `New ${type} Notification from Rent-Wise`,
-        message: message,  // body changed to message
-        // body: message,
-        recipient: recipient,
-        sender: sender,
-      createdAt:newNotification.createdAt,
-      _id: newNotification._id,  // id added,
-      isRead: newNotification.isRead,
-      type: newNotification.type,
-       icon: "./../../Server-Images/notification.png",
+        message: message,
+        icon: "./../../Server-Images/notification.png",
       };
+
       await sendWebPush(userSettings.webPushSubscription, payload);
     }
 
@@ -154,3 +151,18 @@ exports.ReadOneNotificationByUser = async (req, res, next) => {
     next(error);
   }
 };
+
+
+
+// const payload = {
+      //   title: `New ${type} Notification from Rent-Wise`,
+      //   message: message,  // body changed to message
+      //   // body: message,
+      // //   recipient: recipient,
+      // //   sender: sender,
+      // // createdAt:newNotification.createdAt,
+      // // _id: newNotification._id,  // id added,
+      // // isRead: newNotification.isRead,
+      // // type: newNotification.type,
+      //  icon: "./../../Server-Images/notification.png",
+      // };

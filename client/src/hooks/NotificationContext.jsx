@@ -30,29 +30,36 @@ export const NotificationProvider = ({ children }) => {
   // Handle incoming push notifications
   useEffect(() => {
     const handlePushMessage = (event) => {
-      console.log("New push notification received:", event.data);
-
+      console.log("New push notification received in frontend:", event.data);
+  
       setNotifications((prev) => {
-        // Avoid duplicate notifications based on _id
-        const exists = prev.some((notif) => notif._id === event.data._id);
-
+        // Avoid duplicate notifications
+        const exists = prev.some(
+          (notif) => notif._id === event.data._id // Use `_id` instead of `title` and `message`
+        );
+  
         if (!exists) {
-          // Increment unread count for new notifications
-          setUnreadCount((prevCount) => prevCount + 1);
           return [event.data, ...prev]; // Add the new notification to the beginning of the list
         }
-
+  
         return prev; // Return the previous state if the notification already exists
       });
     };
-
+  
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.removeEventListener("message", handlePushMessage); // Remove any existing listeners
-      navigator.serviceWorker.addEventListener("message", handlePushMessage);
+      navigator.serviceWorker.ready.then((registration) => {
+        console.log("Service Worker is ready:", registration);
+        navigator.serviceWorker.removeEventListener("message", handlePushMessage); // Remove any existing listeners
+        navigator.serviceWorker.addEventListener("message", handlePushMessage);
+      }).catch((error) => {
+        console.error("Service Worker is not ready:", error);
+      });
     }
-
+  
     return () => {
-      navigator.serviceWorker.removeEventListener("message", handlePushMessage); // Cleanup on unmount
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.removeEventListener("message", handlePushMessage); // Cleanup on unmount
+      }
     };
   }, []);
 
@@ -127,3 +134,25 @@ export const NotificationProvider = ({ children }) => {
     </NotificationContext.Provider>
   );
 };
+
+
+
+
+
+
+ // const handlePushMessage = (event) => {
+    //   console.log("New push notification received:", event.data);
+
+    //   setNotifications((prev) => {
+    //     // Avoid duplicate notifications based on _id
+    //     const exists = prev.some((notif) => notif._id === event.data._id);
+
+    //     if (!exists) {
+    //       // Increment unread count for new notifications
+    //       setUnreadCount((prevCount) => prevCount + 1);
+    //       return [event.data, ...prev]; // Add the new notification to the beginning of the list
+    //     }
+
+    //     return prev; // Return the previous state if the notification already exists
+    //   });
+    // };

@@ -41,6 +41,7 @@ export default function MyAccount() {
         setBio(response.data.user.bio);
         setIsThirdPartyUser(!!response.data.user.googleId || !!response.data.user.facebookId);
         if (response.data.user.NotificationSetting) {
+          console.log("User pref", response.data.user.NotificationSetting) 
           setNotificationSettings(response.data.user.NotificationSetting.notificationPreferences);
         }
       } catch (err) {
