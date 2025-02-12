@@ -1,3 +1,6 @@
+
+// use --> useContext(NotificationContext) to access details
+
 import { createContext, useState, useEffect } from "react";
  import { getNotifications, readAllNotifications, clearAllNotifications, readOneNotification } from "../Api/Notification";
 

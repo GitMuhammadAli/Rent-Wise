@@ -9,6 +9,7 @@ import {LogOut} from 'lucide-react'
 import Logout from '../components/Logout'
 import Notification from "../Pages/Notifications/Notification"
 import { getNotifications } from "../Api/Notification"
+import { NotificationContext } from "../hooks/NotificationContext"
 
 
 
@@ -19,6 +20,7 @@ function MainLayout() {
   const location = useLocation()
   const navigate = useNavigate()
   const {LogoutUser} = Logout()
+  const {setNotifications} = useContext(NotificationContext);
   const [successMessage, setSuccessMessage] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -52,7 +54,7 @@ function MainLayout() {
         const response = await getNotifications();
   
         console.log("notifications", response.data.data);
-        setNotificationData(response?.data?.data);
+        setNotifications(response?.data?.data);
       } catch (error) {
 
       }}

@@ -32,6 +32,7 @@ import { categories } from "./Listings/Test/staticData";
 import { ListingsContext } from "../hooks/ListingsContext";
 import { useAuth } from "../hooks/AuthContext";
 import { NotificationContext } from "../hooks/NotificationContext";
+import Loader from "../components/Style/Loader";
 
 // import NotificationButton from "./Notifications/NotificationButton";
 
@@ -338,14 +339,7 @@ const LandingPage = () => {
       {/* Listings Section */}
       <Box id="featured" bg="gray.50" py={24}>
         {loading && (
-          <Stack mb={10}>
-            <Skeleton startColor="#F4FFF3" endColor="#f4bf6f" height="20px" />
-            <Skeleton startColor="#F4FFF3" endColor="#f4bf6f" height="20px" />
-            <Skeleton startColor="#F4FFF3" endColor="#f4bf6f" height="20px" />
-            <Skeleton startColor="#F4FFF3" endColor="#f4bf6f" height="20px" />
-            <Skeleton startColor="#F4FFF3" endColor="#f4bf6f" height="20px" />
-            <Skeleton startColor="#F4FFF3" endColor="#f4bf6f" height="20px" />
-          </Stack>
+          <Loader/>
         )}
 
         <Container maxW="7xl" px={{ base: 4, sm: 6, lg: 8 }} ref={sectionRef}>
