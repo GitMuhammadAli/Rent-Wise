@@ -26,6 +26,7 @@ import { getAllListingAPI } from "../Api/ListingApi";
 import {
   SetSubscriptionNotification,
   GetSubscriptionNotification,
+  // UpdateSubscription,
 } from "../Api/DashboardAPI";
 import AnimatedBackground from "./Animated";
 import { categories } from "./Listings/Test/staticData";
@@ -96,6 +97,37 @@ const LandingPage = () => {
   }, [listings]);
 
 
+
+
+// new added to update subscription if not valid according to browser
+  // const updateSubscription = async (subscription) => {
+  //   try {
+  //     console.log("subcription in update", subscription)
+  //     const SubscriptionData = JSON.stringify(subscription)
+  //     console.log("subcriptionData in update",SubscriptionData)
+  //     const response = await UpdateSubscription(SubscriptionData)
+  //     console.log("response in update subs", response);
+  //   } catch (error) {
+  //     console.error("Error updating subscription:", error);
+  //   }
+  // };
+
+  // useEffect(()=>{
+
+  //   const fetchOldSbscription = async()=>{
+  //     const subscription = await navigator.serviceWorker.ready.then((registration) => {
+  //       return registration.pushManager.getSubscription();
+  //     });
+      
+  //     if (subscription) {
+  //       const { endpoint, keys } = subscription;
+  //       updateSubscription({ endpoint, keys });
+  //     }
+
+  //   }
+  //   fetchOldSbscription()
+   
+  // },[])
 
   // Fetch user's notification setting
   useEffect(() => {

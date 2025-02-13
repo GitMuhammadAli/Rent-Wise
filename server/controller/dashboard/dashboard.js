@@ -173,3 +173,41 @@ exports.GetNotificationSubscription = async (req, res, next) => {
     next(error)
   }
 }
+
+// exports.UpdateSubscription = async (req,res,next) =>{
+//   console.log('herll')
+//   try {
+   
+   
+//     const { endpoint, keys } = req.body;
+//     console.log('keys', keys, "endpoint", endpoint)
+//     const userId = req.user.id;
+//     console.log('user in update subs', userId)
+
+//     // Find the user's settings and update their subscription
+//     const userSettings = await UserSettings.findOne({ user: userId });
+//     console.log("purani subs")
+//     if (!userSettings) {
+//       return res.status(404).json({ message: "User settings not found" });
+//     }
+
+//     // Update the webPushSubscription
+//     userSettings.webPushSubscription = {
+//       endpoint: endpoint,
+//       keys: {
+//         p256dh: keys.p256dh,
+//         auth: keys.auth,
+//       },
+//     };
+//     console.log('new subs', userSettings.webPushSubscription);
+
+//     // Save the updated user settings
+//     await userSettings.save();
+
+//     res.status(200).json({ message: "Subscription updated successfully" });
+//   } catch (error) {
+//     console.error("Error updating subscription:", error.message);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+
+// }

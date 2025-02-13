@@ -19,6 +19,10 @@ router.post("/save-subscription" , AuthorizeUser("user" , "Admin" ) , asyncHandl
 router.get("/get-subscription" , AuthorizeUser("user" , "Admin" ) , asyncHandler(UserDashboard.GetNotificationSubscription))
 
 
+// new route added
+// router.post("/update-subscription", AuthorizeUser("user" , "Admin" ), asyncHandler(UserDashboard.UpdateSubscription))
+
+
 // router.post("/save-subscription"  , asyncHandler(UserDashboard.NotificationSubscription))
 
 

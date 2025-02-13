@@ -38,6 +38,7 @@ export default function Notification({}) {
     clearAll,
     deleteRead,
     toggleRead,
+    setUnreadCount,
   } = useContext(NotificationContext);
   
 
@@ -45,6 +46,8 @@ export default function Notification({}) {
   useEffect(()=>{
     if(!notifications) return;
     console.log("notification in real time", notifications)
+    const count = notifications.filter((n) => !n.isRead).length;
+     setUnreadCount(count);
     setNotificationData(notifications)
 
   },[notifications])

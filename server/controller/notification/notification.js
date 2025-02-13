@@ -62,6 +62,9 @@ exports.CreateNotification = async (recipient, sender, type, message, next, ) =>
         title: `New ${type} Notification from Rent-Wise`,
         message: message,
         icon: "./../../Server-Images/notification.png",
+        isRead:false,
+        type: newNotification.type,
+        createdAt: newNotification.createdAt
       };
 
       await sendWebPush(userSettings.webPushSubscription, payload);
@@ -151,6 +154,8 @@ exports.ReadOneNotificationByUser = async (req, res, next) => {
     next(error);
   }
 };
+
+
 
 
 
