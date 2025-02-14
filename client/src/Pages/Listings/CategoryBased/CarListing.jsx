@@ -3,6 +3,7 @@ import { getAllCar } from '../../../Api/Home';
 import { Box, Card, CardFooter, CardHeader, Heading, Input, Slider,Button, Flex, Stack, Skeleton } from '@chakra-ui/react';
 import { Bath, BedDouble, DollarSign, MapPin } from 'lucide-react';
 import {Link} from 'react-router-dom'
+import Loader from '../../../components/Style/Loader';
 
 export default function CarListing() {
   const [priceRange, setPriceRange] = useState([0, 1500000])
@@ -150,14 +151,7 @@ export default function CarListing() {
 
            {loading && 
                   (
-                  <Stack mt={10}>
-                  <Skeleton startColor='#F4FFF3' endColor='#f4bf6f' height='20px' />
-                  <Skeleton startColor='#F4FFF3' endColor='#f4bf6f' height='20px' />
-                  <Skeleton startColor='#F4FFF3' endColor='#f4bf6f' height='20px' />
-                  <Skeleton startColor='#F4FFF3' endColor='#f4bf6f' height='20px' />
-                  <Skeleton startColor='#F4FFF3' endColor='#f4bf6f' height='20px' />
-                  <Skeleton startColor='#F4FFF3' endColor='#f4bf6f' height='20px' />
-                </Stack>
+                  <Loader/>
                  )
                }
         </div>

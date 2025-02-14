@@ -26,12 +26,14 @@ import { getAllListingAPI } from "../Api/ListingApi";
 import {
   SetSubscriptionNotification,
   GetSubscriptionNotification,
+  // UpdateSubscription,
 } from "../Api/DashboardAPI";
 import AnimatedBackground from "./Animated";
 import { categories } from "./Listings/Test/staticData";
 import { ListingsContext } from "../hooks/ListingsContext";
 import { useAuth } from "../hooks/AuthContext";
 import { NotificationContext } from "../hooks/NotificationContext";
+import Loader from "../components/Style/Loader";
 
 // import NotificationButton from "./Notifications/NotificationButton";
 
@@ -95,6 +97,37 @@ const LandingPage = () => {
   }, [listings]);
 
 
+
+
+// new added to update subscription if not valid according to browser
+  // const updateSubscription = async (subscription) => {
+  //   try {
+  //     console.log("subcription in update", subscription)
+  //     const SubscriptionData = JSON.stringify(subscription)
+  //     console.log("subcriptionData in update",SubscriptionData)
+  //     const response = await UpdateSubscription(SubscriptionData)
+  //     console.log("response in update subs", response);
+  //   } catch (error) {
+  //     console.error("Error updating subscription:", error);
+  //   }
+  // };
+
+  // useEffect(()=>{
+
+  //   const fetchOldSbscription = async()=>{
+  //     const subscription = await navigator.serviceWorker.ready.then((registration) => {
+  //       return registration.pushManager.getSubscription();
+  //     });
+      
+  //     if (subscription) {
+  //       const { endpoint, keys } = subscription;
+  //       updateSubscription({ endpoint, keys });
+  //     }
+
+  //   }
+  //   fetchOldSbscription()
+   
+  // },[])
 
   // Fetch user's notification setting
   useEffect(() => {
@@ -338,14 +371,7 @@ const LandingPage = () => {
       {/* Listings Section */}
       <Box id="featured" bg="gray.50" py={24}>
         {loading && (
-          <Stack mb={10}>
-            <Skeleton startColor="#F4FFF3" endColor="#f4bf6f" height="20px" />
-            <Skeleton startColor="#F4FFF3" endColor="#f4bf6f" height="20px" />
-            <Skeleton startColor="#F4FFF3" endColor="#f4bf6f" height="20px" />
-            <Skeleton startColor="#F4FFF3" endColor="#f4bf6f" height="20px" />
-            <Skeleton startColor="#F4FFF3" endColor="#f4bf6f" height="20px" />
-            <Skeleton startColor="#F4FFF3" endColor="#f4bf6f" height="20px" />
-          </Stack>
+          <Loader/>
         )}
 
         <Container maxW="7xl" px={{ base: 4, sm: 6, lg: 8 }} ref={sectionRef}>

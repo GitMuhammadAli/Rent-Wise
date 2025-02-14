@@ -1,3 +1,6 @@
+
+// use --> useContext(NotificationContext) to access details
+
 import { createContext, useState, useEffect } from "react";
  import { getNotifications, readAllNotifications, clearAllNotifications, readOneNotification } from "../Api/Notification";
 
@@ -31,7 +34,8 @@ export const NotificationProvider = ({ children }) => {
   useEffect(() => {
     const handlePushMessage = (event) => {
       console.log("New push notification received in frontend:", event.data);
-  
+      setUnreadCount(unreadCount + 1);
+      console.log("noti count",unreadCount + 1)
       setNotifications((prev) => {
         // Avoid duplicate notifications
         const exists = prev.some(
@@ -122,6 +126,7 @@ export const NotificationProvider = ({ children }) => {
     notifications,
     setNotifications,
     unreadCount,
+    setUnreadCount,
     markAllAsRead,
     clearAll,
     deleteRead,

@@ -47,6 +47,16 @@ export const GetSubscriptionNotification = async () => {
   }
 };
 
+// export const UpdateSubscription = async (data) => {
+//   try {
+//     const response = await axios.post(`${API_BASE_URL}/update-subscription`, data, { withCredentials: true });
+//     return response;  // Ensure the function returns the response properly
+//   } catch (error) {
+//     console.error("API request failed:", error);
+//     throw error;
+//   }
+// };
+
 
 
 
