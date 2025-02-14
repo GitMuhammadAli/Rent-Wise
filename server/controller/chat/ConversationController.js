@@ -296,6 +296,7 @@ const createMessage = async (req, res, next) => {
       }
 
       const referer = req.headers.referer;
+      console.log(referer ,"this is api path")
       if (!referer || !referer.includes('http://localhost:4000/chat')) {
         await CreateNotification(receiver, senderId, 'chat', 'You have received a new message', next);
         if (conversationResult.isNewConversation) {
