@@ -294,17 +294,23 @@ const createMessage = async (req, res, next) => {
           unreadCount: 1
         });
       }
-
       const referer = req.headers.referer;
       const baseUrl = `${req.protocol}://${req.get('host')}`;
       const fullReferer = referer ? new URL(referer).href : null;
-      console.log(fullReferer, "this is full referer path");
-      console.log(referer, "this is api path")
-      if (!fullReferer || !fullReferer.startsWith(`${baseUrl}/chat`)) {
+
+      // Remove trailing slash if present for consistent comparison
+      const normalizedReferer = fullReferer?.endsWith('/') ? fullReferer.slice(0, -1) : fullReferer;
+      const normalizedBaseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
+
+      console.log(normalizedReferer)
+      console.log(normalizedBaseUrl)
+
+      if (!normalizedReferer || !normalizedReferer.includes(`${normalizedBaseUrl}/chat`)) {
         await CreateNotification(receiver, senderId, 'chat', 'You have received a new message', next);
         if (conversationResult.isNewConversation) {
           await CreateNotification(receiver, senderId, 'chat', 'Someone started a conversation with you', next);
         }
+      }
       }
     } else {
       return next(
