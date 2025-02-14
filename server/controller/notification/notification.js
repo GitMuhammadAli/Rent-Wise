@@ -58,7 +58,7 @@ exports.CreateNotification = async (recipient, sender, type, message, next, ) =>
     if (userSettings?.webPushSubscription?.endpoint) {
       
       const payload = {
-        _id: newNotification._id, // Unique ID for the notification
+        _id: newNotification._id,
         title: `New ${type} Notification from Rent-Wise`,
         message: message,
         icon: "./../../Server-Images/notification.png",
