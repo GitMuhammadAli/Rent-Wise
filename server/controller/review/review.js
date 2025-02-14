@@ -63,10 +63,6 @@ exports.ToGetReview = async (req, res, next) => {
     });
 
   } catch (error) {
-    console.error("Error fetching counterpart users:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Internal server error",
-    });
+   next(error)
   }
 };

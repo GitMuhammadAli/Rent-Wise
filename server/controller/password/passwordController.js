@@ -24,7 +24,6 @@ const generateOTP = () => {
 
 const CheckMailforForget = async (req, res ,next) => {
   const { email } = req.body;
-  console.log("email in forget password =  ", email);
   try {
     // if (!validator.isEmail(email)) {
     //   return res.status(400).json({ success: false, message: "Invalid email format." });
@@ -53,7 +52,6 @@ const CheckMailforForget = async (req, res ,next) => {
 
       if (forgetPasswordEmailTemplate) {
         const emailResult = await sendMail(to, ForgetPassEmail);
-        console.log(emailResult);
 
         if (emailResult.success) {
           return res.status(STATUS.SUCCESS).json({
@@ -85,26 +83,26 @@ const verifyOTP = async (userOTP, storedOTP, expirationTime) => {
   try {
     userOTP = userOTP.trim();
     storedOTP = storedOTP.trim();
-    console.log(
-      `Comparing OTPs - User OTP: ${userOTP}, Stored OTP: ${storedOTP}`
-    );
+    // console.log(
+    //   `Comparing OTPs - User OTP: ${userOTP}, Stored OTP: ${storedOTP}`
+    // );
 
 
-    console.log("Encrted Otp " + storedOTP);
+    // console.log("Encrted Otp " + storedOTP);
 
     if (userOTP !== storedOTP) {
-      console.log("OTP mismatch");
+      // console.log("OTP mismatch");
       return BOOLEAN.FALSE;
     }
     const currentTime = new Date();
-    console.log(
-      `Current Time: ${currentTime}, Expiration Time: ${expirationTime}`
-    );
+    // console.log(
+    //   `Current Time: ${currentTime}, Expiration Time: ${expirationTime}`
+    // );
     if (currentTime > expirationTime) {
-      console.log("OTP expired");
+      // console.log("OTP expired");
       return BOOLEAN.FALSE;
     }
-    console.log("OTP verified successfully");
+    // console.log("OTP verified successfully");
 
     return BOOLEAN.TRUE;
   } catch (error) {
@@ -118,7 +116,7 @@ const ConfirmOtp = async (req, res, next) => {
   const { otp } = req.body;
   const cookieOtp = req.cookies.resetPasswordOTP;
 
-  console.log("OTP from the cookie:", cookieOtp);
+  // console.log("OTP from the cookie:", cookieOtp);
 
   if (!cookieOtp) {
     return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.OTP_NOT_PROVIDED, STATUS.NOT_FOUND));
@@ -130,13 +128,13 @@ const ConfirmOtp = async (req, res, next) => {
       return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.OTP_EXPIRED, STATUS.UNAUTHORIZED));
     }
 
-    console.log("Decoded Token:", decodedToken);
+    // console.log("Decoded Token:", decodedToken);
 
     // Decrypt and parse the token
     const decryptedDecodedToken = decryptCookieForOtp(decodedToken);
     const parsedToken = JSON.parse(decryptedDecodedToken);
 
-    console.log("Decoded Token after decryption:", parsedToken);
+    // console.log("Decoded Token after decryption:", parsedToken);
 
     const { SendedOtp, expirationTime, emailVerified, _id, email } = parsedToken;
 
@@ -147,11 +145,11 @@ const ConfirmOtp = async (req, res, next) => {
     }
 
     if (emailVerified) {
-      console.log("Email is already verified.");
+      // console.log("Email is already verified.");
 
       const isOtpValid = await verifyOTP(otp, SendedOtp, new Date(expirationTime));
       if (isOtpValid) {
-        console.log("OTP verified successfully.");
+        // console.log("OTP verified successfully.");
 
         // Generate a new token and set the cookie
         await generatetokenForOtpForEncryption(
@@ -168,7 +166,7 @@ const ConfirmOtp = async (req, res, next) => {
           .status(STATUS.SUCCESS)
           .json({ success: BOOLEAN.TRUE, message: RESPONCE_MESSAGE.OTP_VERIFIED });
       } else {
-        console.log("OTP verification failed or expired.");
+        // console.log("OTP verification failed or expired.");
 
         res.clearCookie("resetPasswordOTP");
         return res.status(STATUS.BAD_REQUEST).json({
@@ -177,7 +175,7 @@ const ConfirmOtp = async (req, res, next) => {
         });
       }
     } else {
-      console.log("Email not verified.");
+      // console.log("Email not verified.");
       return res
         .status(STATUS.BAD_REQUEST)
         .json({ success: BOOLEAN.FALSE, message: ERROR_MESSAGE.PROVIDE_REGISTER_EMAIL });
@@ -198,7 +196,7 @@ const ConfirmOtp = async (req, res, next) => {
 const CreateNewPassword = async (req, res , next) => {
   try {
     const Cookie = req.cookies.resetPasswordOTP;
-    console.log("Cookie is ", Cookie);
+    // console.log("Cookie is ", Cookie);
 
     const { Password, RepeatPassword } = req.body;
     if (!Cookie) {
@@ -210,21 +208,21 @@ const CreateNewPassword = async (req, res , next) => {
       return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.OTP_EXPIRED, STATUS.UNAUTHORIZED));
     }
 
-    console.log("Decoded Token:", decodedToken);
+    // console.log("Decoded Token:", decodedToken);
 
     // Decrypt the token to get the OTP and other details
     const decrpyptedDecodedToken = decryptCookieForOtp(decodedToken);
     const parsedToken = JSON.parse(decrpyptedDecodedToken);
 
-    console.log("Decoded Token after decryption:", parsedToken);
+    // console.log("Decoded Token after decryption:", parsedToken);
 
 
 
     if (parsedToken.otpVerified === BOOLEAN.FALSE) {
       return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.OTP_EXPIRED, STATUS.GATEWAY_TIMEOUT));
     }
-    console.log(Password);
-    console.log(RepeatPassword);
+    // console.log(Password);
+    // console.log(RepeatPassword);
     if (!Password || !RepeatPassword) {
       return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.PASSWORD_MISSING, STATUS.BAD_REQUEST));
     }
@@ -233,9 +231,7 @@ const CreateNewPassword = async (req, res , next) => {
     }
 
     const { _id } = parsedToken;
-    console.log(_id);
     const hashedPassword = await bcrypt.hash(Password, 10);
-    console.log(hashedPassword);
     const user = await Users.findByIdAndUpdate(
       _id,
       { password: hashedPassword },
@@ -245,11 +241,9 @@ const CreateNewPassword = async (req, res , next) => {
       }
     );
 
-    console.log(user.password);
     if (!user) {
       return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.USER_NOT_FOUND, STATUS.NOT_FOUND));
     } else {
-      console.log(user);
 
       res.clearCookie("resetPasswordOTP");
       res.clearCookie("jwt");

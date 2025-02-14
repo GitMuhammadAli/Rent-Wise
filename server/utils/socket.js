@@ -13,16 +13,17 @@ const io = socketIo(server, {
     credentials: true // This allows cookies to be sent
   }
 });
-const onlineUsers = new Map();
+const connectedUsers = []
 
-console.log("online users are " , onlineUsers )
 
 io.on("connection", (socket) => {
-    // console.log("A user connected:", socket.id);
     socket.on("join-user", (userId) => {
-      onlineUsers.set(userId, socket.id);
       socket.join(userId.toString());
+      if (!connectedUsers.some((id) => id === userId)) {
+        connectedUsers.push(userId); 
+      }
       console.log(`✅ User ${userId} joined room ${userId.toString()}`);
+      console.log("online users are " , connectedUsers )
   });
   
   
@@ -39,23 +40,13 @@ io.on("connection", (socket) => {
   });
 
 
-
-  // ================== NOTIFICATION SOCKET EVENTS ==================
-
-  // Send notification
-  socket.on("sendNotification", async ({ recipient, sender, type, message, listing }) => {
-    console.log(`[Notification] Sending notification to user: ${recipient}`);
-
-    const notification = new Notification({ recipient, sender, type, message, listing });
-    await notification.save();
-
-    io.to(recipient).emit("receiveNotification", notification);
-  });
-
-  // Mark notification as read
-  socket.on("markAsRead", async ({ notificationId }) => {
-    console.log(`[Notification] Marking notification as read: ${notificationId}`);
-    await Notification.findByIdAndUpdate(notificationId, { isRead: true });
+  socket.on("leave-user", (userId) => {
+    const index = connectedUsers.indexOf(userId);
+  if (index !== -1) {
+    connectedUsers.splice(index, 1);
+  }
+    socket.leave(userId);
+    console.log(`❌ User ${userId} left. Updated online users:`, connectedUsers);
   });
 
 
@@ -66,4 +57,4 @@ io.on("connection", (socket) => {
 });
 
 
-module.exports = { server, io, app };
+module.exports = { server, io, app , connectedUsers };

@@ -11,7 +11,6 @@ router.post(
   "/create",
   (req, res, next) => {
     const listingId =  new mongoose.Types.ObjectId();
-    console.log("router created listing id is" , listingId)
     req.listingId = listingId;
     next();
   },
@@ -38,9 +37,7 @@ router.put(
   "/update/:id",
   (req , res ,  next)=>{
     const  listingId  = req.params.id
-    console.log("router updated listing id is" , listingId)
     req.listingId = listingId
-    console.log(req.listingId)
     next();
   },
 

@@ -43,13 +43,12 @@ export default function MainChat() {
 
   useEffect(() => {
     if (user?._id) {
-      // this one is for real time Conversation shown
       socket.emit("join-user", user._id);
     }
 
 
+   
     console.log("Current allData:", allData);
-      // this one is for real time Conversation shown
     socket.on("newConversation", (data) => {
       console.log("MainChat received new conversation:", data);
       setAllData((prevData) => {
@@ -65,7 +64,13 @@ export default function MainChat() {
     });
     console.log("main chat data after is ", allData);
 
-    return () => socket.off("newConversation");
+    return () => {
+      socket.off("newConversation"); 
+  
+      if (user?._id) {
+        socket.emit("leave-user", user._id);
+      }
+    };
   }, [user]);
 
   useEffect(() => {

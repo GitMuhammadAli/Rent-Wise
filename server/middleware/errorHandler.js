@@ -9,8 +9,7 @@ const errorHandler = (err, req, res, next) => {
     logger.error(errMessage);
     logger.error(err?.stack);
     if (process.env.NODE_ENV !== "production") {
-        console.error(`[Error]: ${errMessage}`);
-        console.error(err?.stack);
+        console.error(`[Error]: ${errMessage}` , `[Stack]: ${err?.stack}`);
     }
 
     res.status(statusCode).json({

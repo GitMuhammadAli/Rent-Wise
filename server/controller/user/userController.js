@@ -69,7 +69,6 @@ const Register = async (req, res , next) => {
 
     if (newUser) {
       const token = await GenerateToken(newUser, req, res , next);
-      console.log("token user in regisster", token);;
 
       return res.status(STATUS.CREATED).json({ message: RESPONCE_MESSAGE.USER_REGISTERED, token });
     }

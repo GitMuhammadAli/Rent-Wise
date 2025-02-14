@@ -13,7 +13,6 @@ function clearCookies(req, res) {
 exports.AuthorizeUser = (RequiredRole) => {
   return async (req, res, next) => {
     const token = req.cookies.jwt;
-    // console.log("JWT Cookie:", token);
 
     if (!token) {
       return res.status(STATUS.UNAUTHORIZED).json({ message: "No token provided" });
@@ -66,10 +65,8 @@ exports.FindUser = async (req, res, next) => {
 
     if (emailVerified === BOOLEAN.FALSE) {
       if (otpVerified === BOOLEAN.FALSE) {
-        console.log("Email verified but OTP not verified yet");
         return res.status(401).json({ message: "OTP not verified" });
       }
-      console.log("Email Not verified in Cookie ");
       return res.status(401).json({ message: "Email not verified" });
     }
 

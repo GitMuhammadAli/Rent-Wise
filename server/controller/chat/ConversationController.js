@@ -7,7 +7,7 @@ const { io } = require("../../utils/socket");
 const AppError = require("../../utils/AppError");
 const { ROLES, BOOLEAN } = require("../../utils/Roles");
 const { CreateNotification } = require("../../controller/notification/notification")
-
+const {connectedUsers  , onlineUsers} = require("../../utils/socket")
 
 //     try {
 //         const { receiver, listing } = req.body;
@@ -225,7 +225,7 @@ const createOrGetConversations = async (receiver, listing, senderId, next) => {
 
 const createMessage = async (req, res, next) => {
   try {
-    const { message, listing } = req.body;
+    const { message, listing  , receiverPath} = req.body;
     const senderId = req.user._id;
     const receiver = req.body.receiver;
 
@@ -294,43 +294,29 @@ const createMessage = async (req, res, next) => {
           unreadCount: 1
         });
       }
-      const referer = req.headers.referer;
-      const baseUrl = `${req.protocol}://${req.get('host')}`;
-      const fullReferer = referer ? new URL(referer).href : null;
 
-      // Remove trailing slash if present for consistent comparison
-      const normalizedReferer = fullReferer?.endsWith('/') ? fullReferer.slice(0, -1) : fullReferer;
-      const normalizedBaseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
-
-      console.log(normalizedReferer)
-      console.log(normalizedBaseUrl)
-
-      if (!normalizedReferer || !normalizedReferer.includes(`${normalizedBaseUrl}/chat`)) {
+      if (!connectedUsers.includes(receiver.toString())) {
         await CreateNotification(receiver, senderId, 'chat', 'You have received a new message', next);
         if (conversationResult.isNewConversation) {
           await CreateNotification(receiver, senderId, 'chat', 'Someone started a conversation with you', next);
         }
       }
-      }
-    } else {
-      return next(
-        new AppError(
-          BOOLEAN.FALSE,
-          CONVERSATION.SOCKET_ERROR,
-          STATUS.BAD_REQUEST
-        )
-      );
-    }
+      
 
-    res.status(STATUS.SUCCESS).json({
-      success: BOOLEAN.TRUE,
-      message: CONVERSATION.MESSAGE_SENT,
-      data: newMessage,
-    });
+      res.status(STATUS.SUCCESS).json({
+        success: BOOLEAN.TRUE,
+        message: CONVERSATION.MESSAGE_SENT,
+        data: newMessage,
+      });
+    }
   } catch (error) {
+
     next(error);
   }
-};
+
+
+}
+
 
 
 const fetchConversationsForSidebarOld = async (req, res, next) => {

@@ -1,9 +1,8 @@
 const mongoose = require("mongoose");
 
 const ListingID = async(req, res, next) => {
-    const listingId =  new mongoose.Types.ObjectId(); // Generate listing ID
-    console.log("router created listing id is" , listingId)
-    req.listingId = listingId; // Attach to request body
+    const listingId =  new mongoose.Types.ObjectId(); 
+    req.listingId = listingId;
     next();
   }
 
