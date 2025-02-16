@@ -17,6 +17,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { FaBell, FaHome, FaComments, FaEllipsisH, FaCheck, FaTrash } from 'react-icons/fa'
 import { clearAllNotifications, readAllNotifications, readOneNotification } from '../../Api/Notification';
 import { NotificationContext } from '../../hooks/NotificationContext';
+import { useLocation } from 'react-router-dom';
 
 // Static data for demonstration
 // const initialNotifications = [
@@ -31,6 +32,7 @@ export default function Notification({}) {
   const [notificationData, setNotificationData] = useState([]);
   const [activeTab, setActiveTab] = useState('all')
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const location = useLocation();
   const {
     notifications,
     unreadCount,
@@ -78,7 +80,7 @@ export default function Notification({}) {
     <Popover placement="bottom-start" isOpen={isOpen} onClose={onClose} >
       <PopoverTrigger>
       <Box as="span" cursor="pointer" onClick={togglePopover} position="relative">
-      <FaBell className="h-6 w-6 text-gray-700" />
+      <FaBell className={`h-6 w-6 ${location.pathname === '/' ? 'text-gray-200' : 'text-gray-700'}`} />
 
       {/* Display the unread count if greater than 0 */}
       {unreadCount > 0 && (

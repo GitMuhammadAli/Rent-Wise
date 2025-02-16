@@ -240,13 +240,13 @@ const { listings,currentListing } = state;
     }
   };
 
-  const changeListingStatus=()=>{
-    setFormData((prevData) => ({
-      ...prevData,
-      listingStatus: prevData.listingStatus === 'pending' ? 'active' : 'pending',
-    }));
+  // const changeListingStatus=()=>{
+  //   setFormData((prevData) => ({
+  //     ...prevData,
+  //     listingStatus: prevData.listingStatus === 'pending' ? 'active' : 'pending',
+  //   }));
    
-  }
+  // }
   useEffect(()=>{
     console.log("listing status: ", formData.listingStatus)
 
@@ -478,7 +478,7 @@ const { listings,currentListing } = state;
               ))}
             </Flex>
           </FormControl>
-          <Heading  fontSize={"24px"}>Listing Status:</Heading>
+          {/* <Heading  fontSize={"24px"}>Listing Status:</Heading>
           {
             formData.listingStatus === 'active' ? (<Text w={'fit-content'}   p={'5px'}
               borderRadius={'5px'} color={'white'} bg={'green.400'}>{formData.listingStatus}</Text>) :
@@ -488,14 +488,24 @@ const { listings,currentListing } = state;
                p={'5px'}
                borderRadius={'5px'}
                >{formData.listingStatus}</Text>)
-          }
+          } */}
           
          <Flex justifyContent={'space-between'}>
-          <Button onClick={changeListingStatus} alignSelf={'flex-end'} w={'fit-content'} colorScheme={formData.listingStatus ==='pending'? "teal": "blue"} size="md">
+          {/* <Button onClick={changeListingStatus} alignSelf={'flex-end'} w={'fit-content'} colorScheme={formData.listingStatus ==='pending'? "teal": "blue"} size="md">
             Set listing status to {
               formData.listingStatus === 'active' ? ( 'Inactive') : ('Active')
             }
-          </Button>
+          </Button> */}
+          <FormControl >
+            <FormLabel>Listing Status</FormLabel>
+            <Text mb={3}> <span>Your Current listing status is</span> <span style={{ color: formData.listingStatus === 'pending' ? 'salmon' : 'green'}}>{formData.listingStatus}</span> </Text>
+            <Select name="listingStatus" value={formData.listingStatus} onChange={handleInputChange} w={'fit-content'}>
+              <option value="active">Active</option>
+              <option value="pending">Pending</option>
+             
+            </Select>
+          </FormControl>
+
           <Button alignSelf={'flex-end'} w={'fit-content'} type="submit" colorScheme="teal" size="md">
             Update Listing
           </Button>

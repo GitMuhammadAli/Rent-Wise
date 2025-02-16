@@ -33,6 +33,7 @@ export default function MyAccount() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
+        
         const response = await getUser();
         dispatch({ type: 'GET_USER', payload: response.data.user });
         setUsername(response.data.user.name);
@@ -52,7 +53,10 @@ export default function MyAccount() {
     fetchUser();
   }, [dispatch]);
 
-  console.log("user" , user);
+  useEffect(()=>{
+    console.log("user of dashhook" , user);
+  },[user])
+  
 
   const handleAvatarChange = (event) => {
     const file = event.target.files?.[0];
@@ -133,7 +137,7 @@ export default function MyAccount() {
         <Text fontSize="md" color="gray.600">Manage your account settings and set email preferences.</Text>
       </Box>
       <Tabs isFitted variant="enclosed">
-        <TabList bg={'gray.50'}  mb="1em">
+        <TabList bg={'gray.50'}  mb="1em" >
           <Tab>Personal</Tab>
           <Tab>Notifications</Tab>
           <Tab>Privacy</Tab>
@@ -239,14 +243,14 @@ export default function MyAccount() {
                   <FormLabel>Confirm New Password</FormLabel>
                   <Input type="password" value={confirmNewPassword} onChange={(e)=> setConfirmNewPassword(e.target.value)}/>
                 </FormControl>
-                <Text alignSelf={'flex-start'} color={'blue.500'} as={Link} to={'/auth/forgetPassword'}>Forget Password?</Text>
+                <Text alignSelf={'flex-start'} color={'orange.500'} as={Link} to={'/auth/forgetPassword'}>Forget Password?</Text>
               </VStack>
             </TabPanel>
           )}        </TabPanels>
       </Tabs>
       <HStack justifyContent="space-between" mt={6}>
         <Button variant="outline">Cancel</Button>
-        <Button colorScheme="blue" onClick={handleSaveChanges}>Save Changes</Button>
+        <Button variant={'customButton'} onClick={handleSaveChanges}>Save Changes</Button>
       </HStack>
     </Box>
   )

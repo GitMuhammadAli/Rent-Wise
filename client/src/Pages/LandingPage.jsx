@@ -187,11 +187,12 @@ const LandingPage = () => {
         
       } */}
       {/* just added bg because removed animation */}
-       <Box position="relative" overflow="hidden" height="80vh"  style={{
-    backgroundImage: `url('/images/HomeCar1.jpg')`,
+       <Box position="relative" overflow="hidden" height="100vh"  style={{
+    backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.1)), url('/images/HomeCar2.jpg')`,
     backgroundSize: 'cover', 
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat', 
+    
   }}  > 
       {/* <AnimatedBackground /> */}
       <Flex position="relative" zIndex={10} height="full" alignItems="center">

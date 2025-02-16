@@ -139,6 +139,7 @@ export default function LiveChat({
       h={'100%'}
       display={{ base: checkClick ? 'inherit' : 'none', md: 'inherit' }}
     >
+      
 
       {/* top bar of live chat */}
       <HStack
@@ -226,29 +227,44 @@ export default function LiveChat({
               <Text wordBreak="break-word" fontSize={'sm'}>{Messages.message}</Text>
             </Box>
           ))}
+
+
+        { !checkClick && (
+           <div style={{ textAlign: 'center', padding: '20px', color: '#666', fontStyle: 'italic' }}>
+             <Text>🌟 Select a participant to start chatting and let the conversation flow! 🌟</Text>
+           </div>
+         )
+         }
       </Box>
 
-      <Flex bg={'white'} py={6}>
-        <form onSubmit={handleMessageSubmit} style={{ width: "100%" }}>
-          <Flex >
-            <Input
-              placeholder="Type your message..."
-              mx={4}
-              bg="white"
-              borderRadius="full"
-              _focus={{ outline: "none" }}
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              autoComplete="off"
-              spellCheck="false"
-            />
-            <Button type="submit" colorScheme="orange" rounded={'full'} mr={2}>
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-            </svg>
-            </Button>
-          </Flex>        </form>
+{
+  checkClick && (
+    <Flex bg={'white'} py={6}>
+    <form onSubmit={handleMessageSubmit} style={{ width: "100%" }}>
+      <Flex >
+        <Input
+          placeholder="Type your message..."
+          mx={4}
+          bg="white"
+          borderRadius="full"
+          _focus={{ outline: "none" }}
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          autoComplete="off"
+          spellCheck="false"
+        />
+        <Button type="submit" colorScheme="orange" rounded={'full'} mr={2}>
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+        </svg>
+        </Button>
       </Flex>
+      </form>
+  </Flex>
+
+  )
+}
+    
     </Flex>
   );
 }

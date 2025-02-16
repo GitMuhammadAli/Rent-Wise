@@ -21,7 +21,11 @@ const listingsReducer = (state, action) => {
       return { ...state, userListings: action.payload };
 
     case "ADD_LISTING":
-      return { ...state, listings: [...state.listings, action.payload] };
+      return {
+        ...state,
+        listings: [...state.listings, action.payload], // Add to all listings
+        userListings: [...state.userListings, action.payload], // Add to user-specific listings
+      };
 
     case "UPDATE_LISTING":
         const updatedListings = state.listings.map((listing) =>

@@ -29,6 +29,7 @@ export default function AddCommentsInListing({toast,id,currentID,ownerID}) {
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
     const [checkSubmit, setSetSubmit] = useState(false)
+    
     const { user } = useAuth();
 
 
@@ -36,6 +37,19 @@ export default function AddCommentsInListing({toast,id,currentID,ownerID}) {
 
     const handleCommentSubmit = async (e) => {
       e.preventDefault();
+
+      if(!user)
+      {
+        toast({
+          title: "Login Required",
+          description: "Login first to add a comment.",
+          status: "warning",
+          duration: 3000,
+          isClosable: true,
+        });
+        setNewComment('')
+        return;
+      }
 
      
 
@@ -186,9 +200,10 @@ export default function AddCommentsInListing({toast,id,currentID,ownerID}) {
 
   )
 }
+  
       
       <VStack spacing={4} mt={6} align="stretch">
-        {comments.map((comment, i) => (
+        {comments?.map((comment, i) => (
           <Box key={comment._id || i}>
             <Flex justify="space-between" align="center" mb={2}>
               <Flex justifyContent={'space-between'}>
@@ -197,12 +212,12 @@ export default function AddCommentsInListing({toast,id,currentID,ownerID}) {
               </Flex>
              
               <Flex alignItems={'center'} gap={2} fontSize="sm" color="gray.500">
-                {new Date(comment.createdAt).toLocaleDateString()}
-                {comment.author?.name === user.name && (
+                {new Date(comment?.createdAt).toLocaleDateString()}
+                {comment?.author?.name === user?.name && (
                         <IconButton
                           size="sm"
                           icon={<DeleteIcon />}
-                          onClick={() => handleDeleteComment(comment._id)}
+                          onClick={() => handleDeleteComment(comment?._id)}
                           aria-label="Delete comment"
                         />
                       )}
