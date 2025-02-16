@@ -16,7 +16,6 @@ const makeToken = async (_id) => {
 
 const GenerateToken = async (user, req, res, next) => {
   try {
-    console.log("user in generate token", user);
     await res.clearCookie("jwt");
     const token = await makeToken(user._id);
     res.cookie("jwt", token, {
@@ -65,7 +64,6 @@ const GetAndDecodeToken = async (req, res, next) => {
 
   try {
     const decodedToken = await decodingToken(token, process.env.JWT_API_SECRET_KEY);
-    // console.log("decodedToken", decodedToken);
     return decodedToken;
   } catch (error) {
     next(error);
@@ -99,15 +97,12 @@ const generatetokenForOtpForEncryption = async (
     emailVerified,
   };
 
-  console.log("payload", payload);
   const jsonStringPayloadForOtp = JSON.stringify(payload);
 
   const encryptedOtp = encryptCookieForOtp(jsonStringPayloadForOtp);
-  console.log("encryptedOtp", encryptedOtp);
   const tok = await CreateToken({ SendedOtp: encryptedOtp });
 
   if (res) {
-    console.log("send encrypted OTP to cookie");
     res.cookie("resetPasswordOTP", tok, {
       sameSite: "strict",
       maxAge: 24 * 60 * 60 * 1000,
@@ -130,7 +125,6 @@ const verifyEncryptedCookieForOtp = (req, res, next) => {
   try {
     const decryptedData = decryptCookieForOtp(encryptedCookie);
     const cookieData = JSON.parse(decryptedData); // Parse the decrypted cookie data
-    console.log("cookie for otp after decryption", cookieData);
 
     // Proceed with password reset verification logic
     return res.status(200).json({ success: BOOLEAN.TRUE, data: cookieData });

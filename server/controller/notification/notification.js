@@ -29,7 +29,7 @@ exports.CreateNotification = async (recipient, sender, type, message, next, ) =>
       recipient, sender, type, message
     }
 
-    console.log("notification body is" , notification)
+    // console.log("notification body is" , notification)
     
     const userSettings = await UserSettings.findOne({ user: recipient });
 
@@ -52,7 +52,7 @@ exports.CreateNotification = async (recipient, sender, type, message, next, ) =>
       message: message,
     });
 
-    console.log("notification  is saved" , newNotification)
+    // console.log("notification  is saved" , newNotification)
 
 
     if (userSettings?.webPushSubscription?.endpoint) {
@@ -67,7 +67,7 @@ exports.CreateNotification = async (recipient, sender, type, message, next, ) =>
         createdAt: newNotification.createdAt
       };
 
-      await sendWebPush(userSettings.webPushSubscription, payload);
+      await sendWebPush(userSettings.webPushSubscription, payload , next);
     }
 
     if (!newNotification) {

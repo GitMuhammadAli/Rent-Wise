@@ -13,7 +13,6 @@ exports.userHome = async (req, res, next) => {
     if (!user) {
       throw new AppError(BOOLEAN.FALSE,ERROR_MESSAGE.USER_NOT_FOUND, STATUS_CODE.NOT_FOUND);
     }
-    console.log("Sending user to frontend:", user);
 
     res.status(STATUS.SUCCESS).json({
       success: BOOLEAN.TRUE,
@@ -31,7 +30,6 @@ exports.adminHome = async (req, res) => {};
 
 exports.checkAuth = (req, res,next) => {
   try {
-    // console.log("User in checkAuth:", req.user);
     res.status(STATUS.SUCCESS).json({
       success: BOOLEAN.TRUE,
       user: req.user

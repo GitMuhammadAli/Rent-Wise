@@ -161,11 +161,7 @@ exports.GetNotificationSubscription = async (req, res, next) => {
 
     const userId  = req.user._id
     const getSubscription = await UserSettings.findOne({ user: userId  })
-
-    console.log(getSubscription)
-
     const hasSubscriptionNotification = getSubscription ? true : false;
-    
     res.status(200).json({
       hasSubscriptionNotification
     });

@@ -27,9 +27,9 @@ const cron = require('node-cron');
 const threeDaysFromNow = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
 
 
-cron.schedule('0 0 * * *', async () => {
+cron.schedule('0 0 * * *', async (next) => {
   try {
-    console.log("Running Agreement Expiry Notification Cron Job...");
+    // console.log("Running Agreement Expiry Notification Cron Job...");
 
     const threeDaysFromNow = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
 
@@ -85,9 +85,8 @@ cron.schedule('0 0 * * *', async () => {
       );
     }
 
-    console.log("Agreement notifications sent successfully.");
   } catch (error) {
-    console.error("Cron job error:", error);
+    next(error)
   }
 });
 
