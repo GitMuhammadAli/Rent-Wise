@@ -156,7 +156,7 @@ exports.CreateListings = async (req, res, next) => {
             // location: newLocation._id,
         });
 
-        if (biddingEnabled === BOOLEAN.TRUE) {
+        if (Boolean(biddingEnabled) == BOOLEAN.TRUE) {
             if (!minimumBid || !bidEndDate) {
                 return next( new AppError(BOOLEAN.FALSE , LISTINGS.BIDDING_ERROR_MISSING_REQUIRED_FIELDS, STATUS.BAD_REQUEST));
             }
@@ -164,9 +164,9 @@ exports.CreateListings = async (req, res, next) => {
             const bidding = new Bidding({
                 rentalItem: newRentalItem._id,
                 enabled: biddingEnabled,
-                minimumBid,
-                bidIncrement,
-                bidEndDate,
+                minimumBid: minimumBid,
+                bidIncrement:bidIncrement,
+                bidEndDate:bidEndDate,
             });
 
             const savedBidding = await bidding.save();
@@ -529,7 +529,7 @@ exports.GetALLListingByOwners = async (req, res, next) => {
 
     try {
 
-        const listing = await RentalItem.find().populate("owner", "name email");
+        const listing = await RentalItem.find().populate("owner", "name email").populate('bidding');
         if (!listing) {
             return next(new AppError(BOOLEAN.FALSE, LISTINGS.LISTING_NOT_FOUND, STATUS.NOT_FOUND));
         }
@@ -547,7 +547,7 @@ exports.GetALLListingByOwnersId = async (req, res, next) => {
     const { id } = req.params;
     try {
 
-        const listing = await RentalItem.find({ owner: id }).populate("owner", "name email");
+        const listing = await RentalItem.find({ owner: id }).populate("owner", "name email").populate('bidding');
         if (!listing) {
             return next(new AppError(BOOLEAN.FALSE, LISTINGS.LISTING_NOT_FOUND, STATUS.NOT_FOUND));
         }
