@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { FaStar, FaRegStar, FaChevronLeft, FaChevronRight } from 'react-icons/fa'
 import { createListingReview, getListingReviews } from '../../../Api/reviews'
 import { useAuth } from '../../../hooks/AuthContext'
-import { Box, useToast } from '@chakra-ui/react'
+import { Box, Text, useToast } from '@chakra-ui/react'
 // const reviews = [
 //   {
 //     id: '1',
@@ -149,20 +149,22 @@ export default function ReviewsInListing({listingID, ownerID, setAvgRating}) {
                     )
                   }
                   <div className="space-y-4">
-                    {reviews.map((review) => (
-                      <div key={review._id} className="border-b border-gray-200 pb-4">
-                        <div className="flex justify-between items-center mb-2">
-                          <span className="font-semibold">{review.reviewer.name}</span>
-                          <span className="text-sm text-gray-500">{new Date(review.createdAt).toLocaleDateString()}</span>
+                    { reviews && reviews.length > 0 ? (
+                      reviews.map((review) => (
+                        <div key={review._id} className="border-b border-gray-200 pb-4">
+                          <div className="flex justify-between items-center mb-2">
+                            <span className="font-semibold">{review.reviewer.name}</span>
+                            <span className="text-sm text-gray-500">{new Date(review.createdAt).toLocaleDateString()}</span>
+                          </div>
+                          <div className="flex items-center mb-2">
+                            {[...Array(5)].map((_, i) => (
+                              <FaStar key={i} className={`w-4 h-4 ${i < review.rating ? 'text-yellow-400' : 'text-gray-300'}`} />
+                            ))}
+                          </div>
+                          <p className="text-gray-700">{review.comment}</p>
                         </div>
-                        <div className="flex items-center mb-2">
-                          {[...Array(5)].map((_, i) => (
-                            <FaStar key={i} className={`w-4 h-4 ${i < review.rating ? 'text-yellow-400' : 'text-gray-300'}`} />
-                          ))}
-                        </div>
-                        <p className="text-gray-700">{review.comment}</p>
-                      </div>
-                    ))}
+                      ))
+                    ) : (<Text>🌟 No reviews on this listing yet 🌟</Text>) }
                   </div>
                 </div>
                 </Box>

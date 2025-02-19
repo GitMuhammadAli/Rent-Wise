@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import {
   DollarSign,
   Users,
@@ -44,6 +44,16 @@ export default function OwnerDash() {
   const [agreementCount, setAgreementCount] = useState("");
   const [agreementStatusCount, setAgreementStatusCount] = useState(null);
 
+  const [showAllAggr, setShowAllAgrr] = useState(false);
+  const [decideAggrNumber, setDecideAggrNumber] = useState([]);
+  
+
+
+   const [displayLimit, setDisplayLimit] = useState(2); // Initial limit of 5 listings
+  const [showAll, setShowAll] = useState(false);
+  const [decideListingNumber, setDecideListingNumber] = useState([]);
+  const tableRef = useRef(null);
+
   const { state, dispatch } = useContext(ListingsContext);
   const { userListings } = state;
   // const [items, setItems] = useState([]);
@@ -54,6 +64,8 @@ export default function OwnerDash() {
         const response = await GetAggreements();
         console.log("Agreements fetched:", response.data.data);
         setAgreements(response.data.data);
+        const aggrData = response?.data?.data;
+        setDecideAggrNumber(showAllAggr ? aggrData : aggrData.slice(0, displayLimit))
         // agreement count
         setAgreementCount(response?.data?.data?.length);
         const AgrrStatus = response?.data?.data?.map(
@@ -71,7 +83,7 @@ export default function OwnerDash() {
     };
 
     fetchAgreements();
-  }, []);
+  }, [showAllAggr]);
 
   const handleEditClick = () => {
     setHandleAgreementEditClick(true);
@@ -99,7 +111,20 @@ export default function OwnerDash() {
     console.log("useListInOwner", userListings.length);
     setListingCount(userListings.length);
     console.log("userLisintg", userListings)
-  }, [userListings, userListings.listingStatus]);
+    setDecideListingNumber(showAll ? userListings : userListings.slice(0, displayLimit))
+
+  }, [userListings, userListings.listingStatus, showAll]);
+
+  const handleViewAllListings = () => {
+    setShowAll(true);
+    tableRef.current?.scrollIntoView({ behavior: "smooth" });
+    
+  };
+  const handleViewAllAgreements = () => {
+    setShowAllAgrr(true);
+   //  tableRef.current?.scrollIntoView({ behavior: "smooth" });
+    
+  };
 
   return (
     <Box minH="100vh" bg="whiteAlpha.800" p={{ base: 2, sm: 4, md: 8 }}>
@@ -242,7 +267,7 @@ export default function OwnerDash() {
               </Heading>
             </CardHeader>
             <CardBody p={{ base: 2, sm: 3, md: 4 }}>
-              <TableContainer overflowX="auto">
+              <TableContainer overflowX="auto" >
                 <Table variant="simple" size={{ base: "sm", md: "md" }}>
                   <Thead>
                     <Tr>
@@ -256,9 +281,9 @@ export default function OwnerDash() {
                     </Tr>
                   </Thead>
                   <Tbody>
-                    {userListings &&
-                      userListings.length > 0 &&
-                      userListings.map((booking, index) => (
+                    {decideListingNumber &&
+                      decideListingNumber.length > 0 &&
+                      decideListingNumber.map((booking, index) => (
                         <Tr key={index}>
                           <Td
                             fontSize={{ base: "xs", sm: "sm" }}
@@ -336,22 +361,26 @@ export default function OwnerDash() {
                 </Table>
               </TableContainer>
             </CardBody>
-            <CardFooter p={{ base: 2, sm: 3, md: 4 }}>
-              <Button
-              variant={'dashboardButton'}
-                // bg={"rgb(41, 39, 39)"}
-                // color={"white"}
-                // _hover={{
-                //   color: "black",
-                //   background: "none",
-                //   border: "1px solid black",
-                // }}
-                // variant="outline"
-                width="full"
-                size={{ base: "xs", sm: "sm", md: "md" }}
-              >
-                View All Listings
-              </Button>
+            <CardFooter p={{ base: 2, sm: 3, md: 4 }} ref={tableRef}>
+              {
+                !showAll && userListings.length > displayLimit && (
+                  <Button
+                  variant={'dashboardButton'}
+                    // bg={"rgb(41, 39, 39)"}
+                    // color={"white"}
+                    // _hover={{
+                    //   color: "black",
+                    //   background: "none",
+                    //   border: "1px solid black",
+                    // }}
+                    // variant="outline"
+                    width="full"
+                    onClick={handleViewAllListings}
+                    size={{ base: "xs", sm: "sm", md: "md" }}
+                  >
+                    View All Listings
+                  </Button>
+                )}
             </CardFooter>
           </Card>
 
@@ -384,8 +413,8 @@ export default function OwnerDash() {
                     </Tr>
                   </Thead>
                   <Tbody>
-                    {agreements && agreements.length > 0 ? (
-                      agreements.map((agreement) => (
+                    {decideAggrNumber && decideAggrNumber.length > 0 ? (
+                      decideAggrNumber.map((agreement) => (
                         <Tr key={agreement._id}>
                           {/* <Td fontSize={{ base: "xs", sm: "sm" }} fontWeight="medium">
                   {agreement.agreementDetailsId}
@@ -505,21 +534,19 @@ export default function OwnerDash() {
               </TableContainer>
             </CardBody>
             <CardFooter p={{ base: 2, sm: 3, md: 4 }}>
-              <Button
-               variant={'dashboardButton'}
-                // bg={"rgb(41, 39, 39)"}
-                // color={"white"}
-                // _hover={{
-                //   color: "black",
-                //   background: "none",
-                //   border: "1px solid black",
-                // }}
-                // variant="outline"
-                width="full"
-                size={{ base: "xs", sm: "sm", md: "md" }}
-              >
-                View All Agreements
-              </Button>
+              {
+                !showAllAggr && agreements.length > displayLimit &&  (
+                  <Button
+                  variant={'dashboardButton'}
+                   width="full"
+                   size={{ base: "xs", sm: "sm", md: "md" }}
+                   onClick={handleViewAllAgreements}
+                 >
+                   View All Agreements
+                 </Button>
+                )
+              }
+             
             </CardFooter>
           </Card>
 

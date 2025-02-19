@@ -46,8 +46,6 @@ export default function MainChat() {
       socket.emit("join-user", user._id);
     }
 
-
-   
     console.log("Current allData:", allData);
     socket.on("newConversation", (data) => {
       console.log("MainChat received new conversation:", data);

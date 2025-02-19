@@ -41,6 +41,7 @@ const LandingPage = () => {
   //   my things
   const [checkAlert, setCheckAlert] = useState(false);
   const sectionRef = useRef(null);
+  
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const { state, dispatch } = useContext(ListingsContext);
@@ -50,11 +51,20 @@ const LandingPage = () => {
   const totalPages = Math.ceil(listings.length / itemsPerPage);
   const [hasSubscription, setHasSubscription] = useState(null);
   const { notifications } = useContext(NotificationContext);
+  const [searchQuery, setSearchQuery] = useState("");
+  
+
 
   // Get the listings for the current page
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const curentListing = listings.slice(startIndex, endIndex);
+ // filtering listings
+  const filteredListings = listings.filter((list) =>
+    list.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  // setting the listings on the basis if filter 
+  const paginatedListings = filteredListings.slice(startIndex, endIndex);
 
   const goToNextPage = () => {
     if (currentPage < totalPages) {
@@ -71,6 +81,7 @@ const LandingPage = () => {
   const handleScroll = () => {
     sectionRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+  
 
   useEffect(()=>{
     console.log("notification in real time in navbar", notifications)
@@ -94,6 +105,8 @@ const LandingPage = () => {
 
   useEffect(() => {
     console.log("Current listings in get state in getAll:", listings);
+    
+
   }, [listings]);
 
 
@@ -297,6 +310,7 @@ const LandingPage = () => {
             }}
             color="orange.500"
             fontSize="lg"
+            onChange={(e) => setSearchQuery(e.target.value)}
           />
           <Button
             px={4}
@@ -306,6 +320,7 @@ const LandingPage = () => {
             rounded="md"
             _hover={{ bg: "orange.600" }}
             transition="all 0.3s ease"
+            onClick={handleScroll}
           >
             <FaSearch className="h-5 w-5" />
           </Button>
@@ -400,10 +415,11 @@ const LandingPage = () => {
               md: "repeat(2, 1fr)",
               lg: "repeat(3, 1fr)",
             }}
+           
           >
-            {curentListing &&
-              curentListing?.length > 0 &&
-              curentListing.map((rental) => (
+            {paginatedListings &&
+              paginatedListings?.length > 0 &&
+              paginatedListings.map((rental) => (
                 <GridItem
                   key={rental._id}
                   bg="white"
@@ -503,7 +519,7 @@ const LandingPage = () => {
           </Text>
           <Button
             as={Link}
-            to="/"
+            to="/auth/signup"
             mt={12}
             display="inline-flex"
             alignItems="center"

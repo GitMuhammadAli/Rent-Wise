@@ -13,7 +13,7 @@ import {
   Text,
   Box,
 } from "@chakra-ui/react";
-import { Printer, SquareMousePointer } from "lucide-react";
+import { Printer, ScrollText, SquareMousePointer } from "lucide-react";
 import { useContext, useEffect, useState } from "react";
 import { fetchConversationsForSidebar } from "../../Api/Chats";
 import AgreementTemplate from "../Agreement/AgreementTemplate";
@@ -101,14 +101,14 @@ export default function UserPopover({tenant,convoID}) {
         <Popover>
         <PopoverTrigger>
           <Flex gap={3} alignItems={"center"}>
-            <Text cursor={'pointer'} fontWeight={"bold"} color={'orange.500'} fontSize={{base:'sm',md:"md"}}>
+            <Text cursor={'pointer'} fontWeight={"bold"} fontFamily={'cursive'} color={'orange.500'} fontSize={{base:'sm',md:"md"}}>
               Create Aggreement
             </Text>
-            <Printer
+            <ScrollText
             cursor={'pointer'}
               // onClick={fetchNameOfChatParticipants}
               size={40}
-              color="orange"
+              color="#F57C00"
             />
           </Flex>
         </PopoverTrigger>

@@ -6,10 +6,12 @@ import { useParams } from "react-router-dom";
 import { useAuth } from '../../../hooks/AuthContext';
 import { GetAggreementsByID, UpdateAggrementByOwner } from '../../../Api/Agreement';
 import HouseAgrTemplate from './HouseAgrTemplate';
+import { useToast } from "@chakra-ui/react";
 
 export default function UpdateHouseAgrr() {
 
      const { user } = useAuth();
+     const toast = useToast();
     
       const [aggrementDetail, setAggrementDetail] = useState({
         place: "",
@@ -68,7 +70,7 @@ export default function UpdateHouseAgrr() {
               
                 }))
               : [],
- });
+            });
             console.log("renter detail", response.data.data.renterId);
             setRenterDetails(response.data.data.renterId);
             setOwnerDetail(response.data.data.ownerId);
@@ -92,13 +94,7 @@ export default function UpdateHouseAgrr() {
           setOwnerConfirmed(true);
         }
       };
-    //   const RenterConfirmed = async () => {
-    //     if (renterConfirmed) {
-    //       setRenterConfirmed(false);
-    //     } else {
-    //       setRenterConfirmed(true);
-    //     }
-    //   };
+
     const handleChange = (e) => {
       const { name, value } = e.target;
       setAggrementDetail((prev) => ({
@@ -117,6 +113,13 @@ export default function UpdateHouseAgrr() {
         const data = ownerConfirmed
         const response =  await UpdateAggrementByOwner({aggrementDetail,data,aggId:id}); 
         console.log("res after update is", response)
+        toast({
+          title: "Agreement updated",
+          description: "agreement details are updated",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
       } catch (error) {
         console.log("error")
         

@@ -212,7 +212,7 @@ import { getOwnerProfileData } from "../../../Api/owner";
 import { Link , useNavigate , useParams} from "react-router-dom";
 import { useAuth } from "../../../hooks/AuthContext";
 import { createUserReview, getUserReviews } from "../../../Api/reviews";
-import { useToast } from "@chakra-ui/react";
+import { useToast, Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, Image, useDisclosure, Button  } from "@chakra-ui/react";
 
 const UserProfile = () => {
   const navigate = useNavigate();
@@ -226,6 +226,8 @@ const UserProfile = () => {
   const [rating, setRating] = useState(0);
   const [reviews, setReviews] = useState([])
   const toast = useToast();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [selectedImage, setSelectedImage] = useState(null); // for viewing image in big size
 
   useEffect(() => {
       const fetchProfileData = async () => {
@@ -312,6 +314,13 @@ const UserProfile = () => {
       getReviews();
     },[owner, activeTab])
 
+
+    // for viewing image in big size
+    const handleImageClick = () => {
+      setSelectedImage(`${import.meta.env.VITE_BACK_END_URL}${owner.imageUrl}` || owner.imageUrl);
+      onOpen();
+    };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -338,8 +347,18 @@ const UserProfile = () => {
             src={`${import.meta.env.VITE_BACK_END_URL}${owner.imageUrl}` || owner.imageUrl}
             alt={owner.name}
             onError={(e) => (e.currentTarget.src = "/images/randomUser.png")}
+            onClick={handleImageClick}
           />
           <div>
+          <Modal isOpen={isOpen} onClose={onClose} size="xl">
+        <ModalOverlay />
+        <ModalContent>
+          <ModalCloseButton color={'black'} bg={'white'} />
+          <ModalBody className="flex justify-center p-4">
+            {selectedImage && <Image src={selectedImage} alt={owner.name} />}
+          </ModalBody>
+        </ModalContent>
+      </Modal>
             <h1 className="text-2xl font-bold">{owner.name}</h1>
             <p className="text-gray-500 capitalize">{owner.role}</p>
           </div>
@@ -367,7 +386,8 @@ const UserProfile = () => {
               key={tab}
               className={`flex-1 py-2 text-center ${
                 activeTab === tab
-                  ? 'text-indigo-600 border-b-2 border-indigo-600'
+                //   ? 'text-indigo-600 border-b-2 border-indigo-600'
+                  ? 'text-orange-500 border-b-2 border-orange-500'
                   : 'text-gray-500'
               }`}
               onClick={() => setActiveTab(tab)}
@@ -508,24 +528,27 @@ const UserProfile = () => {
                   required
                 ></textarea>
               </div>
-              <button
+              <Button
                 type="submit"
-                className="w-full bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                variant={'customButton'}
+                w={'full'}
+                //className="w-full bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
                 Submit Review
-              </button>
+              </Button>
             </form>
           </div>
         )}
 
         {/* Contact Button */}
         <div className="mt-8 flex justify-center">
-          <button 
+          <Button
             onClick={handleChatButtonClick}
+            variant={'customButton'}
             className="bg-indigo-500 text-white px-6 py-2 rounded-full font-medium hover:bg-indigo-600 transition duration-300 flex items-center">
             <MessageCircleIcon className="h-5 w-5 mr-2" />
             Contact {owner.name}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

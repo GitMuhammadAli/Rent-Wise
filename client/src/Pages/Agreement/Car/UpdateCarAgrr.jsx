@@ -5,11 +5,12 @@ import { useParams } from "react-router-dom";
 
 import { useAuth } from '../../../hooks/AuthContext';
 import { GetAggreementsByID, UpdateAggrementByOwner } from '../../../Api/Agreement';
+import { useToast } from '@chakra-ui/react';
 
 export default function UpdateCarAgrr() {
 
      const { user } = useAuth();
-    
+    const toast = useToast()
       const [aggrementDetail, setAggrementDetail] = useState({
         place: "",
         timeInDayCount: "",
@@ -126,6 +127,13 @@ export default function UpdateCarAgrr() {
       const data = ownerConfirmed
       const response =  await UpdateAggrementByOwner({aggrementDetail,data,aggId:id}); 
       console.log("res after update is", response)
+      toast({
+        title: "Agreement updated",
+        description: "agreement details are updated",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
     } catch (error) {
       console.log("error", error)
       

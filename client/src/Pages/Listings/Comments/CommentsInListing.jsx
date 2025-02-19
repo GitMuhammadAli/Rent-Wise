@@ -203,30 +203,32 @@ export default function AddCommentsInListing({toast,id,currentID,ownerID}) {
   
       
       <VStack spacing={4} mt={6} align="stretch">
-        {comments?.map((comment, i) => (
-          <Box key={comment._id || i}>
-            <Flex justify="space-between" align="center" mb={2}>
-              <Flex justifyContent={'space-between'}>
-              <Text fontWeight="semibold">{comment?.author?.name}</Text>
-              
+        {comments && comments.length > 0 ? (
+          comments?.map((comment, i) => (
+            <Box key={comment._id || i}>
+              <Flex justify="space-between" align="center" mb={2}>
+                <Flex justifyContent={'space-between'}>
+                <Text fontWeight="semibold">{comment?.author?.name}</Text>
+                
+                </Flex>
+               
+                <Flex alignItems={'center'} gap={2} fontSize="sm" color="gray.500">
+                  {new Date(comment?.createdAt).toLocaleDateString()}
+                  {comment?.author?.name === user?.name && (
+                          <IconButton
+                            size="sm"
+                            icon={<DeleteIcon />}
+                            onClick={() => handleDeleteComment(comment?._id)}
+                            aria-label="Delete comment"
+                          />
+                        )}
+                </Flex>
               </Flex>
-             
-              <Flex alignItems={'center'} gap={2} fontSize="sm" color="gray.500">
-                {new Date(comment?.createdAt).toLocaleDateString()}
-                {comment?.author?.name === user?.name && (
-                        <IconButton
-                          size="sm"
-                          icon={<DeleteIcon />}
-                          onClick={() => handleDeleteComment(comment?._id)}
-                          aria-label="Delete comment"
-                        />
-                      )}
-              </Flex>
-            </Flex>
-            <Text mb={3} color="gray.700">{comment.text}</Text>
-            <Divider borderColor="gray.200" />
-          </Box>
-        ))}
+              <Text mb={3} color="gray.700">{comment.text}</Text>
+              <Divider borderColor="gray.200" />
+            </Box>
+          ))
+        ) : (<Text>💬 No comments on this listing yet 💬</Text>) }
       </VStack>
     </Box>
 

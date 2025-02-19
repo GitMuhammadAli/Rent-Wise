@@ -6,6 +6,14 @@ import {
   HStack,
   Input,
   Text,
+  Tabs, TabList, Tab, TabPanels, TabPanel,
+  Divider,
+  Center,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
 } from "@chakra-ui/react";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { useAuth } from "../../hooks/AuthContext";
@@ -15,6 +23,7 @@ import { ListingsContext } from "../../hooks/ListingsContext";
 import { Link } from 'react-router-dom';
 
 import { io } from "socket.io-client";
+import ListingsHorizontalBox from "./ListingsHorizontalBox";
 
 const socket = io(import.meta.env.VITE_BACK_END_URL, {
   withCredentials: true,
@@ -35,6 +44,11 @@ export default function LiveChat({
   checkClick,
 }) {
   const [message, setMessage] = useState("");
+  const [bidAmount, setBidAmount] = useState("");
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [showChat,setShowChat] = useState(true)
+  const [showBid,setShowBid] = useState(false)
+  const [activeTab, setActiveTab] = useState("chat");
 
   const { user } = useAuth();
   const [localListingId, setLocalListingId] = useState([]);
@@ -126,6 +140,19 @@ export default function LiveChat({
 
     fetchMessages();
   }, [convoID, owner, isCLicked]);
+
+  const messageClicked = ()=>{
+    setShowChat(true)
+    setShowBid(false)
+    setActiveTab("chat")
+    
+  }
+  const bidClicked = ()=>{
+    setShowChat(false)
+    setShowBid(true)
+    setActiveTab("bid")
+
+  }
   return (
     <Flex
      flexDir={'column'}
@@ -181,6 +208,13 @@ export default function LiveChat({
           )
         }
       </HStack>
+    
+    {
+      checkClick && (<ListingsHorizontalBox/>)
+    }
+      
+
+
       <Box
         flex="1"
         ref={scrollRef}
@@ -237,11 +271,14 @@ export default function LiveChat({
          }
       </Box>
 
+
+
+{/* bidding and send message work */}
 {
   checkClick && (
     <Flex bg={'white'} py={6}>
     <form onSubmit={handleMessageSubmit} style={{ width: "100%" }}>
-      <Flex >
+      {/* <Flex >
         <Input
           placeholder="Type your message..."
           mx={4}
@@ -258,7 +295,100 @@ export default function LiveChat({
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
         </svg>
         </Button>
-      </Flex>
+      </Flex> */}
+
+
+    <Box>
+
+    <Flex color={'gray.600'} justifyContent={'space-evenly'} mb={4}>
+    <Box  
+     w={'40%'}
+     display={'flex'}
+    justifyContent={'center'}
+     fontWeight={activeTab === "chat" ? "bold" : "normal"}
+     cursor={'pointer'} onClick={messageClicked}
+     borderBottom={activeTab === "chat" ? '2px solid #616161' : '2px solid transparent'}
+     transition="border-bottom 0.3s ease-in-out"
+     
+
+     > Chat
+     </Box>
+      
+     <Center height='40px'>
+       <Divider orientation='vertical' />
+     </Center>
+       
+    <Box
+   
+    w={'40%'}
+    display={'flex'}
+    justifyContent={'center'}
+     fontWeight={activeTab === "bid" ? "bold" : "normal"}
+     borderBottom={activeTab === "bid" ? '2px solid #616161' : '2px solid transparent'}
+     cursor={'pointer'} onClick={bidClicked}
+     transition="border-bottom 0.3s ease-in-out"
+
+     > Make a Bid
+     </Box>
+    </Flex>
+      
+     
+
+  {/* chat one */}
+  {
+    showChat && (
+      <Flex>
+      <Input
+        placeholder="Type your message..."
+        mx={4}
+        bg="white"
+        borderRadius="full"
+        _focus={{ outline: "none" }}
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        autoComplete="off"
+        spellCheck="false"
+      />
+      <Button type="submit" colorScheme="orange" rounded="full" mr={2}>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+        </svg>
+      </Button>
+    </Flex>
+    )
+  }
+  
+
+
+ {/* bid one */}
+ {
+  showBid && (
+    <Flex px={4} gap={2} alignItems={'center'} justifyContent={'space-around'}> 
+   
+    <Text fontWeight={'semibold'}>Bidding for Listing one</Text>
+
+    <NumberInput defaultValue={9000} min={9000} max={10000000} w={'60%'}>
+  <NumberInputField />
+  <NumberInputStepper>
+    <NumberIncrementStepper />
+    <NumberDecrementStepper />
+  </NumberInputStepper>
+</NumberInput>
+    <Button colorScheme="orange" rounded="full">
+      Place Bid
+    </Button>
+  </Flex>
+
+  )
+ }
+       
+    </Box>
       </form>
   </Flex>
 

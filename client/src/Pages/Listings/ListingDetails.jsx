@@ -440,7 +440,7 @@ const ListingDetails = () => {
                     </ListItem>
                   ))
                 ) : (
-                  <Text>No rules Defined</Text>
+                  <Text>📝 No rules Defined 📝</Text>
                 )}
               </List>
             </Box>
