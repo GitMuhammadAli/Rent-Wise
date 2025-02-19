@@ -213,6 +213,7 @@ import { Link , useNavigate , useParams} from "react-router-dom";
 import { useAuth } from "../../../hooks/AuthContext";
 import { createUserReview, getUserReviews } from "../../../Api/reviews";
 import { useToast, Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, Image, useDisclosure, Button  } from "@chakra-ui/react";
+import ColorTubeLoader from "../../../components/Style/ColorTubeLoader";
 
 const UserProfile = () => {
   const navigate = useNavigate();
@@ -258,6 +259,19 @@ const UserProfile = () => {
 
     const handleSubmitReview =async(e)=>{
       e.preventDefault();
+
+      if(!user)
+        {
+          toast({
+            title: "Login required",
+            description: "Can't give a Review, Login first to add a review",
+            status:"warning", 
+            duration: 3000,
+            isClosable: true,
+          });
+          return
+  
+        }
 
       if(!reviewText || !rating)
       {
@@ -324,7 +338,7 @@ const UserProfile = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <p>Loading...</p>
+       <ColorTubeLoader/>
       </div>
     );
   }

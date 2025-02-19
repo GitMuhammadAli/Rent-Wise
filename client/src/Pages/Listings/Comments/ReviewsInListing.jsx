@@ -37,6 +37,19 @@ export default function ReviewsInListing({listingID, ownerID, setAvgRating}) {
     e.preventDefault();
 
     try {
+
+      if(!user)
+      {
+        toast({
+          title: "Login required",
+          description: "Can't give a Review, Login first to add a review",
+          status: "warning",
+          duration: 3000,
+          isClosable: true,
+        });
+        return
+
+      }
       if(!newReview.rating || !newReview.comment)
       {
         toast({

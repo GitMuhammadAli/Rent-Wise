@@ -48,6 +48,7 @@ import { Link } from "react-router-dom";
 import AddCommentsInListing from "./Comments/CommentsInListing";
 import { FaStar } from "react-icons/fa";
 import ReviewsInListing from "./Comments/ReviewsInListing";
+import ColorTubeLoader from "../../components/Style/ColorTubeLoader";
 
 const baseUrl = import.meta.env.VITE_BACK_END_URL;
 
@@ -109,7 +110,8 @@ const ListingDetails = () => {
   if (loading) {
     return (
       <Flex justify="center" align="center" height="100vh">
-        <Spinner size="xl" />
+        {/* <Spinner size="xl" /> */}
+        <ColorTubeLoader/>
       </Flex>
     );
   }

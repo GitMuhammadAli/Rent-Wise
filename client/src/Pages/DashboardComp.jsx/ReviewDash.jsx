@@ -6,6 +6,7 @@ import { ToGetReview } from '../../Api/DashboardAPI';
 import { format } from 'date-fns';
 import { getUserReviews } from '../../Api/reviews';
 import { useAuth } from '../../hooks/AuthContext';
+import SpinLoader from '../../components/Style/SpinLoader';
 
 // const receivedReviews = [
 //   {
@@ -65,6 +66,7 @@ export default function ReviewPage() {
     const {user} = useAuth();
     // reviews you got
     const [receivedReviews, setReceivedReviews] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const funcToGetReview = async () => {
@@ -88,6 +90,7 @@ export default function ReviewPage() {
           } catch (error) {
             console.error("Error fetching review data:", error);
           }
+          
         };
       
         funcToGetReview();
@@ -103,10 +106,23 @@ export default function ReviewPage() {
               } catch (error) {
                 console.log(error); 
               }
+              finally{
+                setLoading(false);
+              }
             }
             getReviews();
           },[user])
           
+  
+if (loading) {
+    return (
+      <Flex flexDir={'column'} justify="center" align="center" height="100vh">
+        {/* <Spinner size="xl" /> */}
+        <SpinLoader/>
+      </Flex>
+    );
+  }
+
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold text-gray-900 mb-6">Reviews</h1>

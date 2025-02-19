@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { 
-  Box, Button, FormControl, FormLabel, Input, Switch, Tabs, TabList, TabPanels, Tab, TabPanel, Avatar, Textarea, VStack, HStack, useToast, Text, 
+  Box, Button, FormControl, FormLabel, Input, Switch, Tabs, TabList, TabPanels, Tab, TabPanel, Avatar, Textarea, VStack, HStack, useToast, Text,
+  Flex, 
   
 } from '@chakra-ui/react'
 import {Link} from 'react-router-dom'
 
 import { useDasboardHook } from '../../hooks/DashboardUserContext';
 import { getUser, updateUserDashboardProfile } from '../../Api/DashboardAPI';
+import ColorTubeLoader from '../../components/Style/ColorTubeLoader';
 
 
 export default function MyAccount() {
@@ -20,6 +22,7 @@ export default function MyAccount() {
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [currentPassword, setCurrentPassword] = useState('');
   const [avatarPreview, setAvatarPreview] = useState('');
+  const [loading, setLoading] = useState(true);
   const [notificationSettings, setNotificationSettings] = useState({
     messages: false,
     reviews: false,
@@ -48,6 +51,10 @@ export default function MyAccount() {
       } catch (err) {
         console.log(err);
       }
+      finally{
+        setLoading(false);
+      }
+      
     };
 
     fetchUser();
@@ -122,13 +129,21 @@ export default function MyAccount() {
     }
   };
   
-  function check()
-  {
-    console.log("username to display:", username)
-    console.log("useremail to display:", userEmail)
-    console.log("bio to display:", bio)
-  }
+  // function check()
+  // {
+  //   console.log("username to display:", username)
+  //   console.log("useremail to display:", userEmail)
+  //   console.log("bio to display:", bio)
+  // }
   
+  if (loading) {
+      return (
+        <Flex justify="center" align="center" height="100vh">
+          {/* <Spinner size="xl" /> */}
+          <ColorTubeLoader/>
+        </Flex>
+      );
+    }
 
   return (
     <Box bg={'white'} maxW="3xl" mx="auto" p={4} borderWidth="1px" borderRadius="lg" boxShadow="md">

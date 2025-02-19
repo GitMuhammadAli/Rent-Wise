@@ -78,11 +78,18 @@ function SignIn() {
       <div className="pt-8 md:pt-[67px] pb-8 md:pb-[87px] flex flex-col-reverse md:flex-row container mx-auto px-4 md:px-6">
         <div className="mb-8 md:mb-0 md:ml-[10px] md:mr-5 md:mt-[10px] w-full md:w-1/2 flex flex-col items-center">
           <img src="/images/signin-image.jpg" alt="sign in" />
+          <div className="flex gap-8">
           <p className="mt-6 text-center">
             <Link to="/auth/signup" className="text-orange-500 hover:underline">
               Create an account
             </Link>
           </p>
+          <p className="mt-6 text-center">
+            <Link to="/" className="text-orange-500 hover:underline">
+              Start without Login
+            </Link>
+          </p>
+          </div>
         </div>
         <div className="w-full md:w-5/12 p-4 md:p-8">
           <h2 className="text-4xl font-bold text-center md:text-start mb-8">

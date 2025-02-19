@@ -30,7 +30,7 @@ import UpdateListing from "./Pages/Listings/updateListing";
 import MainChat from "./Pages/Conversation/MainChat";
 import AgreementTemplate from "./Pages/Agreement/AgreementTemplate";
 // import UpdateAgreement from "./Pages/Agreement/UpdateAgreement";
-import CarAgreement from "./Pages/Agreement/Car/CarAgreement";
+// import CarAgreement from "./Pages/Agreement/Car/CarAgreement";
 import UpdateCarAgrr from "./Pages/Agreement/Car/UpdateCarAgrr";
 import UpdateHouseAgrr from "./Pages/Agreement/House/UpdateHouseAgrr";
 import SendToTenant from "./Pages/Agreement/SendToTenant";
@@ -42,8 +42,9 @@ import CarListing from "./Pages/Listings/CategoryBased/CarListing";
 import DisplayAgreements from "./Pages/Agreement/Admin/DisplayAgreements";
 import Integration from "./Pages/Agreement/Admin/Integration";
 import UserProfile from "./Pages/profile/owner/ownerProfile";
-import ChatWindow from "./Pages/Listings/Test/TestHome";
+
 import { NotificationProvider } from "./hooks/NotificationContext";
+import ColorTubeLoader from "./components/Style/ColorTubeLoader";
 
 //  import TestListingDetails from "./Pages/Listings/Test/TestHome";
 
@@ -95,38 +96,32 @@ const router = createBrowserRouter(
         <Route path="/categories/cars" element={<CarListing />} />
 
         <Route path="/" element={<LandingPage />} />
+        <Route path="/spin" element={<ColorTubeLoader />} />
+
+
         
         
-        <Route path="/media" element={<Media />} />
-        <Route path="/rental/:id" element={<ListingDetails />} />
+        {/* <Route path="/media" element={<Media />} /> */}
+        {/* <Route path="/rental/:id" element={<ListingDetails />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/acc" element={<MyAccount />} />
-        <Route path="/listings/:id" element={<UpdateListing />} />
-        <Route path="/chat" element={<MainChat/>} />
-        <Route path="/agreement" element={<AgreementTemplate/>} />
+        <Route path="/listings/:id" element={<UpdateListing />} /> */}
+
+        {/* <Route path="/chat" element={<MainChat/>} /> */}
+
+        {/* <Route path="/agreement" element={<AgreementTemplate/>} />
         <Route path="/sendToTenant" element={<SendToTenant/>} />
-        {/* <Route path="/agreements/:id" element={<UpdateAgreement/>} /> */}
         <Route path="/agreementCar/:id" element={<UpdateCarAgrr/>} />
-        <Route path="/agreementHouse/:id" element={<UpdateHouseAgrr/>} />
-
-
-        
-
-
+        <Route path="/agreementHouse/:id" element={<UpdateHouseAgrr/>} /> */}
 
         {/* profile Views */}
+        {/* <Route path="/profile/:_id" element={<UserProfile/>} /> */}
 
-        <Route path="/profile/:_id" element={<UserProfile/>} />
-
-
-        <Route path="/HT" element={<ChatWindow/>} />
-
- 
-
-
+  
         {/* view of agreement */}
-        <Route path="/viewHouseAgreement/:_id" element={<ViewHouseAgr/>} />
-        <Route path="/viewCarAgreement/:_id" element={<ViewCarAgr/>} />
+
+        {/* <Route path="/viewHouseAgreement/:_id" element={<ViewHouseAgr/>} />
+        <Route path="/viewCarAgreement/:_id" element={<ViewCarAgr/>} /> */}
 
         {/* <Route path="/UpdateAgreement" element={<UpdateAgreement/>} /> */}
         {/* <Route path="/chat" element={<MainChat/>} /> */}
@@ -149,6 +144,38 @@ const router = createBrowserRouter(
         <Route element={<ProtectedRoute requiredRole="admin" />}>
           <Route path="/integration" element={<Integration/>} />
         </Route>
+
+        <Route element={<ProtectedRoute requiredRole="user" />}>
+
+        {/* listing routes */}
+        <Route path="/media" element={<Media />} />
+        <Route path="/rental/:id" element={<ListingDetails />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/listings/:id" element={<UpdateListing />} />
+
+         {/* chat routes */}
+        <Route path="/chat" element={<MainChat />} />
+
+        {/* agreeements routes */}
+        <Route path="/agreement" element={<AgreementTemplate/>} />
+        <Route path="/sendToTenant" element={<SendToTenant/>} />
+        <Route path="/agreementCar/:id" element={<UpdateCarAgrr/>} />
+        <Route path="/agreementHouse/:id" element={<UpdateHouseAgrr/>} />
+
+        {/* profile routes */}
+           {/* owner profile */}
+        <Route path="/profile/:_id" element={<UserProfile/>} />
+            {/* user account profile */}
+        <Route path="/acc" element={<MyAccount />} />
+        
+
+        {/* view agreements */}
+        <Route path="/viewHouseAgreement/:_id" element={<ViewHouseAgr/>} />
+        <Route path="/viewCarAgreement/:_id" element={<ViewCarAgr/>} />
+
+        </Route>
+       
+
       </Route>
     </>
   )

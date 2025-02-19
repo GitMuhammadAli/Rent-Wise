@@ -13,12 +13,14 @@ import {
 import { useAuth } from '../../../hooks/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import SendToTenant from '../SendToTenant';
+import ColorTubeLoader from '../../../components/Style/ColorTubeLoader';
 
 
 export default function CarAgrTemplate({updateAgreement,mainDetails,formData, handleChange, saveAgreement,tenant
     , checkCreateAgrr, OwnerConfirmedFunc, ownerConfirmed, }) {
     const {user} = useAuth();
     const [renterConfirmed, setRenterConfirmed] = useState(false);
+    const [loading, setLoading] = useState(true);
     const navigate = useNavigate()
     const [isOpen, setIsOpen] = React.useState(false)
     const open = () => setIsOpen(!isOpen)
@@ -26,6 +28,7 @@ export default function CarAgrTemplate({updateAgreement,mainDetails,formData, ha
       useEffect(()=>{
              console.log("main details", mainDetails);
              setRenterConfirmed(mainDetails?.renterConfirmed)
+             setLoading(false);
                       
             },[mainDetails])
   
@@ -36,6 +39,15 @@ export default function CarAgrTemplate({updateAgreement,mainDetails,formData, ha
               //   })
               setIsOpen(!isOpen)
             }
+
+    if (loading) {
+         return (
+           <Flex justify="center" align="center" height="100vh">
+             {/* <Spinner size="xl" /> */}
+             <ColorTubeLoader/>
+           </Flex>
+         );
+       }         
  
   return (
     <div>

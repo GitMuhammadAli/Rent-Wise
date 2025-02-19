@@ -14,11 +14,13 @@ import { useAuth } from "../../../hooks/AuthContext";
 import PopOverRenterConfirm from "./PopOverRenterConfirm";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import ColorTubeLoader from "../../../components/Style/ColorTubeLoader";
 
 export default function ViewHouseAgr() {
   const { user } = useAuth();
   const [ownerConfirmed, setOwnerConfirmed] = useState(true); //done
   const [renterConfirmed, setRenterConfirmed] = useState(false); //done
+  const [loading, setLoading] = useState(true);
 
   const [renterDetails, setRenterDetails] = useState(""); // done
   const [ownerDetail, setOwnerDetail] = useState(""); // done
@@ -93,6 +95,9 @@ export default function ViewHouseAgr() {
       } catch (error) {
         console.log("errr", error);
       }
+      finally{
+        setLoading(false);
+      }
     };
     fetchSpecificAgreementDetail();
   }, [_id, user]);
@@ -101,9 +106,18 @@ export default function ViewHouseAgr() {
   const SetRenterStatus=()=>{
     setRenterConfirmed(prev => !prev)
     SetPopOver(true);
-
-
 }
+
+
+if (loading) {
+   return (
+    <Flex justify="center" align="center" height="100vh">
+       {/* <Spinner size="xl" /> */}
+      <ColorTubeLoader/>
+    </Flex>
+  );
+} 
+
   return (
     <div>
       <Box

@@ -14,16 +14,17 @@ import {
   } from '@chakra-ui/react';
 import { useAuth } from '../../../hooks/AuthContext';
 import PopOverRenterConfirm from './PopOverRenterConfirm';
+import ColorTubeLoader from '../../../components/Style/ColorTubeLoader';
 
 export default function ViewCarAgr() {
 
     const {user} = useAuth();
-     const [ownerConfirmed, setOwnerConfirmed] = useState(true); //done
-          const [renterConfirmed, setRenterConfirmed] = useState(false); //done
-
-           const [renterDetails, setRenterDetails] = useState(""); // done
-                const [ownerDetail, setOwnerDetail] = useState(""); // done
-                const [popOver, SetPopOver ] = useState(false);
+    const [ownerConfirmed, setOwnerConfirmed] = useState(true); //done
+    const [renterConfirmed, setRenterConfirmed] = useState(false); //done
+    const [renterDetails, setRenterDetails] = useState(""); // done
+    const [ownerDetail, setOwnerDetail] = useState(""); // done
+    const [popOver, SetPopOver ] = useState(false);
+    const [loading, setLoading] = useState(true);
 
      const [formData, setFormData] = useState({
         createdDate: '',
@@ -117,6 +118,9 @@ export default function ViewCarAgr() {
             } catch (error) {
               console.log("errr", error);
             }
+            finally{
+              setLoading(false);
+            }
           };
           fetchSingleAgreement();
         }, [_id, user]);
@@ -125,9 +129,16 @@ export default function ViewCarAgr() {
         const SetRenterStatus=()=>{
             setRenterConfirmed(prev => !prev)
             SetPopOver(true);
-
-
         }
+
+      if (loading) {
+              return (
+                <Flex justify="center" align="center" height="100vh">
+                  {/* <Spinner size="xl" /> */}
+                  <ColorTubeLoader/>
+                </Flex>
+              );
+            } 
   return (
     <div>
            <Box maxW="4xl" mx="auto" p={6} bg="white" boxShadow="lg" borderRadius="lg">

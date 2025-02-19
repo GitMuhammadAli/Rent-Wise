@@ -9,7 +9,8 @@ const ProtectedRoute = ({ requiredStatus, requiredRole }) => {
   // console.log("Status:", status);
 
   if (status === "loading") {
-    return <div>Loading...</div>;
+    // return <Flex justify="center" align="center" height="100vh"> <ColorTubeLoader/></Flex>;
+    return <div></div> // changed because it was displaying Loading... on just agreement view not on others, now i have defined laoders seperately
   }
 
   if (requiredStatus === "unauthenticated") {

@@ -9,6 +9,7 @@ import { useDasboardHook } from '../../hooks/DashboardUserContext';
 import {Settings} from 'lucide-react'
 import { FaUser, FaFolder, FaStar, FaCog } from 'react-icons/fa'
 import ReviewPage from '../DashboardComp.jsx/ReviewDash';
+import ColorTubeLoader from '../../components/Style/ColorTubeLoader';
 
 export default function Dashboard() {
   const [username, setUserName] = useState('');
@@ -16,6 +17,7 @@ export default function Dashboard() {
   const [userResponse, setUserResponse] = useState(null);
   const [avatar,setAvatar] = useState('');
   const {user,dispatch} = useDasboardHook();
+  const [loading, setLoading]  = useState(true);
 
   const [activeTab, setActiveTab] = useState('myListing')
 
@@ -37,11 +39,13 @@ export default function Dashboard() {
       } catch (err) {
         console.log(err);
       }
+      finally{
+        setLoading(false);
+      }
     };
 
     getUserDetail();
   }, []);
-
 
 
   // return (
@@ -87,9 +91,14 @@ export default function Dashboard() {
 
 
 
-
-
-
+if (loading) {
+    return (
+      <Flex justify="center" align="center" height="100vh">
+        {/* <Spinner size="xl" /> */}
+        <ColorTubeLoader/>
+      </Flex>
+    );
+  }
 
   return (
     <div className="min-h-screen  p-8">

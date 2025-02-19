@@ -13,6 +13,7 @@ import {
 import { useAuth } from '../../../hooks/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import SendToTenant from '../SendToTenant';
+import ColorTubeLoader from '../../../components/Style/ColorTubeLoader';
 
 
 
@@ -23,6 +24,7 @@ export default function HouseAgrTemplate({updateAgreement,mainDetails,formData, 
          const [isOpen, setIsOpen] = React.useState(false)
          const open = () => setIsOpen(!isOpen)
          const close = () => setIsOpen(false)
+           const [loading, setLoading] = useState(true);
          const [renterConfirmed, setRenterConfirmed] = useState(false);
         
       
@@ -38,6 +40,7 @@ export default function HouseAgrTemplate({updateAgreement,mainDetails,formData, 
            }
          console.log("main details", mainDetails);
         setRenterConfirmed(mainDetails?.renterConfirmed)
+        setLoading(false)
                   
         },[mainDetails])
 
@@ -51,7 +54,14 @@ export default function HouseAgrTemplate({updateAgreement,mainDetails,formData, 
         }
 
 
-        
+  if (loading) {
+          return (
+            <Flex justify="center" align="center" height="100vh">
+              {/* <Spinner size="xl" /> */}
+              <ColorTubeLoader/>
+            </Flex>
+          );
+        }                
         
       
   return (
