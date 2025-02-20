@@ -26,6 +26,10 @@ export const getAlListingsofSpecificUser = (id) =>
 
 export const Updatelistings = (id, data) =>
   axios.put(`${API_BASE_URL}/update/${id}`, data, { withCredentials: true });
+
+
+export const PlaceBid = (data) =>
+  axios.post(`${API_BASE_URL}/placeBid`, data, { withCredentials: true });
   
 
 

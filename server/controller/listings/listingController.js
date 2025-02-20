@@ -191,8 +191,11 @@ exports.placeBid = async (req, res, next) => {
     try {
         const { rentalItemId, bidAmount } = req.body;
         const userId = req.user.id;
+        
+        console.log("body Bid", req.body)
+        console.log("user", userId);
 
-        const bidding = await bidding.findOne({ rentalItem: rentalItemId });
+        const bidding = await Bidding.findOne({ rentalItem: rentalItemId });
         if (!bidding || !bidding.enabled) {
             return next (new AppError(BOOLEAN.FALSE , LISTINGS.BIDDING_NOT_ENABLED, STATUS.BAD_REQUEST));
         }

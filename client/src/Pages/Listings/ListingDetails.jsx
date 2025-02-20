@@ -49,6 +49,7 @@ import AddCommentsInListing from "./Comments/CommentsInListing";
 import { FaStar } from "react-icons/fa";
 import ReviewsInListing from "./Comments/ReviewsInListing";
 import ColorTubeLoader from "../../components/Style/ColorTubeLoader";
+import BiddingSystem from "./BiddingSystem";
 
 const baseUrl = import.meta.env.VITE_BACK_END_URL;
 
@@ -446,6 +447,9 @@ const ListingDetails = () => {
                 )}
               </List>
             </Box>
+            
+             {/* bidding component */}
+            <BiddingSystem currentListing={currentListing} />
           </VStack>
 
           {/* Comments and Reviews displayed on bottom of page  in small screens but not displayed in large screens */}
