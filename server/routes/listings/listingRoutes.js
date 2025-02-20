@@ -4,6 +4,7 @@ const rentalController = require("../../controller/listings/listingController");
 const upload = require("../../utils/mediaFile");
 const asyncHandler = require("../../middleware/asyncWrapper");
 const mongoose = require("mongoose");
+const { AuthorizeUser } = require("../../middleware/auth");
 
 
 // Route to create a new listing with image/video upload
@@ -96,6 +97,13 @@ router.get(
 router.get(
   "/AllDetailWithMedia/:id",
   asyncHandler(rentalController.AllDetailWithMediaWithOwnerID)
+);
+
+// placing bid by a user on a listing
+router.post(
+  "/placeBid",
+  AuthorizeUser("user" , "Admin"), 
+  asyncHandler(rentalController.placeBid)
 );
 
 module.exports = router;
