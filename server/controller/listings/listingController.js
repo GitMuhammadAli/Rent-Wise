@@ -493,10 +493,22 @@ exports.GetListingsById = async (req, res, next) => {
     const { id } = req.params;
     console.log(req.params)
     try {
-        const listing = await RentalItem.findById(id).populate("owner", "name email imageUrl").populate("images", "url caption ").populate("videos", "url caption").populate('bidding').populate('facilities');
+        const listing = await RentalItem.findById(id)
+        .populate("owner", "name email imageUrl")
+        .populate("images", "url caption")
+        .populate("videos", "url caption")
+        .populate({
+            path: 'bidding',
+            populate: {
+                path: 'bids.user highestBidder',
+                select: 'name imageUrl'
+            }
+        })
+        .populate('facilities');
         if (!listing) {
             return next(new AppError(BOOLEAN.FALSE, LISTINGS.LISTING_NOT_FOUND, STATUS.NOT_FOUND));
         }
+        console.log(listing)
         res.json(listing);
     } catch (error) {
         next(error)
