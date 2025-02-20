@@ -34,6 +34,7 @@ import {
   UsersIcon,
   ArrowLeft,
   ArrowRight,
+  
 } from "lucide-react";
 import {
   ChevronLeftIcon,
@@ -162,7 +163,7 @@ const ListingDetails = () => {
                 {currentListing?.title}
               </Heading>
               <Flex align="center" gap={4}>
-                <Badge colorScheme="orange" px={3} py={1} fontSize="sm">
+                <Badge colorScheme="orange" px={3} py={1} fontSize="m">
                   ${currentListing?.price}/{currentListing?.priceUnit}
                 </Badge>
                 <Flex align="center">

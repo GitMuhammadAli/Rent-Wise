@@ -18,7 +18,7 @@ import { Button,
 import { PlaceBid } from "../../Api/ListingApi"
 import { useAuth } from "../../hooks/AuthContext"
 
-
+import { FaGavel, FaArrowLeft, FaPhone, FaComments } from "react-icons/fa";
 
 
 
@@ -124,7 +124,9 @@ export default function BiddingSystem({currentListing}) {
             </NumberInput>
 
                 <Button type="submit" colorScheme="orange" rounded="full">
-                  Place Bid
+                {/* <FaGavel className="h-4 w-4" /> */}
+                <span>Place Bid</span>
+                  {/* Place Bid */}
                 </Button>
           </div>
         </form>
