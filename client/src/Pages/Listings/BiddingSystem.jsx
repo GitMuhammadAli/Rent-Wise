@@ -14,7 +14,10 @@ import { Button,
   Avatar,
   UnorderedList,
   ListItem,
-  Text,} from "@chakra-ui/react"
+  Text,
+  Box,
+  Alert,
+  AlertIcon,} from "@chakra-ui/react"
 import { PlaceBid } from "../../Api/ListingApi"
 import { useAuth } from "../../hooks/AuthContext"
 
@@ -100,14 +103,16 @@ export default function BiddingSystem({currentListing}) {
   return (
     <div className="bg-white rounded-lg overflow-hidden shadow-lg w-full">
       <div className="bg-orange-400 text-white p-4">
-        {
-          currentListing?.owner._id === user?._id && (
-            <p></p>
-          )
-        }
-        
         <h2 className="text-2xl font-bold">Bidding System</h2>
       </div>
+      {
+          currentListing?.owner._id === user?._id && (
+            <Alert status='info' fontSize={'sm'}>
+            <AlertIcon />
+            You can chat with any of the top bidders by clicking on their name
+          </Alert>
+          )
+        }
       <div className="p-4">
       {
         currentListing?.owner._id !== user?._id && (
@@ -137,7 +142,7 @@ export default function BiddingSystem({currentListing}) {
         <div>
           <h3 className="text-lg font-semibold mb-3">Top 5 Bids</h3>
           <UnorderedList className="space-y-3" m={0} p={0} >
-            {bids && bids.lenght > 0 ? (
+            {bids && bids.length > 0 ? (
               bids?.map((bid, i) => (
              
                 <ListItem as={Link} to={`/profile/${bid.user._id}`} key={i} className="flex items-center gap-3 bg-orange-50 p-3 rounded-md">
