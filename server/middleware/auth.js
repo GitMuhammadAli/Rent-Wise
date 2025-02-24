@@ -15,7 +15,7 @@ exports.AuthorizeUser = (RequiredRole) => {
     const token = req.cookies.jwt;
 
     if (!token) {
-      return res.status(STATUS.UNAUTHORIZED).json({ message: "No token provided" });
+      return res.status(STATUS.UNAUTHORIZED).json({ message: "Please Login No token provided " });
     }
 
     try {
