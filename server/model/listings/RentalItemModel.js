@@ -102,7 +102,7 @@ const RentalSchema = new mongoose.Schema({
   // }
   // ],
 
-  bidding: { type: mongoose.Schema.Types.ObjectId, ref: "Bidding" },
+  bidding: { type: mongoose.Schema.Types.ObjectId, ref: "Bidding" , default: null},
 
   comment: { type: mongoose.Schema.Types.ObjectId, ref: "Comment" },
 

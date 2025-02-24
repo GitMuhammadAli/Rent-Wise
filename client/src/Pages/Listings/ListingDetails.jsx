@@ -451,7 +451,7 @@ const ListingDetails = () => {
             
              {/* bidding component */}
              {
-                 currentListing.bidding !== null && currentListing.bidding.enabled && (
+                 currentListing.bidding !== null && currentListing.bidding?.enabled && (
                   <BiddingSystem currentListing={currentListing} />
                  )
              }

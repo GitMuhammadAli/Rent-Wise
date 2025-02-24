@@ -1,18 +1,18 @@
 const RentalItem = require("../../model/listings/RentalItemModel");
 const Facilities = require("../../model/listings/facilitiesModel");
+const Image = require("../../model/listings/ImagesModel");
+const Location = require("../../model/listings/LocationModel");
+const Video = require("../../model/listings/VediosModel");
+const Bidding = require("../../model/listings/biddingModel");
 const path = require("path");
 const logger = require("../../utils/logger");
 const fs = require("fs");
+const AppError = require("../../utils/AppError");
 const { ERROR_MESSAGE } = require("../../messages/error");
 const { RESPONCE_MESSAGE, LISTINGS } = require("../../messages/response");
 const { STATUS } = require("../../messages/status");
-const Video = require("../../model/listings/VediosModel");
-const Image = require("../../model/listings/ImagesModel");
-const Location = require("../../model/listings/LocationModel");
-const Bidding = require("../../model/listings/biddingModel");
-const AppError = require("../../utils/AppError");
 const { BOOLEAN } = require("../../utils/Roles");
-const {CreateNotification} = require("../../controller/notification/notification")
+const { CreateNotification } = require("../../controller/notification/notification")
 
 
 exports.uploadMedia = async (req, res, next) => {
@@ -49,7 +49,7 @@ exports.uploadMedia = async (req, res, next) => {
         console.log("Videos:", videos);
 
         return res.status(STATUS.SUCCESS).json({
-        message: LISTINGS.MEDIA_UPLOAD_SUCCESS,
+            message: LISTINGS.MEDIA_UPLOAD_SUCCESS,
             images,
             videos
         });
@@ -62,13 +62,13 @@ exports.uploadMedia = async (req, res, next) => {
 exports.CreateListings = async (req, res, next) => {
     try {
         const amenities = Array.isArray(req.body.amenities)
-  ? req.body.amenities
-  : JSON.parse(req.body.amenities);
+            ? req.body.amenities
+            : JSON.parse(req.body.amenities);
 
-  const rules = Array.isArray(req.body.rules)
-  ? req.body.rules
-  : JSON.parse(req.body.rules);
-  
+        const rules = Array.isArray(req.body.rules)
+            ? req.body.rules
+            : JSON.parse(req.body.rules);
+
         const { owner, title, description, price, category, priceUnit,
             location, biddingEnabled, minimumBid, bidIncrement, bidEndDate
         } = req.body;
@@ -105,7 +105,7 @@ exports.CreateListings = async (req, res, next) => {
                 const savedImages = await Promise.all(imagePromises);
                 images = savedImages.map(img => img._id);
             } catch (error) {
-                return next( new AppError(BOOLEAN.FALSE , LISTINGS.ERROR_UPLOADING_IMAGES, STATUS.BAD_REQUEST));
+                return next(new AppError(BOOLEAN.FALSE, LISTINGS.ERROR_UPLOADING_IMAGES, STATUS.BAD_REQUEST));
             }
         }
 
@@ -123,24 +123,24 @@ exports.CreateListings = async (req, res, next) => {
                 const savedVideos = await Promise.all(videoPromises);
                 videos = savedVideos.map(vid => vid._id);
             } catch (error) {
-                return next( new AppError(BOOLEAN.FALSE , LISTINGS.ERROR_UPLOADING_VIDEOS, STATUS.BAD_REQUEST));
+                return next(new AppError(BOOLEAN.FALSE, LISTINGS.ERROR_UPLOADING_VIDEOS, STATUS.BAD_REQUEST));
             }
         }
 
         let facilities = null;
-        if(category === 'house' || category === 'hostel'){
-            const {bedrooms , bathrooms} = req.body;
+        if (category === 'house' || category === 'hostel') {
+            const { bedrooms, bathrooms } = req.body;
 
-            console.log("facilities in req body is" , bedrooms , bathrooms)
+            console.log("facilities in req body is", bedrooms, bathrooms)
 
             facilities = await Facilities.create({
-                bedrooms:bedrooms,
-                bathrooms:bathrooms
+                bedrooms: bedrooms,
+                bathrooms: bathrooms
             })
         }
         // Create the rental item
         const newRentalItem = new RentalItem({
-            _id:listingId,
+            _id: listingId,
             owner,
             title,
             description,
@@ -151,22 +151,22 @@ exports.CreateListings = async (req, res, next) => {
             rules,
             images,
             videos,
-            listingStatus:"active",
+            listingStatus: "active",
             facilities: facilities ? facilities._id : null
             // location: newLocation._id,
         });
 
         if (Boolean(biddingEnabled) == BOOLEAN.TRUE) {
             if (!minimumBid || !bidEndDate) {
-                return next( new AppError(BOOLEAN.FALSE , LISTINGS.BIDDING_ERROR_MISSING_REQUIRED_FIELDS, STATUS.BAD_REQUEST));
+                return next(new AppError(BOOLEAN.FALSE, LISTINGS.BIDDING_ERROR_MISSING_REQUIRED_FIELDS, STATUS.BAD_REQUEST));
             }
 
             const bidding = new Bidding({
                 rentalItem: newRentalItem._id,
                 enabled: biddingEnabled,
                 minimumBid: minimumBid,
-                bidIncrement:bidIncrement,
-                bidEndDate:bidEndDate,
+                bidIncrement: bidIncrement,
+                bidEndDate: bidEndDate,
             });
 
             const savedBidding = await bidding.save();
@@ -191,18 +191,18 @@ exports.placeBid = async (req, res, next) => {
     try {
         const { rentalItemId, bidAmount } = req.body;
         const userId = req.user.id;
-        
+
         console.log("body Bid", req.body)
         console.log("user", userId);
 
         const bidding = await Bidding.findOne({ rentalItem: rentalItemId });
         if (!bidding || !bidding.enabled) {
-            return next (new AppError(BOOLEAN.FALSE , LISTINGS.BIDDING_NOT_ENABLED, STATUS.BAD_REQUEST));
+            return next(new AppError(BOOLEAN.FALSE, LISTINGS.BIDDING_NOT_ENABLED, STATUS.BAD_REQUEST));
         }
 
         // Check if bidding is still open
         if (new Date() > bidding.bidEndDate) {
-            return next (new AppError(BOOLEAN.FALSE , LISTINGS.BIDDING_ENDED, STATUS.BAD_REQUEST));
+            return next(new AppError(BOOLEAN.FALSE, LISTINGS.BIDDING_ENDED, STATUS.BAD_REQUEST));
         }
 
         const minimumAllowedBid = bidding.highestBid ? bidding.highestBid + bidding.bidIncrement : bidding.minimumBid;
@@ -259,7 +259,7 @@ const cleanUpUnreferencedMedia = async (listingId, next) => {
             ...listing.videos.map(vid => path.basename(vid.url))
         ];
 
-        const mediaDirPath = path.resolve(`uploads/media/${listingId}`); 
+        const mediaDirPath = path.resolve(`uploads/media/${listingId}`);
 
         const allFiles = await fs.promises.readdir(mediaDirPath);
         const unreferencedFiles = allFiles.filter(file => !referencedFiles.includes(file));
@@ -287,7 +287,8 @@ exports.UpdateListings = async (req, res, next) => {
         availability,
         averageRating,
         listingStatus,
-        bedrooms, bathrooms ,
+        bedrooms, bathrooms,
+        biddingEnabled, minimumBid, bidIncrement, bidEndDate
     } = req.body;
 
     console.log("Received request to update listing", req.body);
@@ -312,11 +313,13 @@ exports.UpdateListings = async (req, res, next) => {
     const uploadedFilePaths = [];
 
     try {
-        const existingListing = await RentalItem.findById(id).populate("images").populate("videos").populate("facilities");
+        const existingListing = await RentalItem.findById(id).populate("images").populate("videos").populate("facilities").populate("bidding");
         if (!existingListing) {
             return next(new AppError(BOOLEAN.FALSE, LISTINGS.LISTING_NOT_FOUND, STATUS.NOT_FOUND));
         }
         console.log("Existing listing:", existingListing);
+
+
 
         for (const imageObj of parsedRemovedImages) {
             await Image.findByIdAndDelete(imageObj._id);
@@ -370,13 +373,34 @@ exports.UpdateListings = async (req, res, next) => {
 
 
         if (category === 'house' || category === 'hostel') {
-            facilitiesId  = await  manageFacilities(
+            facilitiesId = await manageFacilities(
                 category,
-                bedrooms, bathrooms ,
+                bedrooms, bathrooms,
                 existingListing.facilities?._id || null,
                 next
             );
-        
+
+        }
+        let newBidding = null;
+
+        if (existingListing.bidding == null) {
+
+            newBidding = await Bidding.create({
+                rentalItem: existingListing._id,
+                enabled: biddingEnabled,
+                minimumBid: minimumBid,
+                bidIncrement: bidIncrement,
+                bidEndDate: bidEndDate,
+            });
+
+        } else {
+            newBidding = await Bidding.findByIdAndUpdate(existingListing.bidding._id, {
+                rentalItem: existingListing._id,
+                enabled: biddingEnabled,
+                minimumBid: minimumBid,
+                bidIncrement: bidIncrement,
+                bidEndDate: bidEndDate,
+            })
         }
 
         // Update listing with all changes
@@ -397,14 +421,15 @@ exports.UpdateListings = async (req, res, next) => {
                 averageRating,
                 listingStatus,
                 facilities: facilitiesId,
+                bidding: newBidding._id,
                 updatedAt: Date.now(),
             },
             { new: BOOLEAN.TRUE, runValidators: BOOLEAN.TRUE }
         );
 
-        
 
-        await cleanUpUnreferencedMedia(id , next);
+
+        await cleanUpUnreferencedMedia(id, next);
 
         console.log("Updated listing:", updatedListing);
 
@@ -415,15 +440,15 @@ exports.UpdateListings = async (req, res, next) => {
 };
 
 
-async function manageFacilities(category, bedrooms,bathrooms, existingFacilitiesId = null , next) {
+async function manageFacilities(category, bedrooms, bathrooms, existingFacilitiesId = null, next) {
     if (category !== 'house' && category !== 'hostel') {
         return null;
     }
 
     if ((category === 'house' || category === 'hostel') && (!bedrooms || !bathrooms)) {
         return next(new AppError(BOOLEAN.FALSE, "Bedrooms and bathrooms are required", STATUS.BAD_REQUEST));
-      }
-    
+    }
+
     if (existingFacilitiesId) {
         // Update existing facilities
         const updatedFacilities = await Facilities.findByIdAndUpdate(
@@ -483,7 +508,7 @@ exports.DeleteListings = async (req, res, next) => {
 
 exports.GetListings = async (req, res, next) => {
     try {
-        const listings = await RentalItem.find({ listingStatus : "active" }).populate("owner").populate("images").populate("videos").populate("bidding").populate('facilities');
+        const listings = await RentalItem.find({ listingStatus: "active" }).populate("owner").populate("images").populate("videos").populate("bidding").populate('facilities');
         res.json(listings);
     } catch (error) {
         next(error)
@@ -497,17 +522,17 @@ exports.GetListingsById = async (req, res, next) => {
     console.log(req.params)
     try {
         const listing = await RentalItem.findById(id)
-        .populate("owner", "name email imageUrl")
-        .populate("images", "url caption")
-        .populate("videos", "url caption")
-        .populate({
-            path: 'bidding',
-            populate: {
-                path: 'bids.user highestBidder',
-                select: 'name imageUrl'
-            }
-        })
-        .populate('facilities');
+            .populate("owner", "name email imageUrl")
+            .populate("images", "url caption")
+            .populate("videos", "url caption")
+            .populate({
+                path: 'bidding',
+                populate: {
+                    path: 'bids.user highestBidder',
+                    select: 'name imageUrl'
+                }
+            })
+            .populate('facilities');
         if (!listing) {
             return next(new AppError(BOOLEAN.FALSE, LISTINGS.LISTING_NOT_FOUND, STATUS.NOT_FOUND));
         }
