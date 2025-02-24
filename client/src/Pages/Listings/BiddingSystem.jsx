@@ -31,18 +31,33 @@ export default function BiddingSystem({ currentListing }) {
 
   const handleBid = async (e) => {
     e.preventDefault();
+
+    if(!user)
+    {
+      toast({
+        title: `Login Requied`,
+        description: `Login first to Bid!`,
+        status: "error",
+        duration: 4000,
+        isClosable: true,
+      });
+      
+    }
+    console.log('here in function')
     if (!currentListing) {
       console.log("no current listing");
       return;
     }
+   
     const bidAmount = parseFloat(newBid);
     if (isNaN(bidAmount) || bidAmount <= 0) return;
+    console.log('before try')
 
     const newBidEntry = {
       rentalItemId: currentListing._id,
       bidAmount: bidAmount,
     };
-
+ 
     try {
       const response = await PlaceBid(newBidEntry);
       console.log("response of bid", response);
@@ -75,12 +90,25 @@ export default function BiddingSystem({ currentListing }) {
       setNewBid("");
     } catch (error) {
       console.log(error);
-      toast({
-        title: `${error.response.data.error}`,
-        status: "error",
-        duration: 4000,
-        isClosable: true,
-      });
+      if(error.status === 400)
+      {
+        toast({
+          title: `${error.response.data.message}`,
+          status: "error",
+          duration: 4000,
+          isClosable: true,
+        });
+
+      }
+      else{
+        toast({
+          title: `${error.response.data.error}`,
+          status: "error",
+          duration: 4000,
+          isClosable: true,
+        });
+      }
+      
     }
   };
 
@@ -104,12 +132,12 @@ export default function BiddingSystem({ currentListing }) {
         </Alert>
       )}
       <div className="p-4">
-        {currentListing?.owner._id !== user?._id && (
+        {currentListing?.owner._id !== user?._id && user && (
           <form onSubmit={handleBid} className="mb-6">
             <div className="flex gap-2">
               <NumberInput
                 onChange={(valueString) => setNewBid(valueString)}
-                defaultValue={currentListing?.bidding?.highestBid}
+                defaultValue={currentListing?.bidding?.minimumBid + currentListing?.bidding?.bidIncrement}
                 min={currentListing?.bidding?.minimumBid}
                 step={currentListing?.bidding?.bidIncrement}
                 w={"full"}
@@ -125,8 +153,6 @@ export default function BiddingSystem({ currentListing }) {
                 colorScheme="orange"
                 rounded="full"
                 display="flex"
-                
-                
                 alignItems="center"
                 leftIcon={<FaGavel />}
               >
