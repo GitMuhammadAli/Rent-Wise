@@ -43,14 +43,24 @@ export default function BiddingSystem({ currentListing }) {
       });
       
     }
-    console.log('here in function')
+    
     if (!currentListing) {
       console.log("no current listing");
       return;
     }
    
     const bidAmount = parseFloat(newBid);
-    if (isNaN(bidAmount) || bidAmount <= 0) return;
+    if (isNaN(bidAmount) || bidAmount <= 0){
+
+      toast({
+        title: 'Increase bid to submit',
+        description: 'Your bid must be higher than the current highest bid',
+        status: "error",
+        duration: 4000,
+        isClosable: true,
+      });
+      return;
+    } 
     console.log('before try')
 
     const newBidEntry = {
@@ -61,6 +71,7 @@ export default function BiddingSystem({ currentListing }) {
     try {
       const response = await PlaceBid(newBidEntry);
       console.log("response of bid", response);
+      setNewBid(response?.data?.highestBid + currentListing?.bidding?.bidIncrement);
       if (response.status === 200) {
         toast({
           title: `${response.data.message}`,
@@ -87,7 +98,7 @@ export default function BiddingSystem({ currentListing }) {
         .slice(0, 5);
       // here we updated that state
       setBids(updatedBids);
-      setNewBid("");
+     // setNewBid("");
     } catch (error) {
       console.log(error);
       if(error.status === 400)
@@ -113,6 +124,17 @@ export default function BiddingSystem({ currentListing }) {
   };
 
   useEffect(() => {
+
+  // setting new bid to value so dont give error in submit function
+    if(currentListing?.bidding?.highestBid > 0)
+    {
+      setNewBid(currentListing?.bidding?.highestBid + currentListing?.bidding?.bidIncrement); 
+    }
+    else
+    {
+      setNewBid(currentListing?.bidding?.minimumBid); 
+    }
+    
     const top5Bids = [...currentListing.bidding.bids]
       .sort((a, b) => b.bidAmount - a.bidAmount)
       .slice(0, 5);
@@ -137,7 +159,12 @@ export default function BiddingSystem({ currentListing }) {
             <div className="flex gap-2">
               <NumberInput
                 onChange={(valueString) => setNewBid(valueString)}
-                defaultValue={currentListing?.bidding?.minimumBid + currentListing?.bidding?.bidIncrement}
+                //defaultValue={currentListing?.bidding?.minimumBid + currentListing?.bidding?.bidIncrement}
+                
+                value={newBid || (currentListing?.bidding?.highestBid > 1 
+                  ? (currentListing?.bidding?.highestBid + currentListing?.bidding?.bidIncrement)
+                  : (currentListing?.bidding?.minimumBid))
+                }
                 min={currentListing?.bidding?.minimumBid}
                 step={currentListing?.bidding?.bidIncrement}
                 w={"full"}

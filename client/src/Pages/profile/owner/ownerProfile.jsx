@@ -472,7 +472,7 @@ const UserProfile = () => {
                 // filtering type on the basis of sentiment
                          reviews.filter((review) =>
                           // reviewType === "positive" ? review.rating > 3 : review.rating <= 3
-                        reviewType === "positive" ? review.sentiment === "positive" : "negative"
+                        reviewType === "negative" ? review.sentiment === "negative" : "positive"
                        )
                        .map((review) => (
                          <div
@@ -538,7 +538,7 @@ const UserProfile = () => {
                   
                   id="review"
                   rows={4}
-                  className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
                   value={reviewText}
                   onChange={(e) => setReviewText(e.target.value)}
                   required

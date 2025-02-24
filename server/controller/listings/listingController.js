@@ -226,7 +226,8 @@ exports.placeBid = async (req, res, next) => {
 
         let message= `A new bid of ${bidAmount} has been placed on your ${rentelItemOwner.title} listing`;
         CreateNotification(rentelItemOwner.owner, userId, "system", message , next)
-        return res.status(STATUS.SUCCESS).json({ message: LISTINGS.BID_PLACED });
+        return res.status(STATUS.SUCCESS).json({ message: LISTINGS.BID_PLACED, highestBid: bidding.highestBid  });
+        // return res.status(STATUS.SUCCESS).json({ message: LISTINGS.BID_PLACED });
     } catch (error) {
         next(error);
     }
