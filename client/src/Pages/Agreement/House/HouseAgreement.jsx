@@ -84,6 +84,12 @@ const navigate = useNavigate();
         const agreementID = data?.data?.data?._id
        
         navigate(`/agreementHouse/${agreementID}`)
+        toast({
+          title: "Agreement Created",
+          status: "success",
+          duration: 4000,
+          isClosable: true,
+        });
       } catch (error) {
         console.log("errorInAgreement creation is: ", error);
       }

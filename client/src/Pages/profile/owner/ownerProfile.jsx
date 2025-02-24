@@ -469,8 +469,10 @@ const UserProfile = () => {
                    </h3>
                    <div className="space-y-4">
                      { 
+                // filtering type on the basis of sentiment
                          reviews.filter((review) =>
-                         reviewType === "positive" ? review.rating > 3 : review.rating <= 3
+                          // reviewType === "positive" ? review.rating > 3 : review.rating <= 3
+                        reviewType === "positive" ? review.sentiment === "positive" : "negative"
                        )
                        .map((review) => (
                          <div

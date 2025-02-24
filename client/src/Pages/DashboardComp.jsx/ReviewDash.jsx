@@ -68,6 +68,8 @@ export default function ReviewPage() {
     const [receivedReviews, setReceivedReviews] = useState([]);
     const [loading, setLoading] = useState(true);
 
+
+    // people or listing u can review
     useEffect(() => {
         const funcToGetReview = async () => {
           try {
@@ -96,6 +98,8 @@ export default function ReviewPage() {
         funcToGetReview();
       }, []);
 
+
+      // reviews u got
       useEffect(()=>{
             const getReviews = async()=>{
               if(!user) return
@@ -200,7 +204,7 @@ if (loading) {
                             alt={item?.user?.name}
     
                           />
-                          <Link to={`/profile/${item.listing.owner}`}>
+                          <Link to={`/profile/${item?.user?.id}`}>
                           <span className="text-sm text-gray-600 cursor-pointer">{item.user.name}</span>
                           </Link>
                           
@@ -227,7 +231,7 @@ if (loading) {
                           </Link>
                         </div>
                         <div >
-                          <Link to={`/profile/${item?.listing?.owner}`} className="text-orange-600 hover:text-orange-800 text-sm font-medium flex items-center">
+                          <Link to={`/profile/${item?.user?.id}`} className="text-orange-600 hover:text-orange-800 text-sm font-medium flex items-center">
                             Review Owner
                             <FaExternalLinkAlt className="ml-1 w-3 h-3" />
                           </Link>
