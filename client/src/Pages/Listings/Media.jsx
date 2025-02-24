@@ -198,13 +198,13 @@ const handleSubmit = async (e) => {
   return (
     <Flex py={'50px'} flexDir={'column'}>
     <Flex gap={4} alignSelf={'center'} justifyContent={'space-between'} alignItems={'center'} flexDir={'row'} borderRadius={'10px'} bg={'gray.900'} color={'white'}    w={'90%'}>
-             <Image alignSelf={'flex-end'} w={'auto'} h={'300px'}  src="https://images.rawpixel.com/image_social_square/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3BkMjA3LTItMzMwXzEuanBn.jpg"/>
+             <Image alignSelf={'flex-end'} w={'22vw'} h={'auto'}  src="https://images.rawpixel.com/image_social_square/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3BkMjA3LTItMzMwXzEuanBn.jpg"/>
              <Box alignSelf={'center'} py={'50px'} >
             <Heading textAlign={'left'}  fontWeight="extrabold" >Upload Your Property | Vehichle Details</Heading>
             <Text pt={4}>We're committed to providing a reliable marketplace for all your property and vehicle needs</Text>
              </Box>
             
-             <Image alignSelf={'flex-end'} w={'auto'} h={'300px'} src="https://images.rawpixel.com/image_social_portrait/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvbnMyMDA0Ni1pbWFnZS1rd3Z5YTF1Yy5qcGc.jpg"/>
+             <Image alignSelf={'flex-end'} w={'16vw'} h={'auto'} src="https://images.rawpixel.com/image_social_portrait/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvbnMyMDA0Ni1pbWFnZS1rd3Z5YTF1Yy5qcGc.jpg"/>
             </Flex>
       <form onSubmit={handleSubmit}>
         <Flex justifyContent={'center'} gap={10}>
@@ -393,6 +393,7 @@ const handleSubmit = async (e) => {
                   id="bidding" 
                   isChecked={formData.biddingEnabled}
                   onChange={handleBiddingToggle}
+                  colorScheme='orange'
                 />
                 <FormLabel htmlFor="bidding" ml={2}>Enable Bidding</FormLabel>
               </Flex>
@@ -431,7 +432,7 @@ const handleSubmit = async (e) => {
               )}
             </Box>
 
-            <Button colorScheme="blue" type="submit" mt={4}>
+            <Button variant={'customButton'} type="submit" mt={4}>
               Create Listing
             </Button>
           </Stack>

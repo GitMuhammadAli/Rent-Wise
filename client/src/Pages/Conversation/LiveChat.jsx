@@ -209,9 +209,9 @@ export default function LiveChat({
         }
       </HStack>
     
-    {
+    {/* {
       checkClick && (<ListingsHorizontalBox/>)
-    }
+    } */}
       
 
 
@@ -300,7 +300,7 @@ export default function LiveChat({
 
     <Box>
 
-    <Flex color={'gray.600'} justifyContent={'space-evenly'} mb={4}>
+    {/* <Flex color={'gray.600'} justifyContent={'space-evenly'} mb={4}>
     <Box  
      w={'40%'}
      display={'flex'}
@@ -330,7 +330,7 @@ export default function LiveChat({
 
      > Make a Bid
      </Box>
-    </Flex>
+    </Flex> */}
       
      
 

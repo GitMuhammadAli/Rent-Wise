@@ -14,11 +14,13 @@ import {
   Flex,
   Image,
   Text,
-  HStack
+  HStack,
+  Switch
 } from "@chakra-ui/react";
 import { useParams, useNavigate } from 'react-router-dom';
 import { getOneUserListingAPI, Updatelistings } from '../../Api/ListingApi';
 import { ListingsContext } from '../../hooks/ListingsContext';
+import ColorTubeLoader from '../../components/Style/ColorTubeLoader';
 
 const baseUrl = `${import.meta.env.VITE_BACK_END_URL}`;
 export default function UpdateListing() {
@@ -26,6 +28,7 @@ export default function UpdateListing() {
 const { user } = useAuth();
 const {state,dispatch } = useContext(ListingsContext); 
 const { listings,currentListing } = state; 
+const [loading, setLoading] = useState(true);
 
 
   const [formData, setFormData] = useState({
@@ -39,6 +42,10 @@ const { listings,currentListing } = state;
     listingStatus: 'active',
     bedrooms: 0,
     bathrooms: 0,
+    biddingEnabled:false,
+    minimumBid: '',
+    bidIncrement: '',
+    bidEndDate: '',
   });
 
   // Media states
@@ -82,7 +89,11 @@ const { listings,currentListing } = state;
           rules: listing.rules || [],
           listingStatus: listing.listingStatus,
           bedrooms: listing.facilities?.bedrooms ?? 0,
-          bathrooms: listing.facilities?.bathrooms ?? 0
+          bathrooms: listing.facilities?.bathrooms ?? 0,
+          biddingEnabled : listing.bidding?.enabled,
+          minimumBid: listing?.bidding?.minimumBid,
+          bidIncrement: listing?.bidding?.bidIncrement,
+          bidEndDate: listing?.bidding?.bidEndDate,
         });
 
         setExistingImages(listing.images || []);
@@ -102,6 +113,8 @@ const { listings,currentListing } = state;
           isClosable: true,
         });
         
+      } finally{
+        setLoading(false);
       }
     }
     fetchListing();
@@ -168,6 +181,10 @@ const { listings,currentListing } = state;
         ...formData,
         bedrooms: formData.category === "house" || formData.category === "hostel" ? (formData.bedrooms ?? 0) : 0,
         bathrooms: formData.category === "house" || formData.category === "hostel" ? (formData.bathrooms ?? 0) : 0,
+        minimumBid: formData.biddingEnabled ? formData.minimumBid : '',
+        bidIncrement: formData.biddingEnabled ? formData.bidIncrement : '',
+        bidEndDate: formData.biddingEnabled ? formData.bidEndDate : '',
+      
       };
       
       // till here
@@ -253,22 +270,30 @@ const { listings,currentListing } = state;
 
   },[formData.listingStatus])
 
+  const handleBiddingToggle = () => {
+    setFormData((prevData) => ({
+      ...prevData,
+      biddingEnabled: !prevData.biddingEnabled,
+    }));
+  };
+
+
+
+
+  if (loading) {
+        return (
+          <Flex justify="center" align="center" height="100vh">
+            {/* <Spinner size="xl" /> */}
+            <ColorTubeLoader/>
+          </Flex>
+        );
+      }
+
   return (
     <Box p={6} bg={'white'} borderRadius={'10px'}>
      
       <Heading mb={6}>Update Listing</Heading>
       
-         
-
-
-      {
-        currentListing && <Box>
-          {
-            <Text>{currentListing.title}</Text>
-          }
-        </Box>
-      }
-
       <form onSubmit={handleSubmit}>
         <Stack spacing={4}>
           <FormControl isRequired>
@@ -311,23 +336,23 @@ const { listings,currentListing } = state;
           {formData.category && formData.category !== 'car' && (
 
             <>
-                           <FormControl isRequired>
-                              <FormLabel FormLabel>Bedrooms</FormLabel>
-                                <HStack maxW="200px">
-                                  <Button onClick={() => setFormData((prev) => ({ ...prev, bedrooms: Math.max(prev.bedrooms - 1, 0) }))}>-</Button>
-                                    <Text>{formData.bedrooms}</Text>
-                                  <Button onClick={() => setFormData((prev) => ({ ...prev, bedrooms: prev.bedrooms + 1 }))}>+</Button>
-                                </HStack>
-                            </FormControl>
+          <FormControl isRequired>
+             <FormLabel FormLabel>Bedrooms</FormLabel>
+               <HStack maxW="200px">
+                 <Button onClick={() => setFormData((prev) => ({ ...prev, bedrooms: Math.max(prev.bedrooms - 1, 0) }))}>-</Button>
+                   <Text>{formData.bedrooms}</Text>
+                 <Button onClick={() => setFormData((prev) => ({ ...prev, bedrooms: prev.bedrooms + 1 }))}>+</Button>
+               </HStack>
+           </FormControl>
             
-                            <FormControl isRequired mt={4}>
-                              <FormLabel>Bathrooms</FormLabel>
-                                <HStack maxW="200px">
-                                  <Button onClick={() => setFormData((prev) => ({ ...prev, bathrooms: Math.max(prev.bathrooms - 1, 0) }))}>-</Button>
-                                  <Text>{formData.bathrooms}</Text>
-                                  <Button onClick={() => setFormData((prev) => ({ ...prev, bathrooms: prev.bathrooms + 1 }))}>+</Button>
-                                </HStack>
-                              </FormControl>
+           <FormControl isRequired mt={4}>
+             <FormLabel>Bathrooms</FormLabel>
+               <HStack maxW="200px">
+                 <Button onClick={() => setFormData((prev) => ({ ...prev, bathrooms: Math.max(prev.bathrooms - 1, 0) }))}>-</Button>
+                 <Text>{formData.bathrooms}</Text>
+                 <Button onClick={() => setFormData((prev) => ({ ...prev, bathrooms: prev.bathrooms + 1 }))}>+</Button>
+               </HStack>
+             </FormControl>
 
                 <FormControl>
 
@@ -478,24 +503,58 @@ const { listings,currentListing } = state;
               ))}
             </Flex>
           </FormControl>
-          {/* <Heading  fontSize={"24px"}>Listing Status:</Heading>
-          {
-            formData.listingStatus === 'active' ? (<Text w={'fit-content'}   p={'5px'}
-              borderRadius={'5px'} color={'white'} bg={'green.400'}>{formData.listingStatus}</Text>) :
-             (<Text w={'fit-content'}
-               bg={'blue.700'} 
-               color={'white'}
-               p={'5px'}
-               borderRadius={'5px'}
-               >{formData.listingStatus}</Text>)
-          } */}
+
+         
+              <Box className="mb-8" borderWidth={1} borderRadius="md" p={4}>
+              <Heading size="md">Bidding</Heading>
+              <Flex alignItems="center" mt={2}>
+                <Switch 
+                  id="bidding" 
+                  isChecked={formData.biddingEnabled}
+                  onChange={handleBiddingToggle}
+                  colorScheme='orange'
+                />
+                <FormLabel htmlFor="bidding" ml={2}>Enable Bidding</FormLabel>
+              </Flex>
+              {formData.biddingEnabled && (
+                <Stack spacing={4} mt={4}>
+                  <FormControl>
+                    <FormLabel htmlFor="minimumBid">Minimum Bid Amount</FormLabel>
+                    <Input 
+                      id="minimumBid" 
+                      type="number" 
+                     value={formData.minimumBid} 
+                     onChange={(e) => setFormData({ ...formData, minimumBid: e.target.value })} 
+                      placeholder="Enter minimum bid amount" 
+                    />
+                  </FormControl>
+                  <FormControl>
+                    <FormLabel htmlFor="bidIncrement">Bid Increment</FormLabel>
+                    <Input 
+                      id="bidIncrement" 
+                      type="number" 
+                     value={formData.bidIncrement} 
+                     onChange={(e) => setFormData({ ...formData, bidIncrement: e.target.value })} 
+                      placeholder="Enter bid increment value" 
+                    />
+                  </FormControl>
+                  <FormControl>
+                    <FormLabel htmlFor="bidEndDate">Bid End Date</FormLabel>
+                    <Input 
+                      id="bidEndDate" 
+                      type="datetime-local" 
+                      value={formData.bidEndDate ? new Date(formData.bidEndDate).toISOString().slice(0, 16) : ""} 
+                     onChange={(e) => setFormData({ ...formData, bidEndDate: e.target.value })} 
+                    />
+                  </FormControl>
+                </Stack>
+              )}
+            </Box>
+          
+           
+          
           
          <Flex justifyContent={'space-between'}>
-          {/* <Button onClick={changeListingStatus} alignSelf={'flex-end'} w={'fit-content'} colorScheme={formData.listingStatus ==='pending'? "teal": "blue"} size="md">
-            Set listing status to {
-              formData.listingStatus === 'active' ? ( 'Inactive') : ('Active')
-            }
-          </Button> */}
           <FormControl >
             <FormLabel>Listing Status</FormLabel>
             <Text mb={3}> <span>Your Current listing status is</span> <span style={{ color: formData.listingStatus === 'pending' ? 'salmon' : 'green'}}>{formData.listingStatus}</span> </Text>

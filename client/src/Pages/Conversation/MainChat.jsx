@@ -121,7 +121,8 @@ export default function MainChat() {
 
   return (
     <div>
-     <div className="flex h-screen bg-gray-100">
+     <div className="flex  h-screen bg-gray-100"> 
+     
         <SideChat
           listings={listings}
           allData={allData}

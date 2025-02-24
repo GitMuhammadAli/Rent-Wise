@@ -209,6 +209,7 @@ export default function HouseListing() {
                   <Flex my={2} gap={2}>
                   {house?.amenities?.slice(0, 4).map((item, i) => (
                     <Text 
+                     textAlign={'center'}
                       borderRadius="10px" 
                       px={3} 
                       py="2px"  
