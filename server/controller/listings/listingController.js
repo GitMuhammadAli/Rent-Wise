@@ -200,6 +200,10 @@ exports.placeBid = async (req, res, next) => {
             return next(new AppError(BOOLEAN.FALSE, LISTINGS.BIDDING_NOT_ENABLED, STATUS.BAD_REQUEST));
         }
 
+        const rentelItemOwner = await RentalItem.findOne({bidding:bidding._id})
+
+        console.log(rentelItemOwner.owner)
+
         // Check if bidding is still open
         if (new Date() > bidding.bidEndDate) {
             return next(new AppError(BOOLEAN.FALSE, LISTINGS.BIDDING_ENDED, STATUS.BAD_REQUEST));
@@ -223,6 +227,9 @@ exports.placeBid = async (req, res, next) => {
 
         await bidding.save();
 
+
+        let message= `A new bid of ${bidAmount} has been placed on your listing`;
+        CreateNotification(rentelItemOwner.owner, userId, "system", message , next)
         return res.status(STATUS.SUCCESS).json({ message: LISTINGS.BID_PLACED });
     } catch (error) {
         next(error);
