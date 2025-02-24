@@ -109,8 +109,9 @@ export default function BiddingSystem({ currentListing }) {
             <div className="flex gap-2">
               <NumberInput
                 onChange={(valueString) => setNewBid(valueString)}
-                defaultValue={currentListing.bidding.highestBid}
-                min={currentListing.bidding.minimumBid}
+                defaultValue={currentListing?.bidding?.highestBid}
+                min={currentListing?.bidding?.minimumBid}
+                step={currentListing?.bidding?.bidIncrement}
                 w={"full"}
               >
                 <NumberInputField />
@@ -124,7 +125,8 @@ export default function BiddingSystem({ currentListing }) {
                 colorScheme="orange"
                 rounded="full"
                 display="flex"
-                gap={2}
+                
+                
                 alignItems="center"
                 leftIcon={<FaGavel />}
               >

@@ -188,14 +188,15 @@ export default function AddCommentsInListing({toast,id,currentID,ownerID}) {
           />
         </FormControl>
         <Button 
-          type="submit" 
-          bg="orange.500" 
-          color="white" 
-          _hover={{ bg: "orange.600" }}
-          _focus={{ outline: "none", boxShadow: "outline" }}
-        >
-          Post Comment
-        </Button>
+        //  bg="orange.500"
+        //  color="white"
+        //  _hover={{ bg: "orange.600" }}
+        //  _focus={{ outline: "none", boxShadow: "outline" }}
+        variant={'customButton'}
+         type="submit"
+       >
+         Post Comment
+       </Button>
       </form>
 
   )

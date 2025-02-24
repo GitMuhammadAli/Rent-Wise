@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { FaStar, FaRegStar, FaChevronLeft, FaChevronRight } from 'react-icons/fa'
 import { createListingReview, getListingReviews } from '../../../Api/reviews'
 import { useAuth } from '../../../hooks/AuthContext'
-import { Box, Text, useToast } from '@chakra-ui/react'
+import { Box, Button, Text, useToast } from '@chakra-ui/react'
 // const reviews = [
 //   {
 //     id: '1',
@@ -155,9 +155,9 @@ export default function ReviewsInListing({listingID, ownerID, setAvgRating}) {
                         required
                       ></textarea>
                     </div>
-                    <button type="submit" className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    <Button type="submit"  variant={'customButton'}>
                       Submit Review
-                    </button>
+                    </Button>
                   </form>
                     )
                   }
