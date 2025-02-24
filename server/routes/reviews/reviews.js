@@ -21,7 +21,7 @@ router.get("/listing/:id" , AuthorizeUser("user" , "Admin") , asyncHandler(Listi
 router.post("/CreateUser/:id" , AuthorizeUser("user" , "Admin") , asyncHandler(User.CreateUserReview))
 
 
-// Get All One listing Review
+// Get All User Review
 router.get("/User/:id" , AuthorizeUser("user" , "Admin") , asyncHandler(User.getAllReviewsForUsers))
 
 

@@ -4,6 +4,7 @@ const User = require("../../model/user/userModel")
 const profileReview = require("../../model/reviews/profileReview");
 const { ERROR_MESSAGE } = require("../../messages/error");
 const {CreateNotification} = require("../../controller/notification/notification")
+const axios = require("axios")
 
 const {
     RESPONCE_MESSAGE,
@@ -55,9 +56,20 @@ exports.CreateUserReview = async (req, res, next) => {
             })
         }
 
+        let sentiment = "neutral"; 
+
+        try {
+            const response = await axios.post(`${process.env.AI_MODEL_PORT}/predict`, { comment });
+            sentiment = response.data.sentiment;
+        } catch (error) {
+            console.error("Sentiment Analysis Failed:", error.message);
+        }
+
+
         const userprofileReview = await profileReview.create({
             reviewedUser: id,
             reviewer: userId,
+            sentiment:sentiment,
             rating: rating,
             comment: comment,
             createdAt: Date.now(),
