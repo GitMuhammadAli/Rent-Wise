@@ -450,7 +450,12 @@ const ListingDetails = () => {
             </Box>
             
              {/* bidding component */}
-            <BiddingSystem currentListing={currentListing} />
+             {
+                 currentListing.bidding !== null && currentListing.bidding.enabled && (
+                  <BiddingSystem currentListing={currentListing} />
+                 )
+             }
+           
           </VStack>
 
           {/* Comments and Reviews displayed on bottom of page  in small screens but not displayed in large screens */}

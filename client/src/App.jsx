@@ -89,14 +89,18 @@ const router = createBrowserRouter(
           <Route path="/getAll" element={<Home />} />
         </Route>
 
+        <Route path="/rental/:id" element={<ListingDetails />} />
         {/* listing on basis of catagories */}
-
+        
         <Route path="/categories/hostels" element={<HostelListing />} />
         <Route path="/categories/houses" element={<HouseListing />} />
         <Route path="/categories/cars" element={<CarListing />} />
 
         <Route path="/" element={<LandingPage />} />
         <Route path="/spin" element={<ColorTubeLoader />} />
+
+         {/* owner profile */}
+         <Route path="/profile/:_id" element={<UserProfile/>} />
 
 
         
@@ -149,7 +153,6 @@ const router = createBrowserRouter(
 
         {/* listing routes */}
         <Route path="/media" element={<Media />} />
-        <Route path="/rental/:id" element={<ListingDetails />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/listings/:id" element={<UpdateListing />} />
 
@@ -163,8 +166,7 @@ const router = createBrowserRouter(
         <Route path="/agreementHouse/:id" element={<UpdateHouseAgrr/>} />
 
         {/* profile routes */}
-           {/* owner profile */}
-        <Route path="/profile/:_id" element={<UserProfile/>} />
+          
             {/* user account profile */}
         <Route path="/acc" element={<MyAccount />} />
         
