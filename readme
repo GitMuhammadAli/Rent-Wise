@@ -1,118 +1,98 @@
-# 📌 Project Checklist
+## ✅ RentWise Project Checklist
 
-## 📁 General Project Structure & Code Quality
-- [ ] Ensure consistent folder structure (`client`, `server`, `common`, `utilities`).
-- [ ] Remove unused files and dependencies.
-- [ ] Add meaningful comments in complex parts of the code.
-- [ ] Ensure proper naming conventions for variables, functions, and files.
-- [ ] Optimize code reusability using components, hooks, and utility functions.
-- [ ] Check environment variables (`.env`) and use `.env.example` for reference.
+### 📌 Frontend Checklist
+- <input type="checkbox"> **Authentication & Authorization**
+  - <input type="checkbox"> SignUp Page (`/auth/signUp`)
+  - <input type="checkbox"> SignIn Page (`/auth/signIn`)
+  - <input type="checkbox"> OTP Verification Page (`/auth/otp`)
+  - <input type="checkbox"> Forgot Password Page (`/auth/forgetPassword`)
+  - <input type="checkbox"> Reset Password Page (`/auth/resetPassword`)
+  - <input type="checkbox"> Auth Layout Wrapper (`<AuthLayout />`)
+  - <input type="checkbox"> Protected Route Handling (`<ProtectedRoute requiredStatus="unauthenticated" />`)
+  - <input type="checkbox"> User Role-Based Routing (admin, user)
 
----
+- <input type="checkbox"> **UI/UX & Common Components**
+  - <input type="checkbox"> Navigation Bar (`<Navbar />`)
+  - <input type="checkbox"> Sidebar Menu (`<Sidebar />`)
+  - <input type="checkbox"> Footer Component (`<Footer />`)
+  - <input type="checkbox"> Loading Spinners & Skeletons (`<ColorTubeLoader />`)
+  - <input type="checkbox"> Toast Notifications (`<ToastProvider />`)
+  - <input type="checkbox"> Responsive Design Testing
+  - <input type="checkbox"> Dark Mode Toggle
 
-## 🎨 Frontend (Client)
-### **UI/UX & Performance**
-- [ ] Ensure all UI components are responsive across devices.
-- [ ] Optimize image sizes and use lazy loading where needed.
-- [ ] Improve loading states & skeleton loaders for better UX.
-- [ ] Ensure dark mode & accessibility features are present if required.
-- [ ] Remove unnecessary console logs and debugging code.
+- <input type="checkbox"> **Main Application Pages & Layouts**
+  - <input type="checkbox"> Main Layout Wrapper (`<MainLayout />`)
+  - <input type="checkbox"> Landing Page (`/`)
+  - <input type="checkbox"> Dashboard Page (`/dashboard`)
+  - <input type="checkbox"> User Profile Page (`/profile/:_id`)
+  - <input type="checkbox"> My Account Settings (`/acc`)
 
-### **Authentication & Authorization**
-- [ ] Implement OTP-based authentication correctly.
-- [ ] Ensure JWT is stored securely (HTTP-only cookies/localStorage).
-- [ ] Implement proper access control for protected routes (AuthContext, ProtectedRoute).
+- <input type="checkbox"> **Property Listings & Rentals**
+  - <input type="checkbox"> View All Listings (`/getAll`)
+  - <input type="checkbox"> Listing Details Page (`/rental/:id`)
+  - <input type="checkbox"> Category-based Listings
+    - <input type="checkbox"> Hostels (`/categories/hostels`)
+    - <input type="checkbox"> Houses (`/categories/houses`)
+    - <input type="checkbox"> Cars (`/categories/cars`)
+  - <input type="checkbox"> Update Listings (`/listings/:id`)
+  - <input type="checkbox"> Search & Filtering Options
+  - <input type="checkbox"> Pagination for Listings
+  - <input type="checkbox"> Location-based Search (Google Maps API)
 
-### **Notifications**
-- [ ] Implement real-time notifications via WebSockets.
-- [ ] Ensure Web Push Notifications work even when the user is offline.
-- [ ] Allow users to clear notifications from the dashboard.
-- [ ] Implement a toggle switch to enable/disable notifications.
+- <input type="checkbox"> **Chat & Messaging System**
+  - <input type="checkbox"> Real-time Chat Interface (`/chat`)
+  - <input type="checkbox"> Chat Sidebar with Active Users
+  - <input type="checkbox"> Unread Message Indicators
+  - <input type="checkbox"> Typing Indicators
+  - <input type="checkbox"> Message History & Storage
 
-### **Chat System**
-- [ ] Ensure real-time chat updates without page refresh.
-- [ ] Show unread message indicators in the sidebar.
-- [ ] Allow file uploads (images, documents) in chat (if required).
+- <input type="checkbox"> **Agreements & Contracts**
+  - <input type="checkbox"> Agreement Creation Page (`/agreement`)
+  - <input type="checkbox"> Send Agreement to Tenant (`/sendToTenant`)
+  - <input type="checkbox"> Car Agreement Update Page (`/agreementCar/:id`)
+  - <input type="checkbox"> House Agreement Update Page (`/agreementHouse/:id`)
+  - <input type="checkbox"> View House Agreement (`/viewHouseAgreement/:_id`)
+  - <input type="checkbox"> View Car Agreement (`/viewCarAgreement/:_id`)
 
-### **Listings & Agreements**
-- [ ] Implement listing creation, updates, and deletion properly.
-- [ ] Ensure agreement templates (Car, House) are correctly filled and signed.
-- [ ] Add search and filter functionality for listings.
-- [ ] Validate forms before submission to prevent incorrect data.
+- <input type="checkbox"> **Media & File Uploads**
+  - <input type="checkbox"> Media Upload Page (`/media`)
+  - <input type="checkbox"> Image & Video Uploading (Multer + Cloud Storage)
+  - <input type="checkbox"> File Preview & Management
+  - <input type="checkbox"> Drag & Drop Upload UI
 
----
+- <input type="checkbox"> **Admin Panel & Management**
+  - <input type="checkbox"> Admin Dashboard (`/admin`)
+  - <input type="checkbox"> Category Management (`/category/*`)
+  - <input type="checkbox"> Agreement Management (`/agreements-protected`)
+  - <input type="checkbox"> Third-party Integrations Page (`/integration`)
+  - <input type="checkbox"> User Management & Role Assignments
 
-## 🖥 Backend (Server)
-### **Database & Models**
-- [ ] Ensure all TypeORM models are correctly structured.
-- [ ] Use migrations and seeders for database consistency.
-- [ ] Optimize indexes and relations for better query performance.
+- <input type="checkbox"> **Error Handling & Performance Optimizations**
+  - <input type="checkbox"> Custom 404 Page (`* - Not Found`)
+  - <input type="checkbox"> Proper API Error Handling
+  - <input type="checkbox"> Lazy Loading Components
+  - <input type="checkbox"> Code Splitting & Performance Optimization
+  - <input type="checkbox"> Offline Support & Service Workers
 
-### **API Structure & Optimization**
-- [ ] Move business logic to services (controllers should only handle requests).
-- [ ] Implement proper error handling (Try/Catch, Middleware).
-- [ ] Validate API requests using Joi/Zod/Yup.
-- [ ] Optimize database queries to avoid unnecessary calls.
+### 📌 Backend Checklist
+- <input type="checkbox"> **Database & Models**
+  - <input type="checkbox"> Ensure all TypeORM models are correctly structured.
+  - <input type="checkbox"> Use migrations and seeders for database consistency.
+  - <input type="checkbox"> Optimize indexes and relations for better query performance.
 
-### **Authentication & Security**
-- [ ] Hash passwords before storing in the database.
-- [ ] Implement rate limiting to prevent brute-force attacks.
-- [ ] Use refresh tokens for better authentication flow.
-- [ ] Ensure CORS is properly configured.
+- <input type="checkbox"> **API Structure & Optimization**
+  - <input type="checkbox"> Move business logic to services (controllers should only handle requests).
+  - <input type="checkbox"> Implement proper error handling (Try/Catch, Middleware).
+  - <input type="checkbox"> Validate API requests using Joi/Zod/Yup.
+  - <input type="checkbox"> Optimize database queries to avoid unnecessary calls.
 
-### **WebSockets (Real-time Features)**
-- [ ] Implement real-time notifications using Socket.io.
-- [ ] Optimize Socket connections (disconnect when unused).
-- [ ] Ensure the chat sidebar updates in real-time.
+- <input type="checkbox"> **Authentication & Security**
+  - <input type="checkbox"> Hash passwords before storing in the database.
+  - <input type="checkbox"> Implement rate limiting to prevent brute-force attacks.
+  - <input type="checkbox"> Use refresh tokens for better authentication flow.
+  - <input type="checkbox"> Ensure CORS is properly configured.
 
----
-
-## 🗄 Testing
-### **Unit & Integration Testing**
-- [ ] Write unit tests for critical functions (Jest/Mocha).
-- [ ] Implement integration tests for API endpoints (Supertest/Postman).
-- [ ] Test real-time WebSockets communication.
-
-### **Manual Testing Checklist**
-- [ ] Test all CRUD operations (Create, Read, Update, Delete).
-- [ ] Ensure authentication (OTP, JWT) works correctly.
-- [ ] Verify chat updates instantly.
-- [ ] Test file uploads (media, agreements, user avatars).
-- [ ] Ensure notifications are received properly.
-- [ ] Check UI responsiveness on mobile, tablet, and desktop.
-
----
-
-## 🔐 Security & Best Practices
-- [ ] Use Helmet.js to set secure HTTP headers.
-- [ ] Prevent SQL Injection & NoSQL Injection attacks.
-- [ ] Validate user input on both frontend & backend.
-- [ ] Implement 2FA (if required).
-- [ ] Monitor API activity for unusual traffic.
-
----
-
-## 🚀 Deployment & DevOps
-### **Backend Deployment**
-- [ ] Dockerize the application for consistency.
-- [ ] Deploy on Vercel/Render/EC2/DigitalOcean.
-- [ ] Set up CI/CD pipelines for automatic deployments.
-- [ ] Monitor logs & errors using a logging service (e.g., PM2, LogRocket).
-
-### **Frontend Deployment**
-- [ ] Optimize React build using `vite build`.
-- [ ] Deploy on Vercel/Netlify.
-- [ ] Use CDN for static assets.
-
-### **Database & Scaling**
-- [ ] Set up PostgreSQL on a cloud database provider.
-- [ ] Implement database backup & restore strategy.
-- [ ] Optimize database queries & indexing.
-
----
-
-## ✅ Final Checks
-- [ ] Run end-to-end testing before final deployment.
-- [ ] Ensure all environment variables are correctly set.
-- [ ] Remove unused dependencies (`npm prune`).
-- [ ] Check for memory leaks & performance issues.
+- <input type="checkbox"> **WebSockets (Real-time Features)**
+  - <input type="checkbox"> Implement real-time notifications using Socket.io.
+  - <input type="checkbox"> Optimize Socket connections (disconnect when unused).
+  - <input type="checkbox"> Ensure the chat sidebar updates in real-time.
