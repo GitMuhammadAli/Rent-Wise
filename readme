@@ -1,0 +1,118 @@
+# 📌 Project Checklist
+
+## 📁 General Project Structure & Code Quality
+- [ ] Ensure consistent folder structure (`client`, `server`, `common`, `utilities`).
+- [ ] Remove unused files and dependencies.
+- [ ] Add meaningful comments in complex parts of the code.
+- [ ] Ensure proper naming conventions for variables, functions, and files.
+- [ ] Optimize code reusability using components, hooks, and utility functions.
+- [ ] Check environment variables (`.env`) and use `.env.example` for reference.
+
+---
+
+## 🎨 Frontend (Client)
+### **UI/UX & Performance**
+- [ ] Ensure all UI components are responsive across devices.
+- [ ] Optimize image sizes and use lazy loading where needed.
+- [ ] Improve loading states & skeleton loaders for better UX.
+- [ ] Ensure dark mode & accessibility features are present if required.
+- [ ] Remove unnecessary console logs and debugging code.
+
+### **Authentication & Authorization**
+- [ ] Implement OTP-based authentication correctly.
+- [ ] Ensure JWT is stored securely (HTTP-only cookies/localStorage).
+- [ ] Implement proper access control for protected routes (AuthContext, ProtectedRoute).
+
+### **Notifications**
+- [ ] Implement real-time notifications via WebSockets.
+- [ ] Ensure Web Push Notifications work even when the user is offline.
+- [ ] Allow users to clear notifications from the dashboard.
+- [ ] Implement a toggle switch to enable/disable notifications.
+
+### **Chat System**
+- [ ] Ensure real-time chat updates without page refresh.
+- [ ] Show unread message indicators in the sidebar.
+- [ ] Allow file uploads (images, documents) in chat (if required).
+
+### **Listings & Agreements**
+- [ ] Implement listing creation, updates, and deletion properly.
+- [ ] Ensure agreement templates (Car, House) are correctly filled and signed.
+- [ ] Add search and filter functionality for listings.
+- [ ] Validate forms before submission to prevent incorrect data.
+
+---
+
+## 🖥 Backend (Server)
+### **Database & Models**
+- [ ] Ensure all TypeORM models are correctly structured.
+- [ ] Use migrations and seeders for database consistency.
+- [ ] Optimize indexes and relations for better query performance.
+
+### **API Structure & Optimization**
+- [ ] Move business logic to services (controllers should only handle requests).
+- [ ] Implement proper error handling (Try/Catch, Middleware).
+- [ ] Validate API requests using Joi/Zod/Yup.
+- [ ] Optimize database queries to avoid unnecessary calls.
+
+### **Authentication & Security**
+- [ ] Hash passwords before storing in the database.
+- [ ] Implement rate limiting to prevent brute-force attacks.
+- [ ] Use refresh tokens for better authentication flow.
+- [ ] Ensure CORS is properly configured.
+
+### **WebSockets (Real-time Features)**
+- [ ] Implement real-time notifications using Socket.io.
+- [ ] Optimize Socket connections (disconnect when unused).
+- [ ] Ensure the chat sidebar updates in real-time.
+
+---
+
+## 🗄 Testing
+### **Unit & Integration Testing**
+- [ ] Write unit tests for critical functions (Jest/Mocha).
+- [ ] Implement integration tests for API endpoints (Supertest/Postman).
+- [ ] Test real-time WebSockets communication.
+
+### **Manual Testing Checklist**
+- [ ] Test all CRUD operations (Create, Read, Update, Delete).
+- [ ] Ensure authentication (OTP, JWT) works correctly.
+- [ ] Verify chat updates instantly.
+- [ ] Test file uploads (media, agreements, user avatars).
+- [ ] Ensure notifications are received properly.
+- [ ] Check UI responsiveness on mobile, tablet, and desktop.
+
+---
+
+## 🔐 Security & Best Practices
+- [ ] Use Helmet.js to set secure HTTP headers.
+- [ ] Prevent SQL Injection & NoSQL Injection attacks.
+- [ ] Validate user input on both frontend & backend.
+- [ ] Implement 2FA (if required).
+- [ ] Monitor API activity for unusual traffic.
+
+---
+
+## 🚀 Deployment & DevOps
+### **Backend Deployment**
+- [ ] Dockerize the application for consistency.
+- [ ] Deploy on Vercel/Render/EC2/DigitalOcean.
+- [ ] Set up CI/CD pipelines for automatic deployments.
+- [ ] Monitor logs & errors using a logging service (e.g., PM2, LogRocket).
+
+### **Frontend Deployment**
+- [ ] Optimize React build using `vite build`.
+- [ ] Deploy on Vercel/Netlify.
+- [ ] Use CDN for static assets.
+
+### **Database & Scaling**
+- [ ] Set up PostgreSQL on a cloud database provider.
+- [ ] Implement database backup & restore strategy.
+- [ ] Optimize database queries & indexing.
+
+---
+
+## ✅ Final Checks
+- [ ] Run end-to-end testing before final deployment.
+- [ ] Ensure all environment variables are correctly set.
+- [ ] Remove unused dependencies (`npm prune`).
+- [ ] Check for memory leaks & performance issues.
