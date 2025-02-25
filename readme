@@ -1,98 +1,147 @@
-## ✅ RentWise Project Checklist
+# RentWise Project Checklist
 
-### 📌 Frontend Checklist
-- <input type="checkbox"> **Authentication & Authorization**
-  - <input type="checkbox"> SignUp Page (`/auth/signUp`)
-  - <input type="checkbox"> SignIn Page (`/auth/signIn`)
-  - <input type="checkbox"> OTP Verification Page (`/auth/otp`)
-  - <input type="checkbox"> Forgot Password Page (`/auth/forgetPassword`)
-  - <input type="checkbox"> Reset Password Page (`/auth/resetPassword`)
-  - <input type="checkbox"> Auth Layout Wrapper (`<AuthLayout />`)
-  - <input type="checkbox"> Protected Route Handling (`<ProtectedRoute requiredStatus="unauthenticated" />`)
-  - <input type="checkbox"> User Role-Based Routing (admin, user)
+✅ - Completed/Done
+❌ - Incomplete/Not Done
 
-- <input type="checkbox"> **UI/UX & Common Components**
-  - <input type="checkbox"> Navigation Bar (`<Navbar />`)
-  - <input type="checkbox"> Sidebar Menu (`<Sidebar />`)
-  - <input type="checkbox"> Footer Component (`<Footer />`)
-  - <input type="checkbox"> Loading Spinners & Skeletons (`<ColorTubeLoader />`)
-  - <input type="checkbox"> Toast Notifications (`<ToastProvider />`)
-  - <input type="checkbox"> Responsive Design Testing
-  - <input type="checkbox"> Dark Mode Toggle
+## ✅ Frontend Checklist
 
-- <input type="checkbox"> **Main Application Pages & Layouts**
-  - <input type="checkbox"> Main Layout Wrapper (`<MainLayout />`)
-  - <input type="checkbox"> Landing Page (`/`)
-  - <input type="checkbox"> Dashboard Page (`/dashboard`)
-  - <input type="checkbox"> User Profile Page (`/profile/:_id`)
-  - <input type="checkbox"> My Account Settings (`/acc`)
+### 📌 Authentication & Authorization
+- [x] SignUp Page (`/auth/signUp`)
+- [x] SignIn Page (`/auth/signIn`)
+- [x] OTP Verification Page (`/auth/otp`)
+- [x] Forgot Password Page (`/auth/forgetPassword`)
+- [x] Reset Password Page (`/auth/resetPassword`)
+- [x] Auth Layout Wrapper (`<AuthLayout />`)
+- [x] Protected Route Handling (`<ProtectedRoute requiredStatus="unauthenticated" />`)
+- [x] User Role-Based Routing (admin/user)
 
-- <input type="checkbox"> **Property Listings & Rentals**
-  - <input type="checkbox"> View All Listings (`/getAll`)
-  - <input type="checkbox"> Listing Details Page (`/rental/:id`)
-  - <input type="checkbox"> Category-based Listings
-    - <input type="checkbox"> Hostels (`/categories/hostels`)
-    - <input type="checkbox"> Houses (`/categories/houses`)
-    - <input type="checkbox"> Cars (`/categories/cars`)
-  - <input type="checkbox"> Update Listings (`/listings/:id`)
-  - <input type="checkbox"> Search & Filtering Options
-  - <input type="checkbox"> Pagination for Listings
-  - <input type="checkbox"> Location-based Search (Google Maps API)
+### 📌 UI/UX & Common Components
+- [x] Navigation Bar (`<Navbar />`)
+- [x] Sidebar Menu (`<Sidebar />`)
+- [x] Footer Component (`<Footer />`)
+- [x] Loading Spinners & Skeletons (`<ColorTubeLoader />`)
+- [x] Toast Notifications (`<ToastProvider />`)
+- [x] Responsive Design Testing
+- [x] Dark Mode Toggle
 
-- <input type="checkbox"> **Chat & Messaging System**
-  - <input type="checkbox"> Real-time Chat Interface (`/chat`)
-  - <input type="checkbox"> Chat Sidebar with Active Users
-  - <input type="checkbox"> Unread Message Indicators
-  - <input type="checkbox"> Typing Indicators
-  - <input type="checkbox"> Message History & Storage
+### 📌 Main Application Pages
+- [x] Main Layout Wrapper (`<MainLayout />`)
+- [x] Landing Page (`/`)
+- [x] Dashboard Page (`/dashboard`)
+- [x] User Profile Page (`/profile/:_id`)
+- [x] Account Settings (`/acc`)
 
-- <input type="checkbox"> **Agreements & Contracts**
-  - <input type="checkbox"> Agreement Creation Page (`/agreement`)
-  - <input type="checkbox"> Send Agreement to Tenant (`/sendToTenant`)
-  - <input type="checkbox"> Car Agreement Update Page (`/agreementCar/:id`)
-  - <input type="checkbox"> House Agreement Update Page (`/agreementHouse/:id`)
-  - <input type="checkbox"> View House Agreement (`/viewHouseAgreement/:_id`)
-  - <input type="checkbox"> View Car Agreement (`/viewCarAgreement/:_id`)
+### 📌 Property Listings & Rentals
+- [x] View All Listings (`/getAll`)
+- [x] Listing Details Page (`/rental/:id`)
+- [x] Category-based Listings:
+  - [x] Hostels (`/categories/hostels`)
+  - [x] Houses (`/categories/houses`)
+  - [x] Cars (`/categories/cars`)
+- [x] Update Listings (`/listings/:id`)
+- [x] Search & Filtering
+- [x] Pagination
+- [x] Location Search (Google Maps API)
 
-- <input type="checkbox"> **Media & File Uploads**
-  - <input type="checkbox"> Media Upload Page (`/media`)
-  - <input type="checkbox"> Image & Video Uploading (Multer + Cloud Storage)
-  - <input type="checkbox"> File Preview & Management
-  - <input type="checkbox"> Drag & Drop Upload UI
+### 📌 Chat System
+- [x] Real-time Chat Interface (`/chat`)
+- [x] Chat Sidebar with Active Users
+- [x] Unread Message Indicators
+- [x] Typing Indicators
+- [x] Message History Storage
 
-- <input type="checkbox"> **Admin Panel & Management**
-  - <input type="checkbox"> Admin Dashboard (`/admin`)
-  - <input type="checkbox"> Category Management (`/category/*`)
-  - <input type="checkbox"> Agreement Management (`/agreements-protected`)
-  - <input type="checkbox"> Third-party Integrations Page (`/integration`)
-  - <input type="checkbox"> User Management & Role Assignments
+### 📌 Agreements & Contracts
+- [x] Agreement Creation (`/agreement`)
+- [x] Send to Tenant (`/sendToTenant`)
+- [x] Car Agreement Update (`/agreementCar/:id`)
+- [x] House Agreement Update (`/agreementHouse/:id`)
+- [x] View House Agreement (`/viewHouseAgreement/:_id`)
+- [x] View Car Agreement (`/viewCarAgreement/:_id`)
 
-- <input type="checkbox"> **Error Handling & Performance Optimizations**
-  - <input type="checkbox"> Custom 404 Page (`* - Not Found`)
-  - <input type="checkbox"> Proper API Error Handling
-  - <input type="checkbox"> Lazy Loading Components
-  - <input type="checkbox"> Code Splitting & Performance Optimization
-  - <input type="checkbox"> Offline Support & Service Workers
+### 📌 Media Management
+- [x] Media Upload Page (`/media`)
+- [x] Image/Video Upload (Multer + Cloud)
+- [x] File Preview & Management
+- [x] Drag & Drop UI
 
-### 📌 Backend Checklist
-- <input type="checkbox"> **Database & Models**
-  - <input type="checkbox"> Ensure all TypeORM models are correctly structured.
-  - <input type="checkbox"> Use migrations and seeders for database consistency.
-  - <input type="checkbox"> Optimize indexes and relations for better query performance.
+### 📌 Admin Panel
+- [x] Admin Dashboard (`/admin`)
+- [x] Category Management (`/category/*`)
+- [x] Agreement Management (`/agreements-protected`)
+- [x] Integrations Page (`/integration`)
+- [x] User Role Management
 
-- <input type="checkbox"> **API Structure & Optimization**
-  - <input type="checkbox"> Move business logic to services (controllers should only handle requests).
-  - <input type="checkbox"> Implement proper error handling (Try/Catch, Middleware).
-  - <input type="checkbox"> Validate API requests using Joi/Zod/Yup.
-  - <input type="checkbox"> Optimize database queries to avoid unnecessary calls.
+### 📌 Performance & Errors
+- [x] Custom 404 Page
+- [x] API Error Handling
+- [x] Lazy Loading
+- [x] Code Splitting
+- [x] Offline Support (Service Workers)
 
-- <input type="checkbox"> **Authentication & Security**
-  - <input type="checkbox"> Hash passwords before storing in the database.
-  - <input type="checkbox"> Implement rate limiting to prevent brute-force attacks.
-  - <input type="checkbox"> Use refresh tokens for better authentication flow.
-  - <input type="checkbox"> Ensure CORS is properly configured.
+## 🖥 Backend Checklist
 
-- <input type="checkbox"> **WebSockets (Real-time Features)**
-  - <input type="checkbox"> Implement real-time notifications using Socket.io.
-  - <input type="checkbox"> Optimize Socket connections (disconnect when unused).
-  - <input type="checkbox"> Ensure the chat sidebar updates in real-time.
+### 🗄 Database & Models
+- [x] User Models (userModel.js)
+- [x] Listing Models (RentalItemModel.js, LocationModel.js, etc.)
+- [x] Chat Models (ConversationModel.js, MesssageModel.js)
+- [x] Agreement Models (Aggrement.js, AggrementDetails.js)
+- [x] Review & Comment Models
+- [x] Notification Models
+
+### ⚙️ API Structure
+- [x] Controller Organization (user/, listings/, chat/, etc.)
+- [x] Route Management (routes/)
+- [x] Middleware Implementation (middleware/)
+- [x] Error Handling (errorHandler.js)
+- [x] Request Validation (validation/)
+- [x] Response Messages (messages/)
+
+### 🔐 Authentication
+- [x] User Authentication (auth.js)
+- [x] Authorization Middleware (checkAuth.js)
+- [x] Third-party Login (third_party_Login.js)
+- [x] Token Management (token/Tokens.js)
+
+### 🌐 WebSockets
+- [x] Socket Configuration (socket.js)
+- [x] Real-time Chat
+- [x] Notifications System
+
+### 📁 File Management
+- [x] Media Upload Handling (mediaFile.js)
+- [x] Profile Image Handling (profileFile.js)
+- [x] File Storage Structure (uploads/)
+
+### 📧 Email System
+- [x] Mail Templates (Mail/Templates/)
+- [x] Email Configuration (config/sendmail.js)
+
+### 🤖 AI Integration
+- [x] Python Integration (ai/python/)
+- [x] Sentiment Analysis
+- [x] Data Preprocessing
+
+### 📝 Logging
+- [x] Error Logging (error.log)
+- [x] Combined Logging (combined.log)
+- [x] Logger Configuration (logger.js)
+
+### 🔒 Security
+- [x] CORS Configuration (cors.js)
+- [x] Rate Limiting (Limitar.js)
+- [x] Role Management (Roles.js)
+
+### 🚀 Configuration
+- [x] Environment Variables (.env)
+- [x] Database Configuration (config/db.js)
+- [x] Push Notification Service (pushService.js)
+
+### 🧪 Testing
+- [x] Unit Tests
+- [x] Integration Tests
+- [x] API Endpoint Testing
+
+### 📦 Deployment
+- [x] Production Configuration
+- [x] Performance Optimization
+- [x] Server Setup (server.js)
