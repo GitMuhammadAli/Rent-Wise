@@ -1,21 +1,29 @@
 import React, { useEffect, useState } from 'react'
-import { getAllHostel, getAllHouse } from '../../../Api/Home';
-import { Box, Card, CardFooter, CardHeader, Heading, Input, Slider,Button, Flex } from '@chakra-ui/react';
+import { getAllHostel } from '../../../Api/Home';
+import { Box, Card, CardFooter, CardHeader, Heading, Input, Slider,Button, Flex, Text, SimpleGrid, Checkbox,Skeleton,Stack, } from '@chakra-ui/react';
 import { Bath, BedDouble, DollarSign, MapPin } from 'lucide-react';
 import {Link} from 'react-router-dom'
+import Loader from '../../../components/Style/Loader';
 
 export default function HostelListing() {
   const [priceRange, setPriceRange] = useState([0, 1500000])
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(10000000);
    const [hostelData, setHostelData] = useState([]);
+   const [amenity, setAmenity] = useState([]);
   const [bedrooms, setBedrooms] = useState(0)
   const [bathrooms, setBathrooms] = useState(0)
+  const [loading, setLoading] = useState(true);
   // const [hasGarage, setHasGarage] = useState(false)
   // const [hasGarden, setHasGarden] = useState(false)
 
+  const amenitiesList = [
+    "WiFi", "Pool", "Parking", "Gym", "Air Conditioning", 
+    "Pet Friendly", "Balcony", "Laundry", "Security", "Garden"
+  ];
+
   useEffect(()=>{
-        const fetchCarListings = async()=>{
+        const fetchHosteltings = async()=>{
           try {
             const response = await getAllHostel();
             console.log("res of hostel", response.data.data);
@@ -23,10 +31,13 @@ export default function HostelListing() {
             
           } catch (error) {
             console.log(error);
+          } finally {
+              setLoading(false);
+        
           }
          
         }
-        fetchCarListings();
+        fetchHosteltings();
   
     },[])
 
@@ -45,27 +56,43 @@ export default function HostelListing() {
       setMaxPrice(value);
     };
 
+    const handleAmenityChange = (selectedAmenity) => {
+      setAmenity((prev) =>
+        prev.includes(selectedAmenity)
+          ? prev.filter((item) => item !== selectedAmenity) // Remove if already selected
+          : [...prev, selectedAmenity] // Add if not selected
+      );
+    };
+
     const filteredListings = hostelData.filter(
-      (hostel) => hostel.price >= minPrice && hostel.price <= maxPrice &&
-      hostel?.facilities?.bedrooms >= bedrooms &&  hostel?.facilities?.bathrooms >= bathrooms
-
-
+      (hostel) =>
+        hostel.price >= minPrice &&
+        hostel.price <= maxPrice &&
+        hostel?.facilities?.bedrooms >= bedrooms &&
+        hostel?.facilities?.bathrooms >= bathrooms &&
+        amenity.every((selectedAmenity) => // every returns boolean, if all conditions are true, it returns true, if any is false it returns false
+          hostel?.amenities
+            ?.map((a) => a.toLowerCase())
+            .includes(selectedAmenity.toLowerCase())
+        )
     );
 
     useEffect(()=>{
     console.log('houseD', hostelData)
-    },[hostelData])
+    console.log('filtered', filteredListings)
+    },[hostelData, filteredListings])
 
+  
   return (
-    <div className="container mx-auto px-4 py-8 bg-orange-50">
-      <h1 className="text-4xl font-bold mb-8 text-center text-orange-800">Discover Your Dream Hostel</h1>
+    <div className="container mx-auto px-4 py-8 bg-white">
+      <h1 className="text-4xl font-bold mb-8 text-center text-orange-800">Discover Your Dream Home</h1>
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Sidebar with filters */}
         <div className="w-full lg:w-1/4">
-          <Card boxShadow={'lg'}>
-            <CardHeader className="bg-orange-500 text-white">
-              <Heading>Find Your Perfect Hostels</Heading>
-            </CardHeader>
+          <Card  border={'1px solid #E0E0E0'}>
+            {/* <CardHeader className="bg-orange-500 text-white">
+              <Heading>Find Your Perfect hostel</Heading>
+            </CardHeader> */}
             <Box p={6}>
               <div>
                 <Flex flexDir={'column'} gap={3} mb={5}>
@@ -123,6 +150,21 @@ export default function HostelListing() {
                   className="mt-2 border-orange-300 focus:border-orange-500 focus:ring-orange-500"
                 />
               </div>
+              <Flex flexDir="column">
+                  <Text fontSize="lg" fontWeight="bold" mb={2} color="orange.800">
+                   Amenities
+                  </Text>
+                  <SimpleGrid columns={[2, 1]} spacing={3}>
+                    {amenitiesList.map((amenities, index) => (
+                      <Checkbox key={index} colorScheme="orange" value={amenity}
+                      onChange={() => handleAmenityChange(amenities)}
+                      isChecked={amenity.includes(amenities)}
+                       >
+                        {amenities}
+                      </Checkbox>
+                    ))}
+                 </SimpleGrid>
+                </Flex>
              
             </Box>
           </Card>
@@ -131,6 +173,7 @@ export default function HostelListing() {
         {/* Main content area with listings */}
         <div className="w-full lg:w-3/4">
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          
             {filteredListings.map(hostel => (
               <Card key={hostel._id} className="overflow-hidden hover:shadow-2xl transition-shadow duration-300 bg-white">
                 {
@@ -146,11 +189,12 @@ export default function HostelListing() {
                   ) 
                 }
                 <Box px={2}>
-                <Heading py={2} fontSize={'20px'} color={'orange.800'}>{hostel.title}</Heading>
-                  <p className="text-[16px] font-bold mb-2 flex items-center text-orange-500">
-                    
-                    {hostel.price.toLocaleString()} PKR
-                  </p>
+                <Heading py={2} fontSize={'20px'} fontWeight={'semibold'}>{hostel.title}</Heading>
+                  <Flex gap={1} alignItems={'baseline'}>
+                    <span className="text-[20px] font-bold mb-2 flex items-center text-orange-500">{hostel.price.toLocaleString()} PKR</span>
+                    <span className="text-gray-600">/{hostel.priceUnit}</span>
+                  </Flex>
+                  
                   <div className="flex justify-between items-center mb-2 text-orange-700">
                     <span className="flex items-center">
                       <BedDouble className="w-5 h-5 mr-1" /> {hostel?.facilities?.bedrooms || 0}
@@ -162,6 +206,23 @@ export default function HostelListing() {
                   <p className="text-gray-600 flex items-center">
                     <MapPin className="w-5 h-5 text-orange-500 mr-1" /> {hostel?.location || 'Lahore'}
                   </p>
+                  <Flex my={2} gap={2}>
+                  {hostel?.amenities?.slice(0, 4).map((item, i) => (
+                    <Text 
+                     textAlign={'center'}
+                      borderRadius="10px" 
+                      px={3} 
+                      py="2px"  
+                      bg="gray.100" 
+                      color="gray.800" 
+                      fontWeight="semibold" 
+                      fontSize="13px" 
+                      key={i}
+                    >
+                      {item}
+                    </Text>
+                  ))}
+                </Flex>
                 </Box>
                 <CardFooter>
                   <Button as={Link} to={`/rental/${hostel._id}`} variant={'cutomButton'} className="w-full bg-orange-500 hover:bg-orange-600 text-white">View Details</Button>
@@ -175,6 +236,13 @@ export default function HostelListing() {
               <p className="text-gray-600 mt-2">Try adjusting your filters to see more results.</p>
             </Card>
           )}
+
+     {loading && 
+        (  
+       <Loader/>
+
+       )
+     }
         </div>
       </div>
     </div>
