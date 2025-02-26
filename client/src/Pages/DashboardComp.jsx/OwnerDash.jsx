@@ -127,7 +127,7 @@ export default function OwnerDash() {
   };
 
   return (
-    <Box minH="100vh" bg="whiteAlpha.800" p={{ base: 2, sm: 4, md: 8 }}>
+    <Box minH="100vh" bg="whiteAlpha.800" p={{ base: 0, sm: 4, md: 8 }}>
       <Box maxW="7xl" mx="auto">
         <Flex justifyContent={"space-between"} mb={5}>
           <Heading
@@ -245,7 +245,7 @@ export default function OwnerDash() {
                 {agreementCount && agreementCount > 0 ? (
                   <Text>{agreementCount}</Text>
                 ) : (
-                  <Text fontSize={"20px"}>No agreements created yet</Text>
+                  <Text fontSize={{base:'12px', sm:"20px"}}>No agreements created yet</Text>
                 )}
               </Box>
               <Box fontSize={{ base: "xs", sm: "sm" }} color="gray.500">

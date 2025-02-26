@@ -24,6 +24,7 @@ import { Link } from 'react-router-dom';
 
 import { io } from "socket.io-client";
 import ListingsHorizontalBox from "./ListingsHorizontalBox";
+import { ArrowBigLeft } from "lucide-react";
 
 const socket = io(import.meta.env.VITE_BACK_END_URL, {
   withCredentials: true,
@@ -42,6 +43,7 @@ export default function LiveChat({
   isCLicked,
   setIsCLicked,
   checkClick,
+  setCheckClick
 }) {
   const [message, setMessage] = useState("");
   const [bidAmount, setBidAmount] = useState("");
@@ -141,18 +143,6 @@ export default function LiveChat({
     fetchMessages();
   }, [convoID, owner, isCLicked]);
 
-  const messageClicked = ()=>{
-    setShowChat(true)
-    setShowBid(false)
-    setActiveTab("chat")
-    
-  }
-  const bidClicked = ()=>{
-    setShowChat(false)
-    setShowBid(true)
-    setActiveTab("bid")
-
-  }
   return (
     <Flex
      flexDir={'column'}
@@ -173,14 +163,18 @@ export default function LiveChat({
         display={"flex"}
         justifyContent={"space-between"}
         color={"white"}
-        p={4}
+        p={{base:2, sm:4}}
         bg={"white"}
         h={"80px"}
         borderBottom={'gray.200'}
        
       >
+        
         {owner && (
           <Flex alignItems={"center"}>
+            <Box display={{ base: checkClick ? 'inherit' : 'none', md: 'none' }} onClick={()=> setCheckClick(false) }>
+            <ArrowBigLeft color="#f78f4b" />
+            </Box>
             <Link
               to={`/profile/${owner._id}`}
               style={{
@@ -190,7 +184,7 @@ export default function LiveChat({
               }}
             >
               <Avatar
-                mr={3}
+                mr={2}
                 size={{base:'sm',sm:'md'}}
                 src={
                   `${import.meta.env.VITE_BACK_END_URL}${owner.imageUrl}` ||

@@ -212,7 +212,7 @@ const LandingPage = () => {
         <Container maxW="7xl" px={{ base: 4, sm: 6, lg: 8 }}>
           <Flex direction="column" alignItems="center" textAlign="center">
             <Heading
-              fontSize={{ base: "5xl", md: "7xl" }}
+              fontSize={{ base: "2xl",sm:"4xl", md: "7xl" }}
               fontWeight="extrabold"
               color="white"
               mb={4}
@@ -224,7 +224,7 @@ const LandingPage = () => {
               mt={3}
               maxW={{ base: "md", md: "3xl" }}
               mx="auto"
-              fontSize={{ base: "xl", sm: "2xl" }}
+              fontSize={{ base: "sm", md: "2xl" }}
               color="white"
               className="animate-fade-in-up animation-delay-300"
             >
@@ -234,7 +234,8 @@ const LandingPage = () => {
               <Box rounded="md" shadow="md">
                 <Link to="#search" _hover={{ textDecoration: "none" }}>
                   <Button
-                    px={{ base: 8, md: 10 }}
+                  
+                    px={{ base: 2, md: 10 }}
                     py={{ base: 3, md: 7 }}
                     fontSize={{ base: "md", md: "lg" }}
                     fontWeight="medium"
@@ -252,7 +253,7 @@ const LandingPage = () => {
               <Box ml={3}>
                 <Link to="#featured" _hover={{ textDecoration: "none" }}>
                   <Button
-                    px={{ base: 8, md: 10 }}
+                    px={{ base: 2, md: 10 }}
                     py={{ base: 3, md: 7 }}
                     fontSize={{ base: "md", md: "lg" }}
                     fontWeight="medium"
@@ -283,13 +284,13 @@ const LandingPage = () => {
       >
         <Box textAlign="center">
           <Heading
-            fontSize={{ base: "4xl", sm: "5xl" }}
+            fontSize={{ base: "3xl", sm: "5xl" }}
             fontWeight="extrabold"
             color="gray.900"
           >
             Find Your Perfect Rental
           </Heading>
-          <Text mt={4} fontSize="xl" color="gray.600">
+          <Text mt={4} fontSize={{base:"sm",sm:"xl"}} color="gray.600">
             Search through our extensive selection of premium rentals
           </Text>
         </Box>
@@ -309,7 +310,7 @@ const LandingPage = () => {
               boxShadow: "none",
             }}
             color="orange.500"
-            fontSize="lg"
+            fontSize={{base:"sm",sm:"lg"}}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
           <Button
@@ -332,7 +333,7 @@ const LandingPage = () => {
       <Box bg="white" py={24}>
         <Container maxW="7xl" px={{ base: 4, sm: 6, lg: 8 }}>
           <Heading
-            fontSize={{ base: "4xl", sm: "5xl" }}
+            fontSize={{ base: "3xl", sm: "5xl" }}
             fontWeight="extrabold"
             color="gray.900"
             textAlign="center"
@@ -392,7 +393,7 @@ const LandingPage = () => {
 
         <Container maxW="7xl" px={{ base: 4, sm: 6, lg: 8 }} ref={sectionRef}>
           <Heading
-            fontSize={{ base: "4xl", sm: "5xl" }}
+            fontSize={{ base: "3xl", sm: "5xl" }}
             fontWeight="extrabold"
             color="gray.900"
             textAlign="center"
@@ -401,7 +402,7 @@ const LandingPage = () => {
           </Heading>
           <Text
             my={4}
-            fontSize={"18px"}
+            fontSize={{base:"14px",sm:"18px"}}
             color={"gray.600"}
             textAlign={"center"}
           >
@@ -506,13 +507,13 @@ const LandingPage = () => {
           textAlign="center"
         >
           <Heading
-            fontSize={{ base: "4xl", sm: "5xl" }}
+            fontSize={{ base: "3xl", sm: "5xl" }}
             fontWeight="extrabold"
             color="white"
           >
             Ready to Experience Premium Rentals?
           </Heading>
-          <Text mt={6} fontSize="xl" color="orange.50" maxW="3xl" mx="auto">
+          <Text mt={6} fontSize={{base:"sm",sm:"xl"}} color="orange.50" maxW="3xl" mx="auto">
             Join RentWise today and unlock access to our exclusive selection of
             high-end rentals. Start your journey towards unparalleled luxury and
             convenience.
@@ -524,7 +525,7 @@ const LandingPage = () => {
             display="inline-flex"
             alignItems="center"
             justifyContent="center"
-            px={8}
+            px={{base:3,sm:8}}
             py={7}
             border="1px solid transparent"
             fontSize="lg"

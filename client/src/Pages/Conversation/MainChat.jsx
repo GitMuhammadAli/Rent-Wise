@@ -145,6 +145,7 @@ export default function MainChat() {
         setCountOfunreedMessage={setCountOfunreedMessage}
         countOfUnreedMessage={countOfUnreedMessage}
           checkClick={checkClick}
+          setCheckClick={setCheckClick}
           isCLicked={isCLicked}
           setIsCLicked={setIsCLicked}
           showPopOver={showPopOver}

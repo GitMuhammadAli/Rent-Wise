@@ -101,7 +101,7 @@ if (loading) {
   }
 
   return (
-    <div className="min-h-screen  p-8">
+    <div className="min-h-screen  p-2 sm:p-2 xl:p-8">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <div className="flex items-center space-x-4">
@@ -160,7 +160,7 @@ if (loading) {
             </button>
           </div>
 
-          <div className="p-6">
+          <div className="p-3 sm:p-3 xl:p-6">
             {activeTab === 'myListing' && <OwnerDash />}
             {activeTab === 'rentalListing' && <UserDash />}
             {activeTab === 'reviews' && <ReviewPage/>}

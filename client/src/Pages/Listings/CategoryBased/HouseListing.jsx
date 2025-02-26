@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { getAllHouse } from '../../../Api/Home';
-import { Box, Card, CardFooter, CardHeader, Heading, Input, Slider,Button, Flex, Text, SimpleGrid, Checkbox,Skeleton,Stack, } from '@chakra-ui/react';
-import { Bath, BedDouble, DollarSign, MapPin } from 'lucide-react';
+import { Box, Card, CardFooter, CardHeader, Heading, Input,Button, Flex, Text, SimpleGrid, Checkbox,Skeleton,Stack,Slider, SliderTrack, SliderFilledTrack, SliderThumb, } from '@chakra-ui/react';
+import { Bath, BedDouble, CircleDollarSign, DollarSign, MapPin } from 'lucide-react';
 import {Link} from 'react-router-dom'
 import Loader from '../../../components/Style/Loader';
 
@@ -51,11 +51,6 @@ export default function HouseListing() {
       if (value >= minPrice) setMaxPrice(value);
     };
 
-    const handleSliderChange = (e) => {
-      const value = Number(e.target.value);
-      setMaxPrice(value);
-    };
-
     const handleAmenityChange = (selectedAmenity) => {
       setAmenity((prev) =>
         prev.includes(selectedAmenity)
@@ -85,7 +80,7 @@ export default function HouseListing() {
   
   return (
     <div className="container mx-auto px-4 py-8 bg-white">
-      <h1 className="text-4xl font-bold mb-8 text-center text-orange-800">Discover Your Dream Home</h1>
+      <h1 className="text-2xl sm:text-2xl xl:text-4xl font-bold mb-8 text-center text-orange-800">Discover Your Dream Home</h1>
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Sidebar with filters */}
         <div className="w-full lg:w-1/4">
@@ -97,15 +92,26 @@ export default function HouseListing() {
               <div>
                 <Flex flexDir={'column'} gap={3} mb={5}>
                 <label htmlFor="price" className="text-orange-800 font-semibold">Price Range</label>
-                <input
-        type="range"
-        min={minPrice}
-        max="10000000"
-        step="500"
-        value={maxPrice}
-        onChange={handleSliderChange}
-        style={{ width: "100%" }}
-      />
+                
+
+
+    <Slider
+      aria-label="price-slider"
+      min={minPrice}
+      max={10000000}
+      step={500}
+      value={maxPrice}
+      onChange={(value) => setMaxPrice(value)}
+    >
+      <SliderTrack bg="gray.300">
+        <SliderFilledTrack bg="orange.500" />
+      </SliderTrack>
+
+      <SliderThumb boxSize={6} bg="orange.500">
+       <CircleDollarSign  color="white" />
+      </SliderThumb>
+    </Slider>
+
                 </Flex>
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px" }}>
         <Input
@@ -206,10 +212,11 @@ export default function HouseListing() {
                   <p className="text-gray-600 flex items-center">
                     <MapPin className="w-5 h-5 text-orange-500 mr-1" /> {house?.location || 'Lahore'}
                   </p>
-                  <Flex my={2} gap={2}>
+                  <Flex my={2} gap={2} >
                   {house?.amenities?.slice(0, 4).map((item, i) => (
                     <Text 
                      textAlign={'center'}
+                     alignContent={'center'}
                       borderRadius="10px" 
                       px={3} 
                       py="2px"  

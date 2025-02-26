@@ -352,7 +352,7 @@ const UserProfile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
+    <div className="min-h-screen bg-gray-100 p-2 sm:p-2 xl:p-8">
       <div className="max-w-3xl mx-auto bg-white shadow-md rounded-lg p-6">
         {/* User Information */}
         <div className="flex items-center">
@@ -373,8 +373,8 @@ const UserProfile = () => {
           </ModalBody>
         </ModalContent>
       </Modal>
-            <h1 className="text-2xl font-bold">{owner.name}</h1>
-            <p className="text-gray-500 capitalize">{owner.role}</p>
+            <h1 className="text-24px sm:text-24px xl:text-2xl font-bold">{owner.name}</h1>
+            <p className="text-gray-500 text-16px sm:text-16px xl:text-20 capitalize">{owner.role}</p>
           </div>
         </div>
         <p className="mt-4 text-gray-700">{owner.bio || "No bio provided."}</p>
@@ -398,7 +398,7 @@ const UserProfile = () => {
           {['listings', 'reviews', 'writeReview'].map((tab) => (
             <button
               key={tab}
-              className={`flex-1 py-2 text-center ${
+              className={`flex-1 py-2 text-center text-sm sm:text-sm xl:text-md ${
                 activeTab === tab
                 //   ? 'text-indigo-600 border-b-2 border-indigo-600'
                   ? 'text-orange-500 border-b-2 border-orange-500'
