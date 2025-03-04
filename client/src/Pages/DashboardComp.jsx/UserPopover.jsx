@@ -104,12 +104,15 @@ export default function UserPopover({tenant,convoID}) {
             <Text cursor={'pointer'} fontWeight={"bold"} fontFamily={'cursive'} color={'orange.500'} fontSize={{base:'sm',md:"md"}}>
               Create Aggreement
             </Text>
+            <Box display={{base:'none', sm:'inherit'}}>
             <ScrollText
+        
             cursor={'pointer'}
               // onClick={fetchNameOfChatParticipants}
               size={40}
               color="#F57C00"
             />
+            </Box>
           </Flex>
         </PopoverTrigger>
         <PopoverContent>

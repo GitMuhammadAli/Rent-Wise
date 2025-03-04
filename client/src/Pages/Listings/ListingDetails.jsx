@@ -189,6 +189,7 @@ const ListingDetails = () => {
       _dark={{ bg: "gray.900" }}
       minH="100vh"
       py={8}
+    
     >
       <Box maxW="container.xl" mx="auto" px={4}>
         <Grid templateColumns={{ base: "1fr", md: "2fr 1fr" }} gap={8}>
@@ -203,8 +204,8 @@ const ListingDetails = () => {
               >
                 {currentListing?.title}
               </Heading>
-              <Flex align="center" gap={4}>
-                <Badge colorScheme="orange" px={3} py={1} fontSize="m">
+              <Flex  gap={4} flexDir={{base:'column', sm:'row'}}>
+                <Badge colorScheme="orange" px={3} py={1} fontSize="m" w={'fit-content'}>
                   ${currentListing?.price}/{currentListing?.priceUnit}
                 </Badge>
                 <Flex align="center">
@@ -232,10 +233,10 @@ const ListingDetails = () => {
               {/* images and its arrow */}
               <Box
                 position="relative"
-                w="100%"
+                w={{base:"95%", sm:"100%"}}
                 h={"70%"}
                 // maxW="600px"
-                mx="auto"
+                mx="4"
                 aspectRatio={16 / 9} // Maintain aspect ratio
               >
                 <Image
@@ -336,14 +337,18 @@ const ListingDetails = () => {
           </GridItem>
 
           {/* right side details, including location, owner, description, rules */}
-          <VStack spacing={6}>
+          <VStack spacing={6} w={{base:"90vw", sm:'100%'}} >
             <Box
               bg="white"
               _dark={{ bg: "gray.800" }}
               p={6}
               borderRadius="lg"
               shadow="md"
-              w="full"
+              //w={{base:'100vw',sm:"full"}}
+              // w={'auto'}
+              w={'inherit'}
+            
+              
             >
               <Heading
                 as="h3"
@@ -379,7 +384,8 @@ const ListingDetails = () => {
                 p={6}
                 borderRadius="lg"
                 shadow="md"
-                w="full"
+                // w="full"
+                w={'inherit'}
               >
                 <Heading
                   as="h3"
@@ -404,7 +410,7 @@ const ListingDetails = () => {
                 </Flex>
 
                 {/* owner ki profile */}
-                <VStack alignItems={"center"}>
+                <Flex alignItems={"center"} flexDir={'column'} gap={2}>
                   <Button
                     onClick={handleChatButtonClick}
                     leftIcon={<MessageCircleIcon size={20} />}
@@ -425,7 +431,7 @@ const ListingDetails = () => {
                   >
                     View Owner Profile
                   </Button>
-                </VStack>
+                </Flex>
               </Box>
             )}
 
@@ -436,7 +442,8 @@ const ListingDetails = () => {
                 p={6}
                 borderRadius="lg"
                 shadow="md"
-                w="full"
+                // w="full"
+                w={'inherit'}
               >
                 <Heading mb={4} fontSize={"28px"}>
                   Amenities
@@ -461,7 +468,8 @@ const ListingDetails = () => {
               p={6}
               borderRadius="lg"
               shadow="md"
-              w="full"
+            //  w="full"
+            w={'inherit'}
             >
               <Heading mb={4} fontSize={"2xl"} fontWeight={'semibold'}>
                 Description
@@ -481,7 +489,8 @@ const ListingDetails = () => {
               p={6}
               borderRadius="lg"
               shadow="md"
-              w="full"
+             // w="full"
+             w={'inherit'}
             >
               <Heading mb={4} fontSize={"2xl"} fontWeight={'semibold'}>
                 Rules

@@ -56,7 +56,7 @@ exports.getAllApartmentsListings = async (req, res, next) => {
     try {
 
         const ApartmentListings = await listings.find({
-            category: "apartment"
+            category: "hostel"   // apartment
         })
         .populate("images")
         .populate("videos")
