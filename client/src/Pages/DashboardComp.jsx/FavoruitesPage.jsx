@@ -63,7 +63,7 @@ function FavoruitesPage() {
                 
                 <Button 
                   as={Link}
-                  to={`/listing/${listing._id}`}
+                  to={`/rental/${listing._id}`}
                   colorScheme="orange"
                   width="full"
                 >
