@@ -61,6 +61,8 @@ const userSchema = new UserSchema({
   //     }
   //   ],
 
+  favoriteListings: [{ type: mongoose.Schema.Types.ObjectId, ref: "RentalItem" }],
+
   createdAt: {
     type: Date,
     default: Date.now,

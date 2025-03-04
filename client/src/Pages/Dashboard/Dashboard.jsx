@@ -7,8 +7,9 @@ import { Link } from 'react-router-dom';
 import { getUser } from '../../Api/DashboardAPI';
 import { useDasboardHook } from '../../hooks/DashboardUserContext';
 import {Settings} from 'lucide-react'
-import { FaUser, FaFolder, FaStar, FaCog } from 'react-icons/fa'
+import { FaUser, FaFolder, FaStar, FaCog, FaHeart } from 'react-icons/fa'
 import ReviewPage from '../DashboardComp.jsx/ReviewDash';
+import FavoruitesPage from '../DashboardComp.jsx/FavoruitesPage';
 import ColorTubeLoader from '../../components/Style/ColorTubeLoader';
 
 export default function Dashboard() {
@@ -158,12 +159,22 @@ if (loading) {
               <FaStar className="mr-2" />
               Reviews
             </button>
+            <button
+              className={`flex items-center  px-4 sm:px-4 lg:px-6 py-3 text-gray-700 hover:bg-orange-100 focus:outline-none ${
+                activeTab === 'Favoruites' ? 'border-b-2 border-orange-500' : ''
+              }`}
+              onClick={() => setActiveTab('Favoruites')}
+            >
+              <FaHeart className="mr-2" />
+              Favoruites
+            </button>
           </div>
 
           <div className="p-6">
             {activeTab === 'myListing' && <OwnerDash />}
             {activeTab === 'rentalListing' && <UserDash />}
             {activeTab === 'reviews' && <ReviewPage/>}
+            {activeTab === 'Favoruites' && <FavoruitesPage/>}
           </div>
         </div>
       </div>

@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { ListingsContext } from "../../hooks/ListingsContext";
-import { getOneUserListingAPI } from "../../Api/ListingApi";
+import { getOneUserListingAPI, AddFav, GetFav } from "../../Api/ListingApi";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   Box,
@@ -23,7 +23,7 @@ import {
   ListItem,
   ListIcon,
   List,
-  Modal, ModalOverlay, ModalContent, ModalCloseButton, ModalBody, useDisclosure 
+  Modal, ModalOverlay, ModalContent, ModalCloseButton, ModalBody, useDisclosure
 } from "@chakra-ui/react";
 import {
   StarIcon,
@@ -34,7 +34,7 @@ import {
   UsersIcon,
   ArrowLeft,
   ArrowRight,
-  
+  Heart,
 } from "lucide-react";
 import {
   ChevronLeftIcon,
@@ -67,6 +67,48 @@ const ListingDetails = () => {
   const [avgRating, setAvgRating] = useState(0);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedImage, setSelectedImage] = useState(null);
+  const [isFavorite, setIsFavorite] = useState(false);
+
+  useEffect(() => {
+    const checkFavoriteStatus = async () => {
+      try {
+        const response = await GetFav();
+        const isListingFavorite = response.data.favoriteListings.some(
+          listing => listing._id === currentListing._id
+        );
+        setIsFavorite(isListingFavorite);
+      } catch (error) {
+        console.error("Error checking favorite status:", error);
+      }
+    };
+
+    if (currentListing?._id) {
+      checkFavoriteStatus();
+    }
+  }, [currentListing]);
+
+  const handleAddToFavorites = async () => {
+    try {
+      const response = await AddFav(currentListing._id);
+      console.log(response)
+      setIsFavorite(!isFavorite);
+       toast({
+        title: "Success",
+        description: response.data.message,
+        status: "success",
+        duration: 1000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to add to favorites",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
 
 
   const handleImageClick = (imgSrc) => {
@@ -105,7 +147,7 @@ const ListingDetails = () => {
       direction === "next"
         ? (prevIndex + 1) % currentListing.images.length
         : (prevIndex - 1 + currentListing.images.length) %
-          currentListing.images.length
+        currentListing.images.length
     );
   };
 
@@ -113,7 +155,7 @@ const ListingDetails = () => {
     return (
       <Flex justify="center" align="center" height="100vh">
         {/* <Spinner size="xl" /> */}
-        <ColorTubeLoader/>
+        <ColorTubeLoader />
       </Flex>
     );
   }
@@ -133,9 +175,8 @@ const ListingDetails = () => {
       {[...Array(5)].map((_, i) => (
         <FaStar
           key={i}
-          className={`w-4 h-4 ${
-            i < rating ? "text-yellow-400" : "text-gray-300"
-          }`}
+          className={`w-4 h-4 ${i < rating ? "text-yellow-400" : "text-gray-300"
+            }`}
         />
       ))}
     </div>
@@ -173,8 +214,19 @@ const ListingDetails = () => {
                     ({avgRating} reviews)
                   </Text>
 
+
                   {/* <Text ml={1} color="gray.700" _dark={{ color: 'gray.300' }}>Reviews/Rating -- add it later</Text>  */}
                 </Flex>
+                {user && user._id !== currentListing?.owner?._id && (
+                  <IconButton
+                    aria-label="Add to favorites"
+                    icon={<Heart fill={isFavorite ? "red" : "none"} color={isFavorite ? "red" : "currentColor"} />}
+                    variant="outline"
+                    colorScheme="red"
+                    onClick={handleAddToFavorites}
+                    _hover={{ bg: 'red.100' }}
+                  />
+                )}
               </Flex>
 
               {/* images and its arrow */}
@@ -199,55 +251,55 @@ const ListingDetails = () => {
                   w="100%"
                   h="100%"
                   onClick={() => handleImageClick(`${baseUrl}${currentListing.images[currentImageIndex].url}`)}
-                 _hover={{ filter: "brightness(1.2)", transition: "0.2s" }}
+                  _hover={{ filter: "brightness(1.2)", transition: "0.2s" }}
 
                 />
 
-     <Modal isOpen={isOpen} onClose={onClose} isCentered>
-        <ModalOverlay />
-        <ModalContent minW={'60vw'}>
-        <ModalCloseButton 
-            color="white" 
-            backgroundColor="black" 
-            _hover={{ backgroundColor: "gray.600" }} 
-            borderRadius="50%" 
-            boxSize="40px"
-          />
-          <ModalBody p={4}>
-            {selectedImage && <Image src={selectedImage} borderRadius="md" />}
-          </ModalBody>
-        </ModalContent>
-      </Modal>
+                <Modal isOpen={isOpen} onClose={onClose} isCentered>
+                  <ModalOverlay />
+                  <ModalContent minW={'60vw'}>
+                    <ModalCloseButton
+                      color="white"
+                      backgroundColor="black"
+                      _hover={{ backgroundColor: "gray.600" }}
+                      borderRadius="50%"
+                      boxSize="40px"
+                    />
+                    <ModalBody p={4}>
+                      {selectedImage && <Image src={selectedImage} borderRadius="md" />}
+                    </ModalBody>
+                  </ModalContent>
+                </Modal>
 
                 {currentListing?.images &&
                   currentListing?.images?.length > 1 && (
-                   <>
-             
+                    <>
+
                       <Button
-                      position="absolute"
-                      top="50%"
-                      left="10px"
-                      transform="translateY(-50%)"
-                      onClick={() => handleImageNavigation("prev")}
-                      _hover={{
-                       
-                        transition: "transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease", // Smooth transition
-                      }}
-                      zIndex="1"
-                      colorScheme="none"
-                      aria-label="Previous Image" 
+                        position="absolute"
+                        top="50%"
+                        left="10px"
+                        transform="translateY(-50%)"
+                        onClick={() => handleImageNavigation("prev")}
+                        _hover={{
+
+                          transition: "transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease", // Smooth transition
+                        }}
+                        zIndex="1"
+                        colorScheme="none"
+                        aria-label="Previous Image"
                       >
-                        <ArrowLeft size={'40px'} color="#ffffff"/>
+                        <ArrowLeft size={'40px'} color="#ffffff" />
                       </Button>
-                      
-                       
+
+
                       <Button
                         position="absolute"
                         top="50%"
                         right="10px"
                         transform="translateY(-50%)"
                         _hover={{
-                       
+
                           transition: "transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease", // Smooth transition
                         }}
                         onClick={() => handleImageNavigation("next")}
@@ -255,17 +307,17 @@ const ListingDetails = () => {
                         colorScheme="none"
                         aria-label="Next Image"
                       >
-                      <ArrowRight size={'40px'} color="#ffffff" />
+                        <ArrowRight size={'40px'} color="#ffffff" />
                       </Button>
 
-                      </>
-                    
+                    </>
+
                   )}
               </Box>
 
               {/* Comments and Reviews displayed on top after images in large screen but not displayed in small screens */}
               <Flex
-              w={'full'}
+                w={'full'}
                 flexDir={"column"}
                 gap={4}
                 display={{ base: "none", md: "flex" }}
@@ -342,8 +394,7 @@ const ListingDetails = () => {
                 <Flex alignItems={"center"} gap={3} mb={4}>
                   <Avatar
                     src={
-                      `${import.meta.env.VITE_BACK_END_URL}${
-                        currentListing?.owner?.imageUrl
+                      `${import.meta.env.VITE_BACK_END_URL}${currentListing?.owner?.imageUrl
                       }` || currentListing?.owner?.imageUrl
                     }
                   />
@@ -448,14 +499,14 @@ const ListingDetails = () => {
                 )}
               </List>
             </Box>
-            
-             {/* bidding component */}
-             {
-                 currentListing.bidding !== null && currentListing?.bidding?.enabled && (
-                  <BiddingSystem currentListing={currentListing} />
-                 )
-             }
-           
+
+            {/* bidding component */}
+            {
+              currentListing.bidding !== null && currentListing?.bidding?.enabled && (
+                <BiddingSystem currentListing={currentListing} />
+              )
+            }
+
           </VStack>
 
           {/* Comments and Reviews displayed on bottom of page  in small screens but not displayed in large screens */}
@@ -479,3 +530,4 @@ const ListingDetails = () => {
 };
 
 export default ListingDetails;
+

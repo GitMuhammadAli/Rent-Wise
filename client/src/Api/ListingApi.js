@@ -28,10 +28,18 @@ export const Updatelistings = (id, data) =>
   axios.put(`${API_BASE_URL}/update/${id}`, data, { withCredentials: true });
 
 
+
 export const PlaceBid = (data) =>
   axios.post(`${API_BASE_URL}/placeBid`, data, { withCredentials: true });
   
 
+export const AddFav = (id) =>
+  axios.post(`${API_BASE_URL}/favorites/${id}`, {}, { withCredentials: true });
+
+
+export const GetFav = () =>
+  axios.get(`${API_BASE_URL}/favorites`, { withCredentials: true });
+  
 
 
 

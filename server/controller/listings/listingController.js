@@ -4,12 +4,13 @@ const Image = require("../../model/listings/ImagesModel");
 const Location = require("../../model/listings/LocationModel");
 const Video = require("../../model/listings/VediosModel");
 const Bidding = require("../../model/listings/biddingModel");
+const User = require("../../model/user/userModel")
 const path = require("path");
 const logger = require("../../utils/logger");
 const fs = require("fs");
 const AppError = require("../../utils/AppError");
 const { ERROR_MESSAGE } = require("../../messages/error");
-const { RESPONCE_MESSAGE, LISTINGS } = require("../../messages/response");
+const { RESPONCE_MESSAGE, LISTINGS, } = require("../../messages/response");
 const { STATUS } = require("../../messages/status");
 const { BOOLEAN } = require("../../utils/Roles");
 const { CreateNotification } = require("../../controller/notification/notification")
@@ -199,7 +200,7 @@ exports.placeBid = async (req, res, next) => {
         if (!bidding || !bidding.enabled) {
             return next(new AppError(BOOLEAN.FALSE, LISTINGS.BIDDING_NOT_ENABLED, STATUS.BAD_REQUEST));
         }
-        const rentelItemOwner = await RentalItem.findOne({bidding:bidding._id}).populate('owner')
+        const rentelItemOwner = await RentalItem.findOne({ bidding: bidding._id }).populate('owner')
         // Check if bidding is still open
         if (new Date() > bidding.bidEndDate) {
             return next(new AppError(BOOLEAN.FALSE, LISTINGS.BIDDING_ENDED, STATUS.BAD_REQUEST));
@@ -224,14 +225,87 @@ exports.placeBid = async (req, res, next) => {
         await bidding.save();
 
 
-        let message= `A new bid of ${bidAmount} has been placed on your ${rentelItemOwner.title} listing`;
-        CreateNotification(rentelItemOwner.owner, userId, "system", message , next)
-        return res.status(STATUS.SUCCESS).json({ message: LISTINGS.BID_PLACED, highestBid: bidding.highestBid  });
+        let message = `A new bid of ${bidAmount} has been placed on your ${rentelItemOwner.title} listing`;
+        CreateNotification(rentelItemOwner.owner, userId, "system", message, next)
+        return res.status(STATUS.SUCCESS).json({ message: LISTINGS.BID_PLACED, highestBid: bidding.highestBid });
         // return res.status(STATUS.SUCCESS).json({ message: LISTINGS.BID_PLACED });
     } catch (error) {
         next(error);
     }
 };
+
+
+exports.toggleFavoriteListing = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const userId = req.user.id;
+
+
+        const listing = await RentalItem.findById(id);
+        if (!listing) {
+            return res.status(STATUS.BAD_REQUEST).json({
+                success: BOOLEAN.FALSE,
+                message: LISTINGS.LISTING_NOT_FOUND,
+            });
+        }
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(STATUS.BAD_REQUEST).json({
+                success: BOOLEAN.FALSE,
+                message: RESPONCE_MESSAGE.USER_NOT_FOUND_PLEASE_LOGIN,
+            });
+        }
+
+        const isFavorited = user.favoriteListings.includes(id);
+        console.log(isFavorited)
+
+        if (isFavorited) {
+            user.favoriteListings = user.favoriteListings.filter(
+                (listingId) => listingId.toString() !== id.toString()
+            );
+            await user.save();
+            return res.status(STATUS.SUCCESS).json({
+                success: BOOLEAN.TRUE,
+                message: LISTINGS.LISING_REMOVE_TO_FAV,
+            });
+        } else {
+            user.favoriteListings.push(id);
+            await user.save();
+            return res.status(STATUS.SUCCESS).json({
+                success: BOOLEAN.TRUE,
+                message: LISTINGS.LISING_ADDED_TO_FAV,
+            });
+        }
+    } catch (error) {
+        console.log(error)
+        next(error);
+    }
+};
+
+
+exports.getFavoriteListings = async (req, res, next) => {
+    try {
+        const userId = req.user.id;
+
+        const user = await User.findById(userId).populate("favoriteListings");
+
+        if (!user) {
+            return res.status(STATUS.BAD_REQUEST).json({
+                success: BOOLEAN.FALSE,
+                message: RESPONCE_MESSAGE.USER_NOT_FOUND_PLEASE_LOGIN,
+            });
+        }
+
+        return res.status(STATUS.SUCCESS).json({
+            success: BOOLEAN.TRUE,
+            favoriteListings: user.favoriteListings,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 
 
 const removeFile = (filePath) => {

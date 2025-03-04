@@ -65,7 +65,10 @@ const LISTINGS = {
     MEDIA_UPLOAD_ERR: "Failed to upload media files",
     MEDIA_UPLOAD_SUCCESS: "Media files uploaded successfully",
     BID_PLACED: "Bid placed successfully",
-    RENTAL_ITEM_AND_ASSOCIATED_FILES_DELETED_SUCCESSFULLY: "Rental item and associated files deleted successfully",}
+    RENTAL_ITEM_AND_ASSOCIATED_FILES_DELETED_SUCCESSFULLY: "Rental item and associated files deleted successfully",
+      LISING_ADDED_TO_FAV:"Listing Added to favorites",
+      LISING_REMOVE_TO_FAV:"Listing removed from favorites",
+}
 
 
 const AGGREEMENT = {

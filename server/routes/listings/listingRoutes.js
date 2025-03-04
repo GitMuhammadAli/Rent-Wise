@@ -11,7 +11,7 @@ const { AuthorizeUser } = require("../../middleware/auth");
 router.post(
   "/create",
   (req, res, next) => {
-    const listingId =  new mongoose.Types.ObjectId();
+    const listingId = new mongoose.Types.ObjectId();
     req.listingId = listingId;
     next();
   },
@@ -36,8 +36,8 @@ router.post(
 // Route to update a listing by ID
 router.put(
   "/update/:id",
-  (req , res ,  next)=>{
-    const  listingId  = req.params.id
+  (req, res, next) => {
+    const listingId = req.params.id
     req.listingId = listingId
     next();
   },
@@ -102,8 +102,13 @@ router.get(
 // placing bid by a user on a listing
 router.post(
   "/placeBid",
-  AuthorizeUser("user" , "Admin"), 
+  AuthorizeUser("user", "Admin"),
   asyncHandler(rentalController.placeBid)
 );
+
+
+router.post("/favorites/:id", AuthorizeUser("user", "Admin"), asyncHandler(rentalController.toggleFavoriteListing));
+
+router.get("/favorites", AuthorizeUser("user", "Admin"), asyncHandler(rentalController.getFavoriteListings));
 
 module.exports = router;
