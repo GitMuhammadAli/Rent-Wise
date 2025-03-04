@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react'
-import { Box, Grid, Text, Image, Badge, VStack, Heading, Button } from '@chakra-ui/react'
+import { Box, Grid, Text, Image, Badge, VStack, Heading, Button , Flex } from '@chakra-ui/react'
 import { GetFav } from '../../Api/ListingApi'
 import { Link } from 'react-router-dom'
+import SpinLoader from '../../components/Style/SpinLoader';
 const baseUrl = import.meta.env.VITE_BACK_END_URL;
 function FavoruitesPage() {
   const [favorites, setFavorites] = useState([])
   const [loading, setLoading] = useState(true)
+   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   useEffect(() => {
     const fetchFavorites = async () => {
       try {
         const response = await GetFav()
+        console.log(response)
         setFavorites(response.data.favoriteListings)
         setLoading(false)
       } catch (error) {
@@ -22,9 +25,14 @@ function FavoruitesPage() {
     fetchFavorites()
   }, [])
 
-  if (loading) {
-    return <Text>Loading favorites...</Text>
-  }
+ if (loading) {
+     return (
+       <Flex flexDir={'column'} justify="center" align="center" height="100vh">
+         {/* <Spinner size="xl" /> */}
+         <SpinLoader/>
+       </Flex>
+     );
+   }
 
   return (
     <Box p={8}>
@@ -44,7 +52,7 @@ function FavoruitesPage() {
               <Image
                 src={
                     listing?.images && listing?.images?.length > 0
-                      ? `${baseUrl}${listing.images[currentImageIndex].url}`
+                      ? `${baseUrl}${listing.images[0].url}`
                       : "/images/make_listing/random.png" // Default image path
                   }
                 alt={listing.title}

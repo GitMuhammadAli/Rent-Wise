@@ -288,8 +288,20 @@ exports.getFavoriteListings = async (req, res, next) => {
     try {
         const userId = req.user.id;
 
-        const user = await User.findById(userId).populate("favoriteListings");
-
+        // const user = await User.findById(userId).populate("favoriteListings");
+        const user = await User.findById(userId).populate({
+            path: "favoriteListings",
+            populate: [
+                {
+                    path: "owner",
+                    select: "name email imageUrl"
+                },
+                {
+                    path: "images",
+                    select: "url caption"
+                },
+            ]
+        });
         if (!user) {
             return res.status(STATUS.BAD_REQUEST).json({
                 success: BOOLEAN.FALSE,

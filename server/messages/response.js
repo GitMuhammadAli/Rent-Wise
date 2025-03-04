@@ -108,6 +108,7 @@ const AGGREEMENT = {
 CANNOT_UPDATE_AGREEMENT_RENTER_AGGREED_TO_IT: "Cannot update agreement as renter has agreed to it Create a New Agreement",
 AGGREMENT_NOT_AVAILABLE_BLOCKCAHIN:"No Aggrement Is Avaliable For BlockChain",
 RENTED_AGGREEMENT:"You can only review items that you have rented",
+AGGREMENT_NOT_EXISTED:"No Aggrement is Created"
 
 }
 

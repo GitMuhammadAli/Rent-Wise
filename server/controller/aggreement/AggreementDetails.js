@@ -91,7 +91,8 @@ const CreateQrCode = async (data, next) => {
 // With Notification
 exports.getByOwnerId = async (req, res, next) => {
     try {
-        const ownerId = req.user._id;
+        const ownerId = req.user.id;
+        console.log(ownerId)
         const agreements = await Aggrement.find({ ownerId })
             .populate("listingId")
             .populate("renterId")
@@ -99,8 +100,11 @@ exports.getByOwnerId = async (req, res, next) => {
             .populate("blockChain");
 
         if (!agreements?.length) {
-            return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.USER_NOT_FOUND, STATUS.NOT_FOUND));
-        }
+                    return res.status(STATUS.SUCCESS).json({
+                        status: BOOLEAN.TRUE,
+                        message: AGGREEMENT.AGGREMENT_NOT_EXISTED,
+                        data: []
+                    });        }
 
         for (const agreement of agreements) {
             const aggDetails = await AggrementDetails.findById(agreement.agreementDetailsId);
