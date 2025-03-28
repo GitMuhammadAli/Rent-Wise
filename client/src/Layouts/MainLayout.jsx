@@ -76,6 +76,7 @@ function MainLayout() {
       <ToastContainer />
 
       {/* bgGradient={bgColor} */}
+      {location.pathname !== "/chat" && ( 
       <Box 
   color={textColor} 
   boxShadow="lg"
@@ -235,6 +236,7 @@ function MainLayout() {
       </Drawer>
     </Container>
 </Box>
+) }
 
 
       <Flex as="main" flexGrow={1} bg={"whiteAlpha.500"}>

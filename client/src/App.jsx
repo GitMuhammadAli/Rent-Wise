@@ -45,6 +45,7 @@ import UserProfile from "./Pages/profile/owner/ownerProfile";
 
 import { NotificationProvider } from "./hooks/NotificationContext";
 import ColorTubeLoader from "./components/Style/ColorTubeLoader";
+import Loacation from "./Pages/Location/Loacation";
 
 //  import TestListingDetails from "./Pages/Listings/Test/TestHome";
 
@@ -90,6 +91,8 @@ const router = createBrowserRouter(
         </Route>
 
         <Route path="/rental/:id" element={<ListingDetails />} />
+        <Route path="/loc" element={<Loacation />} />
+
         {/* listing on basis of catagories */}
         
         <Route path="/categories/hostels" element={<HostelListing />} />

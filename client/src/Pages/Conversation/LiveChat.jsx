@@ -145,17 +145,16 @@ export default function LiveChat({
 
   return (
     <Flex
-     flexDir={'column'}
-      flex="1"
-
-      bg="gray.50"
-      boxShadow="md"
-      // borderColor="gray.200"
-      borderRadius="md"
-      w={{base:'100%', sm:'75%'}}
-      h={'100%'}
-      display={{ base: checkClick ? 'inherit' : 'none', md: 'inherit' }}
-    >
+  flexDir="column"
+  flex="1"
+  bg="gray.50"
+  boxShadow="md"
+  borderRadius="md"
+  w={{ base: "100%", sm: "75%" }}
+  h="100vh"
+  display={{ base: checkClick ? "inherit" : "none", md: "inherit" }}
+  overflow="hidden" // ✅ Prevents unintended blank space
+>
       
 
       {/* top bar of live chat */}
@@ -203,14 +202,9 @@ export default function LiveChat({
         }
       </HStack>
     
-    {/* {
-      checkClick && (<ListingsHorizontalBox/>)
-    } */}
-      
-
 
       <Box
-        flex="1"
+        
         ref={scrollRef}
         height="300px"
         overflowY="scroll"
@@ -218,9 +212,11 @@ export default function LiveChat({
         borderBottom={'1px solid #E0E0E0'}
         
         display={"flex"}
+        flex="1"
         p={6}
         flexDir={"column"}
         gap={4}
+  
       >
         {Messages &&
           Messages.length > 0 &&
@@ -272,61 +268,8 @@ export default function LiveChat({
   checkClick && (
     <Flex bg={'white'} py={6}>
     <form onSubmit={handleMessageSubmit} style={{ width: "100%" }}>
-      {/* <Flex >
-        <Input
-          placeholder="Type your message..."
-          mx={4}
-          bg="white"
-          borderRadius="full"
-          _focus={{ outline: "none" }}
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          autoComplete="off"
-          spellCheck="false"
-        />
-        <Button type="submit" colorScheme="orange" rounded={'full'} mr={2}>
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-        </svg>
-        </Button>
-      </Flex> */}
-
-
-    <Box>
-
-    {/* <Flex color={'gray.600'} justifyContent={'space-evenly'} mb={4}>
-    <Box  
-     w={'40%'}
-     display={'flex'}
-    justifyContent={'center'}
-     fontWeight={activeTab === "chat" ? "bold" : "normal"}
-     cursor={'pointer'} onClick={messageClicked}
-     borderBottom={activeTab === "chat" ? '2px solid #616161' : '2px solid transparent'}
-     transition="border-bottom 0.3s ease-in-out"
-     
-
-     > Chat
-     </Box>
-      
-     <Center height='40px'>
-       <Divider orientation='vertical' />
-     </Center>
-       
-    <Box
-   
-    w={'40%'}
-    display={'flex'}
-    justifyContent={'center'}
-     fontWeight={activeTab === "bid" ? "bold" : "normal"}
-     borderBottom={activeTab === "bid" ? '2px solid #616161' : '2px solid transparent'}
-     cursor={'pointer'} onClick={bidClicked}
-     transition="border-bottom 0.3s ease-in-out"
-
-     > Make a Bid
-     </Box>
-    </Flex> */}
-      
-     
+  
+    <Box>   
 
   {/* chat one */}
   {
@@ -356,32 +299,7 @@ export default function LiveChat({
       </Button>
     </Flex>
     )
-  }
-  
-
-
- {/* bid one */}
- {
-  showBid && (
-    <Flex px={4} gap={2} alignItems={'center'} justifyContent={'space-around'}> 
-   
-    <Text fontWeight={'semibold'}>Bidding for Listing one</Text>
-
-    <NumberInput defaultValue={9000} min={9000} max={10000000} w={'60%'}>
-  <NumberInputField />
-  <NumberInputStepper>
-    <NumberIncrementStepper />
-    <NumberDecrementStepper />
-  </NumberInputStepper>
-</NumberInput>
-    <Button colorScheme="orange" rounded="full">
-      Place Bid
-    </Button>
-  </Flex>
-
-  )
- }
-       
+  }       
     </Box>
       </form>
   </Flex>
