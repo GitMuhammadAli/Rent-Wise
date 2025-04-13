@@ -197,7 +197,7 @@ const handleSubmit = async (e) => {
 
   return (
     <Flex py={'50px'} flexDir={'column'}>
-    <Flex gap={4} alignSelf={'center'} justifyContent={'space-between'} alignItems={'center'} flexDir={'row'} borderRadius={'10px'} bg={'gray.900'} color={'white'}    w={'90%'}>
+    {/* <Flex gap={4} alignSelf={'center'} justifyContent={'space-between'} alignItems={'center'} flexDir={'row'} borderRadius={'10px'} bg={'gray.900'} color={'white'}    w={'90%'}>
              <Image alignSelf={'flex-end'} w={'22vw'} h={'auto'}  src="https://images.rawpixel.com/image_social_square/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3BkMjA3LTItMzMwXzEuanBn.jpg"/>
              <Box alignSelf={'center'} py={'50px'} >
             <Heading textAlign={'left'}  fontWeight="extrabold" >Upload Your Property | Vehichle Details</Heading>
@@ -205,10 +205,53 @@ const handleSubmit = async (e) => {
              </Box>
             
              <Image alignSelf={'flex-end'} w={'16vw'} h={'auto'} src="https://images.rawpixel.com/image_social_portrait/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvbnMyMDA0Ni1pbWFnZS1rd3Z5YTF1Yy5qcGc.jpg"/>
-            </Flex>
+            </Flex> */}
+<Flex
+  gap={4}
+  alignSelf="center"
+  justify="space-between"
+  borderRadius="10px"
+  bg="gray.900"
+  color="white"
+  w="90%"
+
+   px={{base: 4, md: 6 , lg:0}}
+   py={{base: 6, md: 8 , lg:0}}
+>
+  {/* Left Image */}
+  <Image
+    h="250px"
+    w="auto"
+    objectFit="cover"
+    display={{ base: "none", md: "none", lg: "block" }}
+    src="https://images.rawpixel.com/image_social_square/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3BkMjA3LTItMzMwXzEuanBn.jpg"
+  />
+
+  {/* Center Text */}
+  <Flex flexDir={'column'}  justifyContent={'center'} flex="1" px={4}>
+    <Heading  textAlign="center"  fontWeight="extrabold">
+      Upload Your Property | Vehicle Details
+    </Heading>
+    <Text textAlign="center"  pt={4}>
+      We're committed to providing a reliable marketplace for all your property and vehicle needs.
+    </Text>
+  </Flex>
+
+  {/* Right Image */}
+  <Image
+  h="250px"
+  w="auto"
+  objectFit="cover"
+  display={{ base: "none", md: "none", lg: "block" }}
+  src="https://images.rawpixel.com/image_social_portrait/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvbnMyMDA0Ni1pbWFnZS1rd3Z5YTF1Yy5qcGc.jpg"
+/>
+
+</Flex>
+
+
       <form onSubmit={handleSubmit}>
-        <Flex justifyContent={'center'} gap={10}>
-          <Stack w="50vw" mt="8" p="6" bg="white" boxShadow="lg" borderRadius="md" spacing="4">
+        <Flex flexDir={{base: 'column', md:'row' , lg:'row'}} justifyContent={'center'} gap={10}>
+          <Stack w={{base:'100vw',md:"50vw", lg:"50vw"}} mt="8" p="6" bg="white" boxShadow="lg" borderRadius="md" spacing="4">
             <FormControl isRequired>
               <FormLabel>Title</FormLabel>
               <Input
@@ -350,7 +393,7 @@ const handleSubmit = async (e) => {
             </FormControl>
           </Stack>
 
-          <Stack w="30vw" mt="8" p="6" boxShadow="lg" borderRadius="md" bg={'white'}>
+          <Stack w={{base:'100vw',md:"50vw", lg:"30vw"}} mt="8" p="6" boxShadow="lg" borderRadius="md" bg={'white'}>
             <FormControl>
               <FormLabel>Images</FormLabel>
               <Input

@@ -25,6 +25,7 @@ export default function ViewHouseAgr() {
   const [renterDetails, setRenterDetails] = useState(""); // done
   const [ownerDetail, setOwnerDetail] = useState(""); // done
   const [popOver, SetPopOver] = useState(false);
+  const [listName, setListName] = useState('');
   const [formData, setFormData] = useState({
     createdDate: "",
     rentAmount: "",
@@ -55,6 +56,7 @@ export default function ViewHouseAgr() {
         console.log("_id of agreement", _id);
         const response = await GetAggreementsByID(_id);
         console.log("resp in updateAgreement", response);
+        setListName(response?.data?.data?.listingId?.title)
 
         console.log(
           "aggr detail",
@@ -147,14 +149,14 @@ if (loading) {
 
           <Text fontWeight="bold">BETWEEN</Text>
           {ownerDetail?.name && (
-            <Text borderBottom={"1px solid gray"}>{ownerDetail?.name}</Text>
+            <Text fontWeight={'semibold'} borderBottom={"1px solid gray"}>{ownerDetail?.name}</Text>
           )}
 
           <Text>Hereinafter known as the "landlord" of the one part.</Text>
 
           <Text fontWeight="bold">AND</Text>
 
-          <Text borderBottom={"1px solid gray"}>
+          <Text fontWeight={'semibold'} borderBottom={"1px solid gray"}>
             {renterDetails?.name || ""}
           </Text>
 
@@ -162,14 +164,13 @@ if (loading) {
 
           <Text>
             Whereas the landlord confirms that he is legally competent to rent
-            out ______________________________
-            ____________________________________________________ with necessary
+            out {" "}  <span style={{ fontWeight:'600',borderBottom:"1px solid gray"}}>{listName}</span> {" "} with necessary
             electrical fittings and fixtures therein. The landlord has agreed to
             rent and the other party has agreed to accept the rent of said
             property.
           </Text>
 
-          <Text fontWeight="bold">
+          <Text  fontWeight="bold">
             NOW, THEREFORE, THIS AGREEMENT IS WITNESSETH AS UNDER:-
           </Text>
 
@@ -191,7 +192,7 @@ if (loading) {
               <Input
                 type="number"
                 name="duration" //added
-                placeholder={"12"}
+                // placeholder={"12"}
                 value={formData.duration}
                 display="inline-block"
                 w="32"
@@ -199,7 +200,7 @@ if (loading) {
               />
               <Input
                 type="text"
-                placeholder={"days/week/month"} //added
+                // placeholder={"days/week/month"} //added
                 name="timePeriod"
                 value={formData.timePeriod}
                 display="inline-block"
@@ -244,7 +245,7 @@ if (loading) {
               <Input
                 type="number"
                 name="advanceRentMonths"
-                placeholder="3"
+                // placeholder="3"
                 value={formData.advanceRentMonths}
                 display="inline-block"
                 w="20"
@@ -254,7 +255,7 @@ if (loading) {
               <Input
                 type="number"
                 name="securityDeposit"
-                placeholder="40000"
+                // placeholder="40000"
                 value={formData.securityDeposit}
                 display="inline-block"
                 w="32"
@@ -264,7 +265,7 @@ if (loading) {
               <Input
                 type="number"
                 name="securityDepositMonths"
-                placeholder="3"
+                // placeholder="3"
                 value={formData.securityDepositMonths}
                 display="inline-block"
                 w="20"
@@ -278,7 +279,7 @@ if (loading) {
               <Input
                 type="number"
                 name="monthlyDueDate"
-                placeholder="5"
+                // placeholder="5"
                 value={formData.monthlyDueDate} // added
                 display="inline-block"
                 w="20"
