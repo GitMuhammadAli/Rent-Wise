@@ -7,6 +7,7 @@ import { useAuth } from "../../hooks/AuthContext";
 // import { useSocketConnection } from "../../hooks/useSocketConnection";
 
 import { io } from "socket.io-client";
+import SideBar from "./SideBar";
 
 const socket = io(import.meta.env.VITE_BACK_END_URL, {
   withCredentials: true,
@@ -84,7 +85,7 @@ export default function MainChat() {
     receiver_imageUrl
   ) => {
     setCountOfunreedMessage(null)
-    setCheckClick(true)  // check if side bar is clicked display sidebae or livechat on basis of screen size
+    setCheckClick(true)  // check if side bar is clicked display sidebar or livechat on basis of screen size
     setIsCLicked(true);  // check if side bar is clicked to display messages
     setShowPopOver(true);
     console.log("selected participant", selectedParticipant);
@@ -120,8 +121,11 @@ export default function MainChat() {
   };
 
   return (
-    <div>
-     <div className="flex  h-screen bg-gray-100"> 
+    
+    <div className="flex h-screen max-h-screen bg-gray-100 overflow-hidden">
+
+
+      <SideBar/>
      
         <SideChat
           listings={listings}
@@ -162,6 +166,6 @@ export default function MainChat() {
           item={item}
         />
       </div>
-    </div>
+    
   );
 }

@@ -24,8 +24,9 @@ exports.getAggrementForAdminByOwnerIDs = async (req, res, next) => {
     try {
         const agreements = await Aggrement.find(
             { blockchainStatus: false },
-            { _id: 1, blockchainStatus: 1 }
+            { _id: 1, blockchainStatus: 1 , ownerConfirmed:1 }
         );
+        console.log("this is agreemnts " , agreements)
 
         if (!agreements) {
             res.status(STATUS.NOT_FOUND).json({
@@ -42,7 +43,6 @@ exports.getAggrementForAdminByOwnerIDs = async (req, res, next) => {
         }
 
         if (
-            agreements.ownerConfirmed === BOOLEAN.TRUE &&
             agreements.ownerConfirmed === BOOLEAN.TRUE
         ) {
             res.status(STATUS.SUCCESS).json({

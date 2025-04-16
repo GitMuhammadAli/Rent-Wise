@@ -55,40 +55,44 @@ body{
       filter: hue-rotate(360deg);
     }
   }
-  
+
+  /* maps style */
 
 
-
-  .category-wrapper {
-    display: inline-block;
-    transition: width 0.3s ease;
+  #root {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
   }
   
-  .typing-category {
-    display: inline-block;
-    white-space: nowrap;
-    overflow: hidden;
-    border-right: 2px solid;
-    animation: categorySlide 4s ease-in-out infinite;
-    /* width: var(--category-width); */
+  #map-container {
+    height: 100%;
+    width: 100%;
+    /* temporarily set the background color so we can tell where the map container is positioned */
+    background-color: lightgrey;
   }
   
-  @keyframes categorySlide {
-    0% {
-      transform: translateY(20px);
-      opacity: 0;
-    }
-    15% {
-      transform: translateY(0);
-      opacity: 1;
-    }
-    75% {
-      transform: translateY(0);
-      opacity: 1;
-    }
-    90% {
-      transform: translateY(-20px);
-      opacity: 0;
-    }
+  .sidebar {
+    background-color: rgb(35 55 75 / 90%);
+    color: #fff;
+    padding: 6px 12px;
+    font-family: monospace;
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 12px;
+    border-radius: 4px;
   }
   
+  .reset-button {
+    position: absolute;
+    top: 50px;
+    z-index: 1;
+    left: 12px;
+    padding: 4px 10px;
+    border-radius: 10px;
+    cursor: pointer;
+  }

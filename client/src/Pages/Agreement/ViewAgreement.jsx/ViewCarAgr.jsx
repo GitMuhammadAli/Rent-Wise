@@ -25,6 +25,7 @@ export default function ViewCarAgr() {
     const [ownerDetail, setOwnerDetail] = useState(""); // done
     const [popOver, SetPopOver ] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [listName, setListName] = useState('');
 
      const [formData, setFormData] = useState({
         createdDate: '',
@@ -68,6 +69,7 @@ export default function ViewCarAgr() {
     
               const response = await GetAggreementsByID(_id);
               console.log("resp in view car agreemnt is", response.data.data);
+              setListName(response?.data?.data?.listingId?.title)
       
               console.log(
                 "aggr detail",
@@ -105,6 +107,7 @@ export default function ViewCarAgr() {
         }))
       : [],
    });
+   
   
               console.log("renter detail", response.data.data.renterId);
               setRenterDetails(response.data.data.renterId);
@@ -162,19 +165,21 @@ export default function ViewCarAgr() {
            </Text>
    
            <Text fontWeight="bold">BETWEEN</Text>
-           {ownerDetail?.name && <Text borderBottom="1px solid gray">{ownerDetail?.name}</Text>}
+           {ownerDetail?.name && <Text fontWeight={'semibold'} borderBottom="1px solid gray">{ownerDetail?.name}</Text>}
            <Text>Hereinafter known as the "owner" of the one part.</Text>
    
            <Text fontWeight="bold">AND</Text>
-           <Text borderBottom="1px solid gray">
+           <Text fontWeight={'semibold'} borderBottom="1px solid gray">
              {renterDetails?.name ||''}
              </Text>
            <Text>Hereinafter known as the 'tenant' of the other part.</Text>
    
            <Text>
-             Whereas the landlord confirms that he is legally competent to rent out
-             ______________________________
+             Whereas the landlord confirms that he is legally competent to rent out{" "}
+             <span style={{ fontWeight:'600',borderBottom:"1px solid gray"}}>{listName}</span>
            </Text>
+
+          
    
            <Text fontWeight="bold">
              NOW, THEREFORE, THIS AGREEMENT IS WITNESSETH AS UNDER:-
@@ -187,39 +192,39 @@ export default function ViewCarAgr() {
                isDisabled
                type="text"
                name="registrationNum"
-               placeholder='LES-15-804'
+              //  placeholder='LES-15-804'
                value={formData.registrationNum}
                
                display="inline-block"
                w="40"
                mx={2}
              />, <br/> Make:
-              <input
-               disabled
+              <Input
+               isDisabled
                type="text"
                 name="make"
-               placeholder='Suzuki / Wagon R'
+              //  placeholder='Suzuki / Wagon R'
                 value={formData.make}
-            //    display="inline-block"
-            //    w="40"
+                 display="inline-block"
+               w="40"
                mx={2}
-               style={{
-                display: "inline-block",
+              //  style={{
+              //   display: "inline-block",
                
-                padding:'10px',
-                margin: "0 8px",
-                color: "red", // Make sure the text is black even when disabled
-                backgroundColor: "white", // Optional: Customize background color when disabled
-                border:'1px solid red',
-                borderRadius:'5px'
-              }}
+              //   padding:'10px',
+              //   margin: "0 8px",
+              //   color: "red", // Make sure the text is black even when disabled
+              //   backgroundColor: "white", // Optional: Customize background color when disabled
+              //   border:'1px solid red',
+              //   borderRadius:'5px'
+              // }}
              />
               , Model: 
               <Input
               isDisabled
                type="number"
                 name="carModel"
-               placeholder='2015'
+              //  placeholder='2015'
                value={formData.carModel}
                
                display="inline-block"
@@ -232,7 +237,7 @@ export default function ViewCarAgr() {
                isDisabled
                type="text"
                 name="engineNum"
-               placeholder='PK50D702015'
+              //  placeholder='PK50D702015'
                 value={formData.engineNum}
                
                display="inline-block"
@@ -245,7 +250,7 @@ export default function ViewCarAgr() {
            isDisabled
                type="text"
                name="ChassisNum"
-               placeholder='A1J310PK12458915'
+              //  placeholder='A1J310PK12458915'
                // value={formData.date}
                
                value={formData.ChassisNum}
@@ -296,7 +301,7 @@ export default function ViewCarAgr() {
                isDisabled
                type="number"
                 name="RentAmount"
-               placeholder='30000'
+              //  placeholder='30000'
                 value={formData.RentAmount}
                
                display="inline-block"
@@ -308,7 +313,7 @@ export default function ViewCarAgr() {
                 isDisabled
                type="number"
                name="installments"
-               placeholder='2'
+              //  placeholder='2'
                 value={formData.installments}
                
                display="inline-block"
@@ -323,7 +328,7 @@ export default function ViewCarAgr() {
                isDisabled
                type="number"
                name="crossedChequeAmount"
-               placeholder='30000'
+              //  placeholder='30000'
                 value={formData.crossedChequeAmount}
                
                display="inline-block"
@@ -350,7 +355,7 @@ export default function ViewCarAgr() {
                 isDisabled
                type="number"
                 name="tuningTime"
-               placeholder='10000'
+              //  placeholder='10000'
                value={formData.tuningTime}
                
                display="inline-block"
@@ -367,7 +372,7 @@ export default function ViewCarAgr() {
                isDisabled
                type="text"
                 name="meetingOwnerDate"
-               placeholder='20th'
+              //  placeholder='20th'
                 value={formData.meetingOwnerDate}
                
                display="inline-block"
@@ -383,7 +388,7 @@ export default function ViewCarAgr() {
                isDisabled
                type="number"
                 name="noticePeriod"
-               placeholder='2'
+              //  placeholder='2'
                 value={formData.noticePeriod}
                
                display="inline-block"

@@ -9,7 +9,7 @@ const socket = io(import.meta.env.VITE_BACK_END_URL, {
   withCredentials: true,
 });
 
-export default function SideChat({ handleSideBarClick, ownerIdDetails, setAllData ,
+export default function   SideChat({ handleSideBarClick, ownerIdDetails, setAllData ,
    allData, isCLicked, checkClick}) {
   const [participants, setParticipants] = useState([]);
   const [owner, setOwner] = useState(null);
@@ -145,16 +145,20 @@ useEffect(() => {
     
   },[combinedList])
 
+
+
   return (
     <Box
-      width={{ base: "100%", sm:'25%'}}
-      bg="white"
-      borderRight="1px solid"
-      borderColor="gray.200"
-      display={{ base: !checkClick ? 'initial' : 'none', md: 'initial' }}
-      
-    >
-      <VStack align={'stretch'}>
+    width={{ base: "100%", sm: "25%" }}
+    bg="white"
+    h="100vh"
+    borderRight="1px solid"
+    borderColor="gray.200"
+    display={{ base: !checkClick ? "initial" : "none", md: "initial" }}
+    overflow="hidden" 
+  >
+       <VStack align="stretch" h="100%" overflowY="auto" flexGrow={1}>
+
         
         <Flex flexDir={'column'} gap={3} p={2}>
         <Text color={'orange.500'} fontSize={'xl'} fontWeight="bold">Chats</Text>
