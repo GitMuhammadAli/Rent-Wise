@@ -192,7 +192,24 @@ const LandingPage = () => {
       console.error("Push Subscription Error:", error);
     }
   }; 
-  
+
+// In your component:
+const [displayText, setDisplayText] = useState("Cars");
+const [width, setWidth] = useState("4ch"); // Initial width for "Cars"
+const rentOptions = ["Cars", "Houses", "Apartments"];
+
+useEffect(() => {
+  let currentIndex = 0;
+  const interval = setInterval(() => {
+    currentIndex = (currentIndex + 1) % rentOptions.length;
+    setDisplayText(rentOptions[currentIndex]);
+    setWidth(`${rentOptions[currentIndex].length}ch`); // Dynamic width
+  }, 4000);
+
+  return () => clearInterval(interval);
+}, []);
+
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white">
       {/* {
@@ -220,16 +237,22 @@ const LandingPage = () => {
             >
               Welcome to <Text as="span" color="yellow.300">RentWise</Text>
             </Heading>
-            <Text
-              mt={3}
-              maxW={{ base: "md", md: "3xl" }}
-              mx="auto"
-              fontSize={{ base: "sm", md: "2xl" }}
-              color="white"
-              className="animate-fade-in-up animation-delay-300"
-            >
-              Discover premium rentals for homes, cars, and more. Your journey begins here.
-            </Text>
+            
+
+
+            <Text mt={3} maxW={{ base: "md", md: "3xl" }} mx="auto" fontSize={{ base: "sm", md: "2xl" }} color="white">
+  Discover premium rentals for{' '}
+  <span className="category-text">
+    <Text as="span" color="yellow.300">
+      {displayText}
+    </Text>
+  </span>
+  <br />
+  Your journey begins here.
+</Text>
+
+
+
             <Flex mt={10} justifyContent="center" className="animate-fade-in-up animation-delay-600">
               <Box rounded="md" shadow="md">
                 <Link to="#search" _hover={{ textDecoration: "none" }}>

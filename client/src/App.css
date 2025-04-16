@@ -55,3 +55,40 @@ body{
       filter: hue-rotate(360deg);
     }
   }
+  
+
+
+
+  .category-wrapper {
+    display: inline-block;
+    transition: width 0.3s ease;
+  }
+  
+  .typing-category {
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    border-right: 2px solid;
+    animation: categorySlide 4s ease-in-out infinite;
+    /* width: var(--category-width); */
+  }
+  
+  @keyframes categorySlide {
+    0% {
+      transform: translateY(20px);
+      opacity: 0;
+    }
+    15% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    75% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    90% {
+      transform: translateY(-20px);
+      opacity: 0;
+    }
+  }
+  
