@@ -236,7 +236,7 @@ const ListingDetails = () => {
                 w={{base:"95%", sm:"100%"}}
                 h={"70%"}
                 // maxW="600px"
-                mx="4"
+                // mx="4"
                 aspectRatio={16 / 9} // Maintain aspect ratio
               >
                 <Image
@@ -337,7 +337,7 @@ const ListingDetails = () => {
           </GridItem>
 
           {/* right side details, including location, owner, description, rules */}
-          <VStack spacing={6} w={{base:"90vw", sm:'100%'}} >
+          <VStack spacing={6} w={{base:"90vw", sm:'100%'}} mt={'130px'} >
             <Box
               bg="white"
               _dark={{ bg: "gray.800" }}
