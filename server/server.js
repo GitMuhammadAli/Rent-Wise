@@ -27,6 +27,7 @@ const Owner = require("./routes/owner/owner");
 const Renter = require("./routes/renter/renter");
 const Review = require("./routes/reviews/reviews");
 const Notification = require("./routes/notifications/notification");
+const admin = require("./routes/admin/adminRoutes")
 const logger = require("./utils/logger");
 const { errorHandler, notFound } = require("./middleware/errorHandler");
 const AppError = require("./utils/AppError");
@@ -94,7 +95,7 @@ app.use("/owner", Owner);
 app.use("/renter", Renter);
 app.use("/review", Review);
 app.use("/notification", Notification);
-
+app.use("/rentWise" , admin)
 
 
 // Error handling middleware
