@@ -48,6 +48,7 @@ AGGREMENT_DETAILS_NOT_FOUND:"Agreement details not found",
 AGGREMENT_DETAILS_NOT_UPDATED:"Agreement details not updated",
 ADMIN_INITLIAZED_ERROR:"Error in Admin Initialization",
 INVALID_DATA:"Invalid Data ",
+SOMETHING_WENT_WRONG:"Something Went Wrong",
 
 };
 

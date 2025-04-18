@@ -3,7 +3,7 @@ import { Outlet, Link, useLocation, useNavigate } from "react-router-dom"
 import { useAuth } from "../hooks/AuthContext"
 import { ToastContainer, toast } from "react-toastify"
 import { Box, Flex, Text, Button, Container, useColorModeValue, Icon, VStack, Avatar, Menu, MenuButton, MenuList, MenuGroup, MenuItem, MenuDivider, IconButton, Drawer, DrawerOverlay, DrawerContent, DrawerCloseButton, DrawerHeader, DrawerBody, useDisclosure, MenuIcon } from "@chakra-ui/react"
-import { FaUser,FaBell, FaComments, FaList, FaTachometerAlt, FaPlus, FaFileContract, FaSignOutAlt,FaBars, } from "react-icons/fa"
+import { FaUser,FaBell, FaComments, FaList, FaTachometerAlt, FaPlus, FaFileContract, FaSignOutAlt,FaBars, FaChevronDown,FaChartBar ,FaUsers } from "react-icons/fa"
 import "react-toastify/dist/ReactToastify.css"
 import {LogOut} from 'lucide-react'
 import Logout from '../components/Logout'
@@ -138,7 +138,7 @@ function MainLayout() {
                   Create Listing
                 </Text>
 
-                {user?._id === "670ba87a096754e9bda6658f" && (
+                {/* {user?._id === "670ba87a096754e9bda6658f" && (
                   <Button as={Link} to="/agreements-protected" 
                   color={location.pathname !== "/" ? nonHomeLinkColor : buttonTextColor}
                   _hover={{ color: location.pathname==='/' ? textHoverHome : buttonHoverBgColor, borderBottom: location.pathname=== '/' ? hoverBottomLinkHome : "3px solid orange" }}
@@ -147,7 +147,68 @@ function MainLayout() {
                   >
                     View Agreements
                   </Button>
-                )}
+                )} */}
+
+                
+{user?._id === "670ba87a096754e9bda6658f" && (
+                  <>
+                    <Menu>
+                      <MenuButton as={Button}
+                        color={location.pathname !== "/" ? nonHomeLinkColor : buttonTextColor}
+                        _hover={{ color: location.pathname==='/' ? textHoverHome : buttonHoverBgColor }}
+                        fontWeight="semibold"
+                        rightIcon={<Icon as={FaChevronDown} />}
+                      >
+                        Admin Controls
+                      </MenuButton>
+                      <MenuList>
+                        <MenuItem 
+                          as={Link} 
+                          to="/agreements-protected" 
+                          icon={<Icon as={FaFileContract} />}
+                          color={location.pathname === "/agreements-protected" ? "orange.500" : "black"}
+                          _hover={{ bg: "orange.50", color: "orange.500" }}
+                        >
+                          View Agreements
+                        </MenuItem>
+                        {/* <MenuItem 
+                          as={Link} 
+                          to="/adminDashboard" 
+                          icon={<Icon as={FaTachometerAlt} />}
+                          color={location.pathname === "/adminDashboard" ? "orange.500" : "black"}
+                          _hover={{ bg: "orange.50", color: "orange.500" }}
+                        >
+                          Admin Dashboard
+                        </MenuItem> */}
+                        <MenuItem 
+                          as={Link} 
+                          to="/adminOverview" 
+                          icon={<Icon as={FaChartBar} />}
+                          color={location.pathname === "/adminOverview" ? "orange.500" : "black"}
+                          _hover={{ bg: "orange.50", color: "orange.500" }}
+                        >
+                          Overview
+                        </MenuItem>
+                        <MenuItem 
+                          as={Link} 
+                          to="/admin/users" 
+                          icon={<Icon as={FaUsers} />}
+                          color={location.pathname === "/admin/users" ? "orange.500" : "black"}
+                          _hover={{ bg: "orange.50", color: "orange.500" }}
+                        >
+                          Users
+                        </MenuItem>
+                        <MenuItem 
+                          as={Link} 
+                          to="/admin/listings" 
+                          icon={<Icon as={FaList} />}
+                          color={location.pathname === "/admin/listings" ? "orange.500" : "black"}
+                          _hover={{ bg: "orange.50", color: "orange.500" }}
+                        >
+                          Listings
+                        </MenuItem>
+                      </MenuList>                    </Menu>                  </>
+                )}       
               </>
             )}
           </Flex>

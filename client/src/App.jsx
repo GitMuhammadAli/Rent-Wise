@@ -46,6 +46,11 @@ import UserProfile from "./Pages/profile/owner/ownerProfile";
 import { NotificationProvider } from "./hooks/NotificationContext";
 import ColorTubeLoader from "./components/Style/ColorTubeLoader";
 import Loacation from "./Pages/Location/Loacation";
+import AdminDashboard from "./Pages/Admin/AdminDashboard";
+import AdminOverview from "./Pages/Admin/AdminOverview";
+import AdminLayout from "./Layouts/adminLayout";
+import UserManagement from "./Pages/Admin/UserManagement";
+import ListingManagement from "./Pages/Admin/ListingManagement";
 
 //  import TestListingDetails from "./Pages/Listings/Test/TestHome";
 
@@ -83,7 +88,40 @@ const router = createBrowserRouter(
       </Route>
       
       {/* home */}
-      
+
+      {/* admin Application Routes */}
+      {/* <Route element={<AdminLayout />}>
+      <Route element={<ProtectedRoute requiredRole="admin" />}>
+          <Route path="/admin" element={<Home />} />
+          <Route path="/adminDashboard" element={<AdminDashboard/>}/>
+          <Route path="/adminOverview" element={<AdminOverview/>}/>
+          <Route path="/admin/users" element={<AdminOverview/>}/>
+          <Route path="/admin/listings" element={<AdminOverview/>}/>
+        </Route>
+      </Route> */}
+      {/* Admin Application Routes */}
+      {/* <Route element={<AdminLayout />}> */}
+      <Route element={<MainLayout />}>
+      <Route element={<ProtectedRoute requiredRole="admin" />}>
+          <Route path="/admin" element={<Home />} />
+          {/* <Route path="/adminDashboard" element={<AdminDashboard/>}/> */}
+          <Route path="/adminOverview" element={<AdminOverview/>}/>
+          <Route path="/admin/users" element={<UserManagement/>}/>
+          <Route path="/admin/listings" element={<ListingManagement/>}/>
+        </Route>
+        <Route element={<ProtectedRoute requiredRole="admin" />}>
+          <Route path="/category/*" element={<Home />} />
+        </Route>
+        <Route element={<ProtectedRoute requiredRole="admin" />}>
+          <Route path="/agreements-protected" element={<DisplayAgreements />} />
+        </Route>
+
+        <Route element={<ProtectedRoute requiredRole="admin" />}>
+          <Route path="/integration" element={<Integration/>} />
+        </Route>
+      {/* </Route> */}
+      </Route>
+       
       {/* Main Application Routes */}
       <Route element={<MainLayout />}>
         <Route element={<ProtectedRoute requiredRole="user" />}>
@@ -137,20 +175,7 @@ const router = createBrowserRouter(
           <Route path="/getAll" element={<LandingPage />} />
         </Route> */}
 
-        <Route element={<ProtectedRoute requiredRole="admin" />}>
-          <Route path="/admin" element={<Home />} />
-        </Route>
 
-        <Route element={<ProtectedRoute requiredRole="admin" />}>
-          <Route path="/category/*" element={<Home />} />
-        </Route>
-        <Route element={<ProtectedRoute requiredRole="admin" />}>
-          <Route path="/agreements-protected" element={<DisplayAgreements />} />
-        </Route>
-
-        <Route element={<ProtectedRoute requiredRole="admin" />}>
-          <Route path="/integration" element={<Integration/>} />
-        </Route>
 
         <Route element={<ProtectedRoute requiredRole="user" />}>
 

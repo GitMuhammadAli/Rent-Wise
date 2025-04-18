@@ -140,7 +140,7 @@ if (loading) {
             <Card>
               <CardBody>
                 <h2 className="text-2xl font-semibold text-gray-900 mb-4">Reviews You've Received</h2>
-                <div className="space-y-6">
+                <div className="space-y-6 mx-4 ">
                   {receivedReviews?.map((review, i) => (
                     <div key={review._id || i} className="flex items-start space-x-4">
                       <Avatar
@@ -166,7 +166,7 @@ if (loading) {
             <Card>
               <CardBody>
                 <h2 className="text-2xl font-semibold text-gray-900 mb-4">People You Can Review</h2>
-                <div className="space-y-6">
+                <div className="space-y-6 mx-4 ">
                   {peopleData && peopleData.length > 0 && peopleData.map((item) => (
                     <div key={item.agreementId} className="flex flex-col md:flex-row md:items-start md:space-x-4">
                       <div className="flex-shrink-0 mb-4 md:mb-0">

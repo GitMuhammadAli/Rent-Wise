@@ -1,22 +1,22 @@
-const Aggrement = require("../../model/agreements/Aggrement");
-const AggrementDetails = require("../../model/agreements/AggrementDetails");
-const RentalItem = require("../../model/listings/RentalItemModel");
-const BlockChainAggrement = require("../../model/agreements/BlockChainAggrements");
-const logger = require("../../utils/logger");
-const { ERROR_MESSAGE } = require("../../messages/error");
+const Aggrement = require("../../../model/agreements/Aggrement");
+const AggrementDetails = require("../../../model/agreements/AggrementDetails");
+const RentalItem = require("../../../model/listings/RentalItemModel");
+const BlockChainAggrement = require("../../../model/agreements/BlockChainAggrements");
+const logger = require("../../../utils/logger");
+const { ERROR_MESSAGE } = require("../../../messages/error");
 const {
     RESPONCE_MESSAGE,
     AGGREEMENT,
     CONVERSATION,
-} = require("../../messages/response");
-const { STATUS } = require("../../messages/status");
-const AppError = require("../../utils/AppError");
-const { ROLES, BOOLEAN } = require("../../utils/Roles");
+} = require("../../../messages/response");
+const { STATUS } = require("../../../messages/status");
+const AppError = require("../../../utils/AppError");
+const { ROLES, BOOLEAN } = require("../../../utils/Roles");
 const QRCode = require("qrcode");
-const { io } = require("../../utils/socket");
-const Messsage = require("../../model/chat/MesssageModel");
-const Conversation = require("../../model/chat/ConversationModel");
-const {CreateNotification} = require("../../controller/notification/notification")
+const { io } = require("../../../utils/socket");
+const Messsage = require("../../../model/chat/MesssageModel");
+const Conversation = require("../../../model/chat/ConversationModel");
+const {CreateNotification} = require("../../notification/notification")
 
 // const BlockChainAggrement = require("../../model/agreements/BlockChainAggrements");
 
@@ -42,9 +42,10 @@ exports.getAggrementForAdminByOwnerIDs = async (req, res, next) => {
             );
         }
 
-        if (
-            agreements.ownerConfirmed === BOOLEAN.TRUE
-        ) {
+        const confirmedAgreements = agreements.filter(agreement => 
+            agreement.ownerConfirmed === BOOLEAN.TRUE
+        );
+        if (confirmedAgreements.length > 0) {
             res.status(STATUS.SUCCESS).json({
                 status: STATUS.SUCCESS,
                 message: AGGREEMENT.AGGREMENT_FETCHED_THAT_ARE_NOT_BLOCKCHAINED,
