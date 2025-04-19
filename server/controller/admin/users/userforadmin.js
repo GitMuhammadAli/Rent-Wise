@@ -9,7 +9,6 @@ const {
     RESPONCE_MESSAGE,
     AGGREEMENT,
     CONVERSATION,
-    adminMessages
 } = require("../../../messages/response");
 const {
     adminMessages
@@ -24,46 +23,35 @@ const Conversation = require("../../../model/chat/ConversationModel");
 const {CreateNotification} = require("../../notification/notification")
 
 
-exports.userManage = async(req,res,next)=>{
-    try {
-        
-    } catch (error) {
-        
-    }
-}
-
-
 
 exports.userManage = async(req,res,next)=>{
     try {
-        const allLists = await User.find().populate('owner location images videos facilities')
         
+        const allUser = await User.find()
 
         res.status(200).json({
             status: STATUS.SUCCESS,
             message: RESPONCE_MESSAGE.SUCCESS,
             data: {
-                allLists,
-                cars,
-                houses,
-                hostels
+                allUser,
             }
         })
     } catch (error) {
+        console.log(error)
         next(new AppError(ERROR_MESSAGE.SOMETHING_WENT_WRONG, 500))
     }
 }
 
 exports.userManageById = async(req,res,next)=>{
     try {
-        const listing = await User.findById(req.params.id).populate('owner location images videos facilities')
-        if(!listing) {
+        const allUser = await User.findById(req.params.id)
+        if(!allUser) {
             return next(new AppError(ERROR_MESSAGE.NOT_FOUND, 404))
         }
         res.status(200).json({
             status: STATUS.SUCCESS,
             message: RESPONCE_MESSAGE.SUCCESS,
-            data: listing
+            data: allUser
         })
     } catch (error) {
         next(new AppError(ERROR_MESSAGE.SOMETHING_WENT_WRONG, 500))
