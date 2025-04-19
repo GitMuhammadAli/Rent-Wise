@@ -215,7 +215,7 @@ const handleSubmit = async (e) => {
   color="white"
   w="90%"
 
-   px={{base: 4, md: 6 , lg:0}}
+   px={{base: 1, md: 6 , lg:0}}
    py={{base: 6, md: 8 , lg:0}}
 >
   {/* Left Image */}
@@ -393,7 +393,7 @@ const handleSubmit = async (e) => {
             </FormControl>
           </Stack>
 
-          <Stack w={{base:'100vw',md:"50vw", lg:"30vw"}} mt="8" p="6" boxShadow="lg" borderRadius="md" bg={'white'}>
+          <Stack w={{base:'100vw',md:"50vw", lg:"30vw"}} mt="2" p="6" boxShadow="lg" borderRadius="md" bg={'white'}>
             <FormControl>
               <FormLabel>Images</FormLabel>
               <Input
@@ -429,7 +429,7 @@ const handleSubmit = async (e) => {
 
 
 
-            <Box className="mb-8" borderWidth={1} borderRadius="md" p={4}>
+            <Box className="mb-8" borderWidth={1} borderRadius="md" p={4} mt={4}>
               <Heading size="md">Bidding</Heading>
               <Flex alignItems="center" mt={2}>
                 <Switch 
@@ -441,7 +441,7 @@ const handleSubmit = async (e) => {
                 <FormLabel htmlFor="bidding" ml={2}>Enable Bidding</FormLabel>
               </Flex>
               {formData.biddingEnabled && (
-                <Stack spacing={4} mt={4}>
+                <Stack spacing={4} mt={2}>
                   <FormControl>
                     <FormLabel htmlFor="minimumBid">Minimum Bid Amount</FormLabel>
                     <Input 

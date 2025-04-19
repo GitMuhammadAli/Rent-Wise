@@ -155,7 +155,7 @@ export default function MyAccount() {
         <TabList bg={'gray.50'}  mb="1em" >
           <Tab>Personal</Tab>
           <Tab>Notifications</Tab>
-          <Tab>Privacy</Tab>
+          {/* <Tab>Privacy</Tab> */}
           {!isThirdPartyUser && <Tab>Security</Tab>}
         </TabList>
         <TabPanels>
@@ -222,7 +222,7 @@ export default function MyAccount() {
             </VStack>
           </TabPanel>
 
-          <TabPanel>
+          {/* <TabPanel>
             <VStack spacing={4}>
               <FormControl>
                 <FormLabel>Profile Visibility</FormLabel>
@@ -241,7 +241,7 @@ export default function MyAccount() {
                 <Switch />
               </FormControl>
             </VStack>
-          </TabPanel>
+          </TabPanel> */}
 
           {!isThirdPartyUser && (
             <TabPanel>
