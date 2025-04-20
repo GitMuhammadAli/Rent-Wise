@@ -128,124 +128,227 @@ if (loading) {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-gray-900 mb-6">Reviews</h1>
-      <Tabs variant="enclosed">
-        <TabList mb="4">
-          <Tab>Reviews You've Received</Tab>
-          <Tab>People You Can Review</Tab>
-        </TabList>
-        <TabPanels>
-          <TabPanel>
-            <Card>
-              <CardBody>
-                <h2 className="text-2xl font-semibold text-gray-900 mb-4">Reviews You've Received</h2>
-                <div className="space-y-6 mx-4 ">
-                  {receivedReviews?.map((review, i) => (
-                    <div key={review._id || i} className="flex items-start space-x-4">
-                      <Avatar
-                        src={`${import.meta.env.VITE_BACK_END_URL}${review.reviewer.imageUrl}` || '/placeholder.svg'}
-                        alt={review.reviewer.name}
+    // <div className="container mx-auto px-4 py-8">
+    //   <h1 className="text-3xl font-bold text-gray-900 mb-6">Reviews</h1>
+    //   <Tabs variant="enclosed">
+    //     <TabList mb="4">
+    //       <Tab>Reviews You've Received</Tab>
+    //       <Tab>People You Can Review</Tab>
+    //     </TabList>
+    //     <TabPanels>
+    //       <TabPanel>
+    //         <Card>
+    //           <CardBody>
+    //             <h2 className="text-2xl font-semibold text-gray-900 mb-4">Reviews You've Received</h2>
+    //             <div className="space-y-6 mx-4 ">
+    //               {receivedReviews?.map((review, i) => (
+    //                 <div key={review._id || i} className="flex items-start space-x-4">
+    //                   <Avatar
+    //                     src={`${import.meta.env.VITE_BACK_END_URL}${review.reviewer.imageUrl}` || '/placeholder.svg'}
+    //                     alt={review.reviewer.name}
 
-                      />
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between">
-                          <h3 className="text-lg font-medium text-gray-900">{review.reviewer.name}</h3>
-                          <span className="text-sm text-gray-500">{new Date(review.createdAt).toLocaleString()}</span>
-                        </div>
-                        <StarRating rating={review.rating} />
-                        <p className="mt-2 text-gray-600">{review.comment}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardBody>
-            </Card>
-          </TabPanel>
-          <TabPanel>
-            <Card>
-              <CardBody>
-                <h2 className="text-2xl font-semibold text-gray-900 mb-4">People You Can Review</h2>
-                <div className="space-y-6 mx-4 ">
-                  {peopleData && peopleData.length > 0 && peopleData.map((item) => (
-                    <div key={item.agreementId} className="flex flex-col md:flex-row md:items-start md:space-x-4">
-                      <div className="flex-shrink-0 mb-4 md:mb-0">
-                        {
-                            item.listing.images.length > 0 ? (
-                                <img
-                          src={`${import.meta.env.VITE_BACK_END_URL}${item.listing.images[0].url}` || '/placeholder.svg'}
-                          alt={item.listingTitle}
-                          width={120}
-                          height={80}
-                          className="rounded-md object-cover"
-                        />
-                            ) : (
-                                <img
-                          src={'/images/make_listing/random.png'}
-                          alt={item.listingTitle}
-                          width={120}
-                          height={80}
-                        />
-                             )
-                        } 
+    //                   />
+    //                   <div className="flex-1">
+    //                     <div className="flex items-center justify-between">
+    //                       <h3 className="text-lg font-medium text-gray-900">{review.reviewer.name}</h3>
+    //                       <span className="text-sm text-gray-500">{new Date(review.createdAt).toLocaleString()}</span>
+    //                     </div>
+    //                     <StarRating rating={review.rating} />
+    //                     <p className="mt-2 text-gray-600">{review.comment}</p>
+    //                   </div>
+    //                 </div>
+    //               ))}
+    //             </div>
+    //           </CardBody>
+    //         </Card>
+    //       </TabPanel>
+    //       <TabPanel>
+    //         <Card>
+    //           <CardBody>
+    //             <h2 className="text-2xl font-semibold text-gray-900 mb-4">People You Can Review</h2>
+    //             <div className="space-y-6 mx-4 ">
+    //               {peopleData && peopleData.length > 0 && peopleData.map((item) => (
+    //                 <div key={item.agreementId} className="flex flex-col md:flex-row md:items-start md:space-x-4">
+    //                   <div className="flex-shrink-0 mb-4 md:mb-0">
+    //                     {
+    //                         item.listing.images.length > 0 ? (
+    //                             <img
+    //                       src={`${import.meta.env.VITE_BACK_END_URL}${item.listing.images[0].url}` || '/placeholder.svg'}
+    //                       alt={item.listingTitle}
+    //                       width={120}
+    //                       height={80}
+    //                       className="rounded-md object-cover"
+    //                     />
+    //                         ) : (
+    //                             <img
+    //                       src={'/images/make_listing/random.png'}
+    //                       alt={item.listingTitle}
+    //                       width={120}
+    //                       height={80}
+    //                     />
+    //                          )
+    //                     } 
                         
                     
-                      </div>
-                      <div className="flex-grow">
-                        <div className="flex items-center justify-between mb-2">
-                          <h3 className="text-lg font-medium text-gray-900">{item.listing.title}</h3>
-                          <span className="text-sm text-gray-500">
-                            Rented on: {format(new Date(item.agreementDate), "MMMM dd, yyyy")}
-                          </span>
-                        </div>
-                        <div className="flex items-center space-x-2 mb-2">
-                          <Avatar
-                            src={`${import.meta.env.VITE_BACK_END_URL}${item.user.imageUrl}` || '/placeholder.svg'}
-                            alt={item?.user?.name}
+    //                   </div>
+    //                   <div className="flex-grow">
+    //                     <div className="flex items-center justify-between mb-2">
+    //                       <h3 className="text-lg font-medium text-gray-900">{item.listing.title}</h3>
+    //                       <span className="text-sm text-gray-500">
+    //                         Rented on: {format(new Date(item.agreementDate), "MMMM dd, yyyy")}
+    //                       </span>
+    //                     </div>
+    //                     <div className="flex items-center space-x-2 mb-2">
+    //                       <Avatar
+    //                         src={`${import.meta.env.VITE_BACK_END_URL}${item.user.imageUrl}` || '/placeholder.svg'}
+    //                         alt={item?.user?.name}
     
-                          />
-                          <Link to={`/profile/${item?.user?.id}`}>
-                          <span className="text-sm text-gray-600 cursor-pointer">{item.user.name}</span>
-                          </Link>
+    //                       />
+    //                       <Link to={`/profile/${item?.user?.id}`}>
+    //                       <span className="text-sm text-gray-600 cursor-pointer">{item.user.name}</span>
+    //                       </Link>
                           
-                        </div>
-                        <div className="flex flex-wrap gap-2 mb-4">
-                          {/* {item.images.slice(1).map((image, index) => (
-                            <img
-                              key={index}
-                              src={image || '/placeholder.svg'}
-                              alt={`${item.listingTitle} image ${index + 2}`}
-                              width={80}
-                              height={60}
-                              className="rounded-md object-cover"
-                            />
-                          ))} */}
+    //                     </div>
+    //                     <div className="flex flex-wrap gap-2 mb-4">
+    //                       {/* {item.images.slice(1).map((image, index) => (
+    //                         <img
+    //                           key={index}
+    //                           src={image || '/placeholder.svg'}
+    //                           alt={`${item.listingTitle} image ${index + 2}`}
+    //                           width={80}
+    //                           height={60}
+    //                           className="rounded-md object-cover"
+    //                         />
+    //                       ))} */}
                           
-                        </div>
+    //                     </div>
 
-                      <Flex flexDir={'column'} justifySelf={'end'} gap={2}>
-                        <div >
-                          <Link to={`/rental/${item?.listing?._id}`} className="text-orange-600 hover:text-orange-800 text-sm font-medium flex items-center">
-                            Review Listing
-                            <FaExternalLinkAlt className="ml-1 w-3 h-3" />
-                          </Link>
-                        </div>
-                        <div >
-                          <Link to={`/profile/${item?.user?.id}`} className="text-orange-600 hover:text-orange-800 text-sm font-medium flex items-center">
-                            Review Owner
-                            <FaExternalLinkAlt className="ml-1 w-3 h-3" />
-                          </Link>
-                        </div>
-                        </Flex>
-                      </div>
+    //                   <Flex flexDir={'column'} justifySelf={'end'} gap={2}>
+    //                     <div >
+    //                       <Link to={`/rental/${item?.listing?._id}`} className="text-orange-600 hover:text-orange-800 text-sm font-medium flex items-center">
+    //                         Review Listing
+    //                         <FaExternalLinkAlt className="ml-1 w-3 h-3" />
+    //                       </Link>
+    //                     </div>
+    //                     <div >
+    //                       <Link to={`/profile/${item?.user?.id}`} className="text-orange-600 hover:text-orange-800 text-sm font-medium flex items-center">
+    //                         Review Owner
+    //                         <FaExternalLinkAlt className="ml-1 w-3 h-3" />
+    //                       </Link>
+    //                     </div>
+    //                     </Flex>
+    //                   </div>
+    //                 </div>
+    //               ))}
+    //             </div>
+    //           </CardBody>
+    //         </Card>
+    //       </TabPanel>
+    //     </TabPanels>
+    //   </Tabs>
+    // </div>
+
+
+
+
+    <div className="container mx-auto px-0 py-8">
+  <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">Reviews</h1>
+  <Tabs variant="enclosed">
+    <TabList mb="4" overflowX="auto" className="flex-wrap">
+      <Tab>Reviews You've Received</Tab>
+      <Tab>People You Can Review</Tab>
+    </TabList>
+    <TabPanels>
+      <TabPanel>
+        <Card>
+          <CardBody>
+            <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-4">
+              Reviews You've Received
+            </h2>
+            <div className="space-y-6 sm:mx-4">
+              {receivedReviews?.map((review, i) => (
+                <div key={review._id || i} className="flex flex-col sm:flex-row items-start gap-4">
+                  <Avatar
+                    src={`${import.meta.env.VITE_BACK_END_URL}${review.reviewer.imageUrl}` || '/placeholder.svg'}
+                    alt={review.reviewer.name}
+                  />
+                  <div className="flex-1 w-full">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                      <h3 className="text-lg font-medium text-gray-900">{review.reviewer.name}</h3>
+                      <span className="text-sm text-gray-500">{new Date(review.createdAt).toLocaleString()}</span>
                     </div>
-                  ))}
+                    <StarRating rating={review.rating} />
+                    <p className="mt-2 text-gray-600 break-words">{review.comment}</p>
+                  </div>
                 </div>
-              </CardBody>
-            </Card>
-          </TabPanel>
-        </TabPanels>
-      </Tabs>
-    </div>
+              ))}
+            </div>
+          </CardBody>
+        </Card>
+      </TabPanel>
+      <TabPanel>
+        <Card>
+          <CardBody>
+            <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-4">People You Can Review</h2>
+            <div className="space-y-6 sm:mx-4">
+              {peopleData?.length > 0 &&
+                peopleData.map((item) => (
+                  <div key={item.agreementId} className="flex flex-col md:flex-row md:items-start gap-4">
+                    <div className="flex-shrink-0 w-full sm:w-auto">
+                      <img
+                        src={
+                          item.listing.images.length > 0
+                            ? `${import.meta.env.VITE_BACK_END_URL}${item.listing.images[0].url}`
+                            : '/images/make_listing/random.png'
+                        }
+                        alt={item.listingTitle}
+                        width={120}
+                        height={80}
+                        className="rounded-md object-cover w-full max-w-[120px] h-auto"
+                      />
+                    </div>
+                    <div className="flex-grow w-full">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2">
+                        <h3 className="text-lg font-medium text-gray-900">{item.listing.title}</h3>
+                        <span className="text-sm text-gray-500">
+                          Rented on: {format(new Date(item.agreementDate), 'MMMM dd, yyyy')}
+                        </span>
+                      </div>
+                      <div className="flex items-center space-x-2 mb-2">
+                        <Avatar
+                          src={`${import.meta.env.VITE_BACK_END_URL}${item.user.imageUrl}` || '/placeholder.svg'}
+                          alt={item?.user?.name}
+                        />
+                        <Link to={`/profile/${item?.user?.id}`}>
+                          <span className="text-sm text-gray-600 cursor-pointer">{item.user.name}</span>
+                        </Link>
+                      </div>
+                      <Flex direction="column" gap={2} mt={2}>
+                        <Link
+                          to={`/rental/${item?.listing?._id}`}
+                          className="text-orange-600 hover:text-orange-800 text-sm font-medium flex items-center"
+                        >
+                          Review Listing
+                          <FaExternalLinkAlt className="ml-1 w-3 h-3" />
+                        </Link>
+                        <Link
+                          to={`/profile/${item?.user?.id}`}
+                          className="text-orange-600 hover:text-orange-800 text-sm font-medium flex items-center"
+                        >
+                          Review Owner
+                          <FaExternalLinkAlt className="ml-1 w-3 h-3" />
+                        </Link>
+                      </Flex>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          </CardBody>
+        </Card>
+      </TabPanel>
+    </TabPanels>
+  </Tabs>
+</div>
+
   );
 }

@@ -3,9 +3,9 @@ import { Link, useParams } from 'react-router-dom';
 import Web3 from 'web3';
 import { MakeAggrementForAdminByOwnerIDs } from '../../../Api/Blockchain';
 
-const Integration = ({agreementId}) => {
+const Integration = ({agreementId,agreementDetails, setAgreementDetails}) => {
   const [currentAccount, setCurrentAccount] = useState('');
-  const [agreementDetails, setAgreementDetails] = useState(null);
+  // const [agreementDetails, setAgreementDetails] = useState(null);
   const [transactionHash, setTransactionHash] = useState('');
   
 

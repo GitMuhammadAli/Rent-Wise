@@ -51,6 +51,7 @@ import AdminOverview from "./Pages/Admin/AdminOverview";
 import AdminLayout from "./Layouts/adminLayout";
 import UserManagement from "./Pages/Admin/UserManagement";
 import ListingManagement from "./Pages/Admin/ListingManagement";
+import { AgreementProvider } from "./hooks/AdminAgreementContext";
 
 //  import TestListingDetails from "./Pages/Listings/Test/TestHome";
 
@@ -217,7 +218,9 @@ function App() {
       <DashboardUserContextProvider>
         <NotificationProvider>
         <ListingsProvider>
+          <AgreementProvider>
           <RouterProvider router={router} />
+          </AgreementProvider>
         </ListingsProvider>
         </NotificationProvider>
       </DashboardUserContextProvider>
