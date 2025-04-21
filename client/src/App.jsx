@@ -52,6 +52,7 @@ import AdminLayout from "./Layouts/adminLayout";
 import UserManagement from "./Pages/Admin/UserManagement";
 import ListingManagement from "./Pages/Admin/ListingManagement";
 import { AgreementProvider } from "./hooks/AdminAgreementContext";
+import LocationPicker from "./Pages/Location/Loacation";
 
 //  import TestListingDetails from "./Pages/Listings/Test/TestHome";
 
@@ -143,7 +144,8 @@ const router = createBrowserRouter(
 
          {/* owner profile */}
          <Route path="/profile/:_id" element={<UserProfile/>} />
-
+         <Route path="/loc" element={<LocationPicker/>} />
+        
 
         
         
@@ -177,7 +179,7 @@ const router = createBrowserRouter(
         </Route> */}
 
 
-
+       {/* protected routes */}
         <Route element={<ProtectedRoute requiredRole="user" />}>
 
         {/* listing routes */}
