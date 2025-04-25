@@ -229,7 +229,7 @@ useEffect(() => {
         <Container maxW="7xl" px={{ base: 4, sm: 6, lg: 8 }}>
           <Flex direction="column" alignItems="center" textAlign="center">
             <Heading
-              fontSize={{ base: "2xl",sm:"4xl", md: "7xl" }}
+              fontSize={{ base: "3xl",sm:"4xl", md: "7xl" }}
               fontWeight="extrabold"
               color="white"
               mb={4}
@@ -260,7 +260,7 @@ useEffect(() => {
                   
                     px={{ base: 2, md: 10 }}
                     py={{ base: 3, md: 7 }}
-                    fontSize={{ base: "md", md: "lg" }}
+                    fontSize={{ base: "sm", md: "lg" }}
                     fontWeight="medium"
                     colorScheme="whiteAlpha"
                     color="orange.700"
@@ -278,7 +278,7 @@ useEffect(() => {
                   <Button
                     px={{ base: 2, md: 10 }}
                     py={{ base: 3, md: 7 }}
-                    fontSize={{ base: "md", md: "lg" }}
+                    fontSize={{ base: "sm", md: "lg" }}
                     fontWeight="medium"
                     colorScheme="orange"
                     bg="orange.500"

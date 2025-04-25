@@ -20,11 +20,17 @@ const GenerateToken = async (user, req, res, next) => {
     const token = await makeToken(user._id);
     res.cookie("jwt", token, {
       httpOnly: BOOLEAN.TRUE,
-      secure: process.env.NODE_ENV !== "development",
+     secure: process.env.NODE_ENV !== "development", // the working one
       maxAge: 30 * 24 * 60 * 60 * 1000,
+      sameSite: "strict",    // the working one
       // sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
-      sameSite: "strict",
       //   secure: process.env.NODE_ENV === 'production', // Use HTTPS in production
+
+       // use if you want to access on network IP
+
+      // secure: false,        
+      // sameSite: "lax", 
+     
     });
 
     return token;

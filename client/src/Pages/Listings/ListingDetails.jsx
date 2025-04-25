@@ -337,7 +337,7 @@ const ListingDetails = () => {
           </GridItem>
 
           {/* right side details, including location, owner, description, rules */}
-          <VStack spacing={6} w={{base:"90vw", sm:'100%'}} mt={'130px'} >
+          <VStack spacing={6} w={{base:"90vw", sm:'100%'}} mt={{base:'none', md:'130px'}} >
             <Box
               bg="white"
               _dark={{ bg: "gray.800" }}

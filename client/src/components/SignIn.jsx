@@ -4,11 +4,13 @@ import { toast, ToastContainer } from "react-toastify";
 import { useAuth } from "../hooks/AuthContext";
 import { GoogleLoginRequest } from "../Api/api";
 import { response } from "../utils/ResponceMessages";
+import { useToast } from "@chakra-ui/react";
 
 function SignIn() {
   const [your_email, setEmail] = useState("");
   const [your_pass, setPassword] = useState("");
   const [error,setError] = useState("");
+  const ChakraToast = useToast();
 
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -61,6 +63,13 @@ function SignIn() {
           });
         } else {
           navigate("/", { state: { successMessage: response.login.success || apiResponse.message } });
+          ChakraToast({
+            title: "Logged In Successfully",
+            description: "You have successfully logged in.",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+          });
         }
       }
     } catch (error) {

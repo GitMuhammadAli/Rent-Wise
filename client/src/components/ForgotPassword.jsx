@@ -30,7 +30,7 @@ function ForgotPassword() {
         <div className="mb-8 md:mb-0 md:ml-[10px] md:mr-5 md:mt-[10px] w-full md:w-1/2 flex flex-col items-center">
           <img src="/images/reset.jpg" alt="Reset Password" />
           <p className="mt-6 text-center">
-            <Link to="/auth/signup" className="text-blue-500 hover:underline">
+            <Link to="/auth/signup" className="text-orange-500 hover:underline">
               Sign In
             </Link>
           </p>
@@ -46,7 +46,7 @@ function ForgotPassword() {
                 type="email"
                 name="email"
                 id="your_email"
-                className="w-full pl-10 pr-4 py-2 border-b border-b-black rounded-t-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full pl-10 pr-4 py-2 border-b border-b-black rounded-t-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
                 placeholder="Your Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -56,7 +56,7 @@ function ForgotPassword() {
             <div>
               <button
                 type="submit"
-                className="w-full py-2 mt-8 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                className="w-full py-2 mt-8 text-white bg-orange-500 rounded-lg hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
               >
                 Submit Email
               </button>
