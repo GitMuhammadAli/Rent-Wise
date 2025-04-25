@@ -5,6 +5,7 @@ const Location = require("../../model/listings/LocationModel");
 const Video = require("../../model/listings/VediosModel");
 const Bidding = require("../../model/listings/biddingModel");
 const User = require("../../model/user/userModel")
+
 const path = require("path");
 const logger = require("../../utils/logger");
 const fs = require("fs");
@@ -83,6 +84,7 @@ exports.CreateListings = async (req, res, next) => {
         if (!price) missingFields.push("price");
         if (!category) missingFields.push("category");
         if (!priceUnit) missingFields.push("priceUnit");
+        if (!location) missingFields.push("location");
 
 
         // if (!location) missingFields.push("location");
@@ -139,6 +141,32 @@ exports.CreateListings = async (req, res, next) => {
                 bathrooms: bathrooms
             })
         }
+
+
+         // location handling
+// If location is a JSON string, parse it
+let parsedLocation;
+if (typeof location === 'string') {
+  try {
+    parsedLocation = JSON.parse(location);
+    console.log("Parsed Location:", parsedLocation);
+  } catch (err) {
+    return next(new AppError(false, "Invalid location JSON format", STATUS.BAD_REQUEST));
+  }
+} else {
+  parsedLocation = location;
+}
+
+// Check for required fields
+const { address, city, state, country, zipCode, coordinates } = parsedLocation;
+if (!address || !state || !country || !coordinates || !coordinates.latitude || !coordinates.longitude) {
+  return next(new AppError(false, "Invalid location format", STATUS.BAD_REQUEST));
+}
+
+// Save location to DB
+const newLocation = await Location.create(parsedLocation);
+
+
         // Create the rental item
         const newRentalItem = new RentalItem({
             _id: listingId,
@@ -153,14 +181,25 @@ exports.CreateListings = async (req, res, next) => {
             images,
             videos,
             listingStatus: "active",
-            facilities: facilities ? facilities._id : null
-            // location: newLocation._id,
+            facilities: facilities ? facilities._id : null,
+            location: newLocation._id
         });
 
-        if (Boolean(biddingEnabled) == BOOLEAN.TRUE) {
+        // if (Boolean(biddingEnabled) == BOOLEAN.TRUE) {
+        //     if (!minimumBid || !bidEndDate) {
+        //         return next(new AppError(BOOLEAN.FALSE, LISTINGS.BIDDING_ERROR_MISSING_REQUIRED_FIELDS, STATUS.BAD_REQUEST));
+        //     }
+
+        // error in above code
+        if (biddingEnabled === BOOLEAN.TRUE) {
             if (!minimumBid || !bidEndDate) {
-                return next(new AppError(BOOLEAN.FALSE, LISTINGS.BIDDING_ERROR_MISSING_REQUIRED_FIELDS, STATUS.BAD_REQUEST));
+              return next(new AppError(
+                false,
+                LISTINGS.BIDDING_ERROR_MISSING_REQUIRED_FIELDS,
+                STATUS.BAD_REQUEST
+              ));
             }
+          
 
             const bidding = new Bidding({
                 rentalItem: newRentalItem._id,
@@ -624,7 +663,8 @@ exports.GetListingsById = async (req, res, next) => {
                     select: 'name imageUrl'
                 }
             })
-            .populate('facilities');
+            .populate('facilities')
+            .populate('location'); 
         if (!listing) {
             return next(new AppError(BOOLEAN.FALSE, LISTINGS.LISTING_NOT_FOUND, STATUS.NOT_FOUND));
         }

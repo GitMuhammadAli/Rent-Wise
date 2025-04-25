@@ -6,6 +6,7 @@ import {
 import { uploadMediaAPI } from "../../Api/ListingApi";  
 import { useAuth } from "../../hooks/AuthContext";
 import { ListingsContext } from '../../hooks/ListingsContext';
+import LocationSearch from '../Location/Loacation';
 
 export default function Media() {
   const [formData, setFormData] = useState({
@@ -15,6 +16,7 @@ export default function Media() {
     minimumBid: '',
     bidIncrement: '',
     bidEndDate: '',
+    location: null,
   });
   const [images, setImages] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]); // For image previews
@@ -32,6 +34,14 @@ export default function Media() {
   const [facilities, setFacilities] = useState({ bedrooms: 0 , bathrooms: 0 })
 
   const toast = useToast();
+
+  const handleLocationSelect = (locationDetails) => {
+    setFormData((prev) => ({
+      ...prev,
+      location: locationDetails,
+    }));
+    console.log('loc got', locationDetails);
+  };
 
   // Handle image selection and generate previews
   const handleImageChange = (e) => {
@@ -134,6 +144,8 @@ const handleSubmit = async (e) => {
   formDataToSend.append('bidEndDate', formData.bidEndDate);
   formDataToSend.append('bedrooms', facilities.bedrooms);
   formDataToSend.append('bathrooms', facilities.bathrooms);
+ formDataToSend.append('location', JSON.stringify(formData.location));
+
 
 
   // Append each image
@@ -177,6 +189,7 @@ const handleSubmit = async (e) => {
       minimumBid: '',
       bidIncrement: '',
       bidEndDate: '',
+      location: null,
     });
     setImages([]);
     setVideos([]);
@@ -251,7 +264,10 @@ const handleSubmit = async (e) => {
 
       <form onSubmit={handleSubmit}>
         <Flex flexDir={{base: 'column', md:'row' , lg:'row'}} justifyContent={'center'} gap={10}>
-          <Stack w={{base:'100vw',md:"50vw", lg:"50vw"}} mt="8" p="6" bg="white" boxShadow="lg" borderRadius="md" spacing="4">
+            {/* a parent stack to make Location and details in one line */}
+          <Stack> 
+               {/* details stack */}
+              <Stack w={{base:'100vw',md:"50vw", lg:"50vw"}} mt="8" p="6" bg="white" boxShadow="lg" borderRadius="md" spacing="4">
             <FormControl isRequired>
               <FormLabel>Title</FormLabel>
               <Input
@@ -391,8 +407,16 @@ const handleSubmit = async (e) => {
               ))}
               <Button onClick={handleAddRule}>Add Rule</Button>
             </FormControl>
+              </Stack>
+              
+              {/* location stack */}
+              <Stack w={{base:'100vw',md:"50vw", lg:"50vw"}} mt="2" p="6" boxShadow="lg" borderRadius="md" bg={'white'}>
+                <LocationSearch onLocationSelect={handleLocationSelect}/>
+              </Stack>
+
           </Stack>
 
+           {/* image and biddding stack */}
           <Stack w={{base:'100vw',md:"50vw", lg:"30vw"}} mt="2" p="6" boxShadow="lg" borderRadius="md" bg={'white'}>
             <FormControl>
               <FormLabel>Images</FormLabel>
