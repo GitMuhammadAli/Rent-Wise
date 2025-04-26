@@ -90,7 +90,7 @@ const [loading, setLoading] = useState(true);
           listingStatus: listing.listingStatus,
           bedrooms: listing.facilities?.bedrooms ?? 0,
           bathrooms: listing.facilities?.bathrooms ?? 0,
-          biddingEnabled : listing.bidding?.enabled,
+          biddingEnabled : listing.bidding?.enabled || false,
           minimumBid: listing?.bidding?.minimumBid,
           bidIncrement: listing?.bidding?.bidIncrement,
           bidEndDate: listing?.bidding?.bidEndDate,

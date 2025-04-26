@@ -129,6 +129,18 @@ const handleSubmit = async (e) => {
     }
   }
 
+  if (!formData.location ) {
+    toast({
+      title: "Location Required.",
+      description: "please select location.",
+      status: "error",
+      duration: 3000,
+      isClosable: true,
+    });
+   
+      return;
+    }
+
   const formDataToSend = new FormData();
   formDataToSend.append('owner', user._id);
   formDataToSend.append('title', title);

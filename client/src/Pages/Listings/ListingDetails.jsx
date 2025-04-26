@@ -23,11 +23,13 @@ import {
   ListItem,
   ListIcon,
   List,
-  Modal, ModalOverlay, ModalContent, ModalCloseButton, ModalBody, useDisclosure
+  Modal, ModalOverlay, ModalContent, ModalCloseButton, ModalBody, useDisclosure,
+  Stack
 } from "@chakra-ui/react";
 import {
   StarIcon,
   MapPinIcon,
+  MapPin,
   MessageCircleIcon,
   CarIcon,
   FuelIcon as GasPumpIcon,
@@ -51,6 +53,7 @@ import { FaStar } from "react-icons/fa";
 import ReviewsInListing from "./Comments/ReviewsInListing";
 import ColorTubeLoader from "../../components/Style/ColorTubeLoader";
 import BiddingSystem from "./BiddingSystem";
+import DisplayLocation from "../Location/DisplayLocation";
 
 const baseUrl = import.meta.env.VITE_BACK_END_URL;
 
@@ -359,21 +362,17 @@ const ListingDetails = () => {
               >
                 Location
               </Heading>
-              <Image
-                src="/images/make_listing/map.png"
-                alt="Location Map"
-                borderRadius="md"
-                w="full"
-                h={48}
-                objectFit="cover"
-                mb={4}
-              />
-              <Flex align="center" gap={2}>
-                <MapPinIcon size={20} color="blue.500" />
-                <Text color="gray.700" _dark={{ color: "gray.300" }}>
-                  Location XYZ
-                </Text>
-                {/* <Text color="gray.700" _dark={{ color: 'gray.300' }}>{carData.location}</Text> */}
+              
+              <Flex align="center" gap={4} flexDir={'column'}>
+                  <DisplayLocation latitude={currentListing?.location?.coordinates.latitude}
+                                   longitude={currentListing?.location?.coordinates.latitude}
+                                   address={currentListing?.location?.address}
+                  />
+                
+                <Flex gap={2}>
+                  <Stack alignSelf={'self-start'}><MapPin size={'23px'} color="#000000" /></Stack>
+                  <Text>{currentListing?.location?.address}</Text>
+                </Flex>              
               </Flex>
             </Box>
 

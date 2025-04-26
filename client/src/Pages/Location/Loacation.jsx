@@ -94,33 +94,7 @@ const LocationSearch = ({ onLocationSelect  }) => {
     return () => clearTimeout(delayDebounce);
   }, [query]);
 
-  // const handleSearch = async (searchQuery = query) => {
-  //   const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&q=${searchQuery}`);
-  //   const data = await res.json();
-
-  //   if (data && data.length > 0) {
-  //     const loc = data[0];
-  //     const newPos = { lat: parseFloat(loc.lat), lng: parseFloat(loc.lon) };
-  //     setPosition(newPos);
-
-  //     const { address } = loc;
-
-  //     const extracted = {
-  //       address: loc.display_name || searchQuery,
-  //       city: address.city || address.town || address.village || '',
-  //       state: address.state || '',
-  //       country: address.country || '',
-  //       zipCode: address.postcode || '',
-  //       coordinates: {
-  //         latitude: parseFloat(loc.lat),
-  //         longitude: parseFloat(loc.lon),
-  //       },
-  //     };
-
-  //     setLocationDetails(extracted);
-  //     setSuggestions([]);
-  //   }
-  // };
+  
   const handleSearch = async (searchQuery = query) => {
     const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&q=${searchQuery}`);
     const data = await res.json();
@@ -210,18 +184,7 @@ const LocationSearch = ({ onLocationSelect  }) => {
         <SearchMarker position={position} />
       </MapContainer>
 
-      {/* {locationDetails && (
-        <div style={{ marginTop: '20px', textAlign: 'left' }}>
-          <h3>Selected Location Details</h3>
-          <p><strong>Address:</strong> {locationDetails.address}</p>
-          <p><strong>City:</strong> {locationDetails.city}</p>
-          <p><strong>State:</strong> {locationDetails.state}</p>
-          <p><strong>Country:</strong> {locationDetails.country}</p>
-          <p><strong>Zip Code:</strong> {locationDetails.zipCode}</p>
-          <p><strong>Latitude:</strong> {locationDetails.coordinates.latitude}</p>
-          <p><strong>Longitude:</strong> {locationDetails.coordinates.longitude}</p>
-        </div>
-      )} */}
+
     </Box>
   );
 };
