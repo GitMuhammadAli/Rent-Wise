@@ -193,7 +193,7 @@ export default function MyAccount() {
               </FormControl> */}
               <FormControl display="flex" justifyContent="space-between" alignItems="center">
                 <FormLabel>Reviews Notifications</FormLabel>
-                <Switch isChecked={notificationSettings.review} onChange={() => handleNotificationChange('review')} />
+                <Switch colorScheme={'orange'} isChecked={notificationSettings.review} onChange={() => handleNotificationChange('review')} />
               </FormControl>
               {/* <FormControl display="flex" justifyContent="space-between" alignItems="center">
                 <FormLabel>Bookings Notifications</FormLabel>
@@ -205,19 +205,19 @@ export default function MyAccount() {
               </FormControl> */}
               <FormControl display="flex" justifyContent="space-between" alignItems="center">
                 <FormLabel>System Updates</FormLabel>
-                <Switch isChecked={notificationSettings.system} onChange={() => handleNotificationChange('system')} />
+                <Switch colorScheme={'orange'} isChecked={notificationSettings.system} onChange={() => handleNotificationChange('system')} />
               </FormControl>
               <FormControl display="flex" justifyContent="space-between" alignItems="center">
                 <FormLabel>Aggreements</FormLabel>
-                <Switch isChecked={notificationSettings.aggreement} onChange={() => handleNotificationChange('aggreement')} />
+                <Switch colorScheme={'orange'} isChecked={notificationSettings.aggreement} onChange={() => handleNotificationChange('aggreement')} />
               </FormControl>
               <FormControl display="flex" justifyContent="space-between" alignItems="center">
                 <FormLabel>Comments</FormLabel>
-                <Switch isChecked={notificationSettings.comment} onChange={() => handleNotificationChange('comment')} />
+                <Switch colorScheme={'orange'} isChecked={notificationSettings.comment} onChange={() => handleNotificationChange('comment')} />
               </FormControl>
               <FormControl display="flex" justifyContent="space-between" alignItems="center">
                 <FormLabel>Chats</FormLabel>
-                <Switch isChecked={notificationSettings.chat} onChange={() => handleNotificationChange('chat')} />
+                <Switch colorScheme={'orange'} isChecked={notificationSettings.chat} onChange={() => handleNotificationChange('chat')} />
               </FormControl>
             </VStack>
           </TabPanel>

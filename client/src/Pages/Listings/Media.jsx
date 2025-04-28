@@ -221,7 +221,7 @@ const handleSubmit = async (e) => {
 
 
   return (
-    <Flex py={'50px'} flexDir={'column'}>
+    <Flex py={{base:'20px', md:'50px'}} flexDir={'column'}>
     {/* <Flex gap={4} alignSelf={'center'} justifyContent={'space-between'} alignItems={'center'} flexDir={'row'} borderRadius={'10px'} bg={'gray.900'} color={'white'}    w={'90%'}>
              <Image alignSelf={'flex-end'} w={'22vw'} h={'auto'}  src="https://images.rawpixel.com/image_social_square/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3BkMjA3LTItMzMwXzEuanBn.jpg"/>
              <Box alignSelf={'center'} py={'50px'} >
@@ -254,10 +254,10 @@ const handleSubmit = async (e) => {
 
   {/* Center Text */}
   <Flex flexDir={'column'}  justifyContent={'center'} flex="1" px={4}>
-    <Heading  textAlign="center"  fontWeight="extrabold">
+    <Heading fontSize={{base:'24px', md:'32px'}}  textAlign="center"  fontWeight="extrabold">
       Upload Your Property | Vehicle Details
     </Heading>
-    <Text textAlign="center"  pt={4}>
+    <Text textAlign="center" fontSize={{base:'14px', md:'16px'}}  pt={4}>
       We're committed to providing a reliable marketplace for all your property and vehicle needs.
     </Text>
   </Flex>
@@ -275,7 +275,7 @@ const handleSubmit = async (e) => {
 
 
       <form onSubmit={handleSubmit}>
-        <Flex flexDir={{base: 'column', md:'row' , lg:'row'}} justifyContent={'center'} gap={10}>
+        <Flex flexDir={{base: 'column', md:'row' , lg:'row'}} justifyContent={'center'} gap={{base:2,md:10}} align={'flex-start'}>
             {/* a parent stack to make Location and details in one line */}
           <Stack> 
                {/* details stack */}
@@ -429,7 +429,7 @@ const handleSubmit = async (e) => {
           </Stack>
 
            {/* image and biddding stack */}
-          <Stack w={{base:'100vw',md:"50vw", lg:"30vw"}} mt="2" p="6" boxShadow="lg" borderRadius="md" bg={'white'}>
+          <Stack w={{base:'100vw',md:"50vw", lg:"30vw"}} mt={{base:2, md:8}} p="6" boxShadow="lg" borderRadius="md" bg={'white'}>
             <FormControl>
               <FormLabel>Images</FormLabel>
               <Input

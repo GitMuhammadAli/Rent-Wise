@@ -37,6 +37,8 @@ import {
   ArrowLeft,
   ArrowRight,
   Heart,
+  BedDouble,
+  Bath,
 } from "lucide-react";
 import {
   ChevronLeftIcon,
@@ -340,7 +342,7 @@ const ListingDetails = () => {
           </GridItem>
 
           {/* right side details, including location, owner, description, rules */}
-          <VStack spacing={6} w={{base:"90vw", sm:'100%'}} mt={{base:'none', md:'130px'}} >
+          <VStack spacing={6} w={{base:"90vw", sm:'100%'}} mt={{base:'none', md:'123px'}} >
             <Box
               bg="white"
               _dark={{ bg: "gray.800" }}
@@ -363,7 +365,9 @@ const ListingDetails = () => {
                 Location
               </Heading>
               
-              <Flex align="center" gap={4} flexDir={'column'}>
+              {
+                currentListing?.location ? (
+                  <Flex align="center" gap={4} flexDir={'column'}>
                   <DisplayLocation latitude={currentListing?.location?.coordinates.latitude}
                                    longitude={currentListing?.location?.coordinates.latitude}
                                    address={currentListing?.location?.address}
@@ -374,6 +378,8 @@ const ListingDetails = () => {
                   <Text>{currentListing?.location?.address}</Text>
                 </Flex>              
               </Flex>
+
+                ) : (<Text> No location shared from Owner, you can contact him/her for the location</Text> )}
             </Box>
 
             {user?._id !== currentListing?.owner?._id && (
@@ -434,6 +440,7 @@ const ListingDetails = () => {
               </Box>
             )}
 
+          {/* Amenities */}
             {currentListing?.category !== "car" && (
               <Box
                 bg="white"
@@ -444,7 +451,7 @@ const ListingDetails = () => {
                 // w="full"
                 w={'inherit'}
               >
-                <Heading mb={4} fontSize={"28px"}>
+                <Heading mb={4} fontSize={"28px"} fontWeight={'semibold'}>
                   Amenities
                 </Heading>
                 <List spacing={3}>
@@ -461,6 +468,9 @@ const ListingDetails = () => {
                 </List>
               </Box>
             )}
+
+            {/* disctiption */}
+            
             <Box
               bg="white"
               _dark={{ bg: "gray.800" }}
@@ -473,6 +483,23 @@ const ListingDetails = () => {
               <Heading mb={4} fontSize={"2xl"} fontWeight={'semibold'}>
                 Description
               </Heading>
+              
+              {/* facilities inside description for house and hostel ones */}
+                <Box>
+                  {
+                  (currentListing?.category === "house" || currentListing?.category === 'hostel') && (
+                    <div className="flex justify-between items-center mb-2 text-orange-700">
+                     <span className="flex items-center">
+                        <BedDouble className="w-5 h-5 mr-1" /> {currentListing?.facilities?.bedrooms || 0}
+                      </span>
+                     <span className="flex items-center">
+                        <Bath className="w-5 h-5 mr-1" /> {currentListing?.facilities?.bathrooms || 0}
+                     </span>
+                    </div>
+                  )
+                }
+                </Box>
+                
               <Text
                 fontSize="sm"
                 color="gray.700"
