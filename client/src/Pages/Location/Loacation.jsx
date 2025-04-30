@@ -58,22 +58,35 @@ import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Button, Flex, Input, Box } from '@chakra-ui/react';
 
-const SearchMarker = ({ position }) => {
-  const map = useMap();
+const SearchMarker = ({ position, onDragEnd }) => {
+  if (!position) return null;
 
-  if (position) {
-    map.setView(position, 13);
-    return <Marker position={position} />;
-  }
-
-  return null;
+  return (
+    <Marker
+      position={position}
+      draggable={true}
+      eventHandlers={{
+        dragend: (e) => {
+          const latlng = e.target.getLatLng();
+          onDragEnd && onDragEnd(latlng); // Send new position to parent
+        },
+      }}
+    />
+  );
 };
 
-const LocationSearch = ({ onLocationSelect  }) => {
+const LocationSearch = ({ onLocationSelect, initialLocation   }) => {
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
-  const [position, setPosition] = useState(null);
+  // const [position, setPosition] = useState(null);
   const [locationDetails, setLocationDetails] = useState(null);
+
+  // check if initialLocation is an object with coordinates property
+  // so it will get prev location or set a new one
+  const [position, setPosition] = useState(initialLocation?.coordinates ? {
+    lat: initialLocation.coordinates.latitude,
+    lng: initialLocation.coordinates.longitude
+  } : null);
 
   // Fetch suggestions
   useEffect(() => {
@@ -122,7 +135,7 @@ const LocationSearch = ({ onLocationSelect  }) => {
       setSuggestions([]);
 
       if (onLocationSelect) {
-        onLocationSelect(extracted); // <- Send to parent
+        onLocationSelect(extracted); // <- Send to parent means list creation here
       }
     }
   };
@@ -179,9 +192,22 @@ const LocationSearch = ({ onLocationSelect  }) => {
         </ul>
       )}
 
-      <MapContainer center={[28.6139, 77.2090]} zoom={13} style={{ height: '250px', width: '100%', marginTop: '20px' }}>
+      <MapContainer center={position || [28.6139, 77.2090]} zoom={13} style={{ height: '250px', width: '100%', marginTop: '20px' }}>
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-        <SearchMarker position={position} />
+        <SearchMarker 
+  position={position} 
+  onDragEnd={(newPos) => {
+    setPosition(newPos);
+    onLocationSelect({
+      ...locationDetails,
+      coordinates: {
+        latitude: newPos.lat,
+        longitude: newPos.lng
+      }
+    });
+  }}
+/>
+
       </MapContainer>
 
 

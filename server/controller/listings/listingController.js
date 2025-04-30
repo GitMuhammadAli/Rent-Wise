@@ -402,8 +402,6 @@ const cleanUpUnreferencedMedia = async (listingId, next) => {
     }
 };
 
-
-
 exports.UpdateListings = async (req, res, next) => {
     const { id } = req.params;
     const {
@@ -428,6 +426,8 @@ exports.UpdateListings = async (req, res, next) => {
     const parsedExistingVideos = JSON.parse(req.body.existingVideos || '[]');
     const amenities = JSON.parse(req.body.amenities || '[]');
     const rules = JSON.parse(req.body.rules || '[]');
+   
+
 
     const missingFields = [];
     if (!title) missingFields.push("title");
@@ -435,6 +435,7 @@ exports.UpdateListings = async (req, res, next) => {
     if (!price) missingFields.push("price");
     if (!category) missingFields.push("category");
     if (!priceUnit) missingFields.push("priceUnit");
+    if (!location) missingFields.push("location");
 
     if (missingFields.length) {
         return next(new AppError(BOOLEAN.FALSE, `Missing required fields: ${missingFields.join(", ")}`, STATUS.BAD_REQUEST));
@@ -492,6 +493,8 @@ exports.UpdateListings = async (req, res, next) => {
             await Promise.all(uploadedFilePaths.map(filePath => removeFile(path.resolve(filePath))));
             return next(new AppError(BOOLEAN.FALSE, LISTINGS.MEDIA_UPLOAD_ERR, STATUS.INTERNAL_SERVER_ERROR));
         }
+
+        // facilities handling
         if (
             (existingListing.category === 'house' || existingListing.category === 'hostel') &&
             (category !== 'house' && category !== 'hostel')
@@ -510,6 +513,7 @@ exports.UpdateListings = async (req, res, next) => {
             );
 
         }
+        // bidding handling
         let newBidding = null;
 
         if (existingListing.bidding == null) {
@@ -533,6 +537,49 @@ exports.UpdateListings = async (req, res, next) => {
 
             newBidding.save()
         }
+          // location handling
+          let updatedLocationId = existingListing.location;
+
+          try {
+              const parsedLocation = JSON.parse(req.body.location);
+          
+              if (existingListing.location) {
+                  // If a location already exists, update it
+                  await Location.findByIdAndUpdate(
+                      existingListing.location,
+                      {
+                          address: parsedLocation.address,
+                          city: parsedLocation.city,
+                          state: parsedLocation.state,
+                          country: parsedLocation.country,
+                          zipCode: parsedLocation.zipCode,
+                          coordinates: {
+                              latitude: parsedLocation.coordinates.latitude,
+                              longitude: parsedLocation.coordinates.longitude
+                          }
+                      },
+                      { new: true, runValidators: true }
+                  );
+              } else {
+                  // Otherwise create a new location
+                  const newLoc = await Location.create({
+                      address: parsedLocation.address,
+                      city: parsedLocation.city,
+                      state: parsedLocation.state,
+                      country: parsedLocation.country,
+                      zipCode: parsedLocation.zipCode,
+                      coordinates: {
+                          latitude: parsedLocation.coordinates.latitude,
+                          longitude: parsedLocation.coordinates.longitude
+                      }
+                  });
+                  updatedLocationId = newLoc._id;
+              }
+          } catch (locErr) {
+              return next(new AppError(false, "Invalid location data", 400));
+          }
+          
+        
 
         // Update listing with all changes
         const updatedListing = await RentalItem.findByIdAndUpdate(
@@ -543,7 +590,7 @@ exports.UpdateListings = async (req, res, next) => {
                 price,
                 category,
                 priceUnit,
-                location,
+                location: updatedLocationId,
                 amenities,
                 rules,
                 availability,
@@ -569,6 +616,173 @@ exports.UpdateListings = async (req, res, next) => {
         next(error)
     }
 };
+// controller of updating listings before adding the functionality of Location
+// exports.UpdateListings = async (req, res, next) => {
+//     const { id } = req.params;
+//     const {
+//         title,
+//         description,
+//         price,
+//         category,
+//         priceUnit,
+//         location,
+//         availability,
+//         averageRating,
+//         listingStatus,
+//         bedrooms, bathrooms,
+//         biddingEnabled, minimumBid, bidIncrement, bidEndDate
+//     } = req.body;
+
+//     console.log("Received request to update listing", req.body);
+
+//     const parsedRemovedImages = JSON.parse(req.body.removedImages || '[]');
+//     const parsedRemovedVideos = JSON.parse(req.body.removedVideos || '[]');
+//     const parsedExistingImages = JSON.parse(req.body.existingImages || '[]');
+//     const parsedExistingVideos = JSON.parse(req.body.existingVideos || '[]');
+//     const amenities = JSON.parse(req.body.amenities || '[]');
+//     const rules = JSON.parse(req.body.rules || '[]');
+
+//     const missingFields = [];
+//     if (!title) missingFields.push("title");
+//     if (!description) missingFields.push("description");
+//     if (!price) missingFields.push("price");
+//     if (!category) missingFields.push("category");
+//     if (!priceUnit) missingFields.push("priceUnit");
+//     if (!location) missingFields.push("priceUnit");
+
+//     if (missingFields.length) {
+//         return next(new AppError(BOOLEAN.FALSE, `Missing required fields: ${missingFields.join(", ")}`, STATUS.BAD_REQUEST));
+//     }
+//     const uploadedFilePaths = [];
+
+//     try {
+//         const existingListing = await RentalItem.findById(id).populate("images").populate("videos").populate("facilities").populate("bidding");
+//         if (!existingListing) {
+//             return next(new AppError(BOOLEAN.FALSE, LISTINGS.LISTING_NOT_FOUND, STATUS.NOT_FOUND));
+//         }
+//         console.log("Existing listing:", existingListing);
+
+
+
+//         for (const imageObj of parsedRemovedImages) {
+//             await Image.findByIdAndDelete(imageObj._id);
+//             const filePath = path.resolve(`uploads/media/${id}/${path.basename(imageObj.url)}`);
+//             await removeFile(filePath);
+//         }
+
+//         for (const videoObj of parsedRemovedVideos) {
+//             await Video.findByIdAndDelete(videoObj._id);
+//             const filePath = path.resolve(`uploads/media/${id}/${path.basename(videoObj.url)}`);
+//             await removeFile(filePath);
+//         }
+
+//         let finalImageIds = parsedExistingImages.map(img => img._id);
+//         let finalVideoIds = parsedExistingVideos.map(vid => vid._id);
+//         let facilitiesId = null;
+
+//         try {
+//             if (req.files?.['images']) {
+//                 const newImages = await Image.insertMany(
+//                     req.files['images'].map(file => {
+//                         const filePath = `/uploads/media/${id}/${file.filename}`;
+//                         uploadedFilePaths.push(filePath);  // Track for potential cleanup
+//                         return { url: filePath, caption: "" };
+//                     })
+//                 );
+//                 finalImageIds = [...finalImageIds, ...newImages.map(img => img._id)];
+//             }
+
+//             if (req.files?.['videos']) {
+//                 const newVideos = await Video.insertMany(
+//                     req.files['videos'].map(file => {
+//                         const filePath = `/uploads/media/${id}/${file.filename}`;
+//                         uploadedFilePaths.push(filePath);  // Track for potential cleanup
+//                         return { url: filePath, caption: "" };
+//                     })
+//                 );
+//                 finalVideoIds = [...finalVideoIds, ...newVideos.map(vid => vid._id)];
+//             }
+//         } catch (mediaError) {
+//             await Promise.all(uploadedFilePaths.map(filePath => removeFile(path.resolve(filePath))));
+//             return next(new AppError(BOOLEAN.FALSE, LISTINGS.MEDIA_UPLOAD_ERR, STATUS.INTERNAL_SERVER_ERROR));
+//         }
+//         if (
+//             (existingListing.category === 'house' || existingListing.category === 'hostel') &&
+//             (category !== 'house' && category !== 'hostel')
+//         ) {
+//             await Facilities.deleteOne({ _id: existingListing.facilities });
+//             facilitiesId = null;
+//         }
+
+
+//         if (category === 'house' || category === 'hostel') {
+//             facilitiesId = await manageFacilities(
+//                 category,
+//                 bedrooms, bathrooms,
+//                 existingListing.facilities?._id || null,
+//                 next
+//             );
+
+//         }
+//         let newBidding = null;
+
+//         if (existingListing.bidding == null) {
+
+//             newBidding = await Bidding.create({
+//                 rentalItem: existingListing._id,
+//                 enabled: biddingEnabled,
+//                 minimumBid: minimumBid,
+//                 bidIncrement: bidIncrement,
+//                 bidEndDate: bidEndDate,
+//             });
+
+//         } else {
+//             newBidding = await Bidding.findByIdAndUpdate(existingListing.bidding._id, {
+//                 rentalItem: existingListing._id,
+//                 enabled: biddingEnabled,
+//                 minimumBid: minimumBid,
+//                 bidIncrement: bidIncrement,
+//                 bidEndDate: bidEndDate,
+//             })
+
+//             newBidding.save()
+//         }
+
+//         // Update listing with all changes
+//         const updatedListing = await RentalItem.findByIdAndUpdate(
+//             id,
+//             {
+//                 title,
+//                 description,
+//                 price,
+//                 category,
+//                 priceUnit,
+//                 location,
+//                 amenities,
+//                 rules,
+//                 availability,
+//                 images: finalImageIds,
+//                 videos: finalVideoIds,
+//                 averageRating,
+//                 listingStatus,
+//                 facilities: facilitiesId,
+//                 bidding: newBidding._id,
+//                 updatedAt: Date.now(),
+//             },
+//             { new: BOOLEAN.TRUE, runValidators: BOOLEAN.TRUE }
+//         );
+
+
+
+//         await cleanUpUnreferencedMedia(id, next);
+
+//         console.log("Updated listing:", updatedListing);
+
+//         res.json(updatedListing);
+//     } catch (error) {
+//         next(error)
+//     }
+// };
 
 
 async function manageFacilities(category, bedrooms, bathrooms, existingFacilitiesId = null, next) {
