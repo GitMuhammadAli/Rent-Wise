@@ -27,6 +27,7 @@ import { createMessage, fetchMessagesByConversation } from "../../Api/Chats";
 import { io } from "socket.io-client";
 import HouseAgreement from "./House/HouseAgreement";
 import CarAgreement from "./Car/CarAgreement";
+import HostelAgreement from "./Hostel/HostelAgreement";
 
 const socket = io("http://localhost:3600");
 export default function AgreementTemplate() {
@@ -196,11 +197,15 @@ const SentToRenter = async () => {
 
 }
 {
-  list_category !== 'house' && list_category!== 'car' && (<Text>NO agreement created for this category yet</Text>)
+  list_category === 'hostel' && ( <HostelAgreement convoID={convoID} tenant={tenant} listId={listId} list_Title={list_Title} list_category={list_category}  />  )
+
+}
+{
+  list_category !== 'house' && list_category!== 'car' && list_category!== 'hostel' && (<Text>No agreement of this category found</Text>)
 }
  
 
-<button>ok pir</button>
+
  
 
 

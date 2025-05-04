@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from 'react';
+// creating house agreement
 
+import React, { useEffect, useState } from 'react';
 import { createAgreement } from '../../../Api/Agreement';
 import HouseAgrTemplate from './HouseAgrTemplate';
 import { useNavigate } from 'react-router-dom';
+import { useToast } from '@chakra-ui/react';
 
 
 
 export default function HouseAgreement({tenant, listId, list_Title, list_category, convoID}) {
-//   const location = useLocation();
-//     const { tenantName, tenantListing , conversationID } = location.state || {};
 
 const navigate = useNavigate();
+ const toast = useToast();
 
  const [ownerConfirmed, setOwnerConfirmed] = useState(true);
   const [renterId, setRenterId] = useState("");
@@ -46,18 +47,6 @@ const navigate = useNavigate();
     }, [list_category, listId, list_Title, tenant]);
 
   
-  //   useEffect(() => {
-  //   if (!tenantName || !tenantListing || !conversationID) {
-  //     return;
-  //   }
-  //   // console.log(tenantListing, tenantName , conversationID);
-  //   // console.log("COnversationID", conversationID);
-  //   // setListingDetail(tenantListing);
-  //   // console.log("tentantIDD", tenantName._id);
-  //   // setRenterId(tenantName._id);
-  //   // setConversationId(conversationID);
-  // }, [tenantName, tenantListing , conversationID]);
-
 
    const saveAgreement = async (e) => {
     e.preventDefault();
@@ -80,7 +69,6 @@ const navigate = useNavigate();
         });
   
         console.log("responseOFagreement", data);
-        // setaggrementFromResponce(data.data.data);
         const agreementID = data?.data?.data?._id
        
         navigate(`/agreementHouse/${agreementID}`)
@@ -107,7 +95,6 @@ const navigate = useNavigate();
   
   return (
     <>
-    {/* sendAggrToRenter={sendAggrToRenter} */}
     <HouseAgrTemplate  
      ownerConfirmed={ownerConfirmed}  handleChange={handleChange} saveAgreement={saveAgreement} formData={formData}
     listId={listId} list_Title= {list_Title} list_category={list_category} tenant={tenant} convoID = {convoID} />

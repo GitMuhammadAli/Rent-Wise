@@ -499,13 +499,15 @@ export default function OwnerDash() {
                               : ""}
                           </Td>
                           <Td>
-                            <Link
-                              to={
-                                agreement.listingId?.category === "car"
-                                  ? `/agreementCar/${agreement._id}`
-                                  : `/agreementHouse/${agreement._id}`
-                              }
-                            >
+                          <Link
+                            to={
+                              agreement.listingId?.category === "car"
+                               ? `/agreementCar/${agreement._id}`
+                                : agreement.listingId?.category === "hostel"
+                                ? `/agreementHostel/${agreement._id}`
+                                : `/agreementHouse/${agreement._id}`
+                            }
+                          >
                               <Button
                                 // onClick={ handleEditClick}
                                 variant="ghost"

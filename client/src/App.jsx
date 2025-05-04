@@ -54,6 +54,8 @@ import ListingManagement from "./Pages/Admin/ListingManagement";
 import { AgreementProvider } from "./hooks/AdminAgreementContext";
 import LocationPicker from "./Pages/Location/Loacation";
 import UpdateListing from "./Pages/Listings/UpdateListing";
+import ViewHostelAgr from "./Pages/Agreement/ViewAgreement.jsx/ViewHostelAgr";
+import UpdateHostelAgrr from "./Pages/Agreement/Hostel/UpdateHostelAgrr";
 
 //  import TestListingDetails from "./Pages/Listings/Test/TestHome";
 
@@ -196,6 +198,7 @@ const router = createBrowserRouter(
         <Route path="/sendToTenant" element={<SendToTenant/>} />
         <Route path="/agreementCar/:id" element={<UpdateCarAgrr/>} />
         <Route path="/agreementHouse/:id" element={<UpdateHouseAgrr/>} />
+        <Route path="/agreementHostel/:id" element={<UpdateHostelAgrr/>} />
 
         {/* profile routes */}
           
@@ -206,6 +209,7 @@ const router = createBrowserRouter(
         {/* view agreements */}
         <Route path="/viewHouseAgreement/:_id" element={<ViewHouseAgr/>} />
         <Route path="/viewCarAgreement/:_id" element={<ViewCarAgr/>} />
+        <Route path="/viewHostelAgreement/:_id" element={<ViewHostelAgr/>} />
 
         </Route>
        
