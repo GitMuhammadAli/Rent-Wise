@@ -59,22 +59,15 @@ export default function ViewCarAgr() {
     useEffect(() => {
           const fetchSingleAgreement = async () => {
             try {
-            //   if (!user) {
-            //     return;
-            //   }
+    
               if (!_id) {
                 return;
               }
       
     
               const response = await GetAggreementsByID(_id);
-              console.log("resp in view car agreemnt is", response.data.data);
               setListName(response?.data?.data?.listingId?.title)
-      
-              console.log(
-                "aggr detail",
-                response.data.data.agreementDetailsId.aggrementDetail
-              );
+    
               const aggrDetail =
                 response.data?.data?.agreementDetailsId?.aggrementDetail;
               setFormData({
@@ -108,17 +101,12 @@ export default function ViewCarAgr() {
       : [],
    });
    
-  
-              console.log("renter detail", response.data.data.renterId);
               setRenterDetails(response.data.data.renterId);
               setOwnerDetail(response.data.data.ownerId);
       
             setOwnerConfirmed(response.data?.data?.ownerConfirmed);
               setRenterConfirmed(response.data?.data?.renterConfirmed);
-      
-              console.log("listing", response.data?.data?.listingId);
-            //   setListingDetail(response.data?.data?.listingId);
-            } catch (error) {
+                  } catch (error) {
               console.log("errr", error);
             }
             finally{
@@ -203,28 +191,19 @@ export default function ViewCarAgr() {
                isDisabled
                type="text"
                 name="make"
-              //  placeholder='Suzuki / Wagon R'
+             
                 value={formData.make}
                  display="inline-block"
                w="40"
                mx={2}
-              //  style={{
-              //   display: "inline-block",
-               
-              //   padding:'10px',
-              //   margin: "0 8px",
-              //   color: "red", // Make sure the text is black even when disabled
-              //   backgroundColor: "white", // Optional: Customize background color when disabled
-              //   border:'1px solid red',
-              //   borderRadius:'5px'
-              // }}
+             
              />
               , Model: 
               <Input
               isDisabled
                type="number"
                 name="carModel"
-              //  placeholder='2015'
+             
                value={formData.carModel}
                
                display="inline-block"

@@ -32,15 +32,6 @@ export default function HouseAgrTemplate({updateAgreement,mainDetails,formData, 
       
    
        useEffect(()=>{
-           if(ownerConfirmed)
-           {
-            console.log("confirmed")
-           }
-           else
-           {
-            console.log("not confirmed")
-           }
-         console.log("main details", mainDetails);
         setRenterConfirmed(mainDetails?.renterConfirmed)
         setLoading(false)
                   
@@ -48,10 +39,6 @@ export default function HouseAgrTemplate({updateAgreement,mainDetails,formData, 
 
         function sendAggrToRenter(){
           setIsOpen(!isOpen)
-        //  console.log("runninf")
-        //   return(
-        //     <SendToTenant setIsOpen={setIsOpen} open={open} close={close} isOpen={isOpen}   />
-        //   )
       
         }
 
@@ -59,7 +46,6 @@ export default function HouseAgrTemplate({updateAgreement,mainDetails,formData, 
   if (loading) {
           return (
             <Flex justify="center" align="center" height="100vh">
-              {/* <Spinner size="xl" /> */}
               <ColorTubeLoader/>
             </Flex>
           );
@@ -96,20 +82,13 @@ export default function HouseAgrTemplate({updateAgreement,mainDetails,formData, 
           )
         }
 
-       
-
         <Text>Hereinafter known as the "landlord" of the one part.</Text>
 
         <Text fontWeight="bold">AND</Text>
-        
-        
+               
             <Text borderBottom={'1px solid gray'}>
               {tenant.name|| ''}
               </Text>
-          
-        
-
-       
 
         <Text>Hereinafter known as the 'tenant' of the other part.</Text>
 

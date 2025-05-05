@@ -28,7 +28,6 @@ export default function CarAgrTemplate({updateAgreement,mainDetails,formData, ha
     const open = () => setIsOpen(!isOpen)
     const close = () => setIsOpen(false)
       useEffect(()=>{
-             console.log("main details", mainDetails);
              setRenterConfirmed(mainDetails?.renterConfirmed)
              setLoading(false);
                       

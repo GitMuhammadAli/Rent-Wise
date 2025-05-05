@@ -33,8 +33,7 @@ export default function BlockchainAgreements() {
       try {
         setIsLoading(true)
         const response = await getAggrementForAdminByOwnerIDs()
-        console.log("Agreements fetched:", response?.data?.data)
-
+       
         // Transform the data to match our component's expected format
         const formattedAgreements = response?.data?.data.map((agreement) => ({
           id: agreement._id,

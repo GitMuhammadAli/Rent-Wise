@@ -138,7 +138,6 @@ const UserManagement = () => {
   useEffect(()=>{
     const getAllUsers = async () => {
     const response = await getAllListsOFUser();
-    console.log("users",response.data.data.allUser)
     setUsers(response.data.data.allUser)
     setLoading(false)
     }

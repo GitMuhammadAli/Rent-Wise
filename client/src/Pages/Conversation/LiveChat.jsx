@@ -73,17 +73,13 @@ export default function LiveChat({
   useEffect(() => {
     if (!convoID) return ;
 
-    console.log("i am refreshed")
-    console.log("Joining conversation ID:", convoID);
     socket.emit("join-conversation", convoID);
 
     socket.on("receiveMessage", (newMessage) => {
-      console.log("New message received on frontend:", newMessage);
       setMessages((prevMessages) => [...prevMessages, newMessage]);
     });
 
     return () => {
-      console.log("Leaving conversation ID:", convoID);
       socket.emit("leave-conversation", convoID);
       socket.off("receiveMessage");
     };
@@ -95,27 +91,16 @@ export default function LiveChat({
     try {
       const listingsToSend = listingIdDetails || localListingId || [];
 
-      // if (listingIdDetails || localListingId) {
-      //   if (listingsToSend.length === 0) {
-      //     console.error("No listing IDs available.");
-      //     return;
-      //   }
-      // }
-
       const data = {
         message,
         listing: listingsToSend,
         receiver: owner._id,
       };
 
-      console.log("Sending message data:", data);
-
       const response = await createMessage(data);
 
       if (response) {
-        console.log("response after message created", response.data.data);
         setConvoId(response.data.data.conversation);
-        // setMessages((prevMessages) => [...prevMessages, response?.data?.data]);
       }
       
        
@@ -128,12 +113,10 @@ export default function LiveChat({
   useEffect(() => {
     const fetchMessages = async () => {
       if (!owner || !convoID) return;
-      console.log("oowner is", owner);
 
       try {
         const response = await fetchMessagesByConversation(convoID);
         setMessages(response?.data?.data || []);
-        console.log("meessages in live are:", response?.data?.data);
         setIsCLicked(false)
       } catch (error) {
         console.error("Error fetching messages:", error);

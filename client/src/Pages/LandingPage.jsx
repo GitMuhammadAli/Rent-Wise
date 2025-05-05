@@ -82,17 +82,10 @@ const LandingPage = () => {
     sectionRef.current?.scrollIntoView({ behavior: "smooth" });
   };
   
-
-  useEffect(()=>{
-    console.log("notification in real time in navbar", notifications)
-
-  },[notifications])
-
   useEffect(() => {
     async function fetchData() {
       try {
         const response = await getAllListingAPI();
-        console.log("Response is: ", response.data);
         dispatch({ type: "GET_LISTINGS", payload: response.data });
       } catch (error) {
         console.error("Error fetching listings:", error);
@@ -102,47 +95,7 @@ const LandingPage = () => {
     }
     fetchData();
   }, [dispatch]);
-
-  useEffect(() => {
-    console.log("Current listings in get state in getAll:", listings);
-    
-
-  }, [listings]);
-
-
-
-
-// new added to update subscription if not valid according to browser
-  // const updateSubscription = async (subscription) => {
-  //   try {
-  //     console.log("subcription in update", subscription)
-  //     const SubscriptionData = JSON.stringify(subscription)
-  //     console.log("subcriptionData in update",SubscriptionData)
-  //     const response = await UpdateSubscription(SubscriptionData)
-  //     console.log("response in update subs", response);
-  //   } catch (error) {
-  //     console.error("Error updating subscription:", error);
-  //   }
-  // };
-
-  // useEffect(()=>{
-
-  //   const fetchOldSbscription = async()=>{
-  //     const subscription = await navigator.serviceWorker.ready.then((registration) => {
-  //       return registration.pushManager.getSubscription();
-  //     });
-      
-  //     if (subscription) {
-  //       const { endpoint, keys } = subscription;
-  //       updateSubscription({ endpoint, keys });
-  //     }
-
-  //   }
-  //   fetchOldSbscription()
-   
-  // },[])
-
-  // Fetch user's notification setting
+  
   useEffect(() => {
     if (!user || checkAlert) return;
 

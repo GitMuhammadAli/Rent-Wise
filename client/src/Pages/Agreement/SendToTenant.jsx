@@ -42,7 +42,6 @@ export default function SendToTenant({ mainDetails ,isOpen, setIsOpen,  open, cl
 
 
   useEffect(()=>{
-    console.log("details in send to tenant are:" , mainDetails)
     set_id(mainDetails._id)
     setConversationID(mainDetails.conversationID);
     setRenterId(mainDetails?.renterId._id)
@@ -51,10 +50,6 @@ export default function SendToTenant({ mainDetails ,isOpen, setIsOpen,  open, cl
   },[mainDetails])
 
   const SentMessageToRenter = async () => {
-
-    // setConfirmed(true);
-    // console.log("Agreement detail:", aggrementFromResponce);
-    console.log("Joining conversation ID:", conversationID);
     socket.emit("join-conversation", conversationID);
   
     try {
@@ -79,7 +74,6 @@ export default function SendToTenant({ mainDetails ,isOpen, setIsOpen,  open, cl
         return;
       }
        
-      // const dataForSentMessageOfAgreement = {
         const aggrementFromResponce = {
             message: `Agreement Link: ${link}`,
             listing: [listingId], // Add appropriate listing ID(s)
@@ -89,13 +83,11 @@ export default function SendToTenant({ mainDetails ,isOpen, setIsOpen,  open, cl
             
         };
   
-        console.log("Sending link as message:", aggrementFromResponce);
+      
   
         // const response = await createMessage(dataForSentMessageOfAgreement);
         // const response = await SentAggreement(dataForSentMessageOfAgreement);
         const response = await SentAggreement({aggrementFromResponce});
-        console.log("Response from message creation:", response);
-
        if(mainDetails?.renterId?.name)
        {
         toast({
@@ -107,7 +99,6 @@ export default function SendToTenant({ mainDetails ,isOpen, setIsOpen,  open, cl
         });
 
        }
-        
         navigate('/dashboard')
     } catch (error) {
         console.error("Error sending message:", error);

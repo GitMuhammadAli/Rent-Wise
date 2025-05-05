@@ -24,7 +24,6 @@ const ListingManagement = ({ categoryFilter = "All" }) => {
         try {
           const response = await getAllLists();
           if (response && response.data && response.data.data && response.data.data.allLists) {
-            console.log("response",response.data.data.allLists)
             setListings(response.data.data.allLists)
             setFilteredListings(response.data.data.allLists)
             setLoading(false)
@@ -72,7 +71,6 @@ const ListingManagement = ({ categoryFilter = "All" }) => {
     }
     try {
       const response = await deleteListing(selectedListing._id);
-      console.log('res after deleting', response)
       toast({
         title: "Listing deleted successfully",
         description: "Listing has been deleted successfully",
