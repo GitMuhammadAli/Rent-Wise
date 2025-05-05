@@ -22,7 +22,6 @@ function SignUp() {
     }
     try {
       const res  = await register({ name, email, password });
-      console.log(res);
       navigate("/", {
         state: { successMessage: response.register.success || res.message},
       });

@@ -2,10 +2,6 @@ import axios from 'axios';
 
 const API_BASE_URL = `${import.meta.env.VITE_BACK_END_URL}/dashboard`;
 
-
-// export const createListingAPI = (data) =>
-//   axios.post(`${API_BASE_URL}/create`, data, { withCredentials: true });
-
 export const getUser = () =>
   axios.get(`${API_BASE_URL}/getUserDashboard`, { withCredentials: true });
 
@@ -21,7 +17,7 @@ export const updateUserDashboardProfile = async (id, formData) => {
 export const ToGetReview = async () => {
   try {
     const response = await axios.get(`${API_BASE_URL}/reviews`, { withCredentials: true });
-    return response;  // Ensure the function returns the response properly
+    return response; 
   } catch (error) {
     console.error("API request failed:", error);
     throw error;
@@ -31,7 +27,7 @@ export const ToGetReview = async () => {
 export const SetSubscriptionNotification = async (data) => {
   try {
     const response = await axios.post(`${API_BASE_URL}/save-subscription`,data, { withCredentials: true });
-    return response;  // Ensure the function returns the response properly
+    return response;  
   } catch (error) {
     console.error("API request failed:", error);
     throw error;
@@ -40,23 +36,12 @@ export const SetSubscriptionNotification = async (data) => {
 export const GetSubscriptionNotification = async () => {
   try {
     const response = await axios.get(`${API_BASE_URL}/get-subscription`, { withCredentials: true });
-    return response;  // Ensure the function returns the response properly
+    return response;  
   } catch (error) {
     console.error("API request failed:", error);
     throw error;
   }
 };
-
-// export const UpdateSubscription = async (data) => {
-//   try {
-//     const response = await axios.post(`${API_BASE_URL}/update-subscription`, data, { withCredentials: true });
-//     return response;  // Ensure the function returns the response properly
-//   } catch (error) {
-//     console.error("API request failed:", error);
-//     throw error;
-//   }
-// };
-
 
 
 

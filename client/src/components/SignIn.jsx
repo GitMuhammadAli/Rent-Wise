@@ -8,7 +8,7 @@ import { response } from "../utils/ResponceMessages";
 function SignIn() {
   const [your_email, setEmail] = useState("");
   const [your_pass, setPassword] = useState("");
-  const [error,setError] = useState("");
+  const ChakraToast = useToast();
 
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -17,38 +17,13 @@ function SignIn() {
 
   const handleGoogleSignIn = async (e) => {
     e.preventDefault();
-    console.log("Google login initiated");
     try {
       await GoogleLoginRequest();
-      
-      
       navigate("/", { state: { successMessage: response.login.google } });
     } catch (error) {
-      console.error("Google sign-in failed", error);
       toast.error(response.login.failed);
     }
   };
-
-  // const handleGoogleSignInCallback = async (e) => {
-  //   e.preventDefault();
-  //   console.log("Google login initiated");
-
-  //   try {
-  //     const response = await googleLogin();
-  //     console.log("Google login response:", response);
-  //     if (response.status === 200) {
-  //       const successMessage = "Login successful";
-  //       if (response.data.user.role === "admin") {
-  //         navigate("/admin", { state: { successMessage } });
-  //       } else {
-  //         navigate("/", { state: { successMessage } });
-  //       }
-  //     }
-
-  //   } catch (error) {
-  //     console.error("Google sign-in failed", error);
-  //   }
-  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();

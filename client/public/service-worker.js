@@ -19,7 +19,6 @@ self.addEventListener("push", (event) => {
     }
   
     const data = event.data.json();
-    console.log("Received push notification:", data);
   
     self.registration.showNotification(data.title, {
       body: data.message, // Use `body` instead of `message`

@@ -2,8 +2,6 @@ import React from 'react'
 import { useAuth } from '../hooks/AuthContext'
 function Home() {
   const { user, status } = useAuth();
-
-  console.log(user, status);
   if (status === 'loading') {
     return <div>Loading...</div>;
   }

@@ -19,7 +19,6 @@ function ForgotPassword() {
         toast.error(res.data.message || "Failed to process request.");
       }
     } catch (error) {
-      console.error("Forgot password request failed", error);
       toast.error(response.forgotPassword.failed || "Server error. Please try again later.");
     }
   };

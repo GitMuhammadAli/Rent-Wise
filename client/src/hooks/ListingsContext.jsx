@@ -8,16 +8,13 @@ export const ListingsContext = createContext();
 const listingsReducer = (state, action) => {
   switch (action.type) {
     case "GET_LISTINGS":
-      console.log('Current listings in get state:', state.listings); // Log the entire listings array
-      console.log("All listing in context", action.payload); 
+     
       return { ...state, listings: action.payload };
 
-    case "GET_ONE_LISTING": // For setting a single listing
-      console.log("One listing in context", action.payload);
+    case "GET_ONE_LISTING": 
       return { ...state, currentListing: action.payload };
 
-      case "GET_USER_LISTINGS": // For getting or setting listings for a specific user
-      console.log("Listings for specific user", action.payload); 
+      case "GET_USER_LISTINGS":
       return { ...state, userListings: action.payload };
 
     case "ADD_LISTING":
@@ -61,28 +58,16 @@ const initialState = {
   userListings: [],
 };
 
-// ListingsContext provider to wrap around components
 export const ListingsProvider = ({ children }) => {
   
    const { user } = useAuth();
   const [state, dispatch] = useReducer(listingsReducer, initialState);
-
-
-
   useEffect(() => {
     async function getOwnerListings() {
-      console.log("uuuuser", user)
       if (user && user._id) {
         const user_id = user._id;
-        console.log("User id is:", user_id);
-  
         const response = await getAlListingsofSpecificUser(user_id);
-        console.log("Response of user in ownerdash is: ", response.data);
-      
-  
-        // setItems(response.data.listing);
         dispatch({ type: "GET_USER_LISTINGS", payload: response.data.listing });
-        console.log("listing in ownerdash are:", response.data.listing);
       }
     }
     getOwnerListings();

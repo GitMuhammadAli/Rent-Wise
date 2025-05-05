@@ -63,10 +63,8 @@ function YourComponent() {
 
   if (token) {
     const decodedToken = decodeToken(token);
-    console.log("Decoded JWT Token:", decodedToken);
   }
 
-  console.log("JWT Token:", token);
 
   return <div>Your Component</div>;
 }
