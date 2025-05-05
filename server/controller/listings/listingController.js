@@ -44,12 +44,8 @@ exports.uploadMedia = async (req, res, next) => {
                 return video.save();
             });
             const savedVideos = await Promise.all(videoPromises);
-            videos = savedVideos.map(vid => vid._id); // Store video ObjectIDs
+            videos = savedVideos.map(vid => vid._id); 
         }
-
-        console.log("Images:", images);
-        console.log("Videos:", videos);
-
         return res.status(STATUS.SUCCESS).json({
             message: LISTINGS.MEDIA_UPLOAD_SUCCESS,
             images,
@@ -76,7 +72,6 @@ exports.CreateListings = async (req, res, next) => {
         } = req.body;
 
         const listingId = req.listingId
-        console.log("body ", req.body);
         const missingFields = [];
         if (!owner) missingFields.push("owner");
         if (!title) missingFields.push("title");
@@ -85,10 +80,6 @@ exports.CreateListings = async (req, res, next) => {
         if (!category) missingFields.push("category");
         if (!priceUnit) missingFields.push("priceUnit");
         if (!location) missingFields.push("location");
-
-
-        // if (!location) missingFields.push("location");
-
         if (missingFields.length) {
             return res.status(STATUS.BAD_REQUEST).json({
                 error: `${LISTINGS.ERROR_MISSING_REQUIRED_FIELDS} ${missingFields.join(", ")}. ${LISTINGS.PLEASE_PROVIDE_ALL_REQUIRED_FIELDS}`.trim()
@@ -99,7 +90,6 @@ exports.CreateListings = async (req, res, next) => {
             try {
                 const imagePromises = req.files['images'].map(file => {
                     const image = new Image({
-                        // url: `/uploads/media/${req.body.owner}/${file.filename}`,
                         url: `/uploads/media/${listingId}/${file.filename}`,
                         caption: ""
                     });
@@ -117,7 +107,6 @@ exports.CreateListings = async (req, res, next) => {
             try {
                 const videoPromises = req.files['videos'].map(file => {
                     const video = new Video({
-                        // url: `/uploads/media/${req.body.owner}/${file.filename}`,
                         url: `/uploads/media/${listingId}/${file.filename}`,
                         caption: ""
                     });
@@ -133,9 +122,6 @@ exports.CreateListings = async (req, res, next) => {
         let facilities = null;
         if (category === 'house' || category === 'hostel') {
             const { bedrooms, bathrooms } = req.body;
-
-            console.log("facilities in req body is", bedrooms, bathrooms)
-
             facilities = await Facilities.create({
                 bedrooms: bedrooms,
                 bathrooms: bathrooms
@@ -143,31 +129,24 @@ exports.CreateListings = async (req, res, next) => {
         }
 
 
-         // location handling
-// If location is a JSON string, parse it
 let parsedLocation;
 if (typeof location === 'string') {
   try {
     parsedLocation = JSON.parse(location);
-    console.log("Parsed Location:", parsedLocation);
   } catch (err) {
     return next(new AppError(false, "Invalid location JSON format", STATUS.BAD_REQUEST));
   }
 } else {
   parsedLocation = location;
 }
-
-// Check for required fields
-const { address, city, state, country, zipCode, coordinates } = parsedLocation;
+const { address, state, country, zipCode, coordinates } = parsedLocation;
 if (!address || !state || !country || !coordinates || !coordinates.latitude || !coordinates.longitude) {
   return next(new AppError(false, "Invalid location format", STATUS.BAD_REQUEST));
 }
 
-// Save location to DB
 const newLocation = await Location.create(parsedLocation);
 
 
-        // Create the rental item
         const newRentalItem = new RentalItem({
             _id: listingId,
             owner,
@@ -185,12 +164,7 @@ const newLocation = await Location.create(parsedLocation);
             location: newLocation._id
         });
 
-        // if (Boolean(biddingEnabled) == BOOLEAN.TRUE) {
-        //     if (!minimumBid || !bidEndDate) {
-        //         return next(new AppError(BOOLEAN.FALSE, LISTINGS.BIDDING_ERROR_MISSING_REQUIRED_FIELDS, STATUS.BAD_REQUEST));
-        //     }
-
-        // error in above code
+       
         if (biddingEnabled === BOOLEAN.TRUE) {
             if (!minimumBid || !bidEndDate) {
               return next(new AppError(
@@ -199,8 +173,6 @@ const newLocation = await Location.create(parsedLocation);
                 STATUS.BAD_REQUEST
               ));
             }
-          
-
             const bidding = new Bidding({
                 rentalItem: newRentalItem._id,
                 enabled: biddingEnabled,
@@ -213,10 +185,6 @@ const newLocation = await Location.create(parsedLocation);
             newRentalItem.bidding = savedBidding._id;
         }
         await newRentalItem.save();
-
-        console.log("Rental item created:", newRentalItem);
-
-
         return res.status(STATUS.SUCCESS).json({
             rentalItem: newRentalItem,
             message: LISTINGS.LISTING_CREATED,
@@ -231,16 +199,11 @@ exports.placeBid = async (req, res, next) => {
     try {
         const { rentalItemId, bidAmount } = req.body;
         const userId = req.user.id;
-
-        console.log("body Bid", req.body)
-        console.log("user", userId);
-
         const bidding = await Bidding.findOne({ rentalItem: rentalItemId });
         if (!bidding || !bidding.enabled) {
             return next(new AppError(BOOLEAN.FALSE, LISTINGS.BIDDING_NOT_ENABLED, STATUS.BAD_REQUEST));
         }
         const rentelItemOwner = await RentalItem.findOne({ bidding: bidding._id }).populate('owner')
-        // Check if bidding is still open
         if (new Date() > bidding.bidEndDate) {
             return next(new AppError(BOOLEAN.FALSE, LISTINGS.BIDDING_ENDED, STATUS.BAD_REQUEST));
         }
@@ -297,8 +260,6 @@ exports.toggleFavoriteListing = async (req, res, next) => {
         }
 
         const isFavorited = user.favoriteListings.includes(id);
-        console.log(isFavorited)
-
         if (isFavorited) {
             user.favoriteListings = user.favoriteListings.filter(
                 (listingId) => listingId.toString() !== id.toString()
@@ -317,7 +278,6 @@ exports.toggleFavoriteListing = async (req, res, next) => {
             });
         }
     } catch (error) {
-        console.log(error)
         next(error);
     }
 };
@@ -371,7 +331,6 @@ const removeFile = (filePath) => {
                     console.error(`Error deleting file: ${filePath}`, err);
                     return reject(err);
                 }
-                console.log(`Successfully deleted file: ${filePath}`);
                 resolve();
             });
         });
@@ -418,7 +377,6 @@ exports.UpdateListings = async (req, res, next) => {
         biddingEnabled, minimumBid, bidIncrement, bidEndDate
     } = req.body;
 
-    console.log("Received request to update listing", req.body);
 
     const parsedRemovedImages = JSON.parse(req.body.removedImages || '[]');
     const parsedRemovedVideos = JSON.parse(req.body.removedVideos || '[]');
@@ -447,10 +405,6 @@ exports.UpdateListings = async (req, res, next) => {
         if (!existingListing) {
             return next(new AppError(BOOLEAN.FALSE, LISTINGS.LISTING_NOT_FOUND, STATUS.NOT_FOUND));
         }
-        console.log("Existing listing:", existingListing);
-
-
-
         for (const imageObj of parsedRemovedImages) {
             await Image.findByIdAndDelete(imageObj._id);
             const filePath = path.resolve(`uploads/media/${id}/${path.basename(imageObj.url)}`);
@@ -472,7 +426,7 @@ exports.UpdateListings = async (req, res, next) => {
                 const newImages = await Image.insertMany(
                     req.files['images'].map(file => {
                         const filePath = `/uploads/media/${id}/${file.filename}`;
-                        uploadedFilePaths.push(filePath);  // Track for potential cleanup
+                        uploadedFilePaths.push(filePath);  
                         return { url: filePath, caption: "" };
                     })
                 );
@@ -483,7 +437,7 @@ exports.UpdateListings = async (req, res, next) => {
                 const newVideos = await Video.insertMany(
                     req.files['videos'].map(file => {
                         const filePath = `/uploads/media/${id}/${file.filename}`;
-                        uploadedFilePaths.push(filePath);  // Track for potential cleanup
+                        uploadedFilePaths.push(filePath); 
                         return { url: filePath, caption: "" };
                     })
                 );
@@ -494,7 +448,6 @@ exports.UpdateListings = async (req, res, next) => {
             return next(new AppError(BOOLEAN.FALSE, LISTINGS.MEDIA_UPLOAD_ERR, STATUS.INTERNAL_SERVER_ERROR));
         }
 
-        // facilities handling
         if (
             (existingListing.category === 'house' || existingListing.category === 'hostel') &&
             (category !== 'house' && category !== 'hostel')
@@ -513,7 +466,6 @@ exports.UpdateListings = async (req, res, next) => {
             );
 
         }
-        // bidding handling
         let newBidding = null;
 
         if (existingListing.bidding == null) {
@@ -537,14 +489,12 @@ exports.UpdateListings = async (req, res, next) => {
 
             newBidding.save()
         }
-          // location handling
           let updatedLocationId = existingListing.location;
 
           try {
               const parsedLocation = JSON.parse(req.body.location);
           
               if (existingListing.location) {
-                  // If a location already exists, update it
                   await Location.findByIdAndUpdate(
                       existingListing.location,
                       {
@@ -561,7 +511,6 @@ exports.UpdateListings = async (req, res, next) => {
                       { new: true, runValidators: true }
                   );
               } else {
-                  // Otherwise create a new location
                   const newLoc = await Location.create({
                       address: parsedLocation.address,
                       city: parsedLocation.city,
@@ -578,10 +527,6 @@ exports.UpdateListings = async (req, res, next) => {
           } catch (locErr) {
               return next(new AppError(false, "Invalid location data", 400));
           }
-          
-        
-
-        // Update listing with all changes
         const updatedListing = await RentalItem.findByIdAndUpdate(
             id,
             {
@@ -604,185 +549,13 @@ exports.UpdateListings = async (req, res, next) => {
             },
             { new: BOOLEAN.TRUE, runValidators: BOOLEAN.TRUE }
         );
-
-
-
         await cleanUpUnreferencedMedia(id, next);
-
-        console.log("Updated listing:", updatedListing);
-
         res.json(updatedListing);
     } catch (error) {
         next(error)
     }
 };
-// controller of updating listings before adding the functionality of Location
-// exports.UpdateListings = async (req, res, next) => {
-//     const { id } = req.params;
-//     const {
-//         title,
-//         description,
-//         price,
-//         category,
-//         priceUnit,
-//         location,
-//         availability,
-//         averageRating,
-//         listingStatus,
-//         bedrooms, bathrooms,
-//         biddingEnabled, minimumBid, bidIncrement, bidEndDate
-//     } = req.body;
 
-//     console.log("Received request to update listing", req.body);
-
-//     const parsedRemovedImages = JSON.parse(req.body.removedImages || '[]');
-//     const parsedRemovedVideos = JSON.parse(req.body.removedVideos || '[]');
-//     const parsedExistingImages = JSON.parse(req.body.existingImages || '[]');
-//     const parsedExistingVideos = JSON.parse(req.body.existingVideos || '[]');
-//     const amenities = JSON.parse(req.body.amenities || '[]');
-//     const rules = JSON.parse(req.body.rules || '[]');
-
-//     const missingFields = [];
-//     if (!title) missingFields.push("title");
-//     if (!description) missingFields.push("description");
-//     if (!price) missingFields.push("price");
-//     if (!category) missingFields.push("category");
-//     if (!priceUnit) missingFields.push("priceUnit");
-//     if (!location) missingFields.push("priceUnit");
-
-//     if (missingFields.length) {
-//         return next(new AppError(BOOLEAN.FALSE, `Missing required fields: ${missingFields.join(", ")}`, STATUS.BAD_REQUEST));
-//     }
-//     const uploadedFilePaths = [];
-
-//     try {
-//         const existingListing = await RentalItem.findById(id).populate("images").populate("videos").populate("facilities").populate("bidding");
-//         if (!existingListing) {
-//             return next(new AppError(BOOLEAN.FALSE, LISTINGS.LISTING_NOT_FOUND, STATUS.NOT_FOUND));
-//         }
-//         console.log("Existing listing:", existingListing);
-
-
-
-//         for (const imageObj of parsedRemovedImages) {
-//             await Image.findByIdAndDelete(imageObj._id);
-//             const filePath = path.resolve(`uploads/media/${id}/${path.basename(imageObj.url)}`);
-//             await removeFile(filePath);
-//         }
-
-//         for (const videoObj of parsedRemovedVideos) {
-//             await Video.findByIdAndDelete(videoObj._id);
-//             const filePath = path.resolve(`uploads/media/${id}/${path.basename(videoObj.url)}`);
-//             await removeFile(filePath);
-//         }
-
-//         let finalImageIds = parsedExistingImages.map(img => img._id);
-//         let finalVideoIds = parsedExistingVideos.map(vid => vid._id);
-//         let facilitiesId = null;
-
-//         try {
-//             if (req.files?.['images']) {
-//                 const newImages = await Image.insertMany(
-//                     req.files['images'].map(file => {
-//                         const filePath = `/uploads/media/${id}/${file.filename}`;
-//                         uploadedFilePaths.push(filePath);  // Track for potential cleanup
-//                         return { url: filePath, caption: "" };
-//                     })
-//                 );
-//                 finalImageIds = [...finalImageIds, ...newImages.map(img => img._id)];
-//             }
-
-//             if (req.files?.['videos']) {
-//                 const newVideos = await Video.insertMany(
-//                     req.files['videos'].map(file => {
-//                         const filePath = `/uploads/media/${id}/${file.filename}`;
-//                         uploadedFilePaths.push(filePath);  // Track for potential cleanup
-//                         return { url: filePath, caption: "" };
-//                     })
-//                 );
-//                 finalVideoIds = [...finalVideoIds, ...newVideos.map(vid => vid._id)];
-//             }
-//         } catch (mediaError) {
-//             await Promise.all(uploadedFilePaths.map(filePath => removeFile(path.resolve(filePath))));
-//             return next(new AppError(BOOLEAN.FALSE, LISTINGS.MEDIA_UPLOAD_ERR, STATUS.INTERNAL_SERVER_ERROR));
-//         }
-//         if (
-//             (existingListing.category === 'house' || existingListing.category === 'hostel') &&
-//             (category !== 'house' && category !== 'hostel')
-//         ) {
-//             await Facilities.deleteOne({ _id: existingListing.facilities });
-//             facilitiesId = null;
-//         }
-
-
-//         if (category === 'house' || category === 'hostel') {
-//             facilitiesId = await manageFacilities(
-//                 category,
-//                 bedrooms, bathrooms,
-//                 existingListing.facilities?._id || null,
-//                 next
-//             );
-
-//         }
-//         let newBidding = null;
-
-//         if (existingListing.bidding == null) {
-
-//             newBidding = await Bidding.create({
-//                 rentalItem: existingListing._id,
-//                 enabled: biddingEnabled,
-//                 minimumBid: minimumBid,
-//                 bidIncrement: bidIncrement,
-//                 bidEndDate: bidEndDate,
-//             });
-
-//         } else {
-//             newBidding = await Bidding.findByIdAndUpdate(existingListing.bidding._id, {
-//                 rentalItem: existingListing._id,
-//                 enabled: biddingEnabled,
-//                 minimumBid: minimumBid,
-//                 bidIncrement: bidIncrement,
-//                 bidEndDate: bidEndDate,
-//             })
-
-//             newBidding.save()
-//         }
-
-//         // Update listing with all changes
-//         const updatedListing = await RentalItem.findByIdAndUpdate(
-//             id,
-//             {
-//                 title,
-//                 description,
-//                 price,
-//                 category,
-//                 priceUnit,
-//                 location,
-//                 amenities,
-//                 rules,
-//                 availability,
-//                 images: finalImageIds,
-//                 videos: finalVideoIds,
-//                 averageRating,
-//                 listingStatus,
-//                 facilities: facilitiesId,
-//                 bidding: newBidding._id,
-//                 updatedAt: Date.now(),
-//             },
-//             { new: BOOLEAN.TRUE, runValidators: BOOLEAN.TRUE }
-//         );
-
-
-
-//         await cleanUpUnreferencedMedia(id, next);
-
-//         console.log("Updated listing:", updatedListing);
-
-//         res.json(updatedListing);
-//     } catch (error) {
-//         next(error)
-//     }
-// };
 
 
 async function manageFacilities(category, bedrooms, bathrooms, existingFacilitiesId = null, next) {
@@ -864,7 +637,6 @@ exports.GetListings = async (req, res, next) => {
 // function to get a single listing by id
 exports.GetListingsById = async (req, res, next) => {
     const { id } = req.params;
-    console.log(req.params)
     try {
         const listing = await RentalItem.findById(id)
             .populate("owner", "name email imageUrl")
@@ -882,7 +654,6 @@ exports.GetListingsById = async (req, res, next) => {
         if (!listing) {
             return next(new AppError(BOOLEAN.FALSE, LISTINGS.LISTING_NOT_FOUND, STATUS.NOT_FOUND));
         }
-        console.log(listing)
         res.json(listing);
     } catch (error) {
         next(error)
@@ -903,8 +674,6 @@ exports.GetListingByUserId = async (req, res, next) => {
             return next(new AppError(BOOLEAN.FALSE, LISTINGS.LISTING_NOT_FOUND, STATUS.NOT_FOUND));
         }
         res.json({ listing, count });
-        // console.log("Count of this owner is:", count)
-
     } catch (error) {
         next(error)
     }
@@ -972,314 +741,8 @@ exports.AllDetailWithMediaWithOwnerID = async (req, res, next) => {
         if (!listing) {
             return next(new AppError(BOOLEAN.FALSE, LISTINGS.LISTING_NOT_FOUND, STATUS.NOT_FOUND));
         }
-
-        console.log("Fetched Listing:", listing); // Log the fetched listing
         res.json(listing);
     } catch (error) {
         next(error)
     }
 };
-
-
-
-
-
-
-
-
-
-
-
-// old one
-
-// exports.CreateListings = async (req, res) => {
-//     try {
-//         const {
-//             owner,
-//             title,
-//             description,
-//             price,
-//             category,
-//             location,
-//             amenities = [], // Default to an empty array if not provided
-//             rules = [], // Default to an empty array if not provided
-//             availability = [], // Default to an empty array if not provided
-//             ratings = [], // Default to an empty array if not provided
-//             averageRating = 0, // Default rating to 0 if not provided
-//             status = "pending", // Default to 'pending' if not provided
-//             priceUnit,
-//             createdAt = Date.now(), // Default to current timestamp if not provided
-//             updatedAt = Date.now(), // Default to current timestamp if not provided
-//         } = req.body;
-
-//         // Handle image uploads
-//         let images = [];
-//         if (req.files && req.files['images']) {
-//             images = req.files['images'].map(file => ({
-//                 url: `/uploads/media/${owner}/${file.filename}`,
-//                 caption: ""
-//             }));
-//         }
-//         else{
-//             images = [];
-//         }
-
-//         // Handle video uploads
-//         let videos = [];
-//         if (req.files && req.files['videos']) {
-//             videos = req.files['videos'].map(file => ({
-//                 url: `/uploads/media/${owner}/${file.filename}`,
-//                 caption: ""
-//             }));
-//         }
-//         else {
-//             videos = [];
-//         }
-
-//         console.log("body " , req.body);
-//         console.log("files " , req.files);
-//         console.log("images " , images);
-//         console.log("videos " , videos);
-
-//         const newListing = new RentalItem({
-//             owner,
-//             title,
-//             description,
-//             price,
-//             category,
-//             location,
-//             amenities,
-//             rules,
-//             availability,
-//             images,
-//             videos,
-//             ratings,
-//             priceUnit,
-//             averageRating,
-//             status,
-//             createdAt,
-//             updatedAt,
-//         });
-
-//         console.log("New Listing", newListing);
-//         await newListing.save();
-//         console.log("New Listing saved is :", newListing);
-
-//         return res.status(201).json(newListing);
-//     } catch (error) {
-//         console.error("Error creating listing:", error);
-//         return res.status(500).json({ error: "Failed to create listing" });
-//     }
-// };
-
-
-
-// html one
-// exports.CreateListings = async (req, res) => {
-//     try {
-//         const {
-//             owner,
-//             title,
-//             description,
-//             price,
-//             category,
-//             location,
-//             amenities = [], // Default to an empty array if not provided
-//             rules = [], // Default to an empty array if not provided
-//             availability = [], // Default to an empty array if not provided
-//             ratings = [], // Default to an empty array if not provided
-//             averageRating = 0, // Default rating to 0 if not provided
-//             status = "pending", // Default to 'pending' if not provided
-//             priceUnit,
-//             createdAt = Date.now(), // Default to current timestamp if not provided
-//             updatedAt = Date.now(), // Default to current timestamp if not provided
-//         } = req.body;
-
-//         // Ensure availability and ratings are parsed correctly
-//         const parsedAvailability = availability.length ? JSON.parse(availability) : [];
-//         const parsedRatings = ratings.length ? JSON.parse(ratings) : [];
-
-//         // Handle image uploads
-//         let images = [];
-//         if (req.files && req.files['images']) {
-//             images = req.files['images'].map(file => ({
-//                 url: `/uploads/media/${owner}/${file.filename}`,
-//                 caption: ""
-//             }));
-//         }
-
-//         // Handle video uploads
-//         let videos = [];
-//         if (req.files && req.files['videos']) {
-//             videos = req.files['videos'].map(file => ({
-//                 url: `/uploads/media/${owner}/${file.filename}`,
-//                 caption: ""
-//             }));
-//         }
-
-//         console.log("body ", req.body);
-//         console.log("files ", req.files);
-//         console.log("images ", images);
-//         console.log("videos ", videos);
-
-//         const newListing = new RentalItem({
-//             owner,
-//             title,
-//             description,
-//             price,
-//             category,
-//             location,
-//             amenities,
-//             rules,
-//             availability: parsedAvailability,
-//             images,
-//             videos,
-//             ratings: parsedRatings,
-//             priceUnit,
-//             averageRating,
-//             status,
-//             createdAt,
-//             updatedAt,
-//         });
-
-//         console.log("New Listing", newListing);
-//         await newListing.save();
-//         console.log("New Listing saved is :", newListing);
-
-//         return res.status(201).json(newListing);
-//     } catch (error) {
-//         console.error("Error creating listing:", error);
-//         return res.status(500).json({ error: "Failed to create listing" });
-//     }
-// };
-
-
-
-
-// exports.UpdateListings = async (req, res) => {
-//     const { id } = req.params;
-//     const {
-//         title,
-//         description,
-//         price,
-//         category,
-//         priceUnit,
-//         location,
-//         availability,
-//         averageRating,
-//         status
-//     } = req.body;
-
-//     console.log("Received request to update listing" , req.body);
-//     // Parse JSON data
-//     const parsedRemovedImages = JSON.parse(req.body.removedImages || '[]');
-//     const parsedRemovedVideos = JSON.parse(req.body.removedVideos || '[]');
-//     const parsedExistingImages = JSON.parse(req.body.existingImages || '[]');
-//     const parsedExistingVideos = JSON.parse(req.body.existingVideos || '[]');
-//     const amenities = JSON.parse(req.body.amenities || '[]');
-//     const rules = JSON.parse(req.body.rules || '[]');
-
-//     // Validate required fields
-//     const missingFields = [];
-//     if (!title) missingFields.push("title");
-//     if (!description) missingFields.push("description");
-//     if (!price) missingFields.push("price");
-//     if (!category) missingFields.push("category");
-//     if (!priceUnit) missingFields.push("priceUnit");
-
-//     if (missingFields.length) {
-//         return res.status(400).json({
-//             error: `Missing required fields: ${missingFields.join(", ")}`
-//         });
-//     }
-
-//     try {
-//         const existingListing = await RentalItem.findById(id);
-//         if (!existingListing) {
-//             return res.status(404).json({ error: "Listing not found" });
-//         }
-
-//         // Handle removed media
-//         for (const imageObj of parsedRemovedImages) {
-//             await Image.findByIdAndDelete(imageObj._id);
-//             const filePath = path.resolve(__dirname, `../uploads/media/${existingListing.owner}/${path.basename(imageObj.url)}`);
-//             await removeFile(filePath);
-//         }
-
-//         for (const videoObj of parsedRemovedVideos) {
-//             await Video.findByIdAndDelete(videoObj._id);
-//             const filePath = path.resolve(__dirname, `../uploads/media/${existingListing.owner}/${path.basename(videoObj.url)}`);
-//             await removeFile(filePath);
-//         }
-
-//         // Handle new media
-//         let finalImageIds = parsedExistingImages.map(img => img._id);
-//         let finalVideoIds = parsedExistingVideos.map(vid => vid._id);
-
-//         // Process new images
-//        // Process new images
-// if (req.files?.['images']) {
-//     const newImages = await Image.insertMany(
-//         req.files['images'].map(file => ({
-//             url: `/uploads/media/${existingListing.owner}/${file.filename}`,
-//             caption: ""
-//         }))
-//     );
-//     finalImageIds = [...finalImageIds, ...newImages.map(img => img._id)];
-// }
-
-// // Process new videos
-// if (req.files?.['vedios']) {
-//     const newVideos = await Video.insertMany(
-//         req.files['vedios'].map(file => ({
-//             url: `/uploads/media/${existingListing.owner}/${file.filename}`,
-//             caption: ""
-//         }))
-//     );
-//     finalVideoIds = [...finalVideoIds, ...newVideos.map(vid => vid._id)];
-// }
-
-
-//         // Update listing with all changes
-//         const updatedListing = await RentalItem.findByIdAndUpdate(
-//             id,
-//             {
-//                 title,
-//                 description,
-//                 price,
-//                 category,
-//                 priceUnit,
-//                 location,
-//                 amenities,
-//                 rules,
-//                 availability,
-//                 images: finalImageIds,
-//                 videos: finalVideoIds,
-//                 averageRating,
-//                 status,
-//                 updatedAt: Date.now(),
-//             },
-//             { new: true, runValidators: true }
-//         );
-
-//         res.json(updatedListing);
-//     } catch (error) {
-//         console.error("Error updating listing:", error);
-//         res.status(500).json({ error: "Failed to update listing", details: error.message });
-//     }
-// };
-
-// // Utility function to remove files
-// const removeFile = (filePath) => {
-//     return new Promise((resolve, reject) => {
-//         fs.unlink(filePath, (err) => {
-//             if (err) {
-//                 console.error(`Error deleting file: ${filePath}`, err);
-//                 reject(err);
-//             } else {
-//                 console.log(`Successfully deleted file: ${filePath}`);
-//                 resolve();
-//             }
-//         });
-//     });
-// };

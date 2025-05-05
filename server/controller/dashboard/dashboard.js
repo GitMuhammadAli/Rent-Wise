@@ -36,8 +36,7 @@ exports.GetUser = async (req, res, next) => {
 
 exports.updateUserDashboardProfile = async (req, res, next) => {
   const { id } = req.params;
-  const { name, email, bio, avatar , notificationPreferences } = req.body;
-  console.log(req.body)
+  const { name, email, bio,   notificationPreferences } = req.body;
   const { currentPassword, password, ...updateData } = req.body;
   if (bio === '' || bio === '\r\n') {
     delete updateData.bio;
@@ -48,15 +47,13 @@ exports.updateUserDashboardProfile = async (req, res, next) => {
     if (!user) {
       return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.USER_NOT_FOUND, STATUS.NOT_FOUND));
     }
-    console.log(req.file);
     if (req.file) {
       updateData.imageUrl = `/uploads/profile/${id}/${req.file.filename}`;
     }
 
     if (password) {
       if (user.googleId || user.facebookId) {
-        // const salt = await bcrypt.genSalt(10);
-        // updateData.password = await bcrypt.hash(password, salt);
+        
         return res.status(STATUS.FORBIDDEN).json({
           success: BOOLEAN.FALSE,
           message: RESPONCE_MESSAGE.CANNOT_CREATE_PASSWORD_IN_GOOGLE_OR_FACEBOOK_ACCOUNTS,
@@ -77,7 +74,6 @@ exports.updateUserDashboardProfile = async (req, res, next) => {
         { user: id },
         {
           notificationPreferences: {
-            // message: JSON.parse(notificationPreferences).message,
             review: JSON.parse(notificationPreferences).review,
             comment: JSON.parse(notificationPreferences).comment,
             system: JSON.parse(notificationPreferences).system,
@@ -106,16 +102,8 @@ exports.updateUserDashboardProfile = async (req, res, next) => {
 
 exports.NotificationSubscription = async (req, res, next) => {
   try {
-
     const { subscription } = req.body;
-
-
     const userId = req.user._id;
-    // const userId = '670a69f02b298d4a1a047f24'
-
-    // console.log("req.body", subscription)
-    // console.log("uuser", userId)
-
     if (!userId || !subscription) {
       return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.INVALID_DATA, STATUS.UNAUTHORIZED));
 
@@ -132,11 +120,8 @@ exports.NotificationSubscription = async (req, res, next) => {
         _id: new mongoose.Types.ObjectId(),
         user: userId,
         notificationPreferences: {
-          // message: true,
           review: true,
           comment:true,
-          // bookings: true,
-          // payments: true,
           system: true,
           aggreement:true,
           chat:true,
@@ -169,41 +154,3 @@ exports.GetNotificationSubscription = async (req, res, next) => {
     next(error)
   }
 }
-
-// exports.UpdateSubscription = async (req,res,next) =>{
-//   console.log('herll')
-//   try {
-   
-   
-//     const { endpoint, keys } = req.body;
-//     console.log('keys', keys, "endpoint", endpoint)
-//     const userId = req.user.id;
-//     console.log('user in update subs', userId)
-
-//     // Find the user's settings and update their subscription
-//     const userSettings = await UserSettings.findOne({ user: userId });
-//     console.log("purani subs")
-//     if (!userSettings) {
-//       return res.status(404).json({ message: "User settings not found" });
-//     }
-
-//     // Update the webPushSubscription
-//     userSettings.webPushSubscription = {
-//       endpoint: endpoint,
-//       keys: {
-//         p256dh: keys.p256dh,
-//         auth: keys.auth,
-//       },
-//     };
-//     console.log('new subs', userSettings.webPushSubscription);
-
-//     // Save the updated user settings
-//     await userSettings.save();
-
-//     res.status(200).json({ message: "Subscription updated successfully" });
-//   } catch (error) {
-//     console.error("Error updating subscription:", error.message);
-//     res.status(500).json({ message: "Internal server error" });
-//   }
-
-// }

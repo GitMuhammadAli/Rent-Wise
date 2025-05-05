@@ -7,7 +7,6 @@ const { RESPONCE_MESSAGE } = require("../../messages/response");
 const { STATUS } = require("../../messages/status");
 const AppError = require("../../utils/AppError");
 const { BOOLEAN } = require("../../utils/Roles");
-
 const initializeAdmin = async (next) => {
   try {
     const adminExists = await Users.findOne({ role: "admin" });
@@ -19,45 +18,32 @@ const initializeAdmin = async (next) => {
         password: hashedPassword,
         role: "admin",
       });
-      console.log("Admin user created with username: admin and password: admin");
     }
   } catch (error) {
-    // next(error);
     throw new AppError(BOOLEAN.FALSE,ERROR_MESSAGE.ADMIN_INITLIAZED_ERROR, STATUS.INTERNAL_SERVER_ERROR)
   }
 };
-
 const Register = async (req, res , next) => {
   try {
     const { name, email, password } = req.body;
-
     if (!name || !email || !password) {
       return next(new AppError(BOOLEAN.FALSE,ERROR_MESSAGE.INVALID_INPUT, STATUS.BAD_REQUEST))
     }
-
     if (name.length < 5) {
       return next(new AppError(BOOLEAN.FALSE,ERROR_MESSAGE.NAME_VALIDATION_FAILED, STATUS.BAD_REQUEST))
     }
-  // if (!validator.isEmail(email)) {
-    //   return res.status(400).json({ message: "Invalid email format" });
-    // }
-
     if (password.length < 8) {
       return next(new AppError( BOOLEAN.FALSE ,ERROR_MESSAGE.PASSWORD_VALIDATION_FAILED, STATUS.BAD_REQUEST))
     }
     if (!email || !password) {
       return next(new AppError(BOOLEAN.FALSE,ERROR_MESSAGE.INVALID_INPUT, STATUS.BAD_REQUEST))
     }
-    
     if (await Users.findOne({ email })) {
       return next(new AppError( BOOLEAN.FALSE , ERROR_MESSAGE.EMAIL_ALREADY_EXISTS, STATUS.BAD_REQUEST))
     }
-
-  
     if (await Users.findOne({ email })) {
       return next(new AppError(BOOLEAN.FALSE,ERROR_MESSAGE.EMAIL_ALREADY_EXISTS, STATUS.BAD_REQUEST))
     }
-
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = await Users.create({
       name,
@@ -65,46 +51,34 @@ const Register = async (req, res , next) => {
       password: hashedPassword,
       role: "user",
     });
-
-
     if (newUser) {
       const token = await GenerateToken(newUser, req, res , next);
-
       return res.status(STATUS.CREATED).json({ message: RESPONCE_MESSAGE.USER_REGISTERED, token });
     }
   } catch (error) {
     next(error); 
   }
 };
-
 const login = async (req, res, next) => {
   try {
     const { your_email, your_pass } = req.body;
     const user = await Users.findOne({ email: your_email });
-
     if (!user) {
       return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.EMAIL_NOT_FOUND, STATUS.UNAUTHORIZED));
     }
-
     const isPasswordValid = await user.comparePassword(your_pass);
-
     if (!isPasswordValid) {
       return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.INVALID_PASSWORD, STATUS.UNAUTHORIZED));
     }
-
     await GenerateToken(user, req, res, next);
-    
     return res.status(STATUS.SUCCESS).json({
       message: RESPONCE_MESSAGE.LOGIN_SUCCESS,
       user: { id: user._id, role: user.role },
     });
-
   } catch (error) {
     next(error);
   }
 };
-
-
 const handleGoogleCallback = async (req, res ,next) => {
   try {
     console.log("Callback URL: ", process.env.GOOGLE_CALLBACK_URL);
@@ -114,7 +88,6 @@ const handleGoogleCallback = async (req, res ,next) => {
     next(error); 
   }
 };
-
 const logout = async (req, res , next) => {
   try {
     await res.clearCookie("jwt");
@@ -125,28 +98,10 @@ const logout = async (req, res , next) => {
     next(error); 
   }
 };
-
-// const userAccount = async (req, res) => {
-//   try {
-//     const UserCookie = req.cookies.jwt;
-//     const decodedToken = await decodingToken(UserCookie, process.env.JWT_API_SECRET_KEY);
-//     const user = await Users.findById(decodedToken._id);
-//     if (!user) {
-//       return res.status(STATUS.NOT_FOUND).json({ messag: RESPONCE_MESSAGE.USER_NOT_FOUND });
-//     }
-//     return res.status(STATUS.SUCCESS).json(user);
-//   } catch (error) {
-//     logger.error("Error fetching user account:", error);
-//     console.log(error);
-//     res.status(STATUS.INTERNAL_SERVER_ERROR).json({ message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR });
-//   }
-// };
-
 module.exports = {
   initializeAdmin,
   Register,
   login,
   handleGoogleCallback,
   logout,
-  // userAccount,
 };

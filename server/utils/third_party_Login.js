@@ -15,14 +15,11 @@ passport.deserializeUser(async (id, done) => {
     done(err, null);
   }
 });
-
-// Google Strategy
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
   callbackURL: "http://localhost:3600/auth/google/callback" || process.env.GOOGLE_CALLBACK_URL
 }, async (accessToken, refreshToken, profile, done) => {
-  console.log('Google profile:', profile); // Log the profile to debug
   try {
     let user = await User.findOne({ email: profile.emails[0].value });
     if (user) {
@@ -45,28 +42,3 @@ passport.use(new GoogleStrategy({
     done(err, null);
   }
 }));
-
-
-// Facebook Strategy
-// passport.use(new FacebookStrategy({
-//   clientID: process.env.FACEBOOK_CLIENT_ID,
-//   clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-//   callbackURL: "http://localhost:8080/auth/facebook/callback",
-//   profileFields: ["id", "displayName", "email", "photos"]
-// }, async (accessToken, refreshToken, profile, done) => {
-//   try {
-//     let user = await User.findOne({ facebookId: profile.id });
-//     if (!user) {
-//       user = new User({
-//         name: profile.displayName,
-//         email: profile.emails[0].value,
-//         facebookId: profile.id,
-//         imageUrl: profile.photos[0].value
-//       });
-//       await user.save();
-//     }
-//     done(null, user);
-//   } catch (err) {
-//     done(err, null);
-//   }
-// }));

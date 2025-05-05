@@ -28,20 +28,14 @@ exports.CreateNotification = async (recipient, sender, type, message, next, ) =>
     const notification = {
       recipient, sender, type, message
     }
-
-    // console.log("notification body is" , notification)
-    
     const userSettings = await UserSettings.findOne({ user: recipient });
 
     if (!userSettings) {
-          // throw new AppError(ERROR_MESSAGE.NOTIFICATION.SETTINGS_NOT_FOUND, STATUS.NOT_FOUND); // it says not exist
           throw new AppError("Error setting not found");
         }
-    
         const isEnabled = userSettings.notificationPreferences[type.toLowerCase()];
         
         if (!isEnabled) {
-          console.log(`Notification type ${type} is disabled for user`);
           return null;
         }
     
@@ -51,10 +45,6 @@ exports.CreateNotification = async (recipient, sender, type, message, next, ) =>
       type: type,
       message: message,
     });
-
-    // console.log("notification  is saved" , newNotification)
-
-
     if (userSettings?.webPushSubscription?.endpoint) {
       
       const payload = {
@@ -87,7 +77,6 @@ exports.CreateNotification = async (recipient, sender, type, message, next, ) =>
 exports.getNotificationByUser = async (req, res, next) => {
   try {
     const user = req.user._id
-    console.log(user)
     const notifications = await Notification.find({ recipient: user})
       .populate('sender', 'name email')
       .sort({ createdAt: -1 });

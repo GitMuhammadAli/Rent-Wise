@@ -1,10 +1,9 @@
 const Users = require("../../model/user/userModel");
 const otpGenerator = require("otp-generator");
 const bcrypt = require("bcrypt");
-const logger = require("../../utils/logger");
 const AppError = require("../../utils/AppError");
 
-const { generatetokenForOtp, decodingToken, decodeTokenForRestPassword, decryptCookieForOtp, verifyEncryptedCookieForOtp, generatetokenForOtpForEncryption } = require("../../token/Tokens");
+const { decodingToken,  decryptCookieForOtp, generatetokenForOtpForEncryption } = require("../../token/Tokens");
 const sendMail = require("../../config/sendmail");
 const { ERROR_MESSAGE } = require("../../messages/error");
 const { RESPONCE_MESSAGE } = require("../../messages/response");
@@ -25,9 +24,6 @@ const generateOTP = () => {
 const CheckMailforForget = async (req, res ,next) => {
   const { email } = req.body;
   try {
-    // if (!validator.isEmail(email)) {
-    //   return res.status(400).json({ success: false, message: "Invalid email format." });
-    // }
     const Findmail = await Users.findOne({ email });
     if (Findmail.role === ROLES.ADMIN) {
       return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.EMAIL_NOT_FOUND, STATUS.NOT_FOUND))
@@ -69,73 +65,35 @@ const CheckMailforForget = async (req, res ,next) => {
     next(error);
   }
 };
-
-
-
-
-
-
-
-
-
-// OTP confirmation
 const verifyOTP = async (userOTP, storedOTP, expirationTime) => {
   try {
     userOTP = userOTP.trim();
     storedOTP = storedOTP.trim();
-    // console.log(
-    //   `Comparing OTPs - User OTP: ${userOTP}, Stored OTP: ${storedOTP}`
-    // );
-
-
-    // console.log("Encrted Otp " + storedOTP);
-
     if (userOTP !== storedOTP) {
-      // console.log("OTP mismatch");
       return BOOLEAN.FALSE;
     }
     const currentTime = new Date();
-    // console.log(
-    //   `Current Time: ${currentTime}, Expiration Time: ${expirationTime}`
-    // );
     if (currentTime > expirationTime) {
-      // console.log("OTP expired");
       return BOOLEAN.FALSE;
     }
-    // console.log("OTP verified successfully");
-
     return BOOLEAN.TRUE;
   } catch (error) {
     return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.OTP_VERIFICATION_FAILED, STATUS.INTERNAL_SERVER_ERROR))
   }
 };
-
-
-
 const ConfirmOtp = async (req, res, next) => {
   const { otp } = req.body;
   const cookieOtp = req.cookies.resetPasswordOTP;
-
-  // console.log("OTP from the cookie:", cookieOtp);
-
   if (!cookieOtp) {
     return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.OTP_NOT_PROVIDED, STATUS.NOT_FOUND));
   }
-
   try {
     const { success, decoded: decodedToken } = await decodingToken(cookieOtp, process.env.JWT_API_SECRET_KEY);
     if (!success) {
       return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.OTP_EXPIRED, STATUS.UNAUTHORIZED));
     }
-
-    // console.log("Decoded Token:", decodedToken);
-
-    // Decrypt and parse the token
     const decryptedDecodedToken = decryptCookieForOtp(decodedToken);
     const parsedToken = JSON.parse(decryptedDecodedToken);
-
-    // console.log("Decoded Token after decryption:", parsedToken);
-
     const { SendedOtp, expirationTime, emailVerified, _id, email } = parsedToken;
 
     if (!SendedOtp) {
@@ -145,13 +103,8 @@ const ConfirmOtp = async (req, res, next) => {
     }
 
     if (emailVerified) {
-      // console.log("Email is already verified.");
-
       const isOtpValid = await verifyOTP(otp, SendedOtp, new Date(expirationTime));
       if (isOtpValid) {
-        // console.log("OTP verified successfully.");
-
-        // Generate a new token and set the cookie
         await generatetokenForOtpForEncryption(
           SendedOtp,
           expirationTime,
@@ -166,8 +119,6 @@ const ConfirmOtp = async (req, res, next) => {
           .status(STATUS.SUCCESS)
           .json({ success: BOOLEAN.TRUE, message: RESPONCE_MESSAGE.OTP_VERIFIED });
       } else {
-        // console.log("OTP verification failed or expired.");
-
         res.clearCookie("resetPasswordOTP");
         return res.status(STATUS.BAD_REQUEST).json({
           success: BOOLEAN.FALSE,
@@ -175,7 +126,6 @@ const ConfirmOtp = async (req, res, next) => {
         });
       }
     } else {
-      // console.log("Email not verified.");
       return res
         .status(STATUS.BAD_REQUEST)
         .json({ success: BOOLEAN.FALSE, message: ERROR_MESSAGE.PROVIDE_REGISTER_EMAIL });
@@ -185,19 +135,12 @@ const ConfirmOtp = async (req, res, next) => {
      return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.OTP_EXPIRED, STATUS.UNAUTHORIZED));
     }
 
-    // Pass unexpected errors to the error-handling middleware
     next(error);
   }
 };
-
-
-
-// New password
 const CreateNewPassword = async (req, res , next) => {
   try {
     const Cookie = req.cookies.resetPasswordOTP;
-    // console.log("Cookie is ", Cookie);
-
     const { Password, RepeatPassword } = req.body;
     if (!Cookie) {
       return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.OTP_NOT_PROVIDED, STATUS.NOT_FOUND));
@@ -207,22 +150,12 @@ const CreateNewPassword = async (req, res , next) => {
     if (!success) {
       return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.OTP_EXPIRED, STATUS.UNAUTHORIZED));
     }
-
-    // console.log("Decoded Token:", decodedToken);
-
-    // Decrypt the token to get the OTP and other details
     const decrpyptedDecodedToken = decryptCookieForOtp(decodedToken);
     const parsedToken = JSON.parse(decrpyptedDecodedToken);
-
-    // console.log("Decoded Token after decryption:", parsedToken);
-
-
-
     if (parsedToken.otpVerified === BOOLEAN.FALSE) {
       return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.OTP_EXPIRED, STATUS.GATEWAY_TIMEOUT));
     }
-    // console.log(Password);
-    // console.log(RepeatPassword);
+ 
     if (!Password || !RepeatPassword) {
       return next(new AppError(BOOLEAN.FALSE, ERROR_MESSAGE.PASSWORD_MISSING, STATUS.BAD_REQUEST));
     }

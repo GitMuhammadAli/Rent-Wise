@@ -1,5 +1,4 @@
 const { createLogger, format, transports } = require('winston');
-
 const logger = createLogger({
     level: 'silly',
     format: format.combine(
@@ -13,13 +12,10 @@ const logger = createLogger({
         ),
         format.simple()
     ),
-
     transports: [
         new transports.Console(),
         new transports.File({ filename: 'error.log', level: 'error' }),
         new transports.File({ filename: 'combined.log' })
     ]
 });
-
-
 module.exports = logger

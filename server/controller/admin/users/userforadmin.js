@@ -37,7 +37,6 @@ exports.userManage = async(req,res,next)=>{
             }
         })
     } catch (error) {
-        console.log(error)
         next(new AppError(ERROR_MESSAGE.SOMETHING_WENT_WRONG, 500))
     }
 }

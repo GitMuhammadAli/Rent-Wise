@@ -35,7 +35,6 @@ const asyncHandler = require("./middleware/asyncWrapper");
 const { setupSocket, io, app, server } = require("./utils/socket");
 
 
-// Global middlewares
 app.use(helmet({ crossOriginResourcePolicy: false }));
 app.use(xss());
 app.use(hpp());
@@ -48,7 +47,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static("public"));
 
-// Single initialization for passport and session
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
@@ -56,7 +54,6 @@ app.use(
     saveUninitialized: false,
     cookie: {
       httpOnly: false,
-      // secure: process.env.NODE_ENV === 'production', 
       sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
       maxAge: 30 * 24 * 60 * 60 * 1000,
     },
@@ -66,13 +63,11 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
-// Logger middleware
 app.use((req, res, next) => {
   logger.info(`${req.method} ${req.url} ${req.hostname}`);
   next();
 });
 
-// Test route for error handling (using asyncHandler)
 app.get(
   "/err",
   asyncHandler(async (req, res, next) => {
@@ -98,7 +93,6 @@ app.use("/notification", Notification);
 app.use("/rentWise" , admin)
 
 
-// Error handling middleware
 app.use(errorHandler);
 app.use(notFound);
 app.use((err, req, res, next) => {
@@ -112,7 +106,6 @@ app.use((err, req, res, next) => {
 
 
 
-// Uncaught exceptions and unhandled promise rejections
 process.on("uncaughtException", (err) => {
   console.error("Uncaught Exception:", err.message);
   console.error(err.stack);
@@ -141,7 +134,6 @@ const shutdown = () => {
   }
   
   server.close(() => {
-    console.log("Closed all active connections.");
     process.exit(0);
   });
   
@@ -154,7 +146,6 @@ const shutdown = () => {
 process.on("SIGINT", shutdown);
 process.on("SIGTERM", shutdown);
 
-// Asynchronous initialization Server
 const startServer = async () => {
   try {
     await Promise.all([

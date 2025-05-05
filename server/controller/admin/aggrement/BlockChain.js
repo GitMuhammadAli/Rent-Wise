@@ -26,7 +26,6 @@ exports.getAggrementForAdminByOwnerIDs = async (req, res, next) => {
             { blockchainStatus: false },
             { _id: 1, blockchainStatus: 1 , ownerConfirmed:1 }
         );
-        console.log("this is agreemnts " , agreements)
 
         if (!agreements) {
             res.status(STATUS.NOT_FOUND).json({
@@ -65,7 +64,6 @@ exports.getAggrementForAdminByOwnerIDs = async (req, res, next) => {
 exports.MakeAggrementForAdminByOwnerIDs = async (req, res, next) => {
     try {
         const { agreementId, transactionHash } = req.body;
-        console.log("req, body:", req.body);
         const blockChainAgreement = await BlockChainAggrement.create({
             agreementId: agreementId,
             transactionHash: transactionHash,

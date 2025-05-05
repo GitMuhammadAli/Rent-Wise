@@ -29,8 +29,6 @@ const threeDaysFromNow = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
 
 cron.schedule('0 0 * * *', async (next) => {
   try {
-    // console.log("Running Agreement Expiry Notification Cron Job...");
-
     const threeDaysFromNow = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
 
     const expiringAgreements = await Aggrement.aggregate([
@@ -65,9 +63,6 @@ cron.schedule('0 0 * * *', async (next) => {
     for (const agreement of expiringAgreements) {
       const daysLeft = Math.ceil((agreement.endDate - Date.now()) / (1000 * 60 * 60 * 24));
 
-      console.log(`Notifying owner (${agreement.ownerId}) and renter (${agreement.renterId}) for agreement expiring in ${daysLeft} days.`);
-
-      // Notify Owner
       await CreateNotification(
         agreement.ownerId,
         null,
@@ -76,7 +71,6 @@ cron.schedule('0 0 * * *', async (next) => {
         next
       );
 
-      // Notify Renter
       await CreateNotification(
         agreement.renterId,
         null,

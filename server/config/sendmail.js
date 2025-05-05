@@ -19,8 +19,6 @@ const sendMail = async (to, emailContent ,  next) => {
             text: emailContent.text,
             html: emailContent.html,
         });
-
-        console.log("Message sent: %s", info.messageId);
         return { success: BOOLEAN.TRUE, messageId: info.messageId };
     } catch (error) {
         next(error);
