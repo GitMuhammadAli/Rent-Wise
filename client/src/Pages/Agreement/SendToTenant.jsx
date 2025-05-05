@@ -71,6 +71,10 @@ export default function SendToTenant({ mainDetails ,isOpen, setIsOpen,  open, cl
       {
          link = `${import.meta.env.VITE_FRONT_END_URL}/viewCarAgreement/${_id}`;
       }
+      else if(mainDetails.listingId.category === 'hostel')
+      {
+         link = `${import.meta.env.VITE_FRONT_END_URL}/viewHostelAgreement/${_id}`;
+      }
       else{
         return;
       }

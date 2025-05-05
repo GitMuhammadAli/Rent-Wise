@@ -1,3 +1,5 @@
+// just a template to create and update agreements , not functionlaity
+
 import React, { useEffect, useState } from 'react'
 import {
   Box,
@@ -17,7 +19,7 @@ import ColorTubeLoader from '../../../components/Style/ColorTubeLoader';
 
 
 export default function CarAgrTemplate({updateAgreement,mainDetails,formData, handleChange, saveAgreement,tenant
-    , checkCreateAgrr, OwnerConfirmedFunc, ownerConfirmed, }) {
+    , checkCreateAgrr, OwnerConfirmedFunc, ownerConfirmed,list_Title }) {
     const {user} = useAuth();
     const [renterConfirmed, setRenterConfirmed] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -82,8 +84,12 @@ export default function CarAgrTemplate({updateAgreement,mainDetails,formData, ha
         <Text>Hereinafter known as the 'tenant' of the other part.</Text>
 
         <Text>
-          Whereas the landlord confirms that he is legally competent to rent out
-          ______________________________
+          Whereas the landlord confirms that he is legally competent to rent out{' '}
+         {list_Title || mainDetails && (
+                      <Text fontWeight={'bold'} as="span" borderBottom="1px solid black">
+                          {list_Title || mainDetails?.listingId?.title}
+                         </Text>
+                     )}{' '}
         </Text>
 
         <Text fontWeight="bold">

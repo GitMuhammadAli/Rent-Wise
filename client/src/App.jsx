@@ -26,7 +26,7 @@ import ListingDetails from "../src/Pages/Listings/ListingDetails";
 import Dashboard from "./Pages/Dashboard/Dashboard";
 import MyAccount from "../src/Pages/Account/MyAccount";
 import DashboardUserContextProvider from "./hooks/DashboardUserContext";
-import UpdateListing from "./Pages/Listings/updateListing";
+
 import MainChat from "./Pages/Conversation/MainChat";
 import AgreementTemplate from "./Pages/Agreement/AgreementTemplate";
 // import UpdateAgreement from "./Pages/Agreement/UpdateAgreement";
@@ -51,6 +51,11 @@ import AdminOverview from "./Pages/Admin/AdminOverview";
 import AdminLayout from "./Layouts/adminLayout";
 import UserManagement from "./Pages/Admin/UserManagement";
 import ListingManagement from "./Pages/Admin/ListingManagement";
+import { AgreementProvider } from "./hooks/AdminAgreementContext";
+import LocationPicker from "./Pages/Location/Loacation";
+import UpdateListing from "./Pages/Listings/UpdateListing";
+import ViewHostelAgr from "./Pages/Agreement/ViewAgreement.jsx/ViewHostelAgr";
+import UpdateHostelAgrr from "./Pages/Agreement/Hostel/UpdateHostelAgrr";
 
 //  import TestListingDetails from "./Pages/Listings/Test/TestHome";
 
@@ -140,7 +145,8 @@ const router = createBrowserRouter(
 
          {/* owner profile */}
          <Route path="/profile/:_id" element={<UserProfile/>} />
-
+         <Route path="/loc" element={<LocationPicker/>} />
+        
 
         
         
@@ -174,7 +180,7 @@ const router = createBrowserRouter(
         </Route> */}
 
 
-
+       {/* protected routes */}
         <Route element={<ProtectedRoute requiredRole="user" />}>
 
         {/* listing routes */}
@@ -190,6 +196,7 @@ const router = createBrowserRouter(
         <Route path="/sendToTenant" element={<SendToTenant/>} />
         <Route path="/agreementCar/:id" element={<UpdateCarAgrr/>} />
         <Route path="/agreementHouse/:id" element={<UpdateHouseAgrr/>} />
+        <Route path="/agreementHostel/:id" element={<UpdateHostelAgrr/>} />
 
         {/* profile routes */}
           
@@ -200,6 +207,7 @@ const router = createBrowserRouter(
         {/* view agreements */}
         <Route path="/viewHouseAgreement/:_id" element={<ViewHouseAgr/>} />
         <Route path="/viewCarAgreement/:_id" element={<ViewCarAgr/>} />
+        <Route path="/viewHostelAgreement/:_id" element={<ViewHostelAgr/>} />
 
         </Route>
        
@@ -215,7 +223,9 @@ function App() {
       <DashboardUserContextProvider>
         <NotificationProvider>
         <ListingsProvider>
+          <AgreementProvider>
           <RouterProvider router={router} />
+          </AgreementProvider>
         </ListingsProvider>
         </NotificationProvider>
       </DashboardUserContextProvider>

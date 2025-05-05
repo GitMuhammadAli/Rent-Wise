@@ -23,11 +23,13 @@ import {
   ListItem,
   ListIcon,
   List,
-  Modal, ModalOverlay, ModalContent, ModalCloseButton, ModalBody, useDisclosure
+  Modal, ModalOverlay, ModalContent, ModalCloseButton, ModalBody, useDisclosure,
+  Stack
 } from "@chakra-ui/react";
 import {
   StarIcon,
   MapPinIcon,
+  MapPin,
   MessageCircleIcon,
   CarIcon,
   FuelIcon as GasPumpIcon,
@@ -35,6 +37,8 @@ import {
   ArrowLeft,
   ArrowRight,
   Heart,
+  BedDouble,
+  Bath,
 } from "lucide-react";
 import {
   ChevronLeftIcon,
@@ -51,6 +55,7 @@ import { FaStar } from "react-icons/fa";
 import ReviewsInListing from "./Comments/ReviewsInListing";
 import ColorTubeLoader from "../../components/Style/ColorTubeLoader";
 import BiddingSystem from "./BiddingSystem";
+import DisplayLocation from "../Location/DisplayLocation";
 
 const baseUrl = import.meta.env.VITE_BACK_END_URL;
 
@@ -337,7 +342,7 @@ const ListingDetails = () => {
           </GridItem>
 
           {/* right side details, including location, owner, description, rules */}
-          <VStack spacing={6} w={{base:"90vw", sm:'100%'}} mt={'130px'} >
+          <VStack spacing={6} w={{base:"90vw", sm:'100%'}} mt={{base:'none', md:'123px'}} >
             <Box
               bg="white"
               _dark={{ bg: "gray.800" }}
@@ -359,22 +364,22 @@ const ListingDetails = () => {
               >
                 Location
               </Heading>
-              <Image
-                src="/images/make_listing/map.png"
-                alt="Location Map"
-                borderRadius="md"
-                w="full"
-                h={48}
-                objectFit="cover"
-                mb={4}
-              />
-              <Flex align="center" gap={2}>
-                <MapPinIcon size={20} color="blue.500" />
-                <Text color="gray.700" _dark={{ color: "gray.300" }}>
-                  Location XYZ
-                </Text>
-                {/* <Text color="gray.700" _dark={{ color: 'gray.300' }}>{carData.location}</Text> */}
+              
+              {
+                currentListing?.location ? (
+                  <Flex align="center" gap={4} flexDir={'column'}>
+                  <DisplayLocation latitude={currentListing?.location?.coordinates.latitude}
+                                   longitude={currentListing?.location?.coordinates.latitude}
+                                   address={currentListing?.location?.address}
+                  />
+                
+                <Flex gap={2}>
+                  <Stack alignSelf={'self-start'}><MapPin size={'23px'} color="#000000" /></Stack>
+                  <Text>{currentListing?.location?.address}</Text>
+                </Flex>              
               </Flex>
+
+                ) : (<Text> No location shared from Owner, you can contact him/her for the location</Text> )}
             </Box>
 
             {user?._id !== currentListing?.owner?._id && (
@@ -435,6 +440,7 @@ const ListingDetails = () => {
               </Box>
             )}
 
+          {/* Amenities */}
             {currentListing?.category !== "car" && (
               <Box
                 bg="white"
@@ -445,7 +451,7 @@ const ListingDetails = () => {
                 // w="full"
                 w={'inherit'}
               >
-                <Heading mb={4} fontSize={"28px"}>
+                <Heading mb={4} fontSize={"28px"} fontWeight={'semibold'}>
                   Amenities
                 </Heading>
                 <List spacing={3}>
@@ -462,6 +468,9 @@ const ListingDetails = () => {
                 </List>
               </Box>
             )}
+
+            {/* disctiption */}
+            
             <Box
               bg="white"
               _dark={{ bg: "gray.800" }}
@@ -474,6 +483,23 @@ const ListingDetails = () => {
               <Heading mb={4} fontSize={"2xl"} fontWeight={'semibold'}>
                 Description
               </Heading>
+              
+              {/* facilities inside description for house and hostel ones */}
+                <Box>
+                  {
+                  (currentListing?.category === "house" || currentListing?.category === 'hostel') && (
+                    <div className="flex justify-between items-center mb-2 text-orange-700">
+                     <span className="flex items-center">
+                        <BedDouble className="w-5 h-5 mr-1" /> {currentListing?.facilities?.bedrooms || 0}
+                      </span>
+                     <span className="flex items-center">
+                        <Bath className="w-5 h-5 mr-1" /> {currentListing?.facilities?.bathrooms || 0}
+                     </span>
+                    </div>
+                  )
+                }
+                </Box>
+                
               <Text
                 fontSize="sm"
                 color="gray.700"

@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { getAllCar } from '../../../Api/Home';
 import { Box, Card, CardFooter, CardHeader, Heading,
    Input, Slider,Button, Flex, Stack, Skeleton ,
-    SliderTrack, SliderFilledTrack, SliderThumb
+    SliderTrack, SliderFilledTrack, SliderThumb,
+    Checkbox
   } from '@chakra-ui/react';
 import { Bath, BedDouble, CircleDollarSign, DollarSign, MapPin } from 'lucide-react';
 import {Link} from 'react-router-dom'
@@ -14,6 +15,10 @@ export default function CarListing() {
   const [maxPrice, setMaxPrice] = useState(10000000);
   const [carData, setCarData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedCities, setSelectedCities] = useState([]);
+const [selectedStates, setSelectedStates] = useState([]);
+
+
  
 
   useEffect(()=>{
@@ -45,12 +50,14 @@ export default function CarListing() {
       if (value >= minPrice) setMaxPrice(value);
     };
 
-    const filteredListings = carData.filter(
-      (car) => car.price >= minPrice && car.price <= maxPrice 
-      
-
-
-    );
+    const filteredListings = carData.filter((car) => {
+      const matchesPrice = car.price >= minPrice && car.price <= maxPrice;
+      const matchesCity = selectedCities.length > 0 ? selectedCities.includes(car.location?.city) : true;
+      const matchesState = selectedStates.length > 0 ? selectedStates.includes(car.location?.state) : true;
+      return matchesPrice && matchesCity && matchesState;
+    });
+    
+    
 
     useEffect(()=>{
     console.log('carD', carData)
@@ -66,51 +73,96 @@ export default function CarListing() {
             {/* <CardHeader className="bg-orange-500 text-white">
               <Heading>Find Your Perfect Car</Heading>
             </CardHeader> */}
-            <Box p={6}>
-              <div>
-                <Flex flexDir={'column'} gap={3} mb={5}>
-                <label htmlFor="price" className="text-orange-800 font-semibold">Price Range</label>
-                <Slider
-      aria-label="price-slider"
-      min={minPrice}
-      max={10000000}
-      step={500}
-      value={maxPrice}
-      onChange={(value) => setMaxPrice(value)}
-    >
-      <SliderTrack bg="gray.300">
-        <SliderFilledTrack bg="orange.500" />
-      </SliderTrack>
+    <Box p={6}>
+  <div>
+    <Flex flexDir="column" gap={3} mb={5}>
+      <label htmlFor="price" className="text-orange-800 font-semibold">Price Range</label>
 
-      <SliderThumb boxSize={6} bg="orange.500">
-       <CircleDollarSign  color="white" />
-      </SliderThumb>
-    </Slider>
-                </Flex>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px" }}>
-        <Input
-          type="number"
-          value={minPrice}
-          onChange={handleMinChange}
-          min="0"
-          max="10000000"
-          style={{ width: "45%", padding: "5px" }}
-          placeholder="Min Price"
-        />
-        <Input
-          type="number"
-          value={maxPrice}
-          onChange={handleMaxChange}
-          min="0"
-          max="10000000"
-          style={{ width: "45%", padding: "5px" }}
-          placeholder="Max Price"
-        />
-      </div>
-              </div>
-      
-             
-            </Box>
+      <Slider
+        aria-label="price-slider"
+        min={minPrice}
+        max={10000000}
+        step={500}
+        value={maxPrice}
+        onChange={(value) => setMaxPrice(value)}
+      >
+        <SliderTrack bg="gray.300">
+          <SliderFilledTrack bg="orange.500" />
+        </SliderTrack>
+        <SliderThumb boxSize={6} bg="orange.500">
+          <CircleDollarSign color="white" />
+        </SliderThumb>
+      </Slider>
+    </Flex>
+     {/* Price Min-Max Inputs */}
+     <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px" }}>
+      <Input
+        type="number"
+        value={minPrice}
+        onChange={handleMinChange}
+        min="0"
+        max="10000000"
+        style={{ width: "45%", padding: "5px" }}
+        placeholder="Min Price"
+      />
+      <Input
+        type="number"
+        value={maxPrice}
+        onChange={handleMaxChange}
+        min="0"
+        max="10000000"
+        style={{ width: "45%", padding: "5px" }}
+        placeholder="Max Price"
+      />
+    </div>
+
+    {/* City Filter */}
+    <Flex flexDir="column" gap={2} mb={5}>
+      <label className="text-orange-800 font-semibold">Filter by City</label>
+      {["Karachi", "Lahore", "Islamabad", "Rawalpindi", "Peshawar", "Quetta", "Multan", "Faisalabad"].map((city) => (
+        <Checkbox
+        colorScheme='orange'
+          key={city}
+          isChecked={selectedCities.includes(city)}
+          onChange={(e) => {
+            if (e.target.checked) {
+              setSelectedCities([...selectedCities, city]);
+            } else {
+              setSelectedCities(selectedCities.filter((c) => c !== city));
+            }
+          }}
+        >
+          {city}
+        </Checkbox>
+      ))}
+    </Flex>
+
+    {/* State (Province) Filter */}
+    <Flex flexDir="column" gap={2} mb={5}>
+      <label className="text-orange-800 font-semibold">Filter by Province</label>
+      {["Sindh", "Punjab", "Khyber Pakhtunkhwa", "Balochistan", "Gilgit-Baltistan", "Azad Kashmir"].map((state) => (
+        <Checkbox
+        colorScheme='orange'
+          key={state}
+          isChecked={selectedStates.includes(state)}
+          onChange={(e) => {
+            if (e.target.checked) {
+              setSelectedStates([...selectedStates, state]);
+            } else {
+              setSelectedStates(selectedStates.filter((s) => s !== state));
+            }
+          }}
+        >
+          {state}
+        </Checkbox>
+      ))}
+    </Flex>
+
+   
+  </div>
+</Box>
+
+
           </Card>
         </div>
 
@@ -138,7 +190,7 @@ export default function CarListing() {
                     <span className="text-gray-600">/{car.priceUnit}</span>
                     </Flex>
                   <p className="text-gray-600 flex items-center">
-                    <MapPin className="w-5 h-5 text-orange-500 mr-1" /> {car?.location || 'Lahore'}
+                    <MapPin className="w-5 h-5 text-orange-500 mr-1" /> {car?.location?.city || car?.location?.state || car?.location?.country || 'Unknown Location'}
                   </p>
                 </Box>
                 <CardFooter>

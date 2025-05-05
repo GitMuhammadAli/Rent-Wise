@@ -17,6 +17,8 @@ export default function HostelListing() {
   const [bedrooms, setBedrooms] = useState(0)
   const [bathrooms, setBathrooms] = useState(0)
   const [loading, setLoading] = useState(true);
+   const [selectedCities, setSelectedCities] = useState([]);
+  const [selectedStates, setSelectedStates] = useState([]);
   // const [hasGarage, setHasGarage] = useState(false)
   // const [hasGarden, setHasGarden] = useState(false)
 
@@ -63,18 +65,20 @@ export default function HostelListing() {
       );
     };
 
-    const filteredListings = hostelData.filter(
-      (hostel) =>
-        hostel.price >= minPrice &&
-        hostel.price <= maxPrice &&
-        hostel?.facilities?.bedrooms >= bedrooms &&
-        hostel?.facilities?.bathrooms >= bathrooms &&
-        amenity.every((selectedAmenity) => // every returns boolean, if all conditions are true, it returns true, if any is false it returns false
-          hostel?.amenities
-            ?.map((a) => a.toLowerCase())
-            .includes(selectedAmenity.toLowerCase())
-        )
+    const filteredListings = hostelData.filter((hostel) => 
+      hostel.price >= minPrice &&
+      hostel.price <= maxPrice &&
+      hostel?.facilities?.bedrooms >= bedrooms &&
+      hostel?.facilities?.bathrooms >= bathrooms &&
+      amenity.every((selectedAmenity) =>
+        hostel?.amenities
+          ?.map((a) => a.toLowerCase())
+          .includes(selectedAmenity.toLowerCase())
+      ) &&
+      (selectedCities.length > 0 ? selectedCities.includes(hostel?.location?.city) : true) &&
+      (selectedStates.length > 0 ? selectedStates.includes(hostel?.location?.state) : true)
     );
+    
 
     useEffect(()=>{
     console.log('houseD', hostelData)
@@ -145,7 +149,7 @@ export default function HostelListing() {
                   className="mt-2 border-orange-300 focus:border-orange-500 focus:ring-orange-500"
                 />
               </div>
-              <div>
+              <div style={{ marginBottom: "10px" }}>
                 <label htmlFor="bathrooms" className="text-orange-800 font-semibold">Minimum Bathrooms</label>
                 <Input 
                   type="number" 
@@ -156,8 +160,8 @@ export default function HostelListing() {
                   className="mt-2 border-orange-300 focus:border-orange-500 focus:ring-orange-500"
                 />
               </div>
-              <Flex flexDir="column">
-                  <Text fontSize="lg" fontWeight="bold" mb={2} color="orange.800">
+              <Flex flexDir="column" mb={5}>
+                  <Text fontWeight="semibold" mb={2} color="orange.800">
                    Amenities
                   </Text>
                   <SimpleGrid columns={[2, 1]} spacing={3}>
@@ -171,6 +175,47 @@ export default function HostelListing() {
                     ))}
                  </SimpleGrid>
                 </Flex>
+
+                    <Flex flexDir="column" gap={2} mb={5}>
+                      <label className="text-orange-800 font-semibold">Filter by City</label>
+                      {["Karachi", "Lahore", "Islamabad", "Rawalpindi", "Peshawar", "Quetta", "Multan", "Faisalabad"].map((city) => (
+                        <Checkbox
+                        colorScheme='orange'
+                          key={city}
+                          isChecked={selectedCities.includes(city)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectedCities([...selectedCities, city]);
+                            } else {
+                              setSelectedCities(selectedCities.filter((c) => c !== city));
+                            }
+                          }}
+                        >
+                          {city}
+                        </Checkbox>
+                      ))}
+                    </Flex>
+                
+                    {/* State (Province) Filter */}
+                    <Flex flexDir="column" gap={2} mb={5}>
+                      <label className="text-orange-800 font-semibold">Filter by Province</label>
+                      {["Sindh", "Punjab", "Khyber Pakhtunkhwa", "Balochistan", "Gilgit-Baltistan", "Azad Kashmir"].map((state) => (
+                        <Checkbox
+                        colorScheme='orange'
+                          key={state}
+                          isChecked={selectedStates.includes(state)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectedStates([...selectedStates, state]);
+                            } else {
+                              setSelectedStates(selectedStates.filter((s) => s !== state));
+                            }
+                          }}
+                        >
+                          {state}
+                        </Checkbox>
+                      ))}
+                    </Flex>
              
             </Box>
           </Card>
@@ -210,7 +255,7 @@ export default function HostelListing() {
                     </span>
                   </div>
                   <p className="text-gray-600 flex items-center">
-                    <MapPin className="w-5 h-5 text-orange-500 mr-1" /> {hostel?.location || 'Lahore'}
+                    <MapPin className="w-5 h-5 text-orange-500 mr-1" /> {hostel?.location?.city || hostel?.location?.state || hostel?.location?.country || 'Unknown Location'}
                   </p>
                   <Flex my={2} gap={2}>
                   {hostel?.amenities?.slice(0, 4).map((item, i) => (

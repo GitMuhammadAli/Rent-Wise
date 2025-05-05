@@ -21,6 +21,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getOneUserListingAPI, Updatelistings } from '../../Api/ListingApi';
 import { ListingsContext } from '../../hooks/ListingsContext';
 import ColorTubeLoader from '../../components/Style/ColorTubeLoader';
+import LocationSearch from '../Location/Loacation';
 
 const baseUrl = `${import.meta.env.VITE_BACK_END_URL}`;
 export default function UpdateListing() {
@@ -46,6 +47,7 @@ const [loading, setLoading] = useState(true);
     minimumBid: '',
     bidIncrement: '',
     bidEndDate: '',
+    location: null,
   });
 
   // Media states
@@ -90,10 +92,11 @@ const [loading, setLoading] = useState(true);
           listingStatus: listing.listingStatus,
           bedrooms: listing.facilities?.bedrooms ?? 0,
           bathrooms: listing.facilities?.bathrooms ?? 0,
-          biddingEnabled : listing.bidding?.enabled,
+          biddingEnabled : listing.bidding?.enabled || false,
           minimumBid: listing?.bidding?.minimumBid,
           bidIncrement: listing?.bidding?.bidIncrement,
           bidEndDate: listing?.bidding?.bidEndDate,
+          location: listing.location,
         });
 
         setExistingImages(listing.images || []);
@@ -215,6 +218,8 @@ const [loading, setLoading] = useState(true);
       console.log(`values:::${key}: ${value}`);
     }
     
+    
+    updateData.set('location', JSON.stringify(formData.location));
     // updateData.append('listingStatus', formData.listingStatus);
     updateData.append('owner', user._id);
     // Append media files and data
@@ -276,6 +281,10 @@ const [loading, setLoading] = useState(true);
       biddingEnabled: !prevData.biddingEnabled,
     }));
   };
+
+  useEffect(() => {
+    console.log("formDataLocation:", formData.location);
+  }, [formData]);
 
 
 
@@ -549,6 +558,15 @@ const [loading, setLoading] = useState(true);
                   </FormControl>
                 </Stack>
               )}
+            </Box>
+
+            <Box className="mb-8" borderWidth={1} borderRadius="md" p={4}>
+              <Heading size="md">Location</Heading>
+              <Text mb={3}>Your Current location is <span style={{ color: 'green' }}>{formData.location?.address}</span></Text>
+              <LocationSearch initialLocation={formData?.location}
+              onLocationSelect={(location) => setFormData({ ...formData, location })}
+              
+              />
             </Box>
           
            

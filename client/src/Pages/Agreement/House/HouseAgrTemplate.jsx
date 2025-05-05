@@ -1,3 +1,5 @@
+// just a template to create and update agreements , not functionlaity
+
 import React, {useState ,useEffect } from 'react'
 import {
   Box,
@@ -18,7 +20,7 @@ import ColorTubeLoader from '../../../components/Style/ColorTubeLoader';
 
 
 export default function HouseAgrTemplate({updateAgreement,mainDetails,formData, handleChange, saveAgreement,tenant
-    , checkCreateAgrr, OwnerConfirmedFunc, ownerConfirmed }) {
+    , checkCreateAgrr, OwnerConfirmedFunc, ownerConfirmed, list_Title }) {
         const {user} = useAuth();
         const navigate = useNavigate()
          const [isOpen, setIsOpen] = React.useState(false)
@@ -112,8 +114,13 @@ export default function HouseAgrTemplate({updateAgreement,mainDetails,formData, 
         <Text>Hereinafter known as the 'tenant' of the other part.</Text>
 
         <Text>
-          Whereas the landlord confirms that he is legally competent to rent out
-          ______________________________ ____________________________________________________ with necessary electrical fittings
+          Whereas the landlord confirms that he is legally competent to rent out {' '}
+          {list_Title || mainDetails && (
+                       <Text fontWeight={'bold'} as="span" borderBottom="1px solid black">
+                           {list_Title || mainDetails?.listingId?.title}
+                          </Text>
+                      )}{' '}
+         with necessary electrical fittings
           and fixtures therein. The landlord has agreed to rent and the other party has agreed to accept the rent of said property.
         </Text>
 

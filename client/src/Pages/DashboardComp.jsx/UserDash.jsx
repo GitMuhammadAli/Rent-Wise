@@ -71,34 +71,39 @@ export default function UserDash() {
           <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
             <h3 className="text-lg font-semibold text-gray-900">Upcoming Rentals</h3>
           </div>
-          <div className="p-6">
-            <table className="w-full">
-              <thead>
-                <tr className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  <th className="pb-2">Item</th>
-                  <th className="pb-2">Owner</th>
-                  <th className="pb-2">Dates</th>
-                  <th className="pb-2">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {upcomingRentals.map((rental) => (
-                  <tr key={rental.id} className="border-t border-gray-200">
-                    <td className="py-3 font-medium">{rental.item}</td>
-                    <td className="py-3">{rental.owner}</td>
-                    <td className="py-3">{`${rental.startDate} - ${rental.endDate}`}</td>
-                    <td className="py-3">
-                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        rental.status === 'Confirmed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-                      }`}>
-                        {rental.status}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <div className="p-4 sm:p-6 overflow-x-auto">
+  <table className="w-full min-w-[600px]">
+    <thead>
+      <tr className="text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">
+        <th className="pb-2 pr-4">Item</th>
+        <th className="pb-2 pr-4">Owner</th>
+        <th className="pb-2 pr-4">Dates</th>
+        <th className="pb-2">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {upcomingRentals.map((rental) => (
+        <tr key={rental.id} className="border-t border-gray-200 text-sm sm:text-base">
+          <td className="py-3 pr-4 font-medium">{rental.item}</td>
+          <td className="py-3 pr-4">{rental.owner}</td>
+          <td className="py-3 pr-4">{`${rental.startDate} - ${rental.endDate}`}</td>
+          <td className="py-3">
+            <span
+              className={`px-2 inline-flex text-xs sm:text-sm leading-5 font-semibold rounded-full ${
+                rental.status === 'Confirmed'
+                  ? 'bg-green-100 text-green-800'
+                  : 'bg-yellow-100 text-yellow-800'
+              }`}
+            >
+              {rental.status}
+            </span>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
           <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
             <Button variant={'dashboardButton'} w={'full'}>
               View All Rentals
@@ -145,84 +150,91 @@ export default function UserDash() {
 
     return (
       <Box bg="white" borderRadius="lg" shadow="lg" overflow="hidden">
-        <Box px={6} py={4} bg="gray.50" borderBottomWidth="1px" borderColor="gray.200">
-          <Text fontSize="lg" fontWeight="semibold" color="gray.900">
-            Rental Agreements
-          </Text>
-        </Box>
-  
-        <Box p={6}>
-          <Table width="full">
-            <Thead>
-              <Tr>
-                <Th pb={2} textTransform="uppercase" fontSize="xs" fontWeight="medium" color="gray.500">
-                  List Title
-                </Th>
-                <Th pb={2} textTransform="uppercase" fontSize="xs" fontWeight="medium" color="gray.500">
-                  Owner
-                </Th>
-                <Th pb={2} textTransform="uppercase" fontSize="xs" fontWeight="medium" color="gray.500">
-                  Dates
-                </Th>
-                <Th pb={2} textTransform="uppercase" fontSize="xs" fontWeight="medium" color="gray.500">
-                  Status
-                </Th>
-                <Th pb={2} textTransform="uppercase" fontSize="xs" fontWeight="medium" color="gray.500">
-                  Action
-                </Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              { agreementDetail && agreementDetail.length > 0 ? ( 
-                agreementDetail?.map((agreement) => (
-                  <Tr key={agreement._id} borderTopWidth="1px" borderColor="gray.200">
-                    <Td py={3} fontWeight="medium">
-                      {agreement?.listingId?.title}
-                    </Td>
-                    <Td py={3}>{agreement.ownerId.name}</Td>
-                    <Td py={3}>{`${agreement?.agreementDetailsId?.aggrementDetail.startDate} - 
-                    ${agreement?.agreementDetailsId?.aggrementDetail.endDate}`}</Td>
-                    <Td py={3}>
-                      <Badge
-                        px={2}
-                        fontSize="xs"
-                        fontWeight="semibold"
-                        borderRadius="full"
-                        colorScheme={
-                          agreement.agreementStatus === 'active'
-                            ? 'green'
-                            : agreement.status === 'pending'
-                            ? 'yellow'
-                            : 'gray'
-                        }
-                      >
-                        {agreement?.agreementStatus}
-                    
-                      </Badge>
-                    </Td>
-                    <Td py={3}>
-                      <Link
-                        to={agreement?.listingId?.category === 'house' ? 
-                          `/viewHouseAgreement/${agreement._id}` :
-                        agreement?.listingId?.category === 'car' ? 
-                        `/viewCarAgreement/${agreement._id}` : 
-                        `/viewHostelAgreement/${agreement._id}`
-                         }
-                        color="blue.600"
-                        _hover={{ color: 'blue.800' }}
-                        // isExternal
-                      >
-                        View Agreement
-                      </Link>
-                      
-                    </Td>
-                  </Tr>
-                ))
-              ) : (<Text>No agreement created yet</Text>) }
-            </Tbody>
-          </Table>
-        </Box>
+      <Box px={6} py={4} bg="gray.50" borderBottomWidth="1px" borderColor="gray.200">
+        <Text fontSize={{ base: "md", md: "lg" }} fontWeight="semibold" color="gray.900">
+          Rental Agreements
+        </Text>
       </Box>
+    
+      <Box p={{ base: 4, md: 6 }} overflowX="auto">
+        <Table variant="simple" size="sm" width="full">
+          <Thead>
+            <Tr>
+              {['List Title', 'Owner', 'Dates', 'Status', 'Action'].map((heading) => (
+                <Th
+                  key={heading}
+                  pb={2}
+                  textTransform="uppercase"
+                  fontSize="xs"
+                  fontWeight="medium"
+                  color="gray.500"
+                  whiteSpace="nowrap"
+                >
+                  {heading}
+                </Th>
+              ))}
+            </Tr>
+          </Thead>
+    
+          <Tbody>
+            {agreementDetail && agreementDetail.length > 0 ? (
+              agreementDetail.map((agreement) => (
+                <Tr key={agreement._id} borderTopWidth="1px" borderColor="gray.200">
+                  <Td py={3} fontWeight="medium" whiteSpace="nowrap">
+                    {agreement?.listingId?.title}
+                  </Td>
+                  <Td py={3} whiteSpace="nowrap">{agreement.ownerId.name}</Td>
+                  <Td py={3} whiteSpace="nowrap">
+                    {`${agreement?.agreementDetailsId?.aggrementDetail.startDate} - ${agreement?.agreementDetailsId?.aggrementDetail.endDate}`}
+                  </Td>
+                  <Td py={3}>
+                    <Badge
+                      px={2}
+                      fontSize="xs"
+                      fontWeight="semibold"
+                      borderRadius="full"
+                      colorScheme={
+                        agreement.agreementStatus === 'active'
+                          ? 'green'
+                          : agreement.status === 'pending'
+                          ? 'yellow'
+                          : 'gray'
+                      }
+                    >
+                      {agreement?.agreementStatus}
+                    </Badge>
+                  </Td>
+                  <Td py={3}>
+                    <Link
+                      to={
+                        agreement?.listingId?.category === 'house'
+                          ? `/viewHouseAgreement/${agreement._id}`
+                          : agreement?.listingId?.category === 'car'
+                          ? `/viewCarAgreement/${agreement._id}`
+                          : `/viewHostelAgreement/${agreement._id}`
+                      }
+                      color="blue.600"
+                      _hover={{ color: 'blue.800' }}
+                    >
+                      View Agreement
+                    </Link>
+                  </Td>
+                </Tr>
+              ))
+            ) : (
+              <Tr>
+                <Td colSpan={5}>
+                  <Text fontSize="sm" textAlign="center" py={4}>
+                    No agreement created yet
+                  </Text>
+                </Td>
+              </Tr>
+            )}
+          </Tbody>
+        </Table>
+      </Box>
+    </Box>
+    
   
     )
 
@@ -232,9 +244,9 @@ export default function UserDash() {
 
 
   return (
-    <div className="min-h-screen bg-whiteAlpha-800 p-8">
+    <div className="min-h-screen bg-whiteAlpha-800 px-4 py-6 sm:px-2 lg:px-8">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Renter Dashboard</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-8">Renter Dashboard</h1>
         
         <div className="mb-6">
           <nav className="flex space-x-4">
@@ -278,14 +290,15 @@ export default function UserDash() {
 // }
 
 const DashboardCard = ({ title, icon: Icon, value, subtext }) => (
-  <div className="bg-white rounded-lg shadow-lg p-6">
-    <div className="flex justify-between items-center mb-4">
-      <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
-      <Icon size={20} className="text-gray-400" />
-    </div>
-    <p className="text-3xl font-bold mb-1">{value}</p>
-    <p className="text-sm text-gray-500">{subtext}</p>
+  <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6">
+  <div className="flex justify-between items-center mb-3 sm:mb-4">
+    <h3 className="text-base sm:text-lg font-semibold text-gray-900">{title}</h3>
+    <Icon size={20} className="text-gray-400" />
   </div>
+  <p className="text-2xl sm:text-3xl font-bold mb-1">{value}</p>
+  <p className="text-xs sm:text-sm text-gray-500">{subtext}</p>
+</div>
+
 )
 
 

@@ -101,7 +101,7 @@ export default function Notification({}) {
     </Box>
 
       </PopoverTrigger>
-      <PopoverContent>
+      <PopoverContent zIndex={1}>
         <PopoverArrow />
         <PopoverCloseButton color="teal" />
         <PopoverHeader color="black">Notifications</PopoverHeader>

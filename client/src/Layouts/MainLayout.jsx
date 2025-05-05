@@ -5,7 +5,7 @@ import { ToastContainer, toast } from "react-toastify"
 import { Box, Flex, Text, Button, Container, useColorModeValue, Icon, VStack, Avatar, Menu, MenuButton, MenuList, MenuGroup, MenuItem, MenuDivider, IconButton, Drawer, DrawerOverlay, DrawerContent, DrawerCloseButton, DrawerHeader, DrawerBody, useDisclosure, MenuIcon } from "@chakra-ui/react"
 import { FaUser,FaBell, FaComments, FaList, FaTachometerAlt, FaPlus, FaFileContract, FaSignOutAlt,FaBars, FaChevronDown,FaChartBar ,FaUsers } from "react-icons/fa"
 import "react-toastify/dist/ReactToastify.css"
-import {LogOut} from 'lucide-react'
+import {LogIn, LogOut} from 'lucide-react'
 import Logout from '../components/Logout'
 import Notification from "../Pages/Notifications/Notification"
 import { getNotifications } from "../Api/Notification"
@@ -288,6 +288,7 @@ function MainLayout() {
               <Text as={Link} to="/chat" onClick={closeDrawer} color="gray.600" _hover={{ color: 'blue.600' }}>Chats</Text>
               <Text as={Link} to="/dashboard" onClick={closeDrawer} color="gray.600" _hover={{ color: 'blue.600' }}>Dashboard</Text>
               <Text as={Link} to="/media" onClick={closeDrawer} color="gray.600" _hover={{ color: 'blue.600' }}>Create Listing</Text>
+              { !user && <Text display={'flex'} alignItems={'center'} justifyContent={'center'} gap={2} as={Link} to="/auth/signIn" onClick={closeDrawer} color="gray.600" _hover={{ color: 'blue.600' }} fontWeight={'semibold'}>Login <LogIn /> </Text>}
               {user?._id === "670ba87a096754e9bda6658f" && (
                 <Text as={Link} to="/agreements-protected" onClick={closeDrawer} color="gray.600" _hover={{ color: 'blue.600' }}>View Agreements</Text>
               )}

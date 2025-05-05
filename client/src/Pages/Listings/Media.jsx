@@ -6,6 +6,7 @@ import {
 import { uploadMediaAPI } from "../../Api/ListingApi";  
 import { useAuth } from "../../hooks/AuthContext";
 import { ListingsContext } from '../../hooks/ListingsContext';
+import LocationSearch from '../Location/Loacation';
 
 export default function Media() {
   const [formData, setFormData] = useState({
@@ -15,6 +16,7 @@ export default function Media() {
     minimumBid: '',
     bidIncrement: '',
     bidEndDate: '',
+    location: null,
   });
   const [images, setImages] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]); // For image previews
@@ -32,6 +34,14 @@ export default function Media() {
   const [facilities, setFacilities] = useState({ bedrooms: 0 , bathrooms: 0 })
 
   const toast = useToast();
+
+  const handleLocationSelect = (locationDetails) => {
+    setFormData((prev) => ({
+      ...prev,
+      location: locationDetails,
+    }));
+    console.log('loc got', locationDetails);
+  };
 
   // Handle image selection and generate previews
   const handleImageChange = (e) => {
@@ -119,6 +129,18 @@ const handleSubmit = async (e) => {
     }
   }
 
+  if (!formData.location ) {
+    toast({
+      title: "Location Required.",
+      description: "please select location.",
+      status: "error",
+      duration: 3000,
+      isClosable: true,
+    });
+   
+      return;
+    }
+
   const formDataToSend = new FormData();
   formDataToSend.append('owner', user._id);
   formDataToSend.append('title', title);
@@ -134,6 +156,8 @@ const handleSubmit = async (e) => {
   formDataToSend.append('bidEndDate', formData.bidEndDate);
   formDataToSend.append('bedrooms', facilities.bedrooms);
   formDataToSend.append('bathrooms', facilities.bathrooms);
+ formDataToSend.append('location', JSON.stringify(formData.location));
+
 
 
   // Append each image
@@ -177,6 +201,7 @@ const handleSubmit = async (e) => {
       minimumBid: '',
       bidIncrement: '',
       bidEndDate: '',
+      location: null,
     });
     setImages([]);
     setVideos([]);
@@ -196,7 +221,7 @@ const handleSubmit = async (e) => {
 
 
   return (
-    <Flex py={'50px'} flexDir={'column'}>
+    <Flex py={{base:'20px', md:'50px'}} flexDir={'column'}>
     {/* <Flex gap={4} alignSelf={'center'} justifyContent={'space-between'} alignItems={'center'} flexDir={'row'} borderRadius={'10px'} bg={'gray.900'} color={'white'}    w={'90%'}>
              <Image alignSelf={'flex-end'} w={'22vw'} h={'auto'}  src="https://images.rawpixel.com/image_social_square/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3BkMjA3LTItMzMwXzEuanBn.jpg"/>
              <Box alignSelf={'center'} py={'50px'} >
@@ -229,10 +254,10 @@ const handleSubmit = async (e) => {
 
   {/* Center Text */}
   <Flex flexDir={'column'}  justifyContent={'center'} flex="1" px={4}>
-    <Heading  textAlign="center"  fontWeight="extrabold">
+    <Heading fontSize={{base:'24px', md:'32px'}}  textAlign="center"  fontWeight="extrabold">
       Upload Your Property | Vehicle Details
     </Heading>
-    <Text textAlign="center"  pt={4}>
+    <Text textAlign="center" fontSize={{base:'14px', md:'16px'}}  pt={4}>
       We're committed to providing a reliable marketplace for all your property and vehicle needs.
     </Text>
   </Flex>
@@ -250,8 +275,11 @@ const handleSubmit = async (e) => {
 
 
       <form onSubmit={handleSubmit}>
-        <Flex flexDir={{base: 'column', md:'row' , lg:'row'}} justifyContent={'center'} gap={10}>
-          <Stack w={{base:'100vw',md:"50vw", lg:"50vw"}} mt="8" p="6" bg="white" boxShadow="lg" borderRadius="md" spacing="4">
+        <Flex flexDir={{base: 'column', md:'row' , lg:'row'}} justifyContent={'center'} gap={{base:2,md:10}} align={'flex-start'}>
+            {/* a parent stack to make Location and details in one line */}
+          <Stack> 
+               {/* details stack */}
+              <Stack w={{base:'100vw',md:"50vw", lg:"50vw"}} mt="8" p="6" bg="white" boxShadow="lg" borderRadius="md" spacing="4">
             <FormControl isRequired>
               <FormLabel>Title</FormLabel>
               <Input
@@ -391,9 +419,17 @@ const handleSubmit = async (e) => {
               ))}
               <Button onClick={handleAddRule}>Add Rule</Button>
             </FormControl>
+              </Stack>
+              
+              {/* location stack */}
+              <Stack w={{base:'100vw',md:"50vw", lg:"50vw"}} mt="2" p="6" boxShadow="lg" borderRadius="md" bg={'white'}>
+                <LocationSearch onLocationSelect={handleLocationSelect}/>
+              </Stack>
+
           </Stack>
 
-          <Stack w={{base:'100vw',md:"50vw", lg:"30vw"}} mt="2" p="6" boxShadow="lg" borderRadius="md" bg={'white'}>
+           {/* image and biddding stack */}
+          <Stack w={{base:'100vw',md:"50vw", lg:"30vw"}} mt={{base:2, md:8}} p="6" boxShadow="lg" borderRadius="md" bg={'white'}>
             <FormControl>
               <FormLabel>Images</FormLabel>
               <Input

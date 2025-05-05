@@ -1,4 +1,5 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import {Link} from "react-router-dom"
 import {
   Search,
   Filter,
@@ -14,131 +15,154 @@ import {
   ArrowRight,
   Clock,
 } from "lucide-react"
+import { getAllListsOFUser } from "../../Api/Admin"
+import { Flex } from "@chakra-ui/react"
+import ColorTubeLoader from "../../components/Style/ColorTubeLoader"
 
 // Static data for demonstration
-const users = [
-  {
-    id: "1",
-    name: "John Doe",
-    email: "john@example.com",
-    role: "Renter",
-    status: "Active",
-    joinDate: "2023-05-15",
-    avatar: "/placeholder.svg?height=400&width=400&text=JD",
-    location: "New York, USA",
-    phone: "+1 (555) 123-4567",
-    listings: 0,
-    bookings: 12,
-    lastActive: "2 hours ago",
-    verified: true,
-    bio: "Frequent traveler looking for comfortable accommodations.",
-  },
-  {
-    id: "2",
-    name: "Jane Smith",
-    email: "jane@example.com",
-    role: "Owner",
-    status: "Active",
-    joinDate: "2023-04-20",
-    avatar: "/placeholder.svg?height=400&width=400&text=JS",
-    location: "Los Angeles, USA",
-    phone: "+1 (555) 987-6543",
-    listings: 3,
-    bookings: 0,
-    lastActive: "1 day ago",
-    verified: true,
-    bio: "Property owner with multiple listings across the city.",
-  },
-  {
-    id: "3",
-    name: "Bob Johnson",
-    email: "bob@example.com",
-    role: "Renter",
-    status: "Inactive",
-    joinDate: "2023-03-10",
-    avatar: "/placeholder.svg?height=400&width=400&text=BJ",
-    location: "Chicago, USA",
-    phone: "+1 (555) 246-8135",
-    listings: 0,
-    bookings: 5,
-    lastActive: "2 weeks ago",
-    verified: false,
-    bio: "Looking for affordable housing options.",
-  },
-  {
-    id: "4",
-    name: "Alice Williams",
-    email: "alice@example.com",
-    role: "Owner",
-    status: "Active",
-    joinDate: "2023-02-05",
-    avatar: "/placeholder.svg?height=400&width=400&text=AW",
-    location: "Miami, USA",
-    phone: "+1 (555) 369-8520",
-    listings: 2,
-    bookings: 0,
-    lastActive: "3 days ago",
-    verified: true,
-    bio: "Beach property specialist with oceanfront rentals.",
-  },
-  {
-    id: "5",
-    name: "Charlie Brown",
-    email: "charlie@example.com",
-    role: "Owner",
-    status: "Pending",
-    joinDate: "2023-06-01",
-    avatar: "/placeholder.svg?height=400&width=400&text=CB",
-    location: "Seattle, USA",
-    phone: "+1 (555) 147-2583",
-    listings: 1,
-    bookings: 0,
-    lastActive: "5 hours ago",
-    verified: false,
-    bio: "New property owner looking to rent my space.",
-  },
-  {
-    id: "6",
-    name: "Diana Miller",
-    email: "diana@example.com",
-    role: "Renter",
-    status: "Active",
-    joinDate: "2023-01-15",
-    avatar: "/placeholder.svg?height=400&width=400&text=DM",
-    location: "Boston, USA",
-    phone: "+1 (555) 753-1928",
-    listings: 0,
-    bookings: 8,
-    lastActive: "1 hour ago",
-    verified: true,
-    bio: "Business traveler seeking accommodations near conference centers.",
-  },
-]
+// const users = [
+//   {
+//     id: "1",
+//     name: "John Doe",
+//     email: "john@example.com",
+//     role: "Renter",
+//     status: "Active",
+//     joinDate: "2023-05-15",
+//     avatar: "/placeholder.svg?height=400&width=400&text=JD",
+//     location: "New York, USA",
+//     phone: "+1 (555) 123-4567",
+//     listings: 0,
+//     bookings: 12,
+//     lastActive: "2 hours ago",
+//     verified: true,
+//     bio: "Frequent traveler looking for comfortable accommodations.",
+//   },
+//   {
+//     id: "2",
+//     name: "Jane Smith",
+//     email: "jane@example.com",
+//     role: "Owner",
+//     status: "Active",
+//     joinDate: "2023-04-20",
+//     avatar: "/placeholder.svg?height=400&width=400&text=JS",
+//     location: "Los Angeles, USA",
+//     phone: "+1 (555) 987-6543",
+//     listings: 3,
+//     bookings: 0,
+//     lastActive: "1 day ago",
+//     verified: true,
+//     bio: "Property owner with multiple listings across the city.",
+//   },
+//   {
+//     id: "3",
+//     name: "Bob Johnson",
+//     email: "bob@example.com",
+//     role: "Renter",
+//     status: "Inactive",
+//     joinDate: "2023-03-10",
+//     avatar: "/placeholder.svg?height=400&width=400&text=BJ",
+//     location: "Chicago, USA",
+//     phone: "+1 (555) 246-8135",
+//     listings: 0,
+//     bookings: 5,
+//     lastActive: "2 weeks ago",
+//     verified: false,
+//     bio: "Looking for affordable housing options.",
+//   },
+//   {
+//     id: "4",
+//     name: "Alice Williams",
+//     email: "alice@example.com",
+//     role: "Owner",
+//     status: "Active",
+//     joinDate: "2023-02-05",
+//     avatar: "/placeholder.svg?height=400&width=400&text=AW",
+//     location: "Miami, USA",
+//     phone: "+1 (555) 369-8520",
+//     listings: 2,
+//     bookings: 0,
+//     lastActive: "3 days ago",
+//     verified: true,
+//     bio: "Beach property specialist with oceanfront rentals.",
+//   },
+//   {
+//     id: "5",
+//     name: "Charlie Brown",
+//     email: "charlie@example.com",
+//     role: "Owner",
+//     status: "Pending",
+//     joinDate: "2023-06-01",
+//     avatar: "/placeholder.svg?height=400&width=400&text=CB",
+//     location: "Seattle, USA",
+//     phone: "+1 (555) 147-2583",
+//     listings: 1,
+//     bookings: 0,
+//     lastActive: "5 hours ago",
+//     verified: false,
+//     bio: "New property owner looking to rent my space.",
+//   },
+//   {
+//     id: "6",
+//     name: "Diana Miller",
+//     email: "diana@example.com",
+//     role: "Renter",
+//     status: "Active",
+//     joinDate: "2023-01-15",
+//     avatar: "/placeholder.svg?height=400&width=400&text=DM",
+//     location: "Boston, USA",
+//     phone: "+1 (555) 753-1928",
+//     listings: 0,
+//     bookings: 8,
+//     lastActive: "1 hour ago",
+//     verified: true,
+//     bio: "Business traveler seeking accommodations near conference centers.",
+//   },
+// ]
 
 const UserManagement = () => {
   const [searchTerm, setSearchTerm] = useState("")
   const [roleFilter, setRoleFilter] = useState("All")
   const [statusFilter, setStatusFilter] = useState("All")
   const [selectedUser, setSelectedUser] = useState(null)
+  const [users, setUsers] = useState([])
+  const [loading, setLoading] = useState(true)
   const [showUserDetailsModal, setShowUserDetailsModal] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
   const usersPerPage = 5
 
-  // Apply filters and search to user list
-  const filteredUsers = users.filter(
+ 
+
+ 
+
+
+  useEffect(()=>{
+    const getAllUsers = async () => {
+    const response = await getAllListsOFUser();
+    console.log("users",response.data.data.allUser)
+    setUsers(response.data.data.allUser)
+    setLoading(false)
+    }
+    getAllUsers()
+
+     // Apply filters and search to user list
+  
+ 
+  },[])
+
+  const filteredUsers = users?.filter(
     (user) =>
-      (roleFilter === "All" || user.role === roleFilter) &&
-      (statusFilter === "All" || user.status === statusFilter) &&
-      (user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.location.toLowerCase().includes(searchTerm.toLowerCase())),
+      (roleFilter === "All" || user?.role === roleFilter) &&
+      (statusFilter === "All" || user?.status === statusFilter) &&
+      (user?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user?.location?.toLowerCase().includes(searchTerm.toLowerCase())),
   )
 
-  // Paginate filtered users
-  const indexOfLastUser = currentPage * usersPerPage
-  const indexOfFirstUser = indexOfLastUser - usersPerPage
-  const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser)
-  const totalPages = Math.ceil(filteredUsers.length / usersPerPage)
+   // Paginate filtered users
+   const indexOfLastUser = currentPage * usersPerPage
+   const indexOfFirstUser = indexOfLastUser - usersPerPage
+   const currentUsers = filteredUsers?.slice(indexOfFirstUser, indexOfLastUser)
+   const totalPages = Math.ceil(filteredUsers?.length / usersPerPage)
 
   const handleViewUser = (user) => {
     setSelectedUser(user)
@@ -155,6 +179,13 @@ const UserManagement = () => {
     // In a real app, this would make an API call to update the user status
   }
 
+    if (loading) {
+                return (
+                  <Flex justify="center" align="center" height="100vh">
+                    <ColorTubeLoader/>
+                  </Flex>
+                );
+              } 
   return (
     <div className="space-y-6 mx-4 ">
       {/* Search and Filters */}
@@ -246,12 +277,12 @@ const UserManagement = () => {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {currentUsers.map((user) => (
-                <tr key={user.id} className="hover:bg-gray-50">
+                <tr key={user._id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <div className="flex-shrink-0 h-10 w-10 relative">
                         <img
-                          src={user.avatar || "/placeholder.svg"}
+                          src={`${import.meta.env.VITE_BACK_END_URL}${user.imageUrl}` || "/images/randomUser.png"}
                           alt={user.name}
                           className="rounded-full object-cover h-full w-full"
                         />
@@ -393,7 +424,7 @@ const UserManagement = () => {
               <div className="flex flex-col items-center -mt-16 mb-6">
                 <div className="relative w-32 h-32 border-4 border-white rounded-full overflow-hidden">
                   <img
-                    src={selectedUser.avatar || "/placeholder.svg"}
+                    src={`${import.meta.env.VITE_BACK_END_URL}${selectedUser.imageUrl}` || "/placeholder.svg"}
                     alt={selectedUser.name}
                     className="w-full h-full object-cover"
                   />
@@ -502,13 +533,10 @@ const UserManagement = () => {
                   >
                     {selectedUser.status === "Active" ? "Suspend Account" : "Activate Account"}
                   </button>
-                  <button className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors">
-                    <span className="flex items-center">
-                      <ExternalLink size={16} className="mr-2" />
-                      View Profile
-                    </span>
-                  </button>
-                </div>
+                  <Link to={`/profile/${selectedUser._id}`} className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors inline-flex items-center">
+                    <ExternalLink size={16} className="mr-2" />
+                    View Profile
+                  </Link>                </div>
               </div>
             </div>
           </div>

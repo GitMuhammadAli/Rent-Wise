@@ -152,7 +152,7 @@ export default function OwnerDash() {
         </Flex>
 
         <SimpleGrid
-          columns={{ base: 1, sm: 2, lg: 4 }}
+          columns={{ base: 2, sm: 2, lg: 4 }}
           spacing={{ base: 3, sm: 4, md: 6 }}
           mb={{ base: 3, sm: 4, md: 8 }}
         >
@@ -392,7 +392,7 @@ export default function OwnerDash() {
             </CardHeader>
             <CardBody p={{ base: 2, sm: 3, md: 4 }}>
               <TableContainer overflowX="auto">
-                <Table variant="simple" size={{ base: "xs", md: "sm" }}>
+                <Table variant="simple" size={{ base: "sm", md: "sm" }}>
                   <Thead>
                     <Tr>
                       {/* <Th fontSize={{ base: "xs", sm: "sm" }}>Agreement ID</Th> */}
@@ -499,13 +499,15 @@ export default function OwnerDash() {
                               : ""}
                           </Td>
                           <Td>
-                            <Link
-                              to={
-                                agreement.listingId?.category === "car"
-                                  ? `/agreementCar/${agreement._id}`
-                                  : `/agreementHouse/${agreement._id}`
-                              }
-                            >
+                          <Link
+                            to={
+                              agreement.listingId?.category === "car"
+                               ? `/agreementCar/${agreement._id}`
+                                : agreement.listingId?.category === "hostel"
+                                ? `/agreementHostel/${agreement._id}`
+                                : `/agreementHouse/${agreement._id}`
+                            }
+                          >
                               <Button
                                 // onClick={ handleEditClick}
                                 variant="ghost"

@@ -164,7 +164,7 @@ const startServer = async () => {
     
     initializeAdmin();
     
-    server.listen(3600, () => {
+    server.listen(3600, '0.0.0.0', () => {
       console.log("Server is running on port 3600");
     });
   } catch (error) {
