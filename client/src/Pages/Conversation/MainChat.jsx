@@ -31,25 +31,13 @@ export default function MainChat() {
   const [countOfUnreedMessage, setCountOfunreedMessage] = useState(null);
   const [senderID, setSenderID] = useState(''); 
 
-  // const socket = useSocketConnection(setAllData);
-  // useEffect(() => {
-  //   console.log("Owner", ownerIdDetails);
-  //   console.log("useer", userIdDetails);
-  //   console.log("listingggg", listingIdDetails);
-
-  //   console.log("item", item);
-  //   console.log("allData", allData);
-  // }, [ownerIdDetails, userIdDetails, listingIdDetails, item, allData]);
-
-
   useEffect(() => {
     if (user?._id) {
       socket.emit("join-user", user._id);
     }
 
-    console.log("Current allData:", allData);
     socket.on("newConversation", (data) => {
-      console.log("MainChat received new conversation:", data);
+     
       setAllData((prevData) => {
         if (!prevData) return [data];
         const exists = prevData.some(
@@ -61,7 +49,7 @@ export default function MainChat() {
         return prevData;
       });
     });
-    console.log("main chat data after is ", allData);
+   
 
     return () => {
       socket.off("newConversation"); 
@@ -88,8 +76,6 @@ export default function MainChat() {
     setCheckClick(true)  // check if side bar is clicked display sidebar or livechat on basis of screen size
     setIsCLicked(true);  // check if side bar is clicked to display messages
     setShowPopOver(true);
-    console.log("selected participant", selectedParticipant);
-    console.log("receiver_id", receiver_id);
 
     // Update owner state with the selected participant
     setOwner({
@@ -102,16 +88,12 @@ export default function MainChat() {
     const filteredData = allData.find((item) =>
       item.participants.some((participant) => participant._id === receiver_id)
     );
-    console.log("fiiltered", filteredData);
-    
-
+   
     // Extract the specific listings for this participant
     const specificListings = filteredData?.listing || [];
-    console.log("Listings for this participant:", specificListings);
-
+    
     if (!allData) return;
     const ConvoID = filteredData?._id || filteredData?.conversation._id ||[];
-    console.log("all data convoID", ConvoID);
     setConvoId(ConvoID);
 
     // Update the state

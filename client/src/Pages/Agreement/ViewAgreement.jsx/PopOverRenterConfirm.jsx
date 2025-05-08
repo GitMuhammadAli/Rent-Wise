@@ -12,7 +12,6 @@ export default function PopOverRenterConfirm({aggId,renterConfirmed, setRenterCo
  useEffect(()=>{
   if(!aggId)
   {
-    console.log("NO aggr ID");
     return;
   }
  },[aggId])
@@ -20,19 +19,15 @@ export default function PopOverRenterConfirm({aggId,renterConfirmed, setRenterCo
 
  const saveFinalAgreemnt = async()=>{
     setShowPopOver(true);
-    console.log("agreement saving")
     try{
         if(renterConfirmed && aggId)
             {
-                const response  = await VerifyAggrementByRenter({aggId ,renterConfirmed});
-                console.log('response is view', response);
-        
-        
+                const response  = await VerifyAggrementByRenter({aggId ,renterConfirmed});       
             }
 
     }catch(error)
     {
-console.log("err in popover", error);
+      console.log("err in popover", error);
     }
     
  }

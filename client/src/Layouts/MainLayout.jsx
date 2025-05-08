@@ -24,12 +24,9 @@ function MainLayout() {
   const {LogoutUser} = Logout()
   const {setNotifications} = useContext(NotificationContext);
   const [successMessage, setSuccessMessage] = useState("");
-  // const { isOpen, onOpen, onClose } = useDisclosure();
   const [isOpen, setIsOpen] = useState(false);
   const toggleDrawer = () => setIsOpen(!isOpen);
   const closeDrawer = () => setIsOpen(false);
-
-  // const bgColor = useColorModeValue("orange.300", "orange.600")
   const bgColor = useColorModeValue(
     "linear(to-r, #cfb27b, #eedfbf)",  // Light mode gradient
     "linear(to-r, orange.600, red.500)"   // Dark mode gradient
@@ -69,8 +66,6 @@ function MainLayout() {
  return (
     <Flex direction="column" minH="100vh" position={'relative'}>
       <ToastContainer />
-
-      {/* bgGradient={bgColor} */}
       {location.pathname !== "/chat" && ( 
       <Box 
   color={textColor} 
@@ -133,18 +128,7 @@ function MainLayout() {
                   Create Listing
                 </Text>
 
-                {/* {user?._id === "670ba87a096754e9bda6658f" && (
-                  <Button as={Link} to="/agreements-protected" 
-                  color={location.pathname !== "/" ? nonHomeLinkColor : buttonTextColor}
-                  _hover={{ color: location.pathname==='/' ? textHoverHome : buttonHoverBgColor, borderBottom: location.pathname=== '/' ? hoverBottomLinkHome : "3px solid orange" }}
-                  fontWeight="semibold"
-                  leftIcon={<Icon as={FaFileContract} />}
-                  >
-                    View Agreements
-                  </Button>
-                )} */}
-
-                
+              
 {user?._id === "670ba87a096754e9bda6658f" && (
                   <>
                     <Menu>
@@ -166,15 +150,6 @@ function MainLayout() {
                         >
                           View Agreements
                         </MenuItem>
-                        {/* <MenuItem 
-                          as={Link} 
-                          to="/adminDashboard" 
-                          icon={<Icon as={FaTachometerAlt} />}
-                          color={location.pathname === "/adminDashboard" ? "orange.500" : "black"}
-                          _hover={{ bg: "orange.50", color: "orange.500" }}
-                        >
-                          Admin Dashboard
-                        </MenuItem> */}
                         <MenuItem 
                           as={Link} 
                           to="/adminOverview" 
@@ -297,7 +272,6 @@ function MainLayout() {
 
 
       <Flex as="main" flexGrow={1} bg={"whiteAlpha.500"}>
-      {/* useColorModeValue("orange.50", "gray.900") */}
         <Box w="100%">
           <Outlet />
         </Box>

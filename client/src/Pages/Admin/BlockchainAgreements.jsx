@@ -33,7 +33,8 @@ export default function BlockchainAgreements() {
       try {
         setIsLoading(true)
         const response = await getAggrementForAdminByOwnerIDs()
-
+       
+        // Transform the data to match our component's expected format
         const formattedAgreements = response?.data?.data.map((agreement) => ({
           id: agreement._id,
           title: `Agreement ${agreement._id.substring(0, 8)}...`,

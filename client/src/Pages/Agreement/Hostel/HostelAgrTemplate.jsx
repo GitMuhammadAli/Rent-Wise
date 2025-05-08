@@ -38,12 +38,6 @@ export default function HostelAgrTemplate({
   const [renterConfirmed, setRenterConfirmed] = useState(false);
 
   useEffect(() => {
-    if (ownerConfirmed) {
-      console.log("confirmed");
-    } else {
-      console.log("not confirmed");
-    }
-    console.log("main details", mainDetails);
     setRenterConfirmed(mainDetails?.renterConfirmed);
     setLoading(false);
   }, [mainDetails]);

@@ -54,12 +54,9 @@ const navigate = useNavigate();
       try {
         
         if (!tenant || !listId) {
-          console.log("ids missing");
           return;
         }
         setRenterId(tenant._id);
-        console.log("renterID", renterId);
-        console.log("details are: ", formData);  
         const data = await createAgreement({
           aggrementDetail:formData,
           renterId,
@@ -68,7 +65,6 @@ const navigate = useNavigate();
           conversationID: convoID,
         });
   
-        console.log("responseOFagreement", data);
         const agreementID = data?.data?.data?._id
        
         navigate(`/agreementHouse/${agreementID}`)

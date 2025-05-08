@@ -50,8 +50,6 @@ export default function SendToTenant({ mainDetails ,isOpen, setIsOpen,  open, cl
   },[mainDetails])
 
   const SentMessageToRenter = async () => {
-
-   
     socket.emit("join-conversation", conversationID);
   
     try {
@@ -76,7 +74,6 @@ export default function SendToTenant({ mainDetails ,isOpen, setIsOpen,  open, cl
         return;
       }
        
-      // const dataForSentMessageOfAgreement = {
         const aggrementFromResponce = {
             message: `Agreement Link: ${link}`,
             listing: [listingId], // Add appropriate listing ID(s)
@@ -86,10 +83,10 @@ export default function SendToTenant({ mainDetails ,isOpen, setIsOpen,  open, cl
             
         };
   
+      
   
    
         const response = await SentAggreement({aggrementFromResponce});
-
        if(mainDetails?.renterId?.name)
        {
         toast({
@@ -101,7 +98,6 @@ export default function SendToTenant({ mainDetails ,isOpen, setIsOpen,  open, cl
         });
 
        }
-        
         navigate('/dashboard')
     } catch (error) {
         console.error("Error sending message:", error);

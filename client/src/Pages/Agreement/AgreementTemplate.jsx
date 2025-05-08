@@ -39,11 +39,20 @@ export default function AgreementTemplate() {
   const { listId, list_Title , list_category, tenant, convoID } = location.state || {};
 
 
+  useEffect(()=>{
+    if(!convoID)
+    {
+      console.log('no convo id found in agreement')
+    }
 
+  },[list_category, convoID])
 
 
 
 const SentToRenter = async () => {
+ 
+  socket.emit("join-conversation", conversationId);
+
   try {
       const link = `${import.meta.env.VITE_FRONT_END_URL}/agreement/${aggrementFromResponce._id}`;
       const dataForSentMessageOfAgreement = {
@@ -51,9 +60,8 @@ const SentToRenter = async () => {
           listing: [aggrementFromResponce.listingId], // Add appropriate listing ID(s)
           receiver: aggrementFromResponce.receiverId, // Adjust as needed
       };
-
-
       const response = await createMessage(dataForSentMessageOfAgreement);
+     
   } catch (error) {
       console.error("Error sending message:", error);
   }
@@ -65,7 +73,6 @@ const SentToRenter = async () => {
 
 <>
  
-
 
 {
   list_category === 'car' && ( <CarAgreement convoID={convoID} tenant={tenant} listId={listId} list_Title={list_Title} list_category={list_category}  />  ) 

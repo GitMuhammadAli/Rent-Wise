@@ -39,14 +39,7 @@ export default function UpdateHouseAgrr() {
               return;
             }
     
-            console.log("id of agreement", id);
             const response = await GetAggreementsByID(id);
-            console.log("resp in updateAgreement", response);
-    
-            console.log(
-              "aggr detail",
-              response.data.data.agreementDetailsId.aggrementDetail
-            );
             setMainDetails(response?.data?.data);
             const aggrDetail =
               response.data?.data?.agreementDetailsId?.aggrementDetail;
@@ -71,14 +64,11 @@ export default function UpdateHouseAgrr() {
                 }))
               : [],
             });
-            console.log("renter detail", response.data.data.renterId);
+         
             setRenterDetails(response.data.data.renterId);
             setOwnerDetail(response.data.data.ownerId);
-    
             setOwnerConfirmed(response.data?.data?.ownerConfirmed);
             setRenterConfirmed(response.data?.data?.renterConfirmed);
-    
-            console.log("listing", response.data?.data?.listingId);
             setListingDetail(response.data?.data?.listingId);
           } catch (error) {
             console.log("errr", error);
@@ -104,7 +94,6 @@ export default function UpdateHouseAgrr() {
   };
   
   const updateAgreement = async()=>{
-      console.log("Updated form data is::: ",aggrementDetail)
       if(!aggrementDetail && !id)
       {
         return;
@@ -112,7 +101,6 @@ export default function UpdateHouseAgrr() {
       try {
         const data = ownerConfirmed
         const response =  await UpdateAggrementByOwner({aggrementDetail,data,aggId:id}); 
-        console.log("res after update is", response)
         toast({
           title: "Agreement updated",
           description: "agreement details are updated",
@@ -123,9 +111,7 @@ export default function UpdateHouseAgrr() {
       } catch (error) {
         console.log("error")
         
-      }
-  
-      
+      } 
     }
     
   

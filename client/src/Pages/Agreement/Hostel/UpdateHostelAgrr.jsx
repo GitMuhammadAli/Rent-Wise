@@ -32,11 +32,8 @@ export default function UpdateHostelAgrr() {
     const fetchSpecificAgreementDetail = async () => {
       try {
         if (!user || !id) return;
-
-        console.log("id of agreement", id);
         const response = await GetAggreementsByID(id);
-        console.log("resp in updateAgreement", response);
-
+        
         const aggrDetail =
           response.data?.data?.agreementDetailsId?.aggrementDetail;
 
@@ -88,7 +85,6 @@ export default function UpdateHostelAgrr() {
   };
 
   const updateAgreement = async () => {
-    console.log("Updated form data is::: ", aggrementDetail);
     if (!aggrementDetail && !id) return;
 
     try {
@@ -98,7 +94,7 @@ export default function UpdateHostelAgrr() {
         data,
         aggId: id,
       });
-      console.log("res after update is", response);
+    
       toast({
         title: "Agreement updated",
         description: "agreement details are updated",

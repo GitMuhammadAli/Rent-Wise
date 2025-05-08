@@ -26,8 +26,6 @@ export default function MyAccount() {
   const [notificationSettings, setNotificationSettings] = useState({
     messages: false,
     reviews: false,
-    // bookings: false,
-    // payments: false,
     systemUpdates: false,
     comments: false
   });
@@ -109,8 +107,10 @@ export default function MyAccount() {
         duration: 3000,
         isClosable: true,
       });
+      
       dispatch({ type: 'UPDATE_USER', payload: response.data.user });
     } catch (err) {
+      console.log(err);
       toast({
         title: err.response.data.message,
         status: 'error',
@@ -119,12 +119,10 @@ export default function MyAccount() {
       });
     }
   };
-
-  
+    
   if (loading) {
       return (
         <Flex justify="center" align="center" height="100vh">
-          {/* <Spinner size="xl" /> */}
           <ColorTubeLoader/>
         </Flex>
       );
@@ -172,22 +170,11 @@ export default function MyAccount() {
 
           <TabPanel>
             <VStack spacing={4}>
-              {/* <FormControl display="flex" justifyContent="space-between" alignItems="center">
-                <FormLabel>Messages Notifications</FormLabel>
-                <Switch isChecked={notificationSettings.message} onChange={() => handleNotificationChange('message')} />
-              </FormControl> */}
+
               <FormControl display="flex" justifyContent="space-between" alignItems="center">
                 <FormLabel>Reviews Notifications</FormLabel>
                 <Switch colorScheme={'orange'} isChecked={notificationSettings.review} onChange={() => handleNotificationChange('review')} />
               </FormControl>
-              {/* <FormControl display="flex" justifyContent="space-between" alignItems="center">
-                <FormLabel>Bookings Notifications</FormLabel>
-                <Switch isChecked={notificationSettings.bookings} onChange={() => handleNotificationChange('bookings')} />
-              </FormControl>
-              <FormControl display="flex" justifyContent="space-between" alignItems="center">
-                <FormLabel>Payments Notifications</FormLabel>
-                <Switch isChecked={notificationSettings.payments} onChange={() => handleNotificationChange('payments')} />
-              </FormControl> */}
               <FormControl display="flex" justifyContent="space-between" alignItems="center">
                 <FormLabel>System Updates</FormLabel>
                 <Switch colorScheme={'orange'} isChecked={notificationSettings.system} onChange={() => handleNotificationChange('system')} />
@@ -206,27 +193,6 @@ export default function MyAccount() {
               </FormControl>
             </VStack>
           </TabPanel>
-
-          {/* <TabPanel>
-            <VStack spacing={4}>
-              <FormControl>
-                <FormLabel>Profile Visibility</FormLabel>
-                <Input as="select" placeholder="Select visibility">
-                  <option value="public">Public</option>
-                  <option value="private">Private</option>
-                  <option value="friends">Friends Only</option>
-                </Input>
-              </FormControl>
-              <FormControl display="flex" justifyContent="space-between" alignItems="center">
-                <FormLabel>Activity Visibility</FormLabel>
-                <Switch />
-              </FormControl>
-              <FormControl display="flex" justifyContent="space-between" alignItems="center">
-                <FormLabel>Search Engine Visibility</FormLabel>
-                <Switch />
-              </FormControl>
-            </VStack>
-          </TabPanel> */}
 
           {!isThirdPartyUser && (
             <TabPanel>

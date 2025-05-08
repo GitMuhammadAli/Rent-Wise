@@ -53,15 +53,9 @@ export default function ViewHouseAgr() {
           return;
         }
 
-        console.log("_id of agreement", _id);
+  
         const response = await GetAggreementsByID(_id);
-        console.log("resp in updateAgreement", response);
         setListName(response?.data?.data?.listingId?.title)
-
-        console.log(
-          "aggr detail",
-          response.data.data.agreementDetailsId.aggrementDetail
-        );
 
         const aggrDetail =
           response.data?.data?.agreementDetailsId?.aggrementDetail;
@@ -85,14 +79,12 @@ export default function ViewHouseAgr() {
               }))
             : [],
         });
-        console.log("renter detail", response.data.data.renterId);
         setRenterDetails(response.data.data.renterId);
         setOwnerDetail(response.data.data.ownerId);
 
         setOwnerConfirmed(response.data?.data?.ownerConfirmed);
         setRenterConfirmed(response.data?.data?.renterConfirmed);
 
-        console.log("listing", response.data?.data?.listingId);
         setListingDetail(response.data?.data?.listingId);
       } catch (error) {
         console.log("errr", error);

@@ -25,32 +25,16 @@ export default function   SideChat({ handleSideBarClick, ownerIdDetails, setAllD
     const fetchParticipants = async () => {
         try {
             const response = await fetchConversationsForSidebar();
-            console.log("Sidebar conversations:", response.data.data);
             setAllData(response.data.data);
             
             const participantData = response?.data?.data.flatMap(item => 
                 item.participants
             ).filter(Boolean);
-            
-            console.log("Filtered participants:", participantData);
+          
             setParticipants(participantData);
         } catch (error) {
             console.error("Error fetching participants:", error);
         }
-        // try {
-        //     const response = await fetchConversationsForSidebar();
-        //     console.log("Sidebar conversations:", response.data.data);
-        //     setAllData(response.data.data);
-            
-        //     const participantData = response?.data?.data.flatMap(item => 
-        //         item.participants
-        //     ).filter(Boolean);
-            
-        //     console.log("Filtered participants:", participantData);
-        //     setParticipants(participantData);
-        // } catch (error) {
-        //     console.error("Error fetching participants:", error);
-        // }
     };
     fetchParticipants();
 
@@ -65,11 +49,11 @@ export default function   SideChat({ handleSideBarClick, ownerIdDetails, setAllD
 
 ///newiest usee effect
 useEffect(()=>{
- console.log("all data for id", allData);
+
  const participantData = allData?.flatMap(item => 
   item.participants
 ).filter(Boolean);
-console.log("Filtered people of new:", participantData);
+
 if (participantData !== undefined) {
   // Step 2: Remove duplicates based on _id
   const uniqueParticipants = Array.from(
@@ -85,7 +69,6 @@ if (participantData !== undefined) {
 
 useEffect(() => {
   socket.on("receiveMessage", (data) => {
-    console.log("message rec in side")
     setAllData(prevData => {
       return prevData.map(conv => {
         if (conv._id === data.conversationId) {
@@ -111,13 +94,10 @@ useEffect(() => {
       setOwner({ _id: ownerIdDetails._id, name: ownerIdDetails.name, email:ownerIdDetails.email, 
         imageUrl: ownerIdDetails.imageUrl
          });
-      console.log("Owner name in side chat:", ownerIdDetails.name);
     }
   }, [ownerIdDetails]);
 
-  const combinedList = React.useMemo(() => {
-    console.log("participants in memo:", participants);
-  
+  const combinedList = React.useMemo(() => {  
     // Step 1: Filter out the user themselves
     const checkUser = participants?.filter(
       (participant) => participant._id !== user?._id
@@ -131,22 +111,13 @@ useEffect(() => {
       (participant) => participant._id === owner._id
     );
     
-    console.log("CheckUSer", checkUser)
-  
+   
     // Step 4: Return the final combined list
     return isOwnerInParticipants
       ? checkUser
       : [owner, ...checkUser];
   }, [participants, owner, user]);
   
-
-  useEffect(()=>{
-    console.log("combines", combinedList)
-    
-  },[combinedList])
-
-
-
   return (
     <Box
     width={{ base: "100%", sm: "25%" }}

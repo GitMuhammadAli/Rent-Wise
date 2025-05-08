@@ -82,7 +82,6 @@ const LandingPage = () => {
     sectionRef.current?.scrollIntoView({ behavior: "smooth" });
   };
   
-
   useEffect(() => {
     async function fetchData() {
       try {
@@ -96,8 +95,7 @@ const LandingPage = () => {
     }
     fetchData();
   }, [dispatch]);
-
-
+  
   useEffect(() => {
     if (!user || checkAlert) return;
 

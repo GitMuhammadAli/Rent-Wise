@@ -2,15 +2,12 @@
 
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-
 import { createAgreement } from '../../../Api/Agreement';
 import CarAgrTemplate from "./CarAgrTemplate";
 import { useToast } from "@chakra-ui/react";
 
 
 export default function CarAgreement({listId,list_Title,list_category, tenant, convoID}) {
-//   const location = useLocation();
-//     const { tenantName, tenantListing , conversationID } = location.state || {};
 
 const navigate = useNavigate();
 
@@ -51,28 +48,10 @@ const navigate = useNavigate();
     ]
   });
 
-  // const handleCreateAggreement = async () => {
-  //   console.log("Create Aggrement", formData);
-  //   const response = await createAgreement(formData);
-  //   console.log("Response", response.data);
-  // };
-
   useEffect(() => {
     if (!list_Title || !list_category || !listId) return;
     setRenterId(tenant._id);
   }, [list_category, listId, list_Title, tenant]);
-
-  //   useEffect(() => {
-  //   if (!tenantName || !tenantListing || !conversationID) {
-  //     return;
-  //   }
-  //   // console.log(tenantListing, tenantName , conversationID);
-  //   // console.log("COnversationID", conversationID);
-  //   // setListingDetail(tenantListing);
-  //   // console.log("tentantIDD", tenantName._id);
-  //   // setRenterId(tenantName._id);
-  //   // setConversationId(conversationID);
-  // }, [tenantName, tenantListing , conversationID]);
 
    const saveAgreement = async (e) => {
     e.preventDefault();
@@ -80,17 +59,10 @@ const navigate = useNavigate();
     try {
       
       if (!tenant || !listId) {
-        console.log("ids missing");
         return;
       }
-      console.log("renterID", tenant._id)
+     
       setRenterId(tenant._id);
-      console.log("renterID", renterId);
-
-  
-
-      console.log("details are: ", formData);
-
       const data = await createAgreement({
         aggrementDetail:formData,
         renterId,
@@ -99,10 +71,6 @@ const navigate = useNavigate();
         conversationID: convoID,
       });
     
-
-      console.log("responseOFagreement", data);
-      // setaggrementFromResponce(data.data.data);
-       console.log("agreement ID1", data?.data?.data?._id);
        const agreementID = data?.data?.data?._id
        navigate(`/agreementCar/${agreementID}`)
        toast({

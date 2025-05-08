@@ -5,15 +5,9 @@ import { MakeAggrementForAdminByOwnerIDs } from '../../../Api/Blockchain';
 
 const Integration = ({agreementId,agreementDetails, setAgreementDetails}) => {
   const [currentAccount, setCurrentAccount] = useState('');
-  // const [agreementDetails, setAgreementDetails] = useState(null);
   const [transactionHash, setTransactionHash] = useState('');
   
-
-//   const { agreementId } = useParams();
-
   useEffect(() => {
-
-
     const checkWalletConnection = async () => {
       if (typeof window.ethereum !== 'undefined') {
         try {
