@@ -65,7 +65,6 @@ export default function ReviewsInListing({listingID, ownerID, setAvgRating}) {
       if (listingID)
         {
           const response = await createListingReview(listingID,{comment: newReview.comment, rating: newReview.rating});
-          console.log('response after listing review', response);
           if(response.status === 200)
           {
             toast({
@@ -80,8 +79,7 @@ export default function ReviewsInListing({listingID, ownerID, setAvgRating}) {
 
     
         }
-        console.log('rllo')
-        console.log('review comments and raating are:', newReview)
+       
     } catch (error) {
      
       toast({
@@ -100,7 +98,6 @@ export default function ReviewsInListing({listingID, ownerID, setAvgRating}) {
     const getReviews = async()=>{
       try {
         const response = await getListingReviews(listingID);
-        console.log("resGET", response?.data?.data?.reviews);
         setReview(response?.data?.data?.reviews)
 
         const reviews = response?.data?.data?.reviews || [];

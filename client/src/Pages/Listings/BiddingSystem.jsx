@@ -43,11 +43,7 @@ export default function BiddingSystem({ currentListing }) {
       });
       
     }
-    
-    if (!currentListing) {
-      console.log("no current listing");
-      return;
-    }
+  
    
     const bidAmount = parseFloat(newBid);
     if (isNaN(bidAmount) || bidAmount <= 0){
@@ -61,7 +57,6 @@ export default function BiddingSystem({ currentListing }) {
       });
       return;
     } 
-    console.log('before try')
 
     const newBidEntry = {
       rentalItemId: currentListing._id,
@@ -70,7 +65,6 @@ export default function BiddingSystem({ currentListing }) {
  
     try {
       const response = await PlaceBid(newBidEntry);
-      console.log("response of bid", response);
       setNewBid(response?.data?.highestBid + currentListing?.bidding?.bidIncrement);
       if (response.status === 200) {
         toast({
@@ -100,7 +94,6 @@ export default function BiddingSystem({ currentListing }) {
       setBids(updatedBids);
      // setNewBid("");
     } catch (error) {
-      console.log(error);
       if(error.status === 400)
       {
         toast({
@@ -138,7 +131,6 @@ export default function BiddingSystem({ currentListing }) {
     const top5Bids = [...currentListing.bidding.bids]
       .sort((a, b) => b.bidAmount - a.bidAmount)
       .slice(0, 5);
-    console.log("top five are ", top5Bids);
     setBids(top5Bids);
   }, [currentListing]);
 

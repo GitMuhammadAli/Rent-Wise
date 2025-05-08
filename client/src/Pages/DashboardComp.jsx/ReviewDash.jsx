@@ -75,15 +75,11 @@ export default function ReviewPage() {
           try {
             const response = await ToGetReview();
       
-            console.log("Full response:", response);  // Check entire response structure
       
             if (response && response.data) {
-              console.log("Response data:", response.data);
-              console.log("Fetched data:", response.data.data);
               setPeopleData(response?.data?.data);
       
               const reviewData = response.data.data || [];  
-              console.log("Processed review data:", reviewData);
               
              
             } else {
@@ -105,7 +101,6 @@ export default function ReviewPage() {
               if(!user) return
               try {
                 const response = await getUserReviews(user._id);
-                console.log("resGET", response?.data?.data?.reviews);
                 setReceivedReviews(response?.data?.data?.reviews)
               } catch (error) {
                 console.log(error); 

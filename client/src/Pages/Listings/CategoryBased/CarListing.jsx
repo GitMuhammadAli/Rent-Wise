@@ -25,7 +25,6 @@ const [selectedStates, setSelectedStates] = useState([]);
         const fetchCarListings = async()=>{
           try {
             const response = await getAllCar();
-            console.log("res of car", response.data.data);
             setCarData(response?.data?.data);
             
           } catch (error) {
@@ -59,9 +58,6 @@ const [selectedStates, setSelectedStates] = useState([]);
     
     
 
-    useEffect(()=>{
-    console.log('carD', carData)
-    },[carData])
 
   return (
     <div className="container mx-auto px-4 py-8">

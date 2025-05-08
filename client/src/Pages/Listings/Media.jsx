@@ -40,7 +40,6 @@ export default function Media() {
       ...prev,
       location: locationDetails,
     }));
-    console.log('loc got', locationDetails);
   };
 
   // Handle image selection and generate previews
@@ -178,7 +177,6 @@ const handleSubmit = async (e) => {
     const response = await uploadMediaAPI(formDataToSend);
     dispatch({type:'ADD_LISTING',payload:response.data.rentalItem})
 
-    console.log('Response iss ', response.data.rentalItem)
     toast({
       title: "Listing uploaded.",
       description: "Your Listing has been uploaded successfully!",

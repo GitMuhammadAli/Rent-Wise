@@ -30,7 +30,6 @@ export default function UserDash() {
     const fetchAggreements = async() =>{
       try {
         const response = await fetchAllRenterAggreements()
-        console.log("res aggr", response)
       
         const listingName = response.data.data.aggreements.map((aggr)=> aggr.listingId);
         const OwnerName = response.data.data.aggreements.map((aggr)=> aggr.ownerId);
@@ -51,10 +50,6 @@ export default function UserDash() {
 
     },[])
 
-    useEffect(()=>{
-      console.log("aggrDetaii", agreementDetail)
-
-    },[agreementDetail])
 
   const renderDashboard = () => (
     <>

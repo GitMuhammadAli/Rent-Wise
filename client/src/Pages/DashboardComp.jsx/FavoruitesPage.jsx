@@ -13,11 +13,9 @@ function FavoruitesPage() {
     const fetchFavorites = async () => {
       try {
         const response = await GetFav()
-        console.log(response)
         setFavorites(response.data.favoriteListings)
         setLoading(false)
       } catch (error) {
-        console.error('Error fetching favorites:', error)
         setLoading(false)
       }
     }

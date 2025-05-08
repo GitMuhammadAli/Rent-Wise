@@ -73,12 +73,10 @@ const [loading, setLoading] = useState(true);
         const listing = response.data;
 
 
-        console.log("response updation", response.data);
         dispatch({ type: "GET_ONE_LISTING", payload: listing });
       
        
           
-        console.log("useeffect fetch lists", currentListing)
 
         
         setFormData({
@@ -190,19 +188,10 @@ const [loading, setLoading] = useState(true);
       
       };
       
-      // till here
 
     const updateData = new FormData();
 
-    // Append basic form data
-
-    // Object.keys(formData).forEach(key => {
-    //   if (Array.isArray(formData[key])) {
-    //     updateData.append(key, JSON.stringify(formData[key]));
-    //   } else {
-    //     updateData.append(key, formData[key]);
-    //   }
-    // });
+   
 
     Object.keys(updatedFormData).forEach((key) => {
       const value = updatedFormData[key];
@@ -214,9 +203,7 @@ const [loading, setLoading] = useState(true);
       }
     });
 
-    for (let [key, value] of updateData.entries()) {
-      console.log(`values:::${key}: ${value}`);
-    }
+  
     
     
     updateData.set('location', JSON.stringify(formData.location));
@@ -231,12 +218,8 @@ const [loading, setLoading] = useState(true);
     updateData.append('removedVideos', JSON.stringify(removedVideos));
 
     try {
-       console.log("updated status", updateData)
       const response =  await Updatelistings(id, updateData);
      dispatch({type:'UPDATE_LISTING', payload:response.data})
-     console.log("res up", response.data)
-     console.log("Listingggs are",listings)
-      
 
       toast({
         title: "Listing updated successfully",
@@ -255,26 +238,12 @@ const [loading, setLoading] = useState(true);
         duration: 3000,
         isClosable: true,
       });
-      console.log('errrrrrr', error.response.data.details);
-      console.log('errrrrrrHA', error);
-      
+    
       
     }
   };
 
-  // const changeListingStatus=()=>{
-  //   setFormData((prevData) => ({
-  //     ...prevData,
-  //     listingStatus: prevData.listingStatus === 'pending' ? 'active' : 'pending',
-  //   }));
-   
-  // }
-  useEffect(()=>{
-    console.log("listing status: ", formData.listingStatus)
-
-
-  },[formData.listingStatus])
-
+ 
   const handleBiddingToggle = () => {
     setFormData((prevData) => ({
       ...prevData,
@@ -282,9 +251,6 @@ const [loading, setLoading] = useState(true);
     }));
   };
 
-  useEffect(() => {
-    console.log("formDataLocation:", formData.location);
-  }, [formData]);
 
 
 

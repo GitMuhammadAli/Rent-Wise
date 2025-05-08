@@ -62,7 +62,6 @@ export default function OwnerDash() {
     const fetchAgreements = async () => {
       try {
         const response = await GetAggreements();
-        console.log("Agreements fetched:", response.data.data);
         setAgreements(response.data.data);
         const aggrData = response?.data?.data;
         setDecideAggrNumber(showAllAggr ? aggrData : aggrData.slice(0, displayLimit))
@@ -71,14 +70,12 @@ export default function OwnerDash() {
         const AgrrStatus = response?.data?.data?.map(
           (item) => item.agreementStatus
         );
-        console.log("agreeSTtt", AgrrStatus);
         const activeCount = AgrrStatus?.filter(
           (status) => status === "active"
         ).length;
         setAgreementStatusCount(activeCount);
-        console.log("Agreements:", agreements);
       } catch (error) {
-        console.error("Failed to fetch agreements:", error);
+        console.error("Failed to fetch agreements:");
       }
     };
 
@@ -89,28 +86,10 @@ export default function OwnerDash() {
     setHandleAgreementEditClick(true);
   };
 
-  // useEffect(() => {
-  //   async function getOwnerListings() {
-  //     if (user && user._id) {
-  //       const user_id = user._id;
-  //       console.log("User id is:", user_id);
-
-  //       const response = await getAlListingsofSpecificUser(user_id);
-  //       console.log("Response of user in ownerdash is: ", response.data);
-  //       setListingCount(response.data.listingCount);
-
-  //       // setItems(response.data.listing);
-  //       dispatch({ type: "GET_USER_LISTINGS", payload: response.data.listing });
-  //       console.log("listing in ownerdash are:", response.data.listing);
-  //     }
-  //   }
-  //   getOwnerListings();
-  // }, [user]);
+  
 
   useEffect(() => {
-    console.log("useListInOwner", userListings.length);
     setListingCount(userListings.length);
-    console.log("userLisintg", userListings)
     setDecideListingNumber(showAll ? userListings : userListings.slice(0, displayLimit))
 
   }, [userListings, userListings.listingStatus, showAll]);

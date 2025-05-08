@@ -28,7 +28,6 @@ export default function HouseListing() {
         const fetchCarListings = async()=>{
           try {
             const response = await getAllHouse();
-            console.log("res of house", response.data.data);
             setHouseData(response?.data?.data);
             
           } catch (error) {
@@ -76,10 +75,6 @@ export default function HouseListing() {
       (selectedStates.length > 0 ? selectedStates.includes(house?.location?.state) : true)
     );
 
-    useEffect(()=>{
-    console.log('houseD', houseData)
-    console.log('filtered', filteredListings)
-    },[houseData, filteredListings])
 
   
   return (

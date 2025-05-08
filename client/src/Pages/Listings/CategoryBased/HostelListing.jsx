@@ -31,7 +31,6 @@ export default function HostelListing() {
         const fetchHosteltings = async()=>{
           try {
             const response = await getAllHostel();
-            console.log("res of hostel", response.data.data);
             setHostelData(response?.data?.data);
             
           } catch (error) {
@@ -80,10 +79,6 @@ export default function HostelListing() {
     );
     
 
-    useEffect(()=>{
-    console.log('houseD', hostelData)
-    console.log('filtered', filteredListings)
-    },[hostelData, filteredListings])
 
   
   return (

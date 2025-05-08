@@ -29,19 +29,9 @@ export default function UserPopover({tenant,convoID}) {
   const navigate = useNavigate();
 
 
-     useEffect(()=>{
-        console.log("user specific listing", userListings)
-      },[userListings])
 
 
       const handleClick = (listId, list_Title, list_category)=>{
-        console.log("lisrDeta", listId, list_Title, list_category)
-        if(!listId || !list_Title || !list_category )
-        {
-          console.log("list info required")
-          return;
-        }
-       
         navigate("/agreement", {
               state: { listId, list_Title , list_category, tenant ,convoID },
             });
@@ -49,49 +39,9 @@ export default function UserPopover({tenant,convoID}) {
 
       }
 
-  // const showAggrement = (names, list, conversationID) => {
-  //   console.log("name", names, "list", list, "conversationID", conversationID);
-  //   navigate("/agreement", {
-  //     state: { tenantName: names, tenantListing: list , conversationID: conversationID },
-  //   });
-  // };
-
- 
   
 
-  // const fetchNameOfChatParticipants = async () => {
-  //   try {
-  //     const response = await fetchConversationsForSidebar();
-  //     console.log("response of Conversation Is", response);
-      
-  //     const data = response.data.data.map((d)=>{
-  //        return d.participants.map((p)=>{
-  //             return p
-  //         })
-  //     })
-  //     const listing = response.data.data.map((d)=>{
-  //        return d.listing.map((l)=>{
-  //             return l
-  //         })
-  //     })
-  //     console.log("names are", data)
-  //     setParticipantsName(data);
-  //     console.log("listing are", listing)
-  //     setParticipantListings(listing)
-
-  //     const mappedData = response.data.data.map((d) => {
-  //       return {
-  //         participants: d.participants.map((p) => p), // Extract participants
-  //         listing: d.listing.map((l) => l), // Extract listings
-  //         conversationID: d._id,
-  //       };
-  //     });
-  //     setParticipantsDetail(mappedData);
-  //     console.log("mapped", mappedData);
-  //   } catch (error) {
-  //     console.log("error fetching names", error);
-  //   }
-  // };
+  
 
   return (
     <>

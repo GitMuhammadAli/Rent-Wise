@@ -145,10 +145,6 @@ const LocationSearch = ({ onLocationSelect, initialLocation   }) => {
     handleSearch(text);
   };
 
-  useEffect(() => {
-   console.log("locationDetails", locationDetails)
-  }, [locationDetails]);
-
   return (
     <Box style={{ position: 'relative'  }}>
       <Flex alignItems={'center'} gap={2} mt={4}>

@@ -108,11 +108,9 @@ export default function AddCommentsInListing({toast,id,currentID,ownerID}) {
               if (currentID) {
                 const response = await getCommentswithReplies(currentID);
                 setComments(response.data.comments || []);
-                console.log("comment", response)
                 setSetSubmit(false);
               }
             } catch (error) {
-              console.error("Error fetching comments:", error);
               toast({
                 title: "Error",
                 description: "Failed to fetch comments.",
