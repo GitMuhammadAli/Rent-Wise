@@ -57,8 +57,6 @@ function MainLayout() {
     const fetchNotifications = async () => {
       try {
         const response = await getNotifications();
-  
-        console.log("notifications", response.data.data);
         setNotifications(response?.data?.data);
       } catch (error) {
 
@@ -67,11 +65,8 @@ function MainLayout() {
        
   }, [])
 
-  useEffect(()=>{
-    console.log('user', user)
 
-  },[user])
-  return (
+ return (
     <Flex direction="column" minH="100vh" position={'relative'}>
       <ToastContainer />
 

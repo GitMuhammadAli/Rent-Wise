@@ -12,7 +12,6 @@ const Integration = ({agreementId,agreementDetails, setAgreementDetails}) => {
 //   const { agreementId } = useParams();
 
   useEffect(() => {
-    console.log("id in inter", agreementId)
 
 
     const checkWalletConnection = async () => {
@@ -118,8 +117,7 @@ const Integration = ({agreementId,agreementDetails, setAgreementDetails}) => {
 
           // Send transaction
           const tx = await rentalContract.methods.createAgreement(agreementId).send({ from: currentAccount });
-          console.log('Agreement created successfully:', tx);
-           console.log("thash", tx.transactionHash)
+        
 
           // Fetch contract details
           const owner = await rentalContract.methods.owner().call();
@@ -146,11 +144,7 @@ const Integration = ({agreementId,agreementDetails, setAgreementDetails}) => {
 
         if(agreementId && transactionHash !== '')
           {
-            console.log("now running")
-            console.log("tranHash", transactionHash)
-            console.log("agreementID",agreementId )
             const response = await MakeAggrementForAdminByOwnerIDs({agreementId,transactionHash});
-            console.log("response", response)
           }
       }
       catch(error)

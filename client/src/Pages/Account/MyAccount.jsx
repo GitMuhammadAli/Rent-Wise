@@ -45,11 +45,10 @@ export default function MyAccount() {
         setBio(response.data.user.bio);
         setIsThirdPartyUser(!!response.data.user.googleId || !!response.data.user.facebookId);
         if (response.data.user.NotificationSetting) {
-          console.log("User pref", response.data.user.NotificationSetting) 
           setNotificationSettings(response.data.user.NotificationSetting.notificationPreferences);
         }
       } catch (err) {
-        console.log(err);
+        console.error(err);
       }
       finally{
         setLoading(false);
@@ -59,11 +58,6 @@ export default function MyAccount() {
 
     fetchUser();
   }, [dispatch]);
-
-  useEffect(()=>{
-    console.log("user of dashhook" , user);
-  },[user])
-  
 
   const handleAvatarChange = (event) => {
     const file = event.target.files?.[0];
@@ -115,11 +109,8 @@ export default function MyAccount() {
         duration: 3000,
         isClosable: true,
       });
-      console.log("in changing profiile", response.data.user)
       dispatch({ type: 'UPDATE_USER', payload: response.data.user });
     } catch (err) {
-      console.log(err);
-      console.log("error in profile updating", err)
       toast({
         title: err.response.data.message,
         status: 'error',
@@ -128,13 +119,7 @@ export default function MyAccount() {
       });
     }
   };
-  
-  // function check()
-  // {
-  //   console.log("username to display:", username)
-  //   console.log("useremail to display:", userEmail)
-  //   console.log("bio to display:", bio)
-  // }
+
   
   if (loading) {
       return (

@@ -1,17 +1,3 @@
-// self.addEventListener("push", (event) => {
-//     if (!event.data) {
-//         console.log("No data in push event");
-//         return;
-//     }
-//     const data = event.data.json();
-//     console.log("data in service worker is", data);
-//     self.registration.showNotification(data.title, {
-//         body: data.body,
-//         icon: data.icon
-//     });
-// });
-
-
 self.addEventListener("push", (event) => {
     if (!event.data) {
       console.error("Push event has no data");
@@ -25,7 +11,6 @@ self.addEventListener("push", (event) => {
       icon: data.icon,
     });
   
-    // Send the notification data to the main thread (React App)
     self.clients.matchAll().then((clients) => {
       if (clients.length === 0) {
         console.log("No clients are currently connected.");

@@ -33,9 +33,7 @@ export default function BlockchainAgreements() {
       try {
         setIsLoading(true)
         const response = await getAggrementForAdminByOwnerIDs()
-        console.log("Agreements fetched:", response?.data?.data)
 
-        // Transform the data to match our component's expected format
         const formattedAgreements = response?.data?.data.map((agreement) => ({
           id: agreement._id,
           title: `Agreement ${agreement._id.substring(0, 8)}...`,
@@ -195,14 +193,12 @@ export default function BlockchainAgreements() {
 
       // Send transaction
       const tx = await rentalContract.methods.createAgreement(agreement.id).send({ from: account })
-      console.log("Agreement deployed successfully:", tx)
 
       // Update the agreement status in the database
       const updateResponse = await MakeAggrementForAdminByOwnerIDs({
         agreementId: agreement.id,
         transactionHash: tx.transactionHash,
       })
-      console.log("Agreement status updated:", updateResponse)
 
       // Update local state
       setDeploymentStatus({

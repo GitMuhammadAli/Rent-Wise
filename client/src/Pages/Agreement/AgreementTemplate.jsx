@@ -33,72 +33,10 @@ const socket = io("http://localhost:3600");
 export default function AgreementTemplate() {
   const toast = useToast();
   
-  // const [aggrementDetail, setAggrementDetail] = useState({
-  //   place: "",
-  //   timeInDayCount: null,
-  //   rentAmount: "",
-  // });
-  // const [ownerConfirmed, setOwnerConfirmed] = useState(false);
-  // const [renterId, setRenterId] = useState("");
-  // const [listingDetail, setListingDetail] = useState([]);
-  // const [conversationId, setConversationId] = useState("");
-  // const [listIdToSend, setListIdToSend] = useState("");
-  // const [aggrementFromResponce , setaggrementFromResponce] = useState([]);
-  // const [listTitle, setListTitle] = useState('Select Listing');
 
   const location = useLocation();
 
-  // const { tenantName, tenantListing , conversationID } = location.state || {};
   const { listId, list_Title , list_category, tenant, convoID } = location.state || {};
-
-
-  useEffect(()=>{
-    if(!convoID)
-    {
-      console.log('no convo id found in agreement')
-    }
-    console.log("convo id in agreement", convoID)
-    console.log("list category is:", list_category)
-    console.log("tenant name", tenant)
-  },[list_category, convoID])
-
-  
-
-  // const { user } = useAuth();
-
-  // useEffect(() => {
-  //   if (!tenantName || !tenantListing || !conversationID) {
-  //     return;
-  //   }
-
-
-  //   console.log("tLL",tenantListing, tenantName , conversationID);
-  //   console.log("COnversationID", conversationID);
-  //   setListingDetail(tenantListing);
-  //   console.log("tentantIDD", tenantName._id);
-  //   setRenterId(tenantName._id);
-  //   setConversationId(conversationID);
-  // }, [tenantName, tenantListing , conversationID]);
-
-  // const listingFucntion = (listID, title) => {
-  //   if (!listID) {
-  //     toast({
-  //       title: "Select your listing again.",
-  //       description: "Listing not selected yet, select again.",
-  //       status: "warning",
-  //       duration: 3000,
-  //       isClosable: true,
-  //     });
-
-  //     return;
-  //   }
-  //   console.log("Title", title);
-  //   setListTitle(title);
-
-  //   setListIdToSend(listID);
-  //   console.log("list id to send is", listIdToSend);
-
-  // };
 
 
 
@@ -106,10 +44,6 @@ export default function AgreementTemplate() {
 
 
 const SentToRenter = async () => {
-  console.log("Agreement detail:", aggrementFromResponce);
-  console.log("Joining conversation ID:", conversationId);
-  socket.emit("join-conversation", conversationId);
-
   try {
       const link = `${import.meta.env.VITE_FRONT_END_URL}/agreement/${aggrementFromResponce._id}`;
       const dataForSentMessageOfAgreement = {
@@ -118,74 +52,19 @@ const SentToRenter = async () => {
           receiver: aggrementFromResponce.receiverId, // Adjust as needed
       };
 
-      console.log("Sending link as message:", dataForSentMessageOfAgreement);
 
       const response = await createMessage(dataForSentMessageOfAgreement);
-      console.log("Response from message creation:", response);
   } catch (error) {
       console.error("Error sending message:", error);
   }
 };
 
 
-  // const OwnerConfirmed = async ()=>{
-
-  //   if(ownerConfirmed){
-  //     setOwnerConfirmed(false)
-  //   }
-  //   else{
-  //     setOwnerConfirmed(true)
-  //   }
-
-  // } 
-
-
-  //  const saveAgreement = async () => {
-  //   try {
-  //     if (!listIdToSend) {
-  //       toast({
-  //         title: "Select your listing again.",
-  //         description: "Listing not selected yet, select again.",
-  //         status: "warning",
-  //         duration: 3000,
-  //         isClosable: true,
-  //       });
-  //       return;
-  //     }
-  //     if (!tenantName || !tenantListing) {
-  //       console.log("ids missing");
-  //       return;
-  //     }
-  //     setRenterId(tenantName._id);
-  //     console.log("renterID", renterId);
-
-  //     console.log("tenantListing", tenantListing);
-  //     console.log("status", ownerConfirmed);
-
-  //     console.log("details are: ", aggrementDetail);
-
-  //     const data = await createAgreement({
-  //       renterId,
-  //       aggrementDetail,
-  //       ownerConfirmed,
-  //       listingId: listIdToSend,
-  //       conversationID: conversationId,
-  //     });
-
-  //     console.log("responseOFagreement", data);
-  //     setaggrementFromResponce(data.data.data);
-  //   } catch (error) {
-  //     console.log("errorInAgreement creation is: ", error);
-  //   }
-  // };
-
   return (
 
 
 <>
  
- {/* <HouseAgreement tenantName={tenantName} tenantListing={tenantListing} conversationID={conversationID}  /> */}
-{/* <CarAgreement tenantName={tenantName} tenantListing={tenantListing} conversationID={conversationID}  /> */}
 
 
 {

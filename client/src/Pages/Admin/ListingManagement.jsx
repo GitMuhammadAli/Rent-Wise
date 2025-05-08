@@ -24,7 +24,6 @@ const ListingManagement = ({ categoryFilter = "All" }) => {
         try {
           const response = await getAllLists();
           if (response && response.data && response.data.data && response.data.data.allLists) {
-            console.log("response",response.data.data.allLists)
             setListings(response.data.data.allLists)
             setFilteredListings(response.data.data.allLists)
             setLoading(false)
@@ -66,13 +65,9 @@ const ListingManagement = ({ categoryFilter = "All" }) => {
   }
 
   const confirmDelete = async () => {
-    // In a real app, you would call an API to delete the listing
-    if(selectedListing) {
-      console.log(`Deleting listing: ${selectedListing.title, selectedListing._id}`)
-    }
+    
     try {
       const response = await deleteListing(selectedListing._id);
-      console.log('res after deleting', response)
       toast({
         title: "Listing deleted successfully",
         description: "Listing has been deleted successfully",
@@ -82,7 +77,6 @@ const ListingManagement = ({ categoryFilter = "All" }) => {
       });
       
     } catch (error) {
-      console.log('err', error)
       toast({
         title: "Error while Deleting",
         description: error,
@@ -98,7 +92,6 @@ const ListingManagement = ({ categoryFilter = "All" }) => {
     setSelectedListing(null)
   }
 
-  // Pagination calculations
   const indexOfLastListing = currentPage * listingsPerPage
   const indexOfFirstListing = indexOfLastListing - listingsPerPage
   const currentListings = filteredListings.slice(indexOfFirstListing, indexOfLastListing)

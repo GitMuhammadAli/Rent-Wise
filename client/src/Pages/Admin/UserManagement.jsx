@@ -138,7 +138,6 @@ const UserManagement = () => {
   useEffect(()=>{
     const getAllUsers = async () => {
     const response = await getAllListsOFUser();
-    console.log("users",response.data.data.allUser)
     setUsers(response.data.data.allUser)
     setLoading(false)
     }
@@ -171,12 +170,6 @@ const UserManagement = () => {
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber)
-  }
-
-  // Approve or suspend user account
-  const handleStatusChange = (userId, newStatus) => {
-    console.log(`Change user ${userId} status to ${newStatus}`)
-    // In a real app, this would make an API call to update the user status
   }
 
     if (loading) {
