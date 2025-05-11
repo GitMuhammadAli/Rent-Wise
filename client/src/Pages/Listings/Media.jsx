@@ -115,7 +115,7 @@ const handleSubmit = async (e) => {
   }
 
  
-  if (formData.biddingEnabled===true) {
+  if (formData.biddingEnabled==true) {
     if (!formData.minimumBid || !formData.bidEndDate) {
       toast({
         title: "Missing required fields.",
@@ -149,7 +149,7 @@ const handleSubmit = async (e) => {
   formDataToSend.append('priceUnit', priceUnit);
   formDataToSend.append('amenities', JSON.stringify(formData.amenities));
   formDataToSend.append('rules', JSON.stringify(formData.rules));
-  formDataToSend.append('biddingEnabled', formData.biddingEnabled);
+  formDataToSend.append('biddingEnabled', formData.biddingEnabled ? 'true' : 'false'); //changed
   formDataToSend.append('minimumBid', formData.minimumBid);
   formDataToSend.append('bidIncrement', formData.bidIncrement);
   formDataToSend.append('bidEndDate', formData.bidEndDate);
@@ -172,6 +172,11 @@ const handleSubmit = async (e) => {
       formDataToSend.append('videos', videos[i]);
     }
   }
+
+  for (let [key, value] of formDataToSend.entries()) {
+    console.log(`${key}:`, value);
+  }
+  
 
   try {
     const response = await uploadMediaAPI(formDataToSend);

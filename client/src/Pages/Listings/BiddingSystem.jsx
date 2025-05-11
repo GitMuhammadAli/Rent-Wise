@@ -188,7 +188,8 @@ export default function BiddingSystem({ currentListing }) {
               bids?.map((bid, i) => (
                 <ListItem
                   as={Link}
-                  to={`/profile/${bid.user._id}`}
+                  // to={`/profile/${bid.user._id}`}
+                  to={user?._id === bid.user._id ? '#' : `/profile/${bid.user._id}`}
                   key={i}
                   className="flex items-center gap-3 bg-orange-50 p-3 rounded-md"
                 >

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Star, MessageCircle, ThumbsUp, ThumbsDown } from 'lucide-react'
 import { StarIcon, MessageCircleIcon, MailIcon, PhoneIcon } from "lucide-react";
 import { getOwnerProfileData } from "../../../Api/owner";
-import { Link , useNavigate , useParams} from "react-router-dom";
+import { Link , Navigate, useNavigate , useParams} from "react-router-dom";
 import { useAuth } from "../../../hooks/AuthContext";
 import { createUserReview, getUserReviews } from "../../../Api/reviews";
 import { useToast, Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, Image, useDisclosure, Button  } from "@chakra-ui/react";
@@ -22,6 +22,16 @@ const UserProfile = () => {
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedImage, setSelectedImage] = useState(null); // for viewing image in big size
+
+  if (!user) {
+     return <div className="flex justify-center items-center min-h-screen"> <ColorTubeLoader/></div>;
+  }
+ 
+
+  if (user?._id === _id) {
+    // Redirect to another route if user tries to view their own profile
+    return <Navigate to="/acc" />;
+  }
 
   useEffect(() => {
       const fetchProfileData = async () => {
@@ -47,7 +57,7 @@ const UserProfile = () => {
       }
       navigate(`/chat`, { state: { ownerIdDetails: owner, userIdDetails: user } });
   };
- 
+  
 
 
     const handleSubmitReview =async(e)=>{

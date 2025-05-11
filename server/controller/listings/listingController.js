@@ -68,8 +68,10 @@ exports.CreateListings = async (req, res, next) => {
             : JSON.parse(req.body.rules);
 
         const { owner, title, description, price, category, priceUnit,
-            location, biddingEnabled, minimumBid, bidIncrement, bidEndDate
+            location, minimumBid, bidIncrement, bidEndDate
         } = req.body;
+
+        let biddingEnabled = req.body.biddingEnabled === 'true'; // changed
 
         const listingId = req.listingId
         const missingFields = [];
