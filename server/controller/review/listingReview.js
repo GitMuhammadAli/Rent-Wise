@@ -27,7 +27,8 @@ exports.CreateListReview = async (req, res, next) => {
         renterId: userId,
         $or: [
           { agreementStatus: "active" },
-          { agreementStatus: "Inactive" }
+          { agreementStatus: "Inactive" },
+          { agreementStatus: "pending" }
         ]
     });
     if (!CheckAggreement) {
