@@ -56,26 +56,14 @@ import LocationPicker from "./Pages/Location/Loacation";
 import UpdateListing from "./Pages/Listings/UpdateListing";
 import ViewHostelAgr from "./Pages/Agreement/ViewAgreement.jsx/ViewHostelAgr";
 import UpdateHostelAgrr from "./Pages/Agreement/Hostel/UpdateHostelAgrr";
+import { useAuth } from "./hooks/AuthContext";
 
 //  import TestListingDetails from "./Pages/Listings/Test/TestHome";
 
 
-
-
-
-function YourComponent() {
-  const token = Cookies.get("jwt");
-
-  if (token) {
-    const decodedToken = decodeToken(token);
-  }
-
-
-  return <div>Your Component</div>;
-}
-
 const router = createBrowserRouter(
   createRoutesFromElements(
+    
     <>
       {/* Authentication Routes */}
       <Route element={<AuthLayout />}>
@@ -85,7 +73,6 @@ const router = createBrowserRouter(
         </Route>
         <Route path="/auth/forgetPassword" element={<ForgotPassword />} />
         <Route path="/auth/resetPassword" element={<ResetPassword />} />
-        <Route path="/you" element={<YourComponent />} />
         <Route path="*" element={<div>404 Not Found</div>} />
         <Route path="/auth/otp" element={<Otp/>} />
       </Route>

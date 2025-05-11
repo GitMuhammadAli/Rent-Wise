@@ -21,7 +21,7 @@ const UserProfile = () => {
   const [reviews, setReviews] = useState([])
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [selectedImage, setSelectedImage] = useState(null); // for viewing image in big size
+  const [selectedImage, setSelectedImage] = useState(null); 
 
   useEffect(() => {
       const fetchProfileData = async () => {

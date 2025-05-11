@@ -14,7 +14,7 @@ const initializeAdmin = async (next) => {
       const hashedPassword = await bcrypt.hash("admin", 10);
       await Users.create({
         name: "admin",
-        email: "admin@authkit.com",
+        email: "admin@rentwise.com",
         password: hashedPassword,
         role: "admin",
       });

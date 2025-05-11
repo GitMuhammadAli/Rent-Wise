@@ -129,7 +129,7 @@ function MainLayout() {
                 </Text>
 
               
-{user?._id === "670ba87a096754e9bda6658f" && (
+{user?.email == "admin@rentwise.com" && (
                   <>
                     <Menu>
                       <MenuButton as={Button}
