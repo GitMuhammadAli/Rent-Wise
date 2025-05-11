@@ -21,7 +21,7 @@ const UserProfile = () => {
   const [reviews, setReviews] = useState([])
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [selectedImage, setSelectedImage] = useState(null); // for viewing image in big size
+  const [selectedImage, setSelectedImage] = useState(null); 
 
   if (!user) {
      return <div className="flex justify-center items-center min-h-screen"> <ColorTubeLoader/></div>;

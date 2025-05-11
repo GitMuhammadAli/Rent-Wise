@@ -23,7 +23,21 @@ exports.CreateUserReview = async (req, res, next) => {
                 message: REVIEWS.REVIEW_USER_NOT_FOUND
             })
         }
+
+        if(id === userId.toString()) {
+            return res.status(STATUS.FORBIDDEN).json({
+                Success: BOOLEAN.FALSE,
+                message: "You cannot review yourself"
+            })
+        }
+        
         const findReviewerUser = await User.findById(userId);
+        if(userId == findReviewerUser){
+            return res.status(STATUS.FORBIDDEN).json({
+                Success: BOOLEAN.FALSE,
+                message: REVIEWS.REVIEW_USER_NOT_FOUND
+            })
+        }
         const CheckAggreement = await Aggrement.find({
             ownerId: id,
             renterId: userId,
@@ -79,8 +93,7 @@ exports.CreateUserReview = async (req, res, next) => {
     } catch (error) {
         next(error);
     }
-};
-exports.getAllReviewsForUsers = async (req, res, next) => {
+};exports.getAllReviewsForUsers = async (req, res, next) => {
     try {
         const { id } = req.params
         const ProfileReview = await profileReview.find({ reviewedUser: id }).populate("reviewer")
