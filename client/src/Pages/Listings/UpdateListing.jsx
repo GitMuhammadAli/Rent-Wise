@@ -291,7 +291,6 @@ const [loading, setLoading] = useState(true);
             <Select name="category" value={formData.category} onChange={handleInputChange}>
               <option value="car">Car</option>
               <option value="hostel">Hostel</option>
-              <option value="apartment">Apartment</option>
               <option value="house">House</option>
             </Select>
           </FormControl>

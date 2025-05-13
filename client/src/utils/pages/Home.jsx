@@ -7,15 +7,13 @@ import { FaCar, FaBicycle, FaBuilding, FaHotel } from 'react-icons/fa';
 export default function Home() {
   const categories = [
     { name: 'Cars', icon: FaCar, description: 'Rent a wide variety of cars for any occasion' },
-    { name: 'Bikes', icon: FaBicycle, description: 'Explore on two wheels with our bike rentals' },
-    { name: 'Apartments', icon: FaBuilding, description: 'Find your perfect temporary home' },
+    { name: 'House', icon: FaBuilding, description: 'Find your perfect temporary home' },
     { name: 'Hotels', icon: FaHotel, description: 'Book luxurious stays for your travels' },
   ];
 
   const featuredRentals = [
     { id: 1, name: 'Luxury Sedan', category: 'Cars', price: '$80/day', rating: 4.8, image: '/images/sedan.jpeg?' },
-    { id: 2, name: 'Mountain Bike', category: 'Bikes', price: '$25/day', rating: 4.6, image: '/images/mb.jpeg?' },
-    { id: 3, name: 'Beachfront Apartment', category: 'Apartments', price: '$150/night', rating: 4.9, image: '/images/apart.jpeg?height=200&width=300' },
+    { id: 2, name: 'Beachfront House', category: 'House', price: '$150/night', rating: 4.9, image: '/images/apart.jpeg?height=200&width=300' },
   ];
 
   return (
@@ -26,7 +24,7 @@ export default function Home() {
             Find Your Perfect Rental
           </Heading>
           <Text mt={5} maxW="xl" mx="auto" fontSize="xl" color="gray.600">
-            RentWise offers a wide range of rentals, from cars and bikes to apartments and hotels.
+            RentWise offers a wide range of rentals, from cars and Homes to hotels.
           </Text>
         </Box>
 

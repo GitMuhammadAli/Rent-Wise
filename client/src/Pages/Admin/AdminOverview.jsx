@@ -13,14 +13,6 @@ const AdminOverview = () => {
     systemAlerts: 2,
   }
 
-  // Recent activity data for the activity log
-  const recentActivity = [
-    { id: 1, type: "user", action: "New user registered", name: "John Doe", time: "10 minutes ago" },
-    { id: 2, type: "listing", action: "New listing created", name: "Beach House Rental", time: "25 minutes ago" },
-    { id: 3, type: "booking", action: "Booking confirmed", name: "City Apartment for 3 nights", time: "1 hour ago" },
-    { id: 4, type: "listing", action: "Listing updated", name: "Downtown Loft", time: "2 hours ago" },
-    { id: 5, type: "agreement", action: "Agreement deployed", name: "Rental Agreement #1234", time: "3 hours ago" },
-  ]
 
   return (
     <div className="space-y-6 mx-4 ">

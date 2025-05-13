@@ -146,7 +146,7 @@ const LandingPage = () => {
 // In your component:
 const [displayText, setDisplayText] = useState("Cars");
 const [width, setWidth] = useState("4ch"); // Initial width for "Cars"
-const rentOptions = ["Cars", "Houses", "Apartments"];
+const rentOptions = ["Cars", "Houses", "hostel"];
 
 useEffect(() => {
   let currentIndex = 0;

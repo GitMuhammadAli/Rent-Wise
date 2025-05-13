@@ -53,12 +53,6 @@ with open(model_path, 'rb') as model_file:
 
 with open(vectorizer_path, 'rb') as vectorizer_file:
     loaded_vectorizer = pickle.load(vectorizer_file)
-# Load model and vectorizer
-# with open('sentiment_model.pkl', 'rb') as model_file:
-#     loaded_model = pickle.load(model_file)
-
-# with open('tfidf_vectorizer.pkl', 'rb') as vectorizer_file:
-#     loaded_vectorizer = pickle.load(vectorizer_file)
 
 # Text cleaning function
 def clean_text(text):

@@ -19,15 +19,6 @@ import { clearAllNotifications, readAllNotifications, readOneNotification } from
 import { NotificationContext } from '../../hooks/NotificationContext';
 import { useLocation } from 'react-router-dom';
 
-// Static data for demonstration
-// const initialNotifications = [
-//   { id: '1', type: 'listing', message: 'Your listing "Beachfront Villa" has a new booking request.', isRead: false, timestamp: '2023-06-20T10:30:00Z' },
-//   { id: '2', type: 'chat', message: 'New message from Alice regarding your apartment.', isRead: false, timestamp: '2023-06-20T11:15:00Z' },
-//   { id: '3', type: 'other', message: 'Your account has been successfully verified.', isRead: true, timestamp: '2023-06-19T09:00:00Z' },
-//   { id: '4', type: 'listing', message: 'Your listing "City Loft" has been approved.', isRead: false, timestamp: '2023-06-18T14:45:00Z' },
-//   { id: '5', type: 'chat', message: 'Bob replied to your question about check-in time.', isRead: true, timestamp: '2023-06-17T16:30:00Z' },
-// ]
-
 export default function Notification({}) {
   const [notificationData, setNotificationData] = useState([]);
   const [activeTab, setActiveTab] = useState('all')

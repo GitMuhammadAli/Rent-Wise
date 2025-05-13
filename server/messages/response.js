@@ -33,7 +33,7 @@ const LISTINGS = {
     ERROR_CREATING_LISTING: "Error creating listing",
     LISTING_FETCHED: "Listing fetched successfully",
     CAR_LISTING_FETCHED: "Car Listing fetched successfully",
-    APARTMENTS_LISTING_FETCHED: " Apartment Listing fetched successfully",
+    Hostel_LISTING_FETCHED: " Hostel Listing fetched successfully",
     HOUSE_LISTING_FETCHED: "House Listing fetched successfully",
     LISTING_UPDATED: "Listing updated successfully",
     LISTING_DELETED: "Listing deleted successfully",

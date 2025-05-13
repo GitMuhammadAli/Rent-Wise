@@ -54,11 +54,11 @@ exports.getAllHouseListings = async (req, res, next) => {
 
     }
 }
-exports.getAllApartmentsListings = async (req, res, next) => {
+exports.getAllHostelListings = async (req, res, next) => {
     try {
 
-        const ApartmentListings = await listings.find({
-            category: "hostel"   // apartment
+        const HostelListings = await listings.find({
+            category: "hostel"   
         })
         .populate("images")
         .populate("videos")
@@ -67,8 +67,8 @@ exports.getAllApartmentsListings = async (req, res, next) => {
 
         res.status(STATUS.SUCCESS).json({
             status: STATUS.SUCCESS,
-            message: LISTINGS.APARTMENTS_LISTING_FETCHED,
-            data: ApartmentListings,
+            message: LISTINGS.Hostel_LISTING_FETCHED,
+            data: HostelListings,
         })
     } catch (error) {
         next(error)

@@ -15,7 +15,7 @@ export default function UserDash() {
 
   const upcomingRentals = [
     { id: 1, item: 'Luxury Sedan', owner: 'Car Rentals Inc.', startDate: '2023-05-20', endDate: '2023-05-23', status: 'Confirmed' },
-    { id: 2, item: 'Beachfront Apartment', owner: 'Coastal Properties', startDate: '2023-06-15', endDate: '2023-06-22', status: 'Pending' },
+    { id: 2, item: 'Beachfront Hostel', owner: 'Coastal Properties', startDate: '2023-06-15', endDate: '2023-06-22', status: 'Pending' },
   ]
 
   const recentActivity= [
