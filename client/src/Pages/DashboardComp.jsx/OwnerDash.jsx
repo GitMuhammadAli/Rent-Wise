@@ -62,6 +62,8 @@ export default function OwnerDash() {
     const fetchAgreements = async () => {
       try {
         const response = await GetAggreements();
+        
+      console.log("Agreements in owner dash",response.data.data);
         setAgreements(response.data.data);
         const aggrData = response?.data?.data;
         setDecideAggrNumber(showAllAggr ? aggrData : aggrData.slice(0, displayLimit))
@@ -75,7 +77,7 @@ export default function OwnerDash() {
         ).length;
         setAgreementStatusCount(activeCount);
       } catch (error) {
-        console.error("Failed to fetch agreements:");
+        console.error("Failed to fetch agreements:", error);
       }
     };
 

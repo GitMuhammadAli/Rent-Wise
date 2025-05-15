@@ -146,13 +146,13 @@ const AdminOverview = () => {
 
       {/* Recent Activity */}
       <div className="bg-white rounded-xl shadow-sm p-6">
-        <div className="flex justify-between items-center mb-6">
+        {/* <div className="flex justify-between items-center mb-6">
           <h3 className="text-lg font-semibold text-gray-900">Recent Activity</h3>
           <button className="text-sm font-medium text-orange-600 hover:text-orange-700">View All</button>
-        </div>
+        </div> */}
 
-        <div className="space-y-4">
-          {recentActivity.map((activity) => (
+        {/* <div className="space-y-4">
+          {recentActivity?.map((activity) => (
             <div key={activity.id} className="flex items-start pb-4 border-b border-gray-100 last:border-0 last:pb-0">
               <div
                 className={`p-2 rounded-lg mr-4 ${
@@ -184,7 +184,7 @@ const AdminOverview = () => {
               </div>
             </div>
           ))}
-        </div>
+        </div> */}
       </div>
     </div>
   )

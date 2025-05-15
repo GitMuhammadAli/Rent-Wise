@@ -28,7 +28,8 @@ const AggrementSchema = new mongoose.Schema({
     },
     blockChain :{
         type: mongoose.Schema.Types.ObjectId,
-        ref:"BlockChainAggrement",
+        // ref:"BlockChainAggrement",
+        ref:"BlockchainAgreement",
         
     },
     blockchainStatus :{

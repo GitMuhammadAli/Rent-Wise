@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { ListingsContext } from "../../hooks/ListingsContext";
 import { getOneUserListingAPI, AddFav, GetFav } from "../../Api/ListingApi";
 import { useParams, useNavigate } from "react-router-dom";
@@ -74,6 +74,20 @@ const ListingDetails = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [isFavorite, setIsFavorite] = useState(false);
 
+  const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
+const [selectedMedia, setSelectedMedia] = useState(null);
+
+
+  const mediaList = useMemo(() => {
+  return [
+    ...(currentListing?.images || []).map((img) => ({ ...img, type: "image" })),
+    ...(currentListing?.videos || []).map((vid) => ({ ...vid, type: "video" })),
+  ];
+}, [currentListing]);
+
+useEffect(() => { console.log(selectedMedia)}, [selectedMedia]);
+
+
   useEffect(() => {
     const checkFavoriteStatus = async () => {
       try {
@@ -91,6 +105,8 @@ const ListingDetails = () => {
       checkFavoriteStatus();
     }
   }, [currentListing]);
+
+
 
   const handleAddToFavorites = async () => {
     try {
@@ -115,10 +131,15 @@ const ListingDetails = () => {
   };
 
 
-  const handleImageClick = (imgSrc) => {
-    setSelectedImage(imgSrc);
-    onOpen();
-  };
+  // const handleImageClick = (imgSrc) => {
+  //   setSelectedImage(imgSrc);
+  //   onOpen();
+  // };
+
+  const handleMediaClick = (media) => {
+  setSelectedMedia(media);
+  onOpen();
+};
 
   useEffect(() => {
  
@@ -137,14 +158,21 @@ const ListingDetails = () => {
   }, [id]);
 
 
-  const handleImageNavigation = (direction) => {
-    setCurrentImageIndex((prevIndex) =>
-      direction === "next"
-        ? (prevIndex + 1) % currentListing.images.length
-        : (prevIndex - 1 + currentListing.images.length) %
-        currentListing.images.length
-    );
-  };
+  // const handleImageNavigation = (direction) => {
+  //   setCurrentImageIndex((prevIndex) =>
+  //     direction === "next"
+  //       ? (prevIndex + 1) % currentListing.images.length
+  //       : (prevIndex - 1 + currentListing.images.length) %
+  //       currentListing.images.length
+  //   );
+  // };
+  const handleMediaNavigation = (direction) => {
+  setCurrentMediaIndex((prevIndex) =>
+    direction === "next"
+      ? (prevIndex + 1) % mediaList.length
+      : (prevIndex - 1 + mediaList.length) % mediaList.length
+  );
+};
 
   if (loading) {
     return (
@@ -234,7 +262,7 @@ const ListingDetails = () => {
                 // mx="4"
                 aspectRatio={16 / 9} // Maintain aspect ratio
               >
-                <Image
+                {/* <Image
                   src={
                     currentListing?.images && currentListing?.images?.length > 0
                       ? `${baseUrl}${currentListing.images[currentImageIndex].url}`
@@ -249,7 +277,30 @@ const ListingDetails = () => {
                   onClick={() => handleImageClick(`${baseUrl}${currentListing.images[currentImageIndex].url}`)}
                   _hover={{ filter: "brightness(1.2)", transition: "0.2s" }}
 
-                />
+                /> */}
+                {mediaList[currentMediaIndex]?.type === "image" ? (
+  <Image
+    src={`${baseUrl}${mediaList[currentMediaIndex].url}`}
+    alt="Preview"
+    objectFit="cover"
+    borderRadius="lg"
+    w="100%"
+    h="100%"
+    onClick={() => handleMediaClick(mediaList[currentMediaIndex])}
+    _hover={{ filter: "brightness(1.2)", transition: "0.2s" }}
+  />
+) : (
+  <Box
+    as="video"
+    src={`${baseUrl}${mediaList[currentMediaIndex].url}`}
+    controls
+    borderRadius="lg"
+    w="100%"
+    h="100%"
+    onClick={() => handleMediaClick(mediaList[currentMediaIndex])}
+  />
+)}
+
 
                 <Modal isOpen={isOpen} onClose={onClose} isCentered>
                   <ModalOverlay />
@@ -262,12 +313,18 @@ const ListingDetails = () => {
                       boxSize="40px"
                     />
                     <ModalBody p={4}>
-                      {selectedImage && <Image src={selectedImage} borderRadius="md" />}
+                      {/* {selectedImage && <Image src={selectedImage} borderRadius="md" />} */}
+                      {selectedMedia?.type === "image" ? (
+  <Image src={`${baseUrl}${selectedMedia?.url}`} borderRadius="md" />
+) : (
+  <Box as="video" src={`${baseUrl}${selectedMedia?.url}`} controls autoPlay w="100%" borderRadius="md" />
+)}
+
                     </ModalBody>
                   </ModalContent>
                 </Modal>
 
-                {currentListing?.images &&
+                {/* {currentListing?.images &&
                   currentListing?.images?.length > 1 && (
                     <>
 
@@ -308,7 +365,43 @@ const ListingDetails = () => {
 
                     </>
 
-                  )}
+                  )} */}
+                  {mediaList.length > 1 && (
+  <>
+    <Button
+      position="absolute"
+      top="50%"
+      left="10px"
+      transform="translateY(-50%)"
+      onClick={() => handleMediaNavigation("prev")}
+      _hover={{
+        transition: "transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease", // Smooth transition
+      }}
+      zIndex="1"
+      colorScheme="none"
+      aria-label="Previous Media"
+    >
+      <ArrowLeft size={'40px'} color="#ffffff" />
+    </Button>
+
+    <Button
+      position="absolute"
+      top="50%"
+      right="10px"
+      transform="translateY(-50%)"
+      onClick={() => handleMediaNavigation("next")}
+      _hover={{
+        transition: "transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease", // Smooth transition
+      }}
+      zIndex="1"
+      colorScheme="none"
+      aria-label="Next Media"
+    >
+      <ArrowRight size={'40px'} color="#ffffff" />
+    </Button>
+  </>
+)}
+
               </Box>
 
               {/* Comments and Reviews displayed on top after images in large screen but not displayed in small screens */}
