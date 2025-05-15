@@ -201,7 +201,7 @@ const ListingDetails = () => {
               </Heading>
               <Flex  gap={4} flexDir={{base:'column', sm:'row'}}>
                 <Badge colorScheme="orange" px={3} py={1} fontSize="m" w={'fit-content'}>
-                  ${currentListing?.price}/{currentListing?.priceUnit}
+                  Pkr{currentListing?.price}/{currentListing?.priceUnit}
                 </Badge>
                 <Flex align="center">
                   <StarRating rating={avgRating} />
