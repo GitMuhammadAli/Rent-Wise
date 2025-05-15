@@ -63,7 +63,7 @@ export default function OwnerDash() {
       try {
         const response = await GetAggreements();
         
-      console.log("Agreements in owner dash",response.data.data);
+      console.log("Agreements in owner dashss",response.data.data);
         setAgreements(response.data.data);
         const aggrData = response?.data?.data;
         setDecideAggrNumber(showAllAggr ? aggrData : aggrData.slice(0, displayLimit))
