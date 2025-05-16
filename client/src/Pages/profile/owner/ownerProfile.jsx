@@ -23,15 +23,15 @@ const UserProfile = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedImage, setSelectedImage] = useState(null); 
 
-  if (!user) {
-     return <div className="flex justify-center items-center min-h-screen"> <ColorTubeLoader/></div>;
-  }
+  // if (!user) {
+  //    return <div className="flex justify-center items-center min-h-screen"> <ColorTubeLoader/></div>;
+  // }
  
 
-  if (user?._id === _id) {
-    // Redirect to another route if user tries to view their own profile
-    return <Navigate to="/acc" />;
-  }
+  // if (user?._id === _id) {
+  //   // Redirect to another route if user tries to view their own profile
+  //   return <Navigate to="/acc" />;
+  // }
 
   useEffect(() => {
       const fetchProfileData = async () => {
@@ -120,6 +120,7 @@ const UserProfile = () => {
         if(!owner) return
         try {
           const response = await getUserReviews(owner?._id);
+          console.log(response)
          setReviews(response?.data?.data?.reviews)
         } catch (error) {
           console.log(error);
@@ -136,24 +137,39 @@ const UserProfile = () => {
       onOpen();
     };
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-       <ColorTubeLoader/>
-      </div>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <div className="flex justify-center items-center min-h-screen">
+  //      <ColorTubeLoader/>
+  //     </div>
+  //   );
+  // }
 
-  if (!owner) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <p>User not found.</p>
-      </div>
-    );
-  }
+  // if (!owner) {
+  //   return (
+  //     <div className="flex justify-center items-center min-h-screen">
+  //       <p>User not found.</p>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="min-h-screen bg-gray-100 p-2 sm:p-2 xl:p-8">
+      {!user ? (
+        <div className="flex justify-center items-center min-h-screen">
+          <ColorTubeLoader />
+        </div>
+      ) : user._id === _id ? (
+        <Navigate to="/acc" />
+      ) : loading ? (
+        <div className="flex justify-center items-center min-h-screen">
+          <ColorTubeLoader />
+        </div>
+      ) : !owner ? (
+        <div className="flex justify-center items-center min-h-screen">
+          <p>User not found.</p>
+        </div>
+      ) : (
       <div className="max-w-3xl mx-auto bg-white shadow-md rounded-lg p-6">
         {/* User Information */}
         <div className="flex items-center">
@@ -255,55 +271,54 @@ const UserProfile = () => {
 
 
 
-              {/* Reviews Tab */}
-              {activeTab === "reviews" && (
-             <div className="mt-6 grid md:grid-cols-2 gap-6">
-               {["positive", "negative"].map((reviewType) => (
-                 <div key={reviewType}>
-                   <h3 className="font-bold text-lg mb-4 flex items-center">
-                     {reviewType === "positive" ? (
-                       <ThumbsUp className="h-5 w-5 mr-2 text-green-500" />
-                     ) : (
-                       <ThumbsDown className="h-5 w-5 mr-2 text-red-500" />
-                     )}
-                     {reviewType.charAt(0).toUpperCase() + reviewType.slice(1)} Reviews
-                   </h3>
-                   <div className="space-y-4">
-                     { 
-                // filtering type on the basis of sentiment
-                         reviews.filter((review) =>
-                          // reviewType === "positive" ? review.rating > 3 : review.rating <= 3
-                        reviewType === "negative" ? review.sentiment === "negative" : "positive"
-                       )
-                       .map((review) => (
-                         <div
-                           key={review._id}
-                           className={`p-4 rounded-lg shadow-sm ${
-                             reviewType === "positive" ? "bg-green-50" : "bg-red-50"
-                           }`}
-                         >
-                           <div className="flex justify-between">
-                             <h3 className="font-bold">{review.reviewer.name}</h3>
-                             <span className="text-sm text-gray-400">{new Date(review.createdAt).toLocaleDateString()}</span>
-                           </div>
-                           <p>{review.comment}</p>
-                           <div className="flex text-yellow-500 mt-2">
-                             {[...Array(5)].map((_, i) => (
-                               <Star
-                                 key={i}
-                                 className={`h-5 w-5 ${
-                                   i < review.rating ? "text-yellow-500" : "text-gray-300"
-                                 }`}
-                               />
-                             ))}
-                           </div>
-                         </div>
-                       ))}
-                   </div>
-                 </div>
-               ))}
-             </div>
-           )}
+           {activeTab === "reviews" && (
+  <div className="mt-6 grid md:grid-cols-2 gap-6">
+    {["positive", "negative"].map((reviewType) => (
+      <div key={reviewType}>
+        <h3 className="font-bold text-lg mb-4 flex items-center">
+          {reviewType === "positive" ? (
+            <ThumbsUp className="h-5 w-5 mr-2 text-green-500" />
+          ) : (
+            <ThumbsDown className="h-5 w-5 mr-2 text-red-500" />
+          )}
+          {reviewType.charAt(0).toUpperCase() + reviewType.slice(1)} Reviews
+        </h3>
+
+        <div className="space-y-4">
+          {reviews
+            .filter((review) => review.sentiment === reviewType) // ✅ correct filtering
+            .map((review) => (
+              <div
+                key={review._id}
+                className={`p-4 rounded-lg shadow-sm ${
+                  reviewType === "positive" ? "bg-green-50" : "bg-red-50"
+                }`}
+              >
+                <div className="flex justify-between">
+                  <h3 className="font-bold">{review.reviewer.name}</h3>
+                  <span className="text-sm text-gray-400">
+                    {new Date(review.createdAt).toLocaleDateString()}
+                  </span>
+                </div>
+                <p>{review.comment}</p>
+                <div className="flex mt-2">
+                  {[...Array(5)].map((_, i) => (
+                    <Star
+                      key={i}
+                      className={`h-5 w-5 ${
+                        i < review.rating ? "text-yellow-500" : "text-gray-300"
+                      }`}
+                    />
+                  ))}
+                </div>
+              </div>
+            ))}
+        </div>
+      </div>
+    ))}
+  </div>
+)}
+
         {/* Write Review Tab */}
         {activeTab === "writeReview" && (
           <div className="mt-6">
@@ -368,6 +383,7 @@ const UserProfile = () => {
           </Button>
         </div>
       </div>
+)}
     </div>
   );
 };
