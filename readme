@@ -1,158 +1,118 @@
-# RentWise Project Checklist
+# 🏠 RentWise – AI-Enhanced Blockchain Secured Rental Platform 🔐
 
-✅ - Completed/Done
-❌ - Incomplete/Not Done
+> **Revolutionizing the rental ecosystem with blockchain security and AI-powered intelligence.**
 
-## ✅ Frontend Checklist
+---
 
-### 📌 Authentication & Authorization
-- [x] SignUp Page (`/auth/signUp`)
-- [x] SignIn Page (`/auth/signIn`)
-- [x] OTP Verification Page (`/auth/otp`)
-- [x] Forgot Password Page (`/auth/forgetPassword`)
-- [x] Reset Password Page (`/auth/resetPassword`)
-- [x] Auth Layout Wrapper (`<AuthLayout />`)
-- [x] Protected Route Handling (`<ProtectedRoute requiredStatus="unauthenticated" />`)
-- [x] User Role-Based Routing (admin/user)
+## 🌟 Overview
 
-### 📌 UI/UX & Common Components
-- [x] Navigation Bar (`<Navbar />`)
-- [x] Sidebar Menu (`<Sidebar />`)
-- [x] Footer Component (`<Footer />`)
-- [x] Loading Spinners & Skeletons (`<ColorTubeLoader />`)
-- [x] Toast Notifications (`<ToastProvider />`)
-- [x] Responsive Design Testing
-- [x] Dark Mode Toggle
+**RentWise** is a next-generation **decentralized SaaS rental platform** designed to bring **trust, transparency, and automation** into the property rental process.  
+It leverages **blockchain** for tamper-proof rental agreements and **AI/NLP** models for intelligent sentiment analysis of user reviews — helping tenants and owners make data-driven, confident decisions.
 
-### 📌 Main Application Pages
-- [x] Main Layout Wrapper (`<MainLayout />`)
-- [x] Landing Page (`/`)
-- [x] Dashboard Page (`/dashboard`)
-- [x] User Profile Page (`/profile/:_id`)
-- [x] Account Settings (`/acc`)
+> 💡 *Private repository — includes full codebase, demos, and visual walkthroughs.*
 
-### 📌 Property Listings & Rentals
-- [x] View All Listings (`/getAll`)
-- [x] Listing Details Page (`/rental/:id`)
-- [x] Category-based Listings:
-  - [x] Hostels (`/categories/hostels`)
-  - [x] Houses (`/categories/houses`)
-  - [x] Cars (`/categories/cars`)
-- [x] Update Listings (`/listings/:id`)
-- [x] Search & Filtering
-- [x] Pagination
-- [x] Location Search (Google Maps API)
+---
 
-### 📌 Chat System
-- [x] Real-time Chat Interface (`/chat`)
-- [x] Chat Sidebar with Active Users
-- [x] Unread Message Indicators
-- [x] Typing Indicators
-- [x] Message History Storage
+## 🚀 Key Features
 
-### 📌 Agreements & Contracts
-- [x] Agreement Creation (`/agreement`)
-- [x] Send to Tenant (`/sendToTenant`)
-- [x] Car Agreement Update (`/agreementCar/:id`)
-- [x] House Agreement Update (`/agreementHouse/:id`)
-- [x] View House Agreement (`/viewHouseAgreement/:_id`)
-- [x] View Car Agreement (`/viewCarAgreement/:_id`)
+- 🔐 **Blockchain-Secured Agreements** – Smart contracts ensure immutability and transparency of all rental deals.  
+- 🤖 **AI-Driven Review Analysis** – NLP models classify user feedback into positive, negative, or neutral sentiments.  
+- 🏘️ **Smart Listing & Discovery** – Role-based dashboard for tenants and owners with dynamic rental listings.  
+- 📄 **Agreement Management** – Securely create, verify, and manage blockchain-stored rental contracts.  
+- 📊 **Analytics Dashboard** – Real-time metrics on rental income, occupancy, and agreement status.  
+- 📱 **Cross-Platform Access** – Fully responsive web & mobile apps with modern UI/UX.  
 
-### 📌 Media Management
-- [x] Media Upload Page (`/media`)
-- [x] Image/Video Upload (Multer + Cloud)
-- [x] File Preview & Management
-- [x] Drag & Drop UI
+---
 
-### 📌 Admin Panel
-- [x] Admin Dashboard (`/admin`)
-- [x] Category Management (`/category/*`)
-- [x] Agreement Management (`/agreements-protected`)
-- [x] Integrations Page (`/integration`)
-- [x] User Role Management
+## 🧠 Problem Statement
 
-### 📌 Performance & Errors
-- [x] Custom 404 Page
-- [x] API Error Handling
-- [x] Lazy Loading
-- [x] Code Splitting
-- [x] Offline Support (Service Workers)
+Traditional rental systems often suffer from:
 
-## 🖥 Backend Checklist
+- Lack of transparency and trust  
+- Manual, error-prone documentation  
+- Fake or unverifiable agreements  
+- Biased or unvalidated user reviews  
+- Dependency on middlemen and recurring commissions  
 
-### 🗄 Database & Models
-- [x] User Models (userModel.js)
-- [x] Listing Models (RentalItemModel.js, LocationModel.js, etc.)
-- [x] Chat Models (ConversationModel.js, MesssageModel.js)
-- [x] Agreement Models (Aggrement.js, AggrementDetails.js)
-- [x] Review & Comment Models
-- [x] Notification Models
+These issues cause financial losses and frustration for tenants and property owners alike.
 
-### ⚙️ API Structure
-- [x] Controller Organization (user/, listings/, chat/, etc.)
-- [x] Route Management (routes/)
-- [x] Middleware Implementation (middleware/)
-- [x] Error Handling (errorHandler.js)
-- [x] Request Validation (validation/)
-- [x] Response Messages (messages/)
+---
 
-### 🔐 Authentication
-- [x] User Authentication (auth.js)
-- [x] Authorization Middleware (checkAuth.js)
-- [x] Third-party Login (third_party_Login.js)
-- [x] Token Management (token/Tokens.js)
+## ✅ Solution
 
-### 🌐 WebSockets
-- [x] Socket Configuration (socket.js)
-- [x] Real-time Chat
-- [x] Notifications System
+**RentWise** solves these problems by merging **Blockchain + AI**:
+- ⛓️ Blockchain ensures **secure, immutable rental agreements**
+- 🤖 AI validates and classifies **real user experiences**
+- 🧩 Role-based dashboards for **owners, tenants, and admins**
+- 📈 Advanced analytics for **data-driven insights**
 
-### 📁 File Management
-- [x] Media Upload Handling (mediaFile.js)
-- [x] Profile Image Handling (profileFile.js)
-- [x] File Storage Structure (uploads/)
+---
 
-### 📧 Email System
-- [x] Mail Templates (Mail/Templates/)
-- [x] Email Configuration (config/sendmail.js)
+## ⚙️ Tech Stack
 
-### 🤖 AI Integration
-- [x] Python Integration (ai/python/)
-- [x] Sentiment Analysis
-- [x] Data Preprocessing
+| Layer | Technology |
+|:------|:------------|
+| **Frontend** | React.js, Tailwind CSS |
+| **Backend** | Node.js, Express.js |
+| **Database** | MongoDB |
+| **Blockchain** | Smart Contracts (Ethereum / Solana Compatible) |
+| **AI / NLP** | Sentiment Analysis using BERT & Text Classification |
+| **Deployment** | Vercel, Render, MongoDB Atlas |
 
-### 📝 Logging
-- [x] Error Logging (error.log)
-- [x] Combined Logging (combined.log)
-- [x] Logger Configuration (logger.js)
+---
 
-### 🔒 Security
-- [x] CORS Configuration (cors.js)
-- [x] Rate Limiting (Limitar.js)
-- [x] Role Management (Roles.js)
+## 🎥 Demo Walkthroughs
 
-### 🚀 Configuration
-- [x] Environment Variables (.env)
-- [x] Database Configuration (config/db.js)
-- [x] Push Notification Service (pushService.js)
+### 🔐 Sign In / Register
+- https://github.com/user-attachments/assets/ae323c29-6c47-45c9-8d47-ac10c2a212b3  
+- https://github.com/user-attachments/assets/bc63bd56-0443-4fdc-988e-d50373cb078d  
 
-### 🧪 Testing
-- [x] Unit Tests
-- [x] Integration Tests
-- [x] API Endpoint Testing
+### 🔑 Google Login / Password Reset
+- https://github.com/user-attachments/assets/5d119796-1e03-4b79-8b7c-6c7ab0a41855  
+- https://github.com/user-attachments/assets/9e9fdad5-549e-43c4-a298-2aac3e808e35  
 
-### 📦 Deployment
-- [x] Production Configuration
-- [x] Performance Optimization
-- [x] Server Setup (server.js)
+### ⚙️ Account Setup
+- https://github.com/user-attachments/assets/4406e950-ace0-4f58-8fe6-c52448a0cf6b  
+- https://github.com/user-attachments/assets/c339342b-aae1-43ab-8aee-9c71474ce4b6  
+
+### 🏠 Listings
+- https://github.com/user-attachments/assets/0160196f-2488-41ab-ae99-cd2ba2b20a07  
+- https://github.com/user-attachments/assets/d0eae83c-cc1b-4778-b5b9-378fde6f8dbd  
+- https://github.com/user-attachments/assets/592facb1-0a24-4d06-a8b0-fe0353735ad6  
+
+### 💬 Chats
+- https://github.com/user-attachments/assets/140e1848-8996-4ae0-a252-9827d9c23266  
 
 
+### 📄 Agreements
+> *(Full video available on request — demonstrates blockchain-secured agreement creation and verification.)*
 
+### 🤖 AI-Powered Review Analysis
+- https://github.com/user-attachments/assets/7217a13e-55da-4b42-92ca-602a5d5222ac  
 
+### 🧑‍💼 Admin Controls (Blockchain, Role Management, etc.)
+- https://github.com/user-attachments/assets/bf64d591-62b0-4de3-9291-687c02bb4751  
 
+---
 
+## 👥 Target Users
 
+- 🧑‍🎓 **Students & Outstation Tenants**  
+- 🏡 **Property Owners / Landlords**  
+- 🏢 **Rental Agencies & Admission Offices**  
 
+---
 
+## 🏁 Final Remarks
 
+**RentWise** unites blockchain transparency with AI-driven intelligence to redefine the rental experience — secure, smart, and scalable.  
+Future upgrades include **identity verification**, **dispute resolution**, and **global integration**.
 
+---
+
+📩 **For Collaboration or Demo Requests:**  
+Feel free to reach out via **GitHub** or **email** for private demo access or partnership discussions.
+
+---
+
+⭐ *If you like this project, consider starring the repo to show your support!*
