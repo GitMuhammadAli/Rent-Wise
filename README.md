@@ -64,34 +64,39 @@ These issues cause financial losses and frustration for tenants and property own
 ## 🎥 Demo Walkthroughs
 
 ### 🔐 Sign In / Register
-- https://github.com/user-attachments/assets/ae323c29-6c47-45c9-8d47-ac10c2a212b3  
-- https://github.com/user-attachments/assets/bc63bd56-0443-4fdc-988e-d50373cb078d  
+https://github.com/user-attachments/assets/ae323c29-6c47-45c9-8d47-ac10c2a212b3  
+
+https://github.com/user-attachments/assets/bc63bd56-0443-4fdc-988e-d50373cb078d  
 
 ### 🔑 Google Login / Password Reset
-- https://github.com/user-attachments/assets/5d119796-1e03-4b79-8b7c-6c7ab0a41855  
-- https://github.com/user-attachments/assets/9e9fdad5-549e-43c4-a298-2aac3e808e35  
+https://github.com/user-attachments/assets/5d119796-1e03-4b79-8b7c-6c7ab0a41855  
+
+https://github.com/user-attachments/assets/9e9fdad5-549e-43c4-a298-2aac3e808e35  
 
 ### ⚙️ Account Setup
-- https://github.com/user-attachments/assets/4406e950-ace0-4f58-8fe6-c52448a0cf6b  
-- https://github.com/user-attachments/assets/c339342b-aae1-43ab-8aee-9c71474ce4b6  
+https://github.com/user-attachments/assets/4406e950-ace0-4f58-8fe6-c52448a0cf6b  
+
+https://github.com/user-attachments/assets/c339342b-aae1-43ab-8aee-9c71474ce4b6  
 
 ### 🏠 Listings
-- https://github.com/user-attachments/assets/0160196f-2488-41ab-ae99-cd2ba2b20a07  
-- https://github.com/user-attachments/assets/d0eae83c-cc1b-4778-b5b9-378fde6f8dbd  
-- https://github.com/user-attachments/assets/592facb1-0a24-4d06-a8b0-fe0353735ad6  
+https://github.com/user-attachments/assets/0160196f-2488-41ab-ae99-cd2ba2b20a07  
+
+https://github.com/user-attachments/assets/d0eae83c-cc1b-4778-b5b9-378fde6f8dbd  
+
+https://github.com/user-attachments/assets/592facb1-0a24-4d06-a8b0-fe0353735ad6  
 
 ### 💬 Chats
-- https://github.com/user-attachments/assets/140e1848-8996-4ae0-a252-9827d9c23266  
+https://github.com/user-attachments/assets/140e1848-8996-4ae0-a252-9827d9c23266  
 
 
 ### 📄 Agreements
 > *(Full video available on request — demonstrates blockchain-secured agreement creation and verification.)*
 
 ### 🤖 AI-Powered Review Analysis
-- https://github.com/user-attachments/assets/7217a13e-55da-4b42-92ca-602a5d5222ac  
+https://github.com/user-attachments/assets/7217a13e-55da-4b42-92ca-602a5d5222ac  
 
 ### 🧑‍💼 Admin Controls (Blockchain, Role Management, etc.)
-- https://github.com/user-attachments/assets/bf64d591-62b0-4de3-9291-687c02bb4751  
+https://github.com/user-attachments/assets/bf64d591-62b0-4de3-9291-687c02bb4751  
 
 ---
 
