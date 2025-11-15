@@ -7,17 +7,27 @@ const { RESPONCE_MESSAGE } = require("../../messages/response");
 const { STATUS } = require("../../messages/status");
 const AppError = require("../../utils/AppError");
 const { BOOLEAN } = require("../../utils/Roles");
-const initializeAdmin = async (next) => {
+const initializeAdmin = async () => {
   try {
+    const adminEmail = process.env.ADMIN_EMAIL;
+    const adminPassword = process.env.ADMIN_PASSWORD;
+    const adminName = process.env.ADMIN_NAME || "RentWise Admin";
+
+    if (!adminEmail || !adminPassword) {
+      logger.warn("Admin seed skipped: ADMIN_EMAIL or ADMIN_PASSWORD missing");
+      return;
+    }
+
     const adminExists = await Users.findOne({ role: "admin" });
     if (!adminExists) {
-      const hashedPassword = await bcrypt.hash("admin", 10);
+      const hashedPassword = await bcrypt.hash(adminPassword, 10);
       await Users.create({
-        name: "admin",
-        email: "admin@rentwise.com",
+        name: adminName,
+        email: adminEmail.toLowerCase(),
         password: hashedPassword,
         role: "admin",
       });
+      logger.info("Admin user initialized");
     }
   } catch (error) {
     throw new AppError(BOOLEAN.FALSE,ERROR_MESSAGE.ADMIN_INITLIAZED_ERROR, STATUS.INTERNAL_SERVER_ERROR)
@@ -37,9 +47,6 @@ const Register = async (req, res , next) => {
     }
     if (!email || !password) {
       return next(new AppError(BOOLEAN.FALSE,ERROR_MESSAGE.INVALID_INPUT, STATUS.BAD_REQUEST))
-    }
-    if (await Users.findOne({ email })) {
-      return next(new AppError( BOOLEAN.FALSE , ERROR_MESSAGE.EMAIL_ALREADY_EXISTS, STATUS.BAD_REQUEST))
     }
     if (await Users.findOne({ email })) {
       return next(new AppError(BOOLEAN.FALSE,ERROR_MESSAGE.EMAIL_ALREADY_EXISTS, STATUS.BAD_REQUEST))

@@ -18,20 +18,14 @@ const GenerateToken = async (user, req, res, next) => {
   try {
     await res.clearCookie("jwt");
     const token = await makeToken(user._id);
+    const isProduction = process.env.NODE_ENV === "production";
+
     res.cookie("jwt", token, {
       httpOnly: BOOLEAN.TRUE,
-     secure: process.env.NODE_ENV !== "development", // the working localhost one
+      secure: isProduction,
       maxAge: 30 * 24 * 60 * 60 * 1000,
-     sameSite: "strict",    // the working localhost one
-    
-      // sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
-      //   secure: process.env.NODE_ENV === 'production', // Use HTTPS in production
-
-       // use if you want to access on network IP
-
-      // secure: false,        
-      // sameSite: "lax", 
-     
+      sameSite: isProduction ? "none" : "lax",
+      domain: process.env.COOKIE_DOMAIN || undefined,
     });
 
     return token;

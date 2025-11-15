@@ -8,10 +8,15 @@ const UserDynamicfile = (directory) => {
   }
 };
 
+const MAX_PROFILE_FILE_SIZE_MB = Number(process.env.PROFILE_MAX_FILE_SIZE_MB || 5);
+const uploadsRoot =
+  process.env.UPLOADS_DIR ||
+  path.join(__dirname, "../uploads");
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     const userId = req.body.userid; 
-    const userDirectory = path.join(__dirname, `../uploads/profile/${userId}`);
+    const userDirectory = path.join(uploadsRoot, `profile/${userId}`);
     UserDynamicfile(userDirectory);
     
     if (fs.existsSync(userDirectory)) {
@@ -32,10 +37,16 @@ const fileFilter = (req, file, cb) => {
   if (allowedTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(null, false); 
+    cb(new Error("Unsupported file type"), false); 
   }
 };
 
-const profileImage = multer({ storage: storage, fileFilter: fileFilter });
+const profileImage = multer({
+  storage: storage,
+  fileFilter: fileFilter,
+  limits: {
+    fileSize: MAX_PROFILE_FILE_SIZE_MB * 1024 * 1024,
+  },
+});
 
 module.exports = profileImage;

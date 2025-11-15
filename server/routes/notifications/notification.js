@@ -6,25 +6,25 @@ const { AuthorizeUser } = require("../../middleware/auth");
 
 router.get(
   "/get-notifications",
-  AuthorizeUser("user" , "Admin") ,
+  AuthorizeUser("user") ,
   asyncHandler(notification.getNotificationByUser)
 );
 
 router.patch(
   "/read-all-notifications",
-  AuthorizeUser("user" , "Admin") ,
+  AuthorizeUser("user") ,
   asyncHandler(notification.readAllNotificationByUser)
 );
 
 router.delete(
   "/clear-all-notifications",
-  AuthorizeUser("user" , "Admin") ,
+  AuthorizeUser("user") ,
   asyncHandler(notification.clearAllNotificationByUser)
 );
 
 router.patch(
   "/read-notification/:notificationId",
-  AuthorizeUser("user" , "Admin") ,
+  AuthorizeUser("user") ,
   asyncHandler(notification.ReadOneNotificationByUser)
 );
 

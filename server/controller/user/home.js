@@ -11,7 +11,7 @@ exports.userHome = async (req, res, next) => {
     const user = await Users.findById(userId);
 
     if (!user) {
-      throw new AppError(BOOLEAN.FALSE,ERROR_MESSAGE.USER_NOT_FOUND, STATUS_CODE.NOT_FOUND);
+      throw new AppError(BOOLEAN.FALSE,ERROR_MESSAGE.USER_NOT_FOUND, STATUS.NOT_FOUND);
     }
 
     res.status(STATUS.SUCCESS).json({

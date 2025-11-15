@@ -57,7 +57,67 @@ These issues cause financial losses and frustration for tenants and property own
 | **Database** | MongoDB |
 | **Blockchain** | Smart Contracts (Ethereum / Solana Compatible) |
 | **AI / NLP** | Sentiment Analysis using BERT & Text Classification |
-| **Deployment** | Vercel, Render, MongoDB Atlas |
+| **Deployment** | Vercel, Render, Docker, MongoDB Atlas |
+
+---
+
+## 🐳 Dockerized Backend + AI Stack
+
+Spin up the entire backend (Express API + MongoDB + Socket.IO + AI sentiment microservice) locally or on any Docker-compatible host:
+
+1. Create a `docker/.env` file and populate it with your secrets. Example:
+   ```
+   SESSION_SECRET=super-secret-session
+   JWT_API_SECRET_KEY=super-secret-jwt
+   ADMIN_EMAIL=admin@rentwise.local
+   ADMIN_PASSWORD=AdminPass123!
+   CLIENT_URL=http://localhost:4000
+   ALLOWED_ORIGINS=http://localhost:4000
+   SOCKET_ALLOWED_ORIGINS=http://localhost:4000
+   UPLOADS_DIR=/app/server/uploads
+   AI_MODEL_PORT=http://sentiment:5000
+   DB_URL=mongodb://mongodb:27017/rentwise
+   ```
+2. Build and run all services (MongoDB, Flask sentiment API, Express backend) with one command:
+   ```bash
+   docker compose --env-file docker/.env up --build
+   ```
+3. The backend becomes available at `http://localhost:3600`, the AI service at `http://localhost:5000`, and MongoDB is reachable on the internal network as `mongodb:27017`. Uploaded media persists under `server/uploads` via a bind mount.
+
+This same compose stack works on Render’s free tier or any VPS—just provide the real environment values and point your frontend (`VITE_BACK_END_URL`, `VITE_SOCKET_URL`) to the published backend URL.
+
+---
+
+## ☁️ Deployment Flow (Vercel + Render/Docker host)
+
+1. **Backend + AI (Render or any Docker host)**
+   - Use the provided `docker-compose.yml` to launch:
+     - `backend`: Node/Express + Socket.IO server
+     - `sentiment`: Flask/Gunicorn AI microservice
+     - `mongodb`: MongoDB 6 with a persistent volume
+   - Mount a disk for `server/uploads` and set the env variables listed above (`SESSION_SECRET`, `JWT_API_SECRET_KEY`, SMTP creds, push keys, etc.).
+   - Update `CLIENT_URL`, `ALLOWED_ORIGINS`, and `SOCKET_ALLOWED_ORIGINS` to match your Vercel domain(s).
+
+2. **Frontend (Vercel)**
+   - Deploy the `client` directory with the standard Vite build (`npm install && npm run build`).
+   - Set `VITE_BACK_END_URL` and `VITE_SOCKET_URL` to the public backend URL (HTTPS).
+   - Optional: configure `VITE_FRONT_END_URL` so backend-generated links (agreements, emails) point to the live site.
+
+3. **Verification**
+
+---
+
+## 📦 Deployment Playbook
+
+See `DEPLOYMENT.md` for a step-by-step checklist covering:
+- Environment variable requirements
+- Docker Compose setup (local or VPS)
+- Render (free tier) configuration
+- Vercel frontend deployment
+   - Hit `GET /health` on both backend and AI services.
+   - Upload a listing/photo to verify the persistent disk.
+   - Submit a review to ensure the backend calls `AI_MODEL_PORT/predict` successfully.
+   - Exercise chat + notifications to confirm Socket.IO works over HTTPS.
 
 ---
 

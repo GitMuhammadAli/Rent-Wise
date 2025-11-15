@@ -22,16 +22,23 @@ const Conversation = require("../../model/chat/ConversationModel");
 const sendWebPush = require("../../utils/pushService");
 
 
-exports.CreateNotification = async (recipient, sender, type, message, next, ) => {
-
+exports.CreateNotification = async (recipient, sender, type, message, next) => {
   try {
-    const notification = {
-      recipient, sender, type, message
+    if (!recipient || !type) {
+      throw new AppError(
+        BOOLEAN.FALSE,
+        ERROR_MESSAGE.INVALID_DATA,
+        STATUS.BAD_REQUEST
+      );
     }
     const userSettings = await UserSettings.findOne({ user: recipient });
 
     if (!userSettings) {
-          throw new AppError("Error setting not found");
+          throw new AppError(
+            BOOLEAN.FALSE,
+            NOTIFICATION.GENERAL.NOTIFICATION_ERROR,
+            STATUS.NOT_FOUND
+          );
         }
         const isEnabled = userSettings.notificationPreferences[type.toLowerCase()];
         
@@ -61,16 +68,20 @@ exports.CreateNotification = async (recipient, sender, type, message, next, ) =>
     }
 
     if (!newNotification) {
-      return res.status(STATUS.FORBIDDEN).json({
-        status: BOOLEAN.FALSE,
-        message: NOTIFICATION.GENERAL.NOTIFICATION_NOT_CREATED
-      });
+      throw new AppError(
+        BOOLEAN.FALSE,
+        NOTIFICATION.GENERAL.NOTIFICATION_NOT_CREATED,
+        STATUS.FORBIDDEN
+      );
     }
 
     return newNotification;
 
   } catch (error) {
-    next(error);
+    if (typeof next === "function") {
+      return next(error);
+    }
+    throw error;
   }
 };
 

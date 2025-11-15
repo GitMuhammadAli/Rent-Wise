@@ -35,6 +35,17 @@ import { useAuth } from "../hooks/AuthContext";
 import { NotificationContext } from "../hooks/NotificationContext";
 import Loader from "../components/Style/Loader";
 
+const API_BASE_URL = (import.meta.env.VITE_BACK_END_URL || "").replace(/\/$/, "");
+const buildMediaUrl = (path) => {
+  if (!path) {
+    return null;
+  }
+  if (path.startsWith("http")) {
+    return path;
+  }
+  return `${API_BASE_URL}${path}`;
+};
+
 // import NotificationButton from "./Notifications/NotificationButton";
 
 const LandingPage = () => {
@@ -403,7 +414,7 @@ useEffect(() => {
                 >
                   {rental.images && rental.images.length > 0 ? (
                     <Image
-                      src={`http://localhost:3600${rental?.images[0]?.url}`}
+                      src={buildMediaUrl(rental?.images[0]?.url) || "images/make_listing/random.png"}
                       alt={rental.title}
                       w="full"
                       h={64}

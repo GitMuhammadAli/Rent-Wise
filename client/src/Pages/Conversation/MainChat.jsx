@@ -6,12 +6,8 @@ import { useLocation } from "react-router-dom";
 import { useAuth } from "../../hooks/AuthContext";
 // import { useSocketConnection } from "../../hooks/useSocketConnection";
 
-import { io } from "socket.io-client";
 import SideBar from "./SideBar";
-
-const socket = io(import.meta.env.VITE_BACK_END_URL, {
-  withCredentials: true,
-});
+import { socket } from "../../utils/socket";
 
 export default function MainChat() {
   const { user } = useAuth();

@@ -59,8 +59,8 @@ exports.userManageById = async(req,res,next)=>{
 
 exports.deleteUser = async(req,res,next)=>{
     try {
-        const User = await User.findByIdAndDelete(req.params.id)
-        if(!User) {
+        const deletedUser = await User.findByIdAndDelete(req.params.id)
+        if(!deletedUser) {
             return next(new AppError(ERROR_MESSAGE.NOT_FOUND, 404))
         }
         res.status(200).json({

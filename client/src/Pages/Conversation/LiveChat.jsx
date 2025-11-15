@@ -22,13 +22,16 @@ import UserPopover from "../DashboardComp.jsx/UserPopover";
 import { ListingsContext } from "../../hooks/ListingsContext";
 import { Link } from 'react-router-dom';
 
-import { io } from "socket.io-client";
 import ListingsHorizontalBox from "./ListingsHorizontalBox";
 import { ArrowBigLeft } from "lucide-react";
+import { socket } from "../../utils/socket";
 
-const socket = io(import.meta.env.VITE_BACK_END_URL, {
-  withCredentials: true,
-});
+const MEDIA_BASE_URL = (import.meta.env.VITE_BACK_END_URL || "").replace(/\/$/, "");
+const resolveAvatar = (path) => {
+  if (!path) return undefined;
+  if (path.startsWith("http")) return path;
+  return `${MEDIA_BASE_URL}${path}`;
+};
 
 export default function LiveChat({
   showPopOver,
@@ -168,10 +171,7 @@ export default function LiveChat({
               <Avatar
                 mr={2}
                 size={{base:'sm',sm:'md'}}
-                src={
-                  `${import.meta.env.VITE_BACK_END_URL}${owner.imageUrl}` ||
-                  owner.imageUrl
-                }
+                src={resolveAvatar(owner.imageUrl)}
               />
               <Text color={'black'} fontWeight={'semibold'} fontSize={{base:'sm', sm:'lg', md:'xl'}}>{owner.name}</Text>
             </Link>

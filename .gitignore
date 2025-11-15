@@ -1,1 +1,16 @@
 .qodo
+node_modules/
+client/node_modules/
+server/node_modules/
+dist/
+client/dist/
+*.log
+.env
+server/.env
+client/.env
+server/uploads/
+server/ai/python/__pycache__/
+server/ai/python/*.pyc
+server/ai/python/.venv/
+server/ai/python/venv/
+docker/.env

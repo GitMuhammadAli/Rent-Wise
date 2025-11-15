@@ -32,13 +32,18 @@ const logger = require("./utils/logger");
 const { errorHandler, notFound } = require("./middleware/errorHandler");
 const AppError = require("./utils/AppError");
 const asyncHandler = require("./middleware/asyncWrapper");
-const { setupSocket, io, app, server } = require("./utils/socket");
+const { io, app, server } = require("./utils/socket");
+const isProduction = process.env.NODE_ENV === "production";
+let dbConnection;
+const PORT = process.env.PORT || 3600;
 
-
+app.set("trust proxy", 1);
 app.use(helmet({ crossOriginResourcePolicy: false }));
 app.use(xss());
 app.use(hpp());
-// app.use(limiter);
+if (process.env.DISABLE_RATE_LIMIT !== "true") {
+  app.use(limiter);
+}
 
 app.use(cors(corsOptions));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
@@ -53,9 +58,11 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      httpOnly: false,
-      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
       maxAge: 30 * 24 * 60 * 60 * 1000,
+      domain: process.env.COOKIE_DOMAIN || undefined,
     },
   })
 );
@@ -123,8 +130,8 @@ process.on("unhandledRejection", (reason, promise) => {
 const shutdown = () => {
   console.log("Received shutdown signal, gracefully shutting down...");
   
-  if (connectDB && connectDB.close) {
-    connectDB.close()
+  if (dbConnection && typeof dbConnection.close === "function") {
+    dbConnection.close()
       .then(() => {
         console.log("Database connection closed.");
       })
@@ -148,15 +155,13 @@ process.on("SIGTERM", shutdown);
 
 const startServer = async () => {
   try {
-    await Promise.all([
-      connectDB(),
-      require("./utils/third_party_Login"),
-    ]);
+    dbConnection = await connectDB();
+    require("./utils/third_party_Login");
     
-    initializeAdmin();
+    await initializeAdmin();
     
-    server.listen(3600, '0.0.0.0', () => {
-      console.log("Server is running on port 3600");
+    server.listen(PORT, '0.0.0.0', () => {
+      console.log(`Server is running on port ${PORT}`);
     });
   } catch (error) {
     console.error("Error during server startup:", error);

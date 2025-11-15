@@ -1,9 +1,5 @@
 import { useAuth } from "../hooks/AuthContext";
-import { io } from "socket.io-client";
-
-const socket = io(import.meta.env.VITE_BACK_END_URL, {
-  withCredentials: true,
-});
+import { socket } from "../utils/socket";
 
 export const useSocketConnection = () => {
     const { user } = useAuth();

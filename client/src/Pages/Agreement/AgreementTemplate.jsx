@@ -24,12 +24,12 @@ import { useAuth } from "../../hooks/AuthContext";
 import { createAgreement , SentAggreement } from "../../Api/Agreement";
 import { createMessage, fetchMessagesByConversation } from "../../Api/Chats";
 
-import { io } from "socket.io-client";
+import { socket } from "../../utils/socket";
 import HouseAgreement from "./House/HouseAgreement";
 import CarAgreement from "./Car/CarAgreement";
 import HostelAgreement from "./Hostel/HostelAgreement";
 
-const socket = io("http://localhost:3600");
+ 
 export default function AgreementTemplate() {
   const toast = useToast();
   

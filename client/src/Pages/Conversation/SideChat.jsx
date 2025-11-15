@@ -2,12 +2,15 @@ import { Avatar, Box, Flex, Input, Text, VStack } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { getSideBarParticipants , fetchConversationsForSidebar } from '../../Api/Chats';
 
-import { io } from "socket.io-client";
 import { useAuth } from '../../hooks/AuthContext';
+import { socket } from "../../utils/socket";
 
-const socket = io(import.meta.env.VITE_BACK_END_URL, {
-  withCredentials: true,
-});
+const MEDIA_BASE_URL = (import.meta.env.VITE_BACK_END_URL || "").replace(/\/$/, "");
+const resolveAvatar = (path) => {
+  if (!path) return undefined;
+  if (path.startsWith("http")) return path;
+  return `${MEDIA_BASE_URL}${path}`;
+};
 
 export default function   SideChat({ handleSideBarClick, ownerIdDetails, setAllData ,
    allData, isCLicked, checkClick}) {
@@ -158,7 +161,7 @@ useEffect(() => {
               }}
             >
      
-              <Avatar mr={3} src={`${import.meta.env.VITE_BACK_END_URL}${item.imageUrl}`|| item.imageUrl} />
+              <Avatar mr={3} src={resolveAvatar(item.imageUrl)} />
               <Text fontWeight={'semibold'}>{item.name}</Text>
             </Box>
           ))
